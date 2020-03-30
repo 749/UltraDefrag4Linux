@@ -45,6 +45,7 @@
  * <tr><td>• Chinese (Simplified)         </td><td>-</td><td> muzuiget</td></tr>
  * <tr><td>                               </td><td>-</td><td> HPJ</td></tr>
  * <tr><td>                               </td><td>-</td><td> Tommy He</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Elita Alutee</td></tr>
  * <tr><td>• Chinese (Traditional)        </td><td>-</td><td> muzuiget</td></tr>
  * <tr><td>                               </td><td>-</td><td> Ryan Ping Chih Ko</td></tr>
  * <tr><td>                               </td><td>-</td><td> rexx</td></tr>
@@ -70,6 +71,8 @@
  * <tr><td>                               </td><td>-</td><td> Jérôme Blum</td></tr>
  * <tr><td>                               </td><td>-</td><td> Mathieu Van Weersch</td></tr>
  * <tr><td>                               </td><td>-</td><td> Marina Louwrier-Johannsen</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Thomas Laroche</td></tr>
+ * <tr><td>                               </td><td>-</td><td> William Gathoye</td></tr>
  * <tr><td>• Galician                     </td><td>-</td><td> Julio Mojón Fuentes</td></tr>
  * <tr><td>• Georgian                     </td><td>-</td><td> UGLT.org</td></tr>
  * <tr><td>• German                       </td><td>-</td><td> Stefan Geuken</td></tr>
@@ -79,15 +82,20 @@
  * <tr><td>• Hindi                        </td><td>-</td><td> Gaurav Chatterjee</td></tr>
  * <tr><td>• Hungarian                    </td><td>-</td><td> Nagy Zsolt</td></tr>
  * <tr><td>                               </td><td>-</td><td> Áron Hegedüs</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Gellért Lukács</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Brechler Zsolt</td></tr>
  * <tr><td>• Icelandic                    </td><td>-</td><td> Stefan Pendl</td></tr>
  * <tr><td>• Iloko                        </td><td>-</td><td> Joseph S. B. Maza</td></tr>
  * <tr><td>• Indonesian (Bahasa Indonesia)</td><td>-</td><td> Taufan Nur Hidayat</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Djati Satria</td></tr>
  * <tr><td>• Indonesian                   </td><td>-</td><td> Imanuel Novian</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Djati Satria</td></tr>
  * <tr><td>• Italian                      </td><td>-</td><td> Paolo Loggia</td></tr>
  * <tr><td>                               </td><td>-</td><td> Alessandro Visentin</td></tr>
  * <tr><td>                               </td><td>-</td><td> Edoardo Brunetti</td></tr>
  * <tr><td>                               </td><td>-</td><td> Sherpya</td></tr>
  * <tr><td>• Japanese                     </td><td>-</td><td> ao3</td></tr>
+ * <tr><td>                               </td><td>-</td><td> kako</td></tr>
  * <tr><td>                               </td><td>-</td><td> Masao Kajiwara</td></tr>
  * <tr><td>• Javanese                     </td><td>-</td><td> Taufan Nur Hidayat</td></tr>
  * <tr><td>• Kapampangan                  </td><td>-</td><td> Edwin N. Camaya</td></tr>
@@ -121,8 +129,10 @@
  * <tr><td>                               </td><td>-</td><td> Juan C. Mendez Valledor</td></tr>
  * <tr><td>• Spanish (MEX)                </td><td>-</td><td> Conrad Flyckt</td></tr>
  * <tr><td>•                              </td><td>-</td><td> Felipe Ángel González Báñez</td></tr>
+ * <tr><td>•                              </td><td>-</td><td> Joseph S. Maza</td></tr>
  * <tr><td>• Swedish                      </td><td>-</td><td> Magnus Rostedt</td></tr>
  * <tr><td>                               </td><td>-</td><td> Per-Eric Jenshagen</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Christoffer Ekberg</td></tr>
  * <tr><td>• Tamil                        </td><td>-</td><td> Vinod V.</td></tr>
  * <tr><td>• Thai                         </td><td>-</td><td> Pat Taweewat</td></tr>
  * <tr><td>• Turkish                      </td><td>-</td><td> Huseyin Kozan</td></tr>
@@ -149,6 +159,7 @@
  * • Chinese (Simplified)          & - & muzuiget \\
  *                                 & - & HPJ \\
  *                                 & - & Tommy He \\
+ *                                 & - & Elita Alutee \\
  * • Chinese (Traditional)         & - & muzuiget \\
  *                                 & - & Ryan Ping Chih Ko \\
  *                                 & - & rexx \\
@@ -174,6 +185,8 @@
  *                                 & - & Jérôme Blum \\
  *                                 & - & Mathieu Van Weersch \\
  *                                 & - & Marina Louwrier-Johannsen \\
+ *                                 & - & Thomas Laroche \\
+ *                                 & - & William Gathoye \\
  * • Galician                      & - & Julio Mojón Fuentes \\
  * • Georgian                      & - & UGLT.org \\
  * • German                        & - & Stefan Geuken \\
@@ -183,15 +196,20 @@
  * • Hindi                         & - & Gaurav Chatterjee \\
  * • Hungarian                     & - & Nagy Zsolt \\
  *                                 & - & Áron Hegedüs \\
+ *                                 & - & Gellért Lukács \\
+ *                                 & - & Brechler Zsolt \\
  * • Icelandic                     & - & Stefan Pendl \\
  * • Iloko                         & - & Joseph S. B. Maza \\
  * • Indonesian (Bahasa Indonesia) & - & Taufan Nur Hidayat \\
+ *                                 & - & Djati Satria \\
  * • Indonesian                    & - & Imanuel Novian \\
+ *                                 & - & Djati Satria \\
  * • Italian                       & - & Paolo Loggia \\
  *                                 & - & Alessandro Visentin \\
  *                                 & - & Edoardo Brunetti \\
  *                                 & - & Sherpya \\
  * • Japanese                      & - & ao3 \\
+ *                                 & - & kako \\
  *                                 & - & Masao Kajiwara \\
  * • Javanese                      & - & Taufan Nur Hidayat \\
  * • Kapampangan                   & - & Edwin N. Camaya \\
@@ -225,8 +243,10 @@
  *                                 & - & Juan C. Mendez Valledor \\
  * • Spanish (MEX)                 & - & Conrad Flyckt \\
  * •                               & - & Felipe Ángel González Báñez \\
+ * •                               & - & Joseph S. Maza \\
  * • Swedish                       & - & Magnus Rostedt \\
  *                                 & - & Per-Eric Jenshagen \\
+ *                                 & - & Christoffer Ekberg \\
  * • Tamil                         & - & Vinod V. \\
  * • Thai                          & - & Pat Taweewat \\
  * • Turkish                       & - & Huseyin Kozan \\
@@ -375,7 +395,7 @@
  *
  * Taskbar overlay icon is based on
  * <a href="http://p.yusukekamiyamane.com/">Fugue</a> icon set.
- * Light bulb, star; large stop, terminal, script and help icons were copied from this set too.
+ * Light bulb, star, pause; large repeat, stop, terminal, script and help icons were copied from this set too.
  *
  * <ul>
  * <li> Portions Copyright &copy; 2012 Yusuke Kamiyamane
@@ -427,6 +447,7 @@
  * <tr><td>• Craig Oakes             </td><td>-</td><td> Hint about case mismatch of configuration dialog help files.</td></tr>
  * <tr><td>                          </td><td> </td><td> Hint about problem with .lua file open action registration.</td></tr>
  * <tr><td>• Dario Raparelli         </td><td>-</td><td> NT 4.0 support.</td></tr>
+ * <tr><td>• Gan Yau Kuang           </td><td>-</td><td> Drives repair GUI menu.</td></tr>
  * <tr><td>• Jan Loncik              </td><td>-</td><td> x64 native support. Better default values for filters.</td></tr>
  * <tr><td>• Jim Laski               </td><td>-</td><td> System fonts and visual styles for graphical interface.</td></tr>
  * <tr><td>• Joachim Otahal          </td><td>-</td><td> Disk processing algorithms optimization.</td></tr>
@@ -457,6 +478,7 @@
  * • Craig Oakes              & - & Hint about case mismatch of configuration dialog help files. \\
  *                            &   & Hint about problem with .lua file open action registration. \\
  * • Dario Raparelli          & - & NT 4.0 support. \\
+ * • Gan Yau Kuang            & - & Drives repair GUI menu. \\
  * • Jan Loncik               & - & x64 native support. Better default values for filters. \\
  * • Jim Laski                & - & System fonts and visual styles for graphical interface. \\
  * • Joachim Otahal           & - & Disk processing algorithms optimization. \\
@@ -480,6 +502,7 @@
  * - Benny Stütz
  * - Christoffer Ekberg
  * - Connection
+ * - Dionisios Klonaris
  * - Erwin Dokter
  * - Francisco Ortega Olivos
  * - FS

@@ -24,10 +24,6 @@
  * @{
  */
 
-/*
-* We use STATUS_WAIT_0...
-* #define WIN32_NO_STATUS
-*/
 #include <windows.h>
 
 #include "wgx.h"
@@ -74,63 +70,71 @@ escape_sequence esq[] = {
  * - If otion type is WGX_CFG_STING, all fields of the structure
  * have an obvious meaning.
  */
-BOOL WgxGetOptions(char *config_file_path,WGX_OPTION *opts_table)
+BOOL WgxGetOptions(char *path,WGX_OPTION *table)
 {
     lua_State *L;
     int status;
+    const char *msg;
     int i;
     char *s;
     
-    if(opts_table == NULL)
+    if(table == NULL)
         return FALSE;
     
     /* set defaults */
-    for(i = 0; opts_table[i].name; i++){
-        if(opts_table[i].type == WGX_CFG_INT){
+    for(i = 0; table[i].name; i++){
+        if(table[i].type == WGX_CFG_INT){
             /* copy default value to the buffer */
-            *((int *)opts_table[i].value) = (int)(DWORD_PTR)opts_table[i].default_value;
-        } else if(opts_table[i].type == WGX_CFG_STRING){
+            *((int *)table[i].value) = (int)(DWORD_PTR)table[i].default_value;
+        } else if(table[i].type == WGX_CFG_STRING){
             /* copy default string to the buffer */
-            strncpy((char *)opts_table[i].value,
-                (char *)opts_table[i].default_value,
-                opts_table[i].value_length);
-            ((char *)opts_table[i].value)[opts_table[i].value_length - 1] = 0;
+            strncpy((char *)table[i].value,
+                (char *)table[i].default_value,
+                table[i].value_length);
+            ((char *)table[i].value)[table[i].value_length - 1] = 0;
         }
     }
     
-    if(config_file_path == NULL)
+    if(path == NULL)
         return TRUE; /* nothing to update */
     
-    L = lua_open();  /* create state */
+    L = lua_open();
     if(L == NULL){
-        WgxDbgPrint("WgxGetOptions: cannot initialize Lua library\n");
+        WgxDbgPrint("WgxGetOptions: cannot initialize Lua library");
         return FALSE;
     }
     
-    lua_gc(L, LUA_GCSTOP, 0);  /* stop collector during initialization */
-    luaL_openlibs(L);  /* open libraries */
+    /* stop collector during initialization */
+    lua_gc(L, LUA_GCSTOP, 0);
+    luaL_openlibs(L);
     lua_gc(L, LUA_GCRESTART, 0);
 
-    status = luaL_dofile(L,config_file_path);
+    status = luaL_dofile(L,path);
     if(status != 0){
-        WgxDbgPrint("WgxGetOptions: cannot interprete %s\n",config_file_path);
+        WgxDbgPrint("WgxGetOptions: cannot interprete %s",path);
+        if(!lua_isnil(L, -1)){
+            msg = lua_tostring(L, -1);
+            if(msg == NULL) msg = "(error object is not a string)";
+            WgxDbgPrint("WgxGetOptions: %s",msg);
+            lua_pop(L, 1);
+        }
         lua_close(L);
         return FALSE;
     }
     
     /* search for variables */
-    for(i = 0; opts_table[i].name; i++){
-        lua_getglobal(L, opts_table[i].name);
+    for(i = 0; table[i].name; i++){
+        lua_getglobal(L, table[i].name);
         if(!lua_isnil(L, lua_gettop(L))){
-            if(opts_table[i].type == WGX_CFG_INT){
-                *((int *)opts_table[i].value) = (int)lua_tointeger(L, lua_gettop(L));
-            } else if(opts_table[i].type == WGX_CFG_STRING){
+            if(table[i].type == WGX_CFG_INT){
+                *((int *)table[i].value) = (int)lua_tointeger(L, lua_gettop(L));
+            } else if(table[i].type == WGX_CFG_STRING){
                 s = (char *)lua_tostring(L, lua_gettop(L));
                 if(s != NULL){
-                    strncpy((char *)opts_table[i].value,s,opts_table[i].value_length);
-                    ((char *)opts_table[i].value)[opts_table[i].value_length - 1] = 0;
+                    strncpy((char *)table[i].value,s,table[i].value_length);
+                    ((char *)table[i].value)[table[i].value_length - 1] = 0;
                 } else {
-                    strcpy((char *)opts_table[i].value,"");
+                    strcpy((char *)table[i].value,"");
                 }
             }
         }
@@ -138,15 +142,15 @@ BOOL WgxGetOptions(char *config_file_path,WGX_OPTION *opts_table)
         lua_pop(L, 1);
     }
     
-    /*for(i = 0; opts_table[i].name; i++){
-        if(opts_table[i].type == WGX_CFG_EMPTY){
+    /*for(i = 0; table[i].name; i++){
+        if(table[i].type == WGX_CFG_EMPTY){
             WgxDbgPrint("\n");
-        } else if(opts_table[i].type == WGX_CFG_COMMENT){
-            WgxDbgPrint("-- %s\n",opts_table[i].name);
-        } else if(opts_table[i].type == WGX_CFG_INT){
-            WgxDbgPrint("%s = %i\n",opts_table[i].name,*((int *)opts_table[i].value));
-        } else if(opts_table[i].type == WGX_CFG_STRING){
-            WgxDbgPrint("%s = \"%s\"\n",opts_table[i].name,(char *)opts_table[i].value);
+        } else if(table[i].type == WGX_CFG_COMMENT){
+            WgxDbgPrint("-- %s\n",table[i].name);
+        } else if(table[i].type == WGX_CFG_INT){
+            WgxDbgPrint("%s = %i\n",table[i].name,*((int *)table[i].value));
+        } else if(table[i].type == WGX_CFG_STRING){
+            WgxDbgPrint("%s = \"%s\"\n",table[i].name,(char *)table[i].value);
         }
     }*/
     
@@ -166,7 +170,7 @@ BOOL WgxGetOptions(char *config_file_path,WGX_OPTION *opts_table)
  * - WGX_CFG_INT saves an integer number, on which its value points.
  * - WGX_CFG_STRING saves a string pointed by value field of the structure.
  */
-BOOL WgxSaveOptions(char *config_file_path,WGX_OPTION *opts_table,WGX_SAVE_OPTIONS_CALLBACK cb)
+BOOL WgxSaveOptions(char *path,WGX_OPTION *table,WGX_SAVE_OPTIONS_CALLBACK cb)
 {
     char err_msg[1024];
     FILE *f;
@@ -175,17 +179,17 @@ BOOL WgxSaveOptions(char *config_file_path,WGX_OPTION *opts_table,WGX_SAVE_OPTIO
     char c;
     char *sq;
     
-    if(config_file_path == NULL || opts_table == NULL){
+    if(path == NULL || table == NULL){
         if(cb != NULL)
             cb("WgxSaveOptions: invalid parameter");
         return FALSE;
     }
     
-    f = fopen(config_file_path,"wt");
+    f = fopen(path,"wt");
     if(f == NULL){
         (void)_snprintf(err_msg,sizeof(err_msg) - 1,
             "Cannot open %s file:\n%s",
-            config_file_path,_strerror(NULL));
+            path,_strerror(NULL));
         err_msg[sizeof(err_msg) - 1] = 0;
         WgxDbgPrint("%s\n",err_msg);
         if(cb != NULL)
@@ -193,26 +197,26 @@ BOOL WgxSaveOptions(char *config_file_path,WGX_OPTION *opts_table,WGX_SAVE_OPTIO
         return FALSE;
     }
 
-    for(i = 0; opts_table[i].name; i++){
-        if(opts_table[i].type == WGX_CFG_EMPTY){
+    for(i = 0; table[i].name; i++){
+        if(table[i].type == WGX_CFG_EMPTY){
             //WgxDbgPrint("\n");
             result = fprintf(f,"\n");
-        } else if(opts_table[i].type == WGX_CFG_COMMENT){
-            //WgxDbgPrint("-- %s\n",opts_table[i].name);
-            result = fprintf(f,"-- %s\n",opts_table[i].name);
-        } else if(opts_table[i].type == WGX_CFG_INT){
-            //WgxDbgPrint("%s = %i\n",opts_table[i].name,*((int *)opts_table[i].value));
-            result = fprintf(f,"%s = %i\n",opts_table[i].name,*((int *)opts_table[i].value));
-        } else if(opts_table[i].type == WGX_CFG_STRING){
-            //WgxDbgPrint("%s = \"%s\"\n",opts_table[i].name,(char *)opts_table[i].value);
-            /*result = fprintf(f,"%s = \"%s\"\n",opts_table[i].name,(char *)opts_table[i].value);*/
-            result = fprintf(f,"%s = \"",opts_table[i].name);
+        } else if(table[i].type == WGX_CFG_COMMENT){
+            //WgxDbgPrint("-- %s\n",table[i].name);
+            result = fprintf(f,"-- %s\n",table[i].name);
+        } else if(table[i].type == WGX_CFG_INT){
+            //WgxDbgPrint("%s = %i\n",table[i].name,*((int *)table[i].value));
+            result = fprintf(f,"%s = %i\n",table[i].name,*((int *)table[i].value));
+        } else if(table[i].type == WGX_CFG_STRING){
+            //WgxDbgPrint("%s = \"%s\"\n",table[i].name,(char *)table[i].value);
+            /*result = fprintf(f,"%s = \"%s\"\n",table[i].name,(char *)table[i].value);*/
+            result = fprintf(f,"%s = \"",table[i].name);
             if(result < 0)
                 goto fail;
         
-            n = strlen((char *)opts_table[i].value);
+            n = strlen((char *)table[i].value);
             for(j = 0; j < n; j++){
-                c = ((char *)opts_table[i].value)[j];
+                c = ((char *)table[i].value)[j];
                 /* replace character by escape sequence when needed */
                 sq = NULL;
                 for(k = 0; esq[k].c; k++){
@@ -222,7 +226,7 @@ BOOL WgxSaveOptions(char *config_file_path,WGX_OPTION *opts_table,WGX_SAVE_OPTIO
                 if(sq)
                     result = fprintf(f,"%s",sq);
                 else
-                    result = fprintf(f,"%c",((char *)opts_table[i].value)[j]);
+                    result = fprintf(f,"%c",((char *)table[i].value)[j]);
                 if(result < 0)
                     goto fail;
             }
@@ -234,7 +238,7 @@ fail:
             fclose(f);
             (void)_snprintf(err_msg,sizeof(err_msg) - 1,
                 "Cannot write to %s file:\n%s",
-                config_file_path,_strerror(NULL));
+                path,_strerror(NULL));
             err_msg[sizeof(err_msg) - 1] = 0;
             WgxDbgPrint("%s\n",err_msg);
             if(cb != NULL)

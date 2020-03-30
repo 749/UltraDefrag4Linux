@@ -42,27 +42,27 @@ struct toolbar_button {
     int command;
     int state;
     int style;
-    wchar_t *tooltip_key;
+    char *tooltip_key;
     char *hotkeys;
 };
 
 struct toolbar_button buttons[] = {
-    {0,  IDM_ANALYZE,          TBSTATE_ENABLED, TBSTYLE_BUTTON, L"ANALYSE",          "F5"      },
-    {1,  IDM_REPEAT_ACTION,    TBSTATE_ENABLED, TBSTYLE_BUTTON, L"REPEAT_ACTION",    "Shift+R" },
-    {3,  IDM_DEFRAG,           TBSTATE_ENABLED, TBSTYLE_BUTTON, L"DEFRAGMENT",       "F6"      },
-    {4,  IDM_QUICK_OPTIMIZE,   TBSTATE_ENABLED, TBSTYLE_BUTTON, L"QUICK_OPTIMIZE",   "F7"      },
-    {5,  IDM_FULL_OPTIMIZE,    TBSTATE_ENABLED, TBSTYLE_BUTTON, L"FULL_OPTIMIZE",    "Ctrl+F7" },
-    {6,  IDM_OPTIMIZE_MFT,     TBSTATE_ENABLED, TBSTYLE_BUTTON, L"OPTIMIZE_MFT",     "Shift+F7"},
-    {7,  IDM_STOP,             TBSTATE_ENABLED, TBSTYLE_BUTTON, L"STOP",             "Ctrl+C"  },
+    {0,  IDM_ANALYZE,          TBSTATE_ENABLED, TBSTYLE_BUTTON, "ANALYSE",          "F5"      },
+    {1,  IDM_REPEAT_ACTION,    TBSTATE_ENABLED, TBSTYLE_BUTTON, "REPEAT_ACTION",    "Shift+R" },
+    {3,  IDM_DEFRAG,           TBSTATE_ENABLED, TBSTYLE_BUTTON, "DEFRAGMENT",       "F6"      },
+    {4,  IDM_QUICK_OPTIMIZE,   TBSTATE_ENABLED, TBSTYLE_BUTTON, "QUICK_OPTIMIZE",   "F7"      },
+    {5,  IDM_FULL_OPTIMIZE,    TBSTATE_ENABLED, TBSTYLE_BUTTON, "FULL_OPTIMIZE",    "Ctrl+F7" },
+    {6,  IDM_OPTIMIZE_MFT,     TBSTATE_ENABLED, TBSTYLE_BUTTON, "OPTIMIZE_MFT",     "Shift+F7"},
+    {7,  IDM_STOP,             TBSTATE_ENABLED, TBSTYLE_BUTTON, "STOP",             "Ctrl+C"  },
     {0,  0,                    TBSTATE_ENABLED, TBSTYLE_SEP,    NULL,                NULL      },
-    {8,  IDM_SHOW_REPORT,      TBSTATE_ENABLED, TBSTYLE_BUTTON, L"REPORT",           "F8"      },
+    {8,  IDM_SHOW_REPORT,      TBSTATE_ENABLED, TBSTYLE_BUTTON, "REPORT",           "F8"      },
     {0,  0,                    TBSTATE_ENABLED, TBSTYLE_SEP,    NULL,                NULL      },
-    {9,  IDM_CFG_GUI_SETTINGS, TBSTATE_ENABLED, TBSTYLE_BUTTON, L"OPTIONS",          "F10"     },
+    {9,  IDM_CFG_GUI_SETTINGS, TBSTATE_ENABLED, TBSTYLE_BUTTON, "OPTIONS",          "F10"     },
     {0,  0,                    TBSTATE_ENABLED, TBSTYLE_SEP,    NULL,                NULL      },
-    {10, IDM_CFG_BOOT_ENABLE,  TBSTATE_ENABLED, TBSTYLE_CHECK,  L"BOOT_TIME_SCAN",   "F11"     },
-    {11, IDM_CFG_BOOT_SCRIPT,  TBSTATE_ENABLED, TBSTYLE_BUTTON, L"BOOT_TIME_SCRIPT", "F12"     },
+    {10, IDM_CFG_BOOT_ENABLE,  TBSTATE_ENABLED, TBSTYLE_CHECK,  "BOOT_TIME_SCAN",   "F11"     },
+    {11, IDM_CFG_BOOT_SCRIPT,  TBSTATE_ENABLED, TBSTYLE_BUTTON, "BOOT_TIME_SCRIPT", "F12"     },
     {0,  0,                    TBSTATE_ENABLED, TBSTYLE_SEP,    NULL,                NULL      },
-    {12, IDM_CONTENTS,         TBSTATE_ENABLED, TBSTYLE_BUTTON, L"HELP",             "F1"      }
+    {12, IDM_CONTENTS,         TBSTATE_ENABLED, TBSTYLE_BUTTON, "HELP",             "F1"      }
 };
 
 #define N_BUTTONS (sizeof(buttons)/sizeof(struct toolbar_button))

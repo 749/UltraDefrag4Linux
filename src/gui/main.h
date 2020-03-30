@@ -125,6 +125,7 @@ typedef struct _udefrag_map {
 
 typedef struct _volume_processing_job {
     char volume_letter;
+    int dirty_volume;
     udefrag_job_type job_type;
     int termination_flag;
     udefrag_progress_info pi;
@@ -142,6 +143,8 @@ void update_status_of_all_jobs(void);
 void start_selected_jobs(udefrag_job_type job_type);
 void stop_all_jobs(void);
 void release_jobs(void);
+
+void RepairSelectedVolumes(void);
 
 int CreateMainMenu(void);
 int CreateToolbar(void);
@@ -202,12 +205,15 @@ void StopI18nFolderChangesTracking();
 
 int ShutdownOrHibernate(void);
 
-void OpenWebPage(char *page);
+void OpenWebPage(char *page, char *anchor);
 
 extern HANDLE hTaskbarIconEvent;
 extern int job_is_running;
-void SetTaskbarIconOverlay(int resource_id, wchar_t *description_key);
+void SetTaskbarIconOverlay(int resource_id, char *description_key);
 void RemoveTaskbarIconOverlay(void);
+
+#define WM_MAXIMIZE_MAIN_WINDOW  (WM_USER + 1)
+#define WM_RESIZE_MAP            (WM_USER + 1)
 
 /* common global variables */
 extern HINSTANCE hInstance;
@@ -285,9 +291,6 @@ extern int show_taskbar_icon_overlay;
 *     }
 * }
 */
-
-#define create_thread(func,param,ph) \
-        CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)func,(void *)param,0,ph)
 
 #define UNDEFINED_COORD (-10000)
 

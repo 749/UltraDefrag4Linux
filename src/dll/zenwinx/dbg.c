@@ -618,6 +618,15 @@ void winx_disable_dbg_log(void)
 }
 
 /**
+ * @brief Appends all collected debugging
+ * information to the log file.
+ */
+void winx_flush_dbg_log(void)
+{
+    flush_dbg_log(0);
+}
+
+/**
  * @internal
  * @brief Closes logging to the file.
  */

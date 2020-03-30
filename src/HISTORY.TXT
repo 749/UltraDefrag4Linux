@@ -1,5 +1,35 @@
 ﻿HISTORY
 
+  Version 5.0.5  2012-05-05
+  ------------------------------------------------------------------------------
+    - repair drives action was added to the GUI menu
+    - displaying the cluster map legend from the help menu was added
+    - cluster map scaling was forced to be more accurate
+    - GUI options verification was added
+    - a bug causing "wrong map detected" error was fixed
+    - ability to analyze, optimize and quick optimize drive from
+      Explorer context menu added
+    - relative log paths support added to both GUI and console interface
+    - support of Unicode strings added to GUI options
+    - encoding of language packs changed to UTF-8
+    - status bar MFT string removed from translations, since it is nearly
+      impossible to translate due to space issues
+    - handbook section about bug reporting reworked to include detailed steps
+    - the following translations were updated:
+
+      Hebrew, Bosanski
+
+    - Internals: make-mingw-projects.lua script added
+    - WgxCreateProcess and WgxCreateThread routines added to wgx library
+    - winx_flush_dbg_log routine added to zenwinx library
+    - udefrag_flush_dbg_log routine added to udefrag library
+    - os.setenv routine added to Lua library
+    - WgxBuildResourceTable, WgxSetText, WgxGetResourceString prototypes
+      changed as well as WGX_I18N_RESOURCE_ENTRY structure definition
+    - unsafe IncreaseGoogleAnalyticsCounterAsynch routine
+      removed from wgx library
+
+
   Version 5.0.4  2012-04-07
   ------------------------------------------------------------------------------
     - dirty volumes needing CHKDSK repair were returned

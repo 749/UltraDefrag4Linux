@@ -1,15 +1,14 @@
 -- Lua interpreter with graphical interface build options
-
 name        = "lua5.1a_gui"
 target_type = "gui"
-
-src = { "lua_gui.c" }
-rc = { "lua_gui.rc" }
 
 -- list of directories containing headers the program relies on
 includes = { "include", "lua5.1" }
 
 libs = { "msvcrt", "kernel32", "user32", "comctl32" }
 adlibs = { "$(UDEFRAG_LIB_PATH)\\lua5.1a" }
-
 umentry = "winmain"
+
+function mingw_project_rules()
+    output_dir = "../obj/lua-gui"
+end

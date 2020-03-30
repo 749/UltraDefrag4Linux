@@ -25,6 +25,10 @@ config_file_contents = [[
 --------------------------------------------------------------------------------
 -- UltraDefrag GUI Configuration file
 -- This file is written in Lua programming language http://www.lua.org/
+--
+-- To use Unicode characters in filters and other strings, edit this file
+-- in Notepad++ editor (http://www.notepad-plus-plus.org/) and save it in
+-- UTF-8 (without BOM) encoding.
 --------------------------------------------------------------------------------
 
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -135,13 +139,16 @@ dbgprint_level = "$dbgprint_level"
 -- Set log_file_path to the path and file name of the log file to be created,
 -- for normal operation set it to an empty string ("").
 -- For example:
--- log_file_path = "C:\\Windows\\UltraDefrag\\Logs\\ultradefrag.log"
+--     log_file_path = "C:\\Windows\\UltraDefrag\\Logs\\ultradefrag.log"
 --
--- Examples using environment variables:
--- a) Same as above, but uses SystemRoot (= windir) variable
---    log_file_path = os.getenv("SystemRoot") .. "\\UltraDefrag\\Logs\\ultradefrag.log"
--- b) Uses the temporary directory of the executing user
+--  Same as above, but uses relative path
+--    log_file_path = ".\\Logs\\ultradefrag.log"
+--
+-- Example using environment variable:
+--  Uses the temporary directory of the executing user
 --    log_file_path = os.getenv("TEMP") .. "\\UltraDefrag_Logs\\ultradefrag.log"
+--
+-- Unicode characters cannot be included in log file paths.
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 log_file_path = "$log_file_path"
@@ -229,6 +236,21 @@ grid_color_b = $grid_color_b
 version = $current_version
 
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- this code initializes environment for UltraDefrag, don't modify it
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+os.setenv("UD_IN_FILTER",in_filter)
+os.setenv("UD_EX_FILTER",ex_filter)
+os.setenv("UD_FILE_SIZE_THRESHOLD",file_size_threshold)
+os.setenv("UD_TIME_LIMIT",time_limit)
+os.setenv("UD_FRAGMENTS_THRESHOLD",fragments_threshold)
+os.setenv("UD_REFRESH_INTERVAL",refresh_interval)
+os.setenv("UD_DISABLE_REPORTS",disable_reports)
+os.setenv("UD_DBGPRINT_LEVEL",dbgprint_level)
+os.setenv("UD_LOG_FILE_PATH",log_file_path)
+os.setenv("UD_DRY_RUN",dry_run)
+
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- END OF FILE
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ]]
@@ -273,7 +295,7 @@ end
 -- THE MAIN CODE STARTS HERE
 -- current version of configuration file
 -- version numbers 0-99 are reserved for 5.0.x series of the program
-current_version = 5
+current_version = 7
 old_version = 0
 upgrade_needed = 1
 
@@ -307,13 +329,13 @@ grid_color_b = 0
 -- get user preferences
 path = instdir .. "\\options\\guiopts.lua"
 f = io.open(path, "r")
-if f ~= nil then
+if f then
     f:close()
     dofile(path)
 end
 
 -- if version of configuration file is greater or equal than the current one, do nothing
-if version ~= nil then
+if version then
     old_version = version
     if version >= current_version then
         upgrade_needed = 0
@@ -324,14 +346,12 @@ end
 if upgrade_needed ~= 0 then
     -- make a backup copy
     f = io.open(path, "r")
-    if f ~= nil then
+    if f then
         contents = f:read("*all")
         f:close()
         f = assert(io.open(path .. ".old", "w"))
-        if f ~= nil then
-            f:write(contents)
-            f:close()
-        end
+        f:write(contents)
+        f:close()
     end
 
     -- RULES OF UPGRADE TO THE CURRENT VERSION
@@ -340,26 +360,22 @@ if upgrade_needed ~= 0 then
         in_filter = ""
         ex_filter = "*system volume information*;*temp*;*tmp*;*recycle*;*.zip;*.7z;*.rar"
     end
-    if file_size_threshold == nil then
+    if not file_size_threshold then
         -- sizelimit has been superseded by file_size_threshold
         file_size_threshold = sizelimit
     end
 
     -- save the upgraded configuration
     f = assert(io.open(path, "w"))
-    if f ~= nil then
-        save_preferences(f)
-        f:close()
-    end
+    save_preferences(f)
+    f:close()
 
     -- save guiopts-internals.lua when needed
     if old_version == 0 then
-        if rx ~= nil then
+        if rx then
             f = assert(io.open(instdir .. "\\options\\guiopts-internals.lua", "w"))
-            if f ~= nil then
-                save_internal_preferences(f)
-                f:close()
-            end
+            save_internal_preferences(f)
+            f:close()
         end
     end
 end

@@ -1,29 +1,32 @@
 /*
-** $Id: lua.c,v 1.160 2006/06/02 15:34:00 roberto Exp $
-** Lua stand-alone interpreter
-** See Copyright Notice in lua.h
+** Simple Lua interpreter with graphical interface.
+** Based on Lua stand-alone interpreter source code.
+** See Copyright Notice in ../lua5.1/lua.h
 */
 
-/* Modified by dmitriar: __cdecl conventions were added to be compatible with win ddk. */
+/* Modified by dmitriar: interactive mode removed; MessageBox added */
+
+#include <windows.h>
 
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <commctrl.h>
 
 #define lua_c
 
-#include "lua.h"
+#include "../lua5.1/lua.h"
 
-#include "lauxlib.h"
-#include "lualib.h"
+#include "../lua5.1/lauxlib.h"
+#include "../lua5.1/lualib.h"
 
 
 static lua_State *globalL = NULL;
 
 static const char *progname = LUA_PROGNAME;
 
-
+static int silent_mode = 0;
 
 static void lstop (lua_State *L, lua_Debug *ar) {
   (void)ar;  /* unused arg. */
@@ -40,25 +43,28 @@ static void __cdecl laction (int i) {
 
 
 static void print_usage (void) {
-  fprintf(stderr,
-  "usage: %s [options] [script [args]].\n"
+  if(silent_mode) return;
+  MessageBox(0,
+  "usage: lua5.1a_gui [options] [script [args]].\n"
   "Available options are:\n"
   "  -e stat  execute string " LUA_QL("stat") "\n"
   "  -l name  require library " LUA_QL("name") "\n"
-  "  -i       enter interactive mode after executing " LUA_QL("script") "\n"
   "  -v       show version information\n"
+  "  -s       silent mode (errors not displayed on the screen\n"
   "  --       stop handling options\n"
-  "  -        execute stdin and stop handling options\n"
   ,
-  progname);
-  fflush(stderr);
+  "Lua GUI",MB_OK);
 }
 
 
 static void l_message (const char *pname, const char *msg) {
-  if (pname) fprintf(stderr, "%s: ", pname);
-  fprintf(stderr, "%s\n", msg);
-  fflush(stderr);
+  if(silent_mode) return;
+  if (!pname) pname = "Lua GUI";
+  /*
+  * MB_TOPMOST and MB_SETFOREGROUND flags are needed 
+  * for UltraDefrag GUI options verification.
+  */
+  MessageBox(0,msg,pname,MB_OK | MB_TOPMOST | MB_SETFOREGROUND);
 }
 
 
@@ -148,92 +154,6 @@ static int dolibrary (lua_State *L, const char *name) {
 }
 
 
-static const char *get_prompt (lua_State *L, int firstline) {
-  const char *p;
-  lua_getfield(L, LUA_GLOBALSINDEX, firstline ? "_PROMPT" : "_PROMPT2");
-  p = lua_tostring(L, -1);
-  if (p == NULL) p = (firstline ? LUA_PROMPT : LUA_PROMPT2);
-  lua_pop(L, 1);  /* remove global */
-  return p;
-}
-
-
-static int incomplete (lua_State *L, int status) {
-  if (status == LUA_ERRSYNTAX) {
-    size_t lmsg;
-    const char *msg = lua_tolstring(L, -1, &lmsg);
-    const char *tp = msg + lmsg - (sizeof(LUA_QL("<eof>")) - 1);
-    if (strstr(msg, LUA_QL("<eof>")) == tp) {
-      lua_pop(L, 1);
-      return 1;
-    }
-  }
-  return 0;  /* else... */
-}
-
-
-static int pushline (lua_State *L, int firstline) {
-  char buffer[LUA_MAXINPUT];
-  char *b = buffer;
-  size_t l;
-  const char *prmt = get_prompt(L, firstline);
-  if (lua_readline(L, b, prmt) == 0)
-    return 0;  /* no input */
-  l = strlen(b);
-  if (l > 0 && b[l-1] == '\n')  /* line ends with newline? */
-    b[l-1] = '\0';  /* remove it */
-  if (firstline && b[0] == '=')  /* first line starts with `=' ? */
-    lua_pushfstring(L, "return %s", b+1);  /* change it to `return' */
-  else
-    lua_pushstring(L, b);
-  lua_freeline(L, b);
-  return 1;
-}
-
-
-static int loadline (lua_State *L) {
-  int status;
-  lua_settop(L, 0);
-  if (!pushline(L, 1))
-    return -1;  /* no input */
-  for (;;) {  /* repeat until gets a complete line */
-    status = luaL_loadbuffer(L, lua_tostring(L, 1), lua_strlen(L, 1), "=stdin");
-    if (!incomplete(L, status)) break;  /* cannot try to add lines? */
-    if (!pushline(L, 0))  /* no more input? */
-      return -1;
-    lua_pushliteral(L, "\n");  /* add a new line... */
-    lua_insert(L, -2);  /* ...between the two lines */
-    lua_concat(L, 3);  /* join them */
-  }
-  lua_saveline(L, 1);
-  lua_remove(L, 1);  /* remove line */
-  return status;
-}
-
-
-static void dotty (lua_State *L) {
-  int status;
-  const char *oldprogname = progname;
-  progname = NULL;
-  while ((status = loadline(L)) != -1) {
-    if (status == 0) status = docall(L, 0, 0);
-    report(L, status);
-    if (status == 0 && lua_gettop(L) > 0) {  /* any result to print? */
-      lua_getglobal(L, "print");
-      lua_insert(L, 1);
-      if (lua_pcall(L, lua_gettop(L)-1, 0, 0) != 0)
-        l_message(progname, lua_pushfstring(L,
-                               "error calling " LUA_QL("print") " (%s)",
-                               lua_tostring(L, -1)));
-    }
-  }
-  lua_settop(L, 0);  /* clear stack */
-  fputs("\n", stdout);
-  fflush(stdout);
-  progname = oldprogname;
-}
-
-
 static int handle_script (lua_State *L, char **argv, int n) {
   int status;
   const char *fname;
@@ -253,7 +173,7 @@ static int handle_script (lua_State *L, char **argv, int n) {
 
 
 /* check that argument has no extra characters at the end */
-#define notail(x)	{if ((x)[2] != '\0') return -1;}
+#define notail(x)    {if ((x)[2] != '\0') return -1;}
 
 
 static int collectargs (char **argv, int *pi, int *pv, int *pe) {
@@ -273,6 +193,10 @@ static int collectargs (char **argv, int *pi, int *pv, int *pe) {
       case 'v':
         notail(argv[i]);
         *pv = 1;
+        break;
+      case 's':
+      case 'S':
+        notail(argv[i]);
         break;
       case 'e':
         *pe = 1;  /* go through */
@@ -359,23 +283,22 @@ static int pmain (lua_State *L) {
   if (script)
     s->status = handle_script(L, argv, script);
   if (s->status != 0) return 0;
-  if (has_i)
-    dotty(L);
-  else if (script == 0 && !has_e && !has_v) {
-    if (lua_stdin_is_tty()) {
-      print_version();
-      dotty(L);
-    }
-    else dofile(L, NULL);  /* executes stdin as a file */
-  }
   return 0;
 }
 
 
-int __cdecl main (int argc, char **argv) {
-  int status;
+int __cdecl internal_main (int argc, char **argv) {
+  int i, status;
   struct Smain s;
-  lua_State *L = lua_open();  /* create state */
+  lua_State *L = NULL;
+  
+  /* check for silent mode */
+  for(i = 0; i < argc; i++){
+      if(!strcmp(argv[i],"-s") || !strcmp(argv[i],"-S"))
+          silent_mode = 1;
+  }
+  
+  L = lua_open();  /* create state */
   if (L == NULL) {
     l_message(argv[0], "cannot create state: not enough memory");
     return EXIT_FAILURE;
@@ -388,3 +311,127 @@ int __cdecl main (int argc, char **argv) {
   return (status || s.status) ? EXIT_FAILURE : EXIT_SUCCESS;
 }
 
+/* Copyright (C) Alexander A. Telyatnikov (http://alter.org.ua/) */
+PCHAR*
+CommandLineToArgvA(
+    PCHAR CmdLine,
+    int* _argc
+    )
+{
+    PCHAR* argv;
+    PCHAR  _argv;
+    ULONG   len;
+    ULONG   argc;
+    CHAR   a;
+    ULONG   i, j;
+
+    BOOLEAN  in_QM;
+    BOOLEAN  in_TEXT;
+    BOOLEAN  in_SPACE;
+
+    len = strlen(CmdLine);
+    i = ((len+2)/2)*sizeof(PVOID) + sizeof(PVOID);
+
+    argv = (PCHAR*)GlobalAlloc(GMEM_FIXED,
+        i + (len+2)*sizeof(CHAR));
+
+    /* added by dmitriar */
+    if(!argv){
+        *_argc = 0;
+        return NULL;
+    }
+
+    _argv = (PCHAR)(((PUCHAR)argv)+i);
+
+    argc = 0;
+    argv[argc] = _argv;
+    in_QM = FALSE;
+    in_TEXT = FALSE;
+    in_SPACE = TRUE;
+    i = 0;
+    j = 0;
+
+    while( (a = CmdLine[i]) ) {
+        if(in_QM) {
+            if(a == '\"') {
+                in_QM = FALSE;
+            } else {
+                _argv[j] = a;
+                j++;
+            }
+        } else {
+            switch(a) {
+            case '\"':
+                in_QM = TRUE;
+                in_TEXT = TRUE;
+                if(in_SPACE) {
+                    argv[argc] = _argv+j;
+                    argc++;
+                }
+                in_SPACE = FALSE;
+                break;
+            case ' ':
+            case '\t':
+            case '\n':
+            case '\r':
+                if(in_TEXT) {
+                    _argv[j] = '\0';
+                    j++;
+                }
+                in_TEXT = FALSE;
+                in_SPACE = TRUE;
+                break;
+            default:
+                in_TEXT = TRUE;
+                if(in_SPACE) {
+                    argv[argc] = _argv+j;
+                    argc++;
+                }
+                _argv[j] = a;
+                j++;
+                in_SPACE = FALSE;
+                break;
+            }
+        }
+        i++;
+    }
+    _argv[j] = '\0';
+    argv[argc] = NULL;
+
+    (*_argc) = argc;
+    return argv;
+}
+
+BOOL CALLBACK EmptyDlgProc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
+{
+    switch(msg){
+    case WM_INITDIALOG:
+        /* kill our window before showing them :) */
+        (void)EndDialog(hWnd,1);
+        return FALSE;
+    case WM_CLOSE:
+        /* this code - for extraordinary cases */
+        (void)EndDialog(hWnd,1);
+        return TRUE;
+    }
+    return FALSE;
+}
+
+int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nShowCmd)
+{
+    int argc;
+    char **argv;
+    int ret;
+    
+    InitCommonControls(); /* strongly required! to be compatible with manifest */
+
+    /*
+    * To disable the sand glass on the cursor
+    * we must show a window on startup.
+    */
+    (void)DialogBox(hInst,MAKEINTRESOURCE(100),NULL,(DLGPROC)EmptyDlgProc);
+    argv = CommandLineToArgvA(GetCommandLineA(),&argc);
+    ret = internal_main(argc,argv);
+    if(argv) (void)GlobalFree(argv);
+    return ret;
+}

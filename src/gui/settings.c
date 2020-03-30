@@ -27,21 +27,6 @@
 #include "main.h"
 
 /*
-* These options have the same effect as environment 
-* variables accepted by the command line interface.
-*/
-char in_filter[32767];
-char ex_filter[32767];
-char file_size_threshold[128];
-char timelimit[256];
-int fragments_threshold;
-int refresh_interval;
-int disable_reports;
-char dbgprint_level[32] = {0};
-char log_file_path[32767] = {0};
-int dry_run;
-
-/*
 * GUI specific options
 */
 int seconds_for_shutdown_rejection = 60;
@@ -61,6 +46,8 @@ int rx = UNDEFINED_COORD;
 int ry = UNDEFINED_COORD;
 int rwidth = 0;
 int rheight = 0;
+
+int dry_run;
 
 extern RECT r_rc;
 extern int map_block_size;
@@ -82,18 +69,11 @@ int stop_track_boot_exec = 0;
 int boot_exec_tracking_stopped = 0;
 extern int boot_time_defrag_enabled;
 
+RECT map_rc = {0,0,0,0};
+
 /* options read from guiopts.lua */
 WGX_OPTION read_only_options[] = {
     /* type, value buffer size, name, value, default value */
-    {WGX_CFG_STRING,  sizeof(in_filter), "in_filter", in_filter, ""},
-    {WGX_CFG_STRING,  sizeof(ex_filter), "ex_filter", ex_filter, ""},
-    {WGX_CFG_STRING,  sizeof(file_size_threshold), "file_size_threshold", file_size_threshold, ""},
-    {WGX_CFG_INT,     0, "fragments_threshold", &fragments_threshold, 0},
-    {WGX_CFG_STRING,  sizeof(timelimit), "time_limit", timelimit, ""},
-    {WGX_CFG_INT,     0, "refresh_interval", &refresh_interval, (void *)DEFAULT_REFRESH_INTERVAL},
-    {WGX_CFG_INT,     0, "disable_reports", &disable_reports, 0},
-    {WGX_CFG_STRING,  sizeof(dbgprint_level), "dbgprint_level", dbgprint_level, ""},
-    {WGX_CFG_STRING,  sizeof(log_file_path), "log_file_path", log_file_path, ""},
     {WGX_CFG_INT,     0, "dry_run", &dry_run, 0},
     {WGX_CFG_INT,     0, "seconds_for_shutdown_rejection", &seconds_for_shutdown_rejection, (void *)60},
     {WGX_CFG_INT,     0, "map_block_size", &map_block_size, (void *)DEFAULT_MAP_BLOCK_SIZE},
@@ -141,6 +121,11 @@ WGX_OPTION internal_options[] = {
     {0,               0, NULL, NULL, NULL}
 };
 
+/**
+ * @brief Cleans up the environment
+ * by removing all the variables set
+ * by the program.
+ */
 void DeleteEnvironmentVariables(void)
 {
     (void)SetEnvironmentVariable("UD_IN_FILTER",NULL);
@@ -155,40 +140,27 @@ void DeleteEnvironmentVariables(void)
     (void)SetEnvironmentVariable("UD_DRY_RUN",NULL);
 }
 
-void SetEnvironmentVariables(void)
+/**
+ * @brief Validates GUI options
+ * by passing them through Lua
+ * interpreter.
+ */
+static void ValidateGUIOptions(void)
 {
-    char buffer[128];
+    FILE *f;
     
-    if(in_filter[0])
-        (void)SetEnvironmentVariable("UD_IN_FILTER",in_filter);
-    if(ex_filter[0])
-        (void)SetEnvironmentVariable("UD_EX_FILTER",ex_filter);
-    if(file_size_threshold[0])
-        (void)SetEnvironmentVariable("UD_FILE_SIZE_THRESHOLD",file_size_threshold);
-    if(timelimit[0])
-        (void)SetEnvironmentVariable("UD_TIME_LIMIT",timelimit);
-    if(fragments_threshold){
-        (void)sprintf(buffer,"%i",fragments_threshold);
-        (void)SetEnvironmentVariable("UD_FRAGMENTS_THRESHOLD",buffer);
-    }
-    if(refresh_interval){
-        (void)sprintf(buffer,"%i",refresh_interval);
-        (void)SetEnvironmentVariable("UD_REFRESH_INTERVAL",buffer);
-    }
-    (void)sprintf(buffer,"%i",disable_reports);
-    (void)SetEnvironmentVariable("UD_DISABLE_REPORTS",buffer);
-    if(dbgprint_level[0])
-        (void)SetEnvironmentVariable("UD_DBGPRINT_LEVEL",dbgprint_level);
-    if(log_file_path[0]){
-        (void)SetEnvironmentVariable("UD_LOG_FILE_PATH",log_file_path);
-        (void)udefrag_set_log_file_path();
-    }
-    if(dry_run)
-        (void)SetEnvironmentVariable("UD_DRY_RUN","1");
+    /* check file existence */
+    f = fopen(".\\options\\guiopts.lua","r");
+    if(f) fclose(f);
+    else return;
+
+    /* run Lua interpreter */
+    (void)WgxCreateProcess(".\\lua5.1a_gui.exe", ".\\options\\guiopts.lua");
 }
 
 void GetPrefs(void)
 {
+    ValidateGUIOptions();
     WgxGetOptions(".\\options\\guiopts.lua",read_only_options);
     WgxGetOptions(".\\options\\guiopts-internals.lua",internal_options);
     
@@ -204,8 +176,7 @@ void GetPrefs(void)
     if(grid_line_width < 0)
         grid_line_width = DEFAULT_GRID_LINE_WIDTH;
 
-    DeleteEnvironmentVariables();
-    SetEnvironmentVariables();
+    (void)udefrag_set_log_file_path();
 }
 
 void SavePrefsCallback(char *error)
@@ -257,6 +228,8 @@ DWORD WINAPI PrefsChangesTrackingProc(LPVOID lpParameter)
     int s_job_flags;
     int cw[sizeof(user_defined_column_widths) / sizeof(int)];
     int s_list_height;
+    int s_show_taskbar_icon_overlay;
+    ULONGLONG counter = 0;
     
     h = FindFirstChangeNotification(".\\options",
             FALSE,FILE_NOTIFY_CHANGE_LAST_WRITE);
@@ -269,53 +242,91 @@ DWORD WINAPI PrefsChangesTrackingProc(LPVOID lpParameter)
     while(!stop_track_changes){
         status = WaitForSingleObject(h,100);
         if(status == WAIT_OBJECT_0){
-            /* synchronize preferences reload with map redraw */
-            if(WaitForSingleObject(hMapEvent,INFINITE) != WAIT_OBJECT_0){
-                WgxDbgPrintLastError("PrefsChangesTrackingProc: wait on hMapEvent failed");
+            if(counter % 2 == 0){
+                /*
+                * Do nothing, since
+                * "If a change occurs after a call 
+                * to FindFirstChangeNotification but
+                * before a call to FindNextChangeNotification,
+                * the operating system records the change.
+                * When FindNextChangeNotification is executed,
+                * the recorded change immediately satisfies 
+                * a wait for the change notification." (MSDN)
+                * And so on... it happens between
+                * FindNextChangeNotification calls too.
+                *
+                * However, everything mentioned above is not true
+                * when the program modifies the file itself.
+                */
             } else {
-                /* save state */
-                memcpy(&rc,&r_rc,sizeof(RECT));
-                s_maximized = maximized_window;
-                s_init_maximized = init_maximized_window;
-                s_skip_removable = skip_removable;
-                s_repeat_action = repeat_action;
-                memcpy(&cw,&user_defined_column_widths,sizeof(user_defined_column_widths));
-                s_list_height = list_height;
-                s_job_flags = job_flags;
-                
-                /* reload preferences */
-                GetPrefs();
-                
-                /* restore state */
-                memcpy(&r_rc,&rc,sizeof(RECT));
-                maximized_window = s_maximized;
-                init_maximized_window = s_init_maximized;
-                skip_removable = s_skip_removable;
-                repeat_action = s_repeat_action;
-                memcpy(&user_defined_column_widths,&cw,sizeof(user_defined_column_widths));
-                list_height = s_list_height;
-                job_flags = s_job_flags;
-                
-                SetEvent(hMapEvent);
-
-                if(dry_run == 0){
-                    if(portable_mode) SetWindowText(hWindow,VERSIONINTITLE_PORTABLE);
-                    else SetWindowText(hWindow,VERSIONINTITLE);
+                /* synchronize preferences reload with map redraw */
+                if(WaitForSingleObject(hMapEvent,INFINITE) != WAIT_OBJECT_0){
+                    WgxDbgPrintLastError("PrefsChangesTrackingProc: wait on hMapEvent failed");
                 } else {
-                    if(portable_mode) SetWindowText(hWindow,VERSIONINTITLE_PORTABLE " (dry run)");
-                    else SetWindowText(hWindow,VERSIONINTITLE " (dry run)");
-                }
+                    /* save state */
+                    memcpy(&rc,&r_rc,sizeof(RECT));
+                    s_maximized = maximized_window;
+                    s_init_maximized = init_maximized_window;
+                    s_skip_removable = skip_removable;
+                    s_repeat_action = repeat_action;
+                    memcpy(&cw,&user_defined_column_widths,sizeof(user_defined_column_widths));
+                    s_list_height = list_height;
+                    s_job_flags = job_flags;
+                    s_show_taskbar_icon_overlay = show_taskbar_icon_overlay;
+                    
+                    /* reload preferences */
+                    GetPrefs();
+                    
+                    /* restore state */
+                    memcpy(&r_rc,&rc,sizeof(RECT));
+                    maximized_window = s_maximized;
+                    init_maximized_window = s_init_maximized;
+                    skip_removable = s_skip_removable;
+                    repeat_action = s_repeat_action;
+                    memcpy(&user_defined_column_widths,&cw,sizeof(user_defined_column_widths));
+                    list_height = s_list_height;
+                    job_flags = s_job_flags;
+                    
+                    SetEvent(hMapEvent);
+    
+                    if(dry_run == 0){
+                        if(portable_mode) SetWindowText(hWindow,VERSIONINTITLE_PORTABLE);
+                        else SetWindowText(hWindow,VERSIONINTITLE);
+                    } else {
+                        if(portable_mode) SetWindowText(hWindow,VERSIONINTITLE_PORTABLE " (dry run)");
+                        else SetWindowText(hWindow,VERSIONINTITLE " (dry run)");
+                    }
+    
+                    /* if block size or grid line width changed since last redraw, resize map */
+                    if(map_block_size != last_block_size  || grid_line_width != last_grid_width){
+                        /* ResizeMap is not safe to be called from threads */
+                        map_rc.left = last_x;
+                        map_rc.top = last_y;
+                        map_rc.right = last_width;
+                        map_rc.bottom = last_height;
+                        PostMessage(hMap,WM_RESIZE_MAP,0,(LPARAM)&map_rc);
+                        InvalidateRect(hMap,NULL,TRUE);
+                        UpdateWindow(hMap);
+                    } else {
+                        /* redraw map if grid color changed */
+                        RedrawMap(current_job,0);
+                    }
 
-                /* if block size or grid line width changed since last redraw, resize map */
-                if(map_block_size != last_block_size  || grid_line_width != last_grid_width){
-                    ResizeMap(last_x,last_y,last_width,last_height);
-                    InvalidateRect(hMap,NULL,TRUE);
-                    UpdateWindow(hMap);
-                } else {
-                    /* redraw map if grid color changed */
-                    RedrawMap(current_job,0);
+                    /* handle show_taskbar_icon_overlay option adjustment */
+                    if(WaitForSingleObject(hTaskbarIconEvent,INFINITE) != WAIT_OBJECT_0){
+                        WgxDbgPrintLastError("PrefsChangesTrackingProc: wait on hTaskbarIconEvent failed");
+                    } else {
+                        if(show_taskbar_icon_overlay != s_show_taskbar_icon_overlay){
+                            if(show_taskbar_icon_overlay && job_is_running)
+                                SetTaskbarIconOverlay(IDI_BUSY,"JOB_IS_RUNNING");
+                            else
+                                RemoveTaskbarIconOverlay();
+                        }
+                        SetEvent(hTaskbarIconEvent);
+                    }
                 }
             }
+            counter ++;
             /* wait for the next notification */
             if(!FindNextChangeNotification(h)){
                 WgxDbgPrintLastError("PrefsChangesTrackingProc: FindNextChangeNotification failed");
@@ -335,15 +346,9 @@ DWORD WINAPI PrefsChangesTrackingProc(LPVOID lpParameter)
  */
 void StartPrefsChangesTracking()
 {
-    HANDLE h;
-    DWORD id;
-    
-    h = create_thread(PrefsChangesTrackingProc,NULL,&id);
-    if(h == NULL){
+    if(!WgxCreateThread(PrefsChangesTrackingProc,NULL)){
         WgxDbgPrintLastError("Cannot create thread for guiopts.lua changes tracking");
         changes_tracking_stopped = 1;
-    } else {
-        CloseHandle(h);
     }
 }
 
@@ -484,16 +489,10 @@ done:
  */
 void StartBootExecChangesTracking()
 {
-    HANDLE h;
-    DWORD id;
-
     if(btd_installed){
-        h = create_thread(BootExecTrackingProc,NULL,&id);
-        if(h == NULL){
+        if(!WgxCreateThread(BootExecTrackingProc,NULL)){
             WgxDbgPrintLastError("Cannot create thread for BootExecute registry value changes tracking");
             boot_exec_tracking_stopped = 1;
-        } else {
-            CloseHandle(h);
         }
     } else {
         boot_exec_tracking_stopped = 1;

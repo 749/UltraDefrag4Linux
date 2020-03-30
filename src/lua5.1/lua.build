@@ -1,0 +1,14 @@
+-- Lua 5.1 DLL build options
+name        = "lua5.1a"
+target_type = "dll"
+nativedll   = 0
+
+-- list of directories containing headers the library relies on
+includes = { "include", "lua5.1" }
+
+libs = { "msvcrt", "kernel32", "shell32" }
+baseaddr = "0x10000000"
+
+function mingw_project_rules()
+    output_dir = "../obj/lua5.1"
+end

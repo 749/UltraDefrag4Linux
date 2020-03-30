@@ -143,11 +143,14 @@ Var AtLeastXP
     ${DisableX64FSRedirection}
 
     DetailPrint "Installing core files..."
+    SetOutPath "$SYSDIR"
+        File "lua5.1a.dll"
+
     SetOutPath "$INSTDIR"
         File "${ROOTDIR}\src\LICENSE.TXT"
         File "${ROOTDIR}\src\CREDITS.TXT"
         File "${ROOTDIR}\src\HISTORY.TXT"
-        File "${ROOTDIR}\src\README.TXT"
+        File "README.TXT"
 
         File "lua5.1a.exe"
         File "lua5.1a_gui.exe"
@@ -155,31 +158,32 @@ Var AtLeastXP
     SetOutPath "$INSTDIR\scripts"
         File "${ROOTDIR}\src\scripts\udreportcnv.lua"
         File "${ROOTDIR}\src\scripts\udsorting.js"
+        File "${ROOTDIR}\src\scripts\upgrade-rptopts.lua"
 
-    ; A. install default CSS for file fragmentation reports
-        ${If} ${FileExists} "$INSTDIR\scripts\udreport.css"
-            ${Unless} ${FileExists} "$INSTDIR\scripts\udreport.css.old"
-                ; ensure that user's choice will not be lost
-                Rename "$INSTDIR\scripts\udreport.css" "$INSTDIR\scripts\udreport.css.old"
-            ${EndUnless}
-        ${EndIf}
-        File "${ROOTDIR}\src\scripts\udreport.css"
+    DetailPrint "Upgrade report options..."
+    ; ensure that target directory exists
+    CreateDirectory "$INSTDIR\options"
+    ${If} ${Silent}
+        ExecWait '"$INSTDIR\lua5.1a_gui.exe" -s "$INSTDIR\scripts\upgrade-rptopts.lua" "$INSTDIR"'
+    ${Else}
+        ExecWait '"$INSTDIR\lua5.1a_gui.exe" "$INSTDIR\scripts\upgrade-rptopts.lua" "$INSTDIR"'
+    ${EndIf}
+    ; get rid of obsolete files
+    Delete "$INSTDIR\options\udreportopts-custom.lua"
+
+    ; install default CSS for file fragmentation reports
+    ${If} ${FileExists} "$INSTDIR\scripts\udreport.css"
+        ${Unless} ${FileExists} "$INSTDIR\scripts\udreport.css.old"
+            ; ensure that user's choice will not be lost
+            Rename "$INSTDIR\scripts\udreport.css" "$INSTDIR\scripts\udreport.css.old"
+        ${EndUnless}
+    ${EndIf}
+    File "${ROOTDIR}\src\scripts\udreport.css"
         
-    ; B. install default report options
-    SetOutPath "$INSTDIR\options"
-        ${If} ${FileExists} "$INSTDIR\options\udreportopts.lua"
-            ${Unless} ${FileExists} "$INSTDIR\options\udreportopts.lua.old"
-                ; ensure that user's choice will not be lost
-                Rename "$INSTDIR\options\udreportopts.lua" "$INSTDIR\options\udreportopts.lua.old"
-            ${EndUnless}
-        ${EndIf}
-        File "${ROOTDIR}\src\scripts\udreportopts.lua"
-
     SetOutPath "$SYSDIR"
         File "zenwinx.dll"
         File "udefrag.dll"
         File "wgx.dll"
-        File "lua5.1a.dll"
         File /oname=hibernate4win.exe "hibernate.exe"
         File "${ROOTDIR}\src\installer\ud-help.cmd"
 
@@ -533,6 +537,12 @@ Var AtLeastXP
     Push $5
     Push $6
     Push $7
+    Push $8
+    Push $9
+    Push $R0
+    Push $R1
+    Push $R2
+    Push $R3
 
     StrCpy $0 "$\"$SYSDIR\udefrag.exe$\" --shellex $\"%1$\""
     StrCpy $1 "$INSTDIR\shellex.ico"
@@ -542,14 +552,29 @@ Var AtLeastXP
     StrCpy $5 "$INSTDIR\shellex-folder.ico"
     StrCpy $6 "[--- &Defragment folder itself ---]"
     StrCpy $7 "[--- &Defragment root folder itself ---]"
+    StrCpy $8 "[--- &Analyze drive with UltraDefrag ---]"
+    StrCpy $9 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -a $\"%1$\""
+    StrCpy $R0 "[--- &Optimize drive with UltraDefrag ---]"
+    StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -o $\"%1$\""
+    StrCpy $R2 "[--- &Quickly optimize drive with UltraDefrag ---]"
+    StrCpy $R3 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -q $\"%1$\""
 
     ${If} $AtLeastXP == "1"
-        WriteRegStr HKCR "Drive\shell\udefrag"                ""     $2
-        WriteRegStr HKCR "Drive\shell\udefrag"                "Icon" $1
-        WriteRegStr HKCR "Drive\shell\udefrag\command"        ""     $3
-        WriteRegStr HKCR "Drive\shell\udefrag-folder"         ""     $7
-        WriteRegStr HKCR "Drive\shell\udefrag-folder"         "Icon" $5
-        WriteRegStr HKCR "Drive\shell\udefrag-folder\command" ""     $4
+        WriteRegStr HKCR "Drive\shell\udefrag"                         ""     $2
+        WriteRegStr HKCR "Drive\shell\udefrag"                         "Icon" $1
+        WriteRegStr HKCR "Drive\shell\udefrag\command"                 ""     $3
+        WriteRegStr HKCR "Drive\shell\udefrag-folder"                  ""     $7
+        WriteRegStr HKCR "Drive\shell\udefrag-folder"                  "Icon" $5
+        WriteRegStr HKCR "Drive\shell\udefrag-folder\command"          ""     $4
+        WriteRegStr HKCR "Drive\shell\udefrag-drive-analyze"           ""     $8
+        WriteRegStr HKCR "Drive\shell\udefrag-drive-analyze"           "Icon" $1
+        WriteRegStr HKCR "Drive\shell\udefrag-drive-analyze\command"   ""     $9
+        WriteRegStr HKCR "Drive\shell\udefrag-drive-optimize"          ""     $R0
+        WriteRegStr HKCR "Drive\shell\udefrag-drive-optimize"          "Icon" $1
+        WriteRegStr HKCR "Drive\shell\udefrag-drive-optimize\command"  ""     $R1
+        WriteRegStr HKCR "Drive\shell\udefrag-drive-qoptimize"         ""     $R2
+        WriteRegStr HKCR "Drive\shell\udefrag-drive-qoptimize"         "Icon" $1
+        WriteRegStr HKCR "Drive\shell\udefrag-drive-qoptimize\command" ""     $R3
     ${Else}
         DeleteRegKey HKCR "Drive\shell\udefrag"
     ${EndIf}
@@ -565,6 +590,12 @@ Var AtLeastXP
     WriteRegStr HKCR "*\shell\udefrag"         "Icon" $1
     WriteRegStr HKCR "*\shell\udefrag\command" ""     $0
 
+    Pop $R3
+    Pop $R2
+    Pop $R1
+    Pop $R0
+    Pop $9
+    Pop $8
     Pop $7
     Pop $6
     Pop $5
@@ -586,11 +617,15 @@ Var AtLeastXP
 
     ${DisableX64FSRedirection}
 
-    Delete "$INSTDIR\shellex.ico"
-
     DetailPrint "Removing the context menu handler..."
+    Delete "$INSTDIR\shellex.ico"
+    Delete "$INSTDIR\shellex-folder.ico"
+
     DeleteRegKey HKCR "Drive\shell\udefrag"
     DeleteRegKey HKCR "Drive\shell\udefrag-folder"
+    DeleteRegKey HKCR "Drive\shell\udefrag-drive-analyze"
+    DeleteRegKey HKCR "Drive\shell\udefrag-drive-optimize"
+    DeleteRegKey HKCR "Drive\shell\udefrag-drive-qoptimize"
     DeleteRegKey HKCR "Folder\shell\udefrag"
     DeleteRegKey HKCR "Folder\shell\udefrag-folder"
     DeleteRegKey HKCR "*\shell\udefrag"
@@ -794,6 +829,7 @@ Var AtLeastXP
     Delete "$INSTDIR\ud_i18n.dll"
     Delete "$INSTDIR\wgx.dll"
     Delete "$INSTDIR\lua5.1a.dll"
+    Delete "$INSTDIR\repair-drives.cmd"
 
     Delete "$INSTDIR\udefrag-scheduler.exe"
     Delete "$INSTDIR\*.lng"

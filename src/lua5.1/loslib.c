@@ -5,9 +5,8 @@
 */
 
 /*
-* os.shellexec call has been added
-* by Dmitri Arkhangelski (2008) especially
-* for UltraDefrag report converter.
+* os.setenv and os.shellexec calls has been
+* added by Dmitri Arkhangelski (2008, 2012).
 */
 
 #include <windows.h>
@@ -53,22 +52,156 @@ static int os_execute (lua_State *L) {
   return 1;
 }
 
+/* converts UTF-8 string to UTF-16 string, returns also Win32 error */
+static wchar_t *convert_to_utf16(const char *utf8_string,int *error) {
+  int length = strlen(utf8_string);
+  wchar_t *utf16_string = malloc((length + 1) * 2);
+  if(utf16_string == NULL){
+    *error = ERROR_NOT_ENOUGH_MEMORY;
+    return NULL;
+  }
+  if(!MultiByteToWideChar(CP_UTF8,0,utf8_string,-1,utf16_string,length + 1)){
+    *error = GetLastError();
+    free(utf16_string);
+    return NULL;
+  }
+  return utf16_string;
+}
+
+static int os_setenv (lua_State *L) {
+  const char *name = luaL_checkstring(L, 1);
+  const char *value;
+  int error, length, result, en;
+  wchar_t *utf16_value;
+  wchar_t *buffer;
+  
+  if(name[0] == 0){
+    /* nothing to do */
+    lua_pushboolean(L, 1);
+    return 1;
+  }
+
+  if(lua_isnoneornil(L, 2)){
+    value = "";
+  } else {
+    value = luaL_checkstring(L, 2);
+  }
+  utf16_value = convert_to_utf16(value,&error);
+  if(utf16_value == NULL){
+    if(error == ERROR_COMMITMENT_LIMIT || error == ERROR_NOT_ENOUGH_MEMORY){
+      return luaL_error(L, "unable to convert %s to UTF-16: not enough memory",value);
+    } else {
+      return luaL_error(L, "unable to convert %s to UTF-16: error code = 0x%x",value,error);
+    }
+  }
+
+  length = strlen(name) + 1 + wcslen(utf16_value) + 1;
+  buffer = malloc(length * sizeof(wchar_t));
+  if(buffer == NULL){
+    free(utf16_value);
+    return luaL_error(L, "not enough memory");
+  }
+  _snwprintf(buffer,length,L"%hs=%ws",name,utf16_value);
+  buffer[length - 1] = 0;
+
+  result = _wputenv(buffer);
+  en = errno;
+  free(utf16_value);
+  free(buffer);
+  if(result < 0){
+    return luaL_error(L, strerror(en));
+  }
+  lua_pushboolean(L, 1);
+  return 1;
+}
+
 static int os_shellexec (lua_State *L) {
+  int error;
+  char *error_description;
+  const char *path;
+  const char *action;
   HINSTANCE hShell = LoadLibrary("shell32.dll");
   if(!hShell){
-	  lua_pushinteger(L, 0);
-	  return 1;
-  }
-  func_ShellExecuteA = (void *)GetProcAddress(hShell,"ShellExecuteA");
-  if(!func_ShellExecuteA){
-	  lua_pushinteger(L, 0);
-	  return 1;
+    error = GetLastError();
+    lua_pushinteger(L, 0);
+    if(error == ERROR_COMMITMENT_LIMIT || error == ERROR_NOT_ENOUGH_MEMORY){
+      lua_pushstring(L, "unable to load shell32.dll: not enough memory");
+    } else {
+      lua_pushfstring(L, "unable to load shell32.dll: error code = 0x%x",error);
+    }
+    return 2;
   }
   /* get function address dynamically to reduce lua.dll loading time */
-  lua_pushinteger(L, (int)(LONG_PTR)func_ShellExecuteA(NULL,
-		luaL_checkstring(L, 2),
-		luaL_checkstring(L, 1),
-		NULL,NULL,SW_SHOW));
+  func_ShellExecuteA = (void *)GetProcAddress(hShell,"ShellExecuteA");
+  if(!func_ShellExecuteA){
+    error = GetLastError();
+    lua_pushinteger(L, 0);
+    if(error == ERROR_COMMITMENT_LIMIT || error == ERROR_NOT_ENOUGH_MEMORY){
+      lua_pushstring(L, "unable to find ShellExecute: not enough memory");
+    } else {
+      lua_pushfstring(L, "unable to find ShellExecute: error code = 0x%x",error);
+    }
+    return 2;
+  }
+  path = luaL_checkstring(L, 1);
+  action = luaL_checkstring(L, 2);
+  error = (int)(LONG_PTR)func_ShellExecuteA(NULL,
+    action,path,NULL,NULL,SW_SHOW);
+  lua_pushinteger(L, error);
+  switch(error){
+  case 0:
+    error_description = "out of memory or resources";
+    break;
+  case ERROR_FILE_NOT_FOUND:
+  /*case SE_ERR_FNF:*/
+    error_description = "file not found";
+    break;
+  case ERROR_PATH_NOT_FOUND:
+  /*case SE_ERR_PNF:*/
+    error_description = "path not found";
+    break;
+  case ERROR_BAD_FORMAT:
+    error_description = "invalid .exe file";
+    break;
+  case SE_ERR_ACCESSDENIED:
+    error_description = "access denied";
+    break;
+  case SE_ERR_ASSOCINCOMPLETE:
+    error_description = "incomplete or invalid file name association";
+    break;
+  case SE_ERR_DDEBUSY:
+    error_description = "DDE transaction not completed because other transactions were being processed";
+    break;
+  case SE_ERR_DDEFAIL:
+    error_description = "DDE transaction failed";
+    break;
+  case SE_ERR_DDETIMEOUT:
+    error_description = "DDE transaction not completed because request timed out";
+    break;
+  case SE_ERR_DLLNOTFOUND:
+    error_description = "library not found";
+    break;
+  case SE_ERR_NOASSOC:
+    error_description = "no application associated with file name extension "
+                        "or you attempt to print a file that is not printable";
+    break;
+  case SE_ERR_OOM:
+    error_description = "not enough memory";
+    break;
+  case SE_ERR_SHARE:
+    error_description = "sharing violation";
+    break;
+  default:
+    error_description = NULL;
+  }
+  if(error <= 32){
+    if(error_description){
+      lua_pushfstring(L, "unable to %s %s: %s",action,path,error_description);
+    } else {
+      lua_pushfstring(L, "unable to %s %s: error code = 0x%x",action,path,error);
+    }
+    return 2;
+  }
   return 1;
 }
 
@@ -261,6 +394,7 @@ static const luaL_Reg syslib[] = {
   {"setlocale", os_setlocale},
   {"time",      os_time},
   {"tmpname",   os_tmpname},
+  {"setenv",    os_setenv},
   {"shellexec", os_shellexec},
   {NULL, NULL}
 };

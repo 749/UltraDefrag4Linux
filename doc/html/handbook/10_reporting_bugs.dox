@@ -12,75 +12,65 @@
 /**
  * @page ReportingBugs Reporting Bugs
  *
- * If you have encountered a bug please submit your report via the
+ * If you have encountered a bug please submit your report via our
  * <a href="http://sourceforge.net/tracker/?atid=969870&group_id=199532&func=browse">bug tracker</a>.
- * Additional debugging information is always very appreciated.
- * <br/><br/>
+ * Additional debugging information is always much appreciated.\n\n
  *
- * <h2>How to collect debugging information</h2>
- * @latexonly
- * \begin{Indent}
- * @endlatexonly
- * @par Create screen-shots
- * This is highly recommended for reporting display related problems.<br/>
- * In addition they help to visualize the current state of your disk.
+ * <h2>Collecting debugging information to report problems using the graphical interface</h2>
+ * -# Download the <a href="http://technet.microsoft.com/en-us/sysinternals/bb896647.aspx">DbgView</a> program.
+ *    The latest version of DbgView cannot be used on NT 4.0, check
+ *    <a href="http://doc.sch130.nsc.ru/www.sysinternals.com/ntw2k/freeware/debugview.shtml">this page</a>
+ *    for an earlier version.
+ * -# Download and install <a href="http://www.gen.hardcopy.de/">Hardcopy</a> as a free utility to easily
+ *    create and save screenshots.
+ *    You can use the native Windows screen capture capability using the <b>[Alt]+[Print Screen]</b>
+ *    keyboard shortcut and saving the image with <b>Paint</b> too.
+ *    Starting with Windows 7 the <b>Snipping Tool</b> is shipping with Windows, which is similar to Hardcopy
+ *    mentioned above.
+ * -# Launch <b>UltraDefrag</b>
+ *    -# Click the wrench icon on the toolbar. This should open a text editor with the
+ *       settings file loaded.
+ *    -# Search for the line <b>dbgprint_level = ""</b> and change it to <b>dbgprint_level = "DETAILED"</b>.
+ *    -# Search for the line <b>log_file_path = ""</b> and change it to <b>log_file_path = ".\\Logs\\ultradefrag.log"</b>.
+ *    -# Save the settings file and close the text editor.
+ * -# End <b>UltraDefrag</b> to enable the debugging settings.
+ * -# Launch the <b>DbgView</b> utility and enable the <b>Capture Win32</b> option from the <b>Capture</b> menu.
+ *    On Vista and above make sure to run the utility as the Administrator user by right-clicking on it and selecting
+ *    <b>Run as Administrator</b>.
+ * -# Launch <b>UltraDefrag</b> and perform the action you have problems with.
+ *    You may just use the analysis to collect common debugging information too.
+ * -# End <b>UltraDefrag</b> to create the debugging log file.
+ * -# Open an Explorer window and open the folder <b>\%SystemRoot\%\\UltraDefrag\\Logs</b> where the
+ *    <b>ultradefrag.log</b> file is located.
+ * -# Save the log created by the <b>DbgView</b> utility through the file menu entry <b>Save as ...</b>.
+ * -# Save any screenshot you have created as a PNG image, <b>do not include them in an Office document</b>.
+ * -# Create a @ref create_bug_report_package "bug report package" and attach it to the bug tracker artifact.
  *
- * @par Enable debugging output
- * Use the <b>dbgprint_level</b> setting or the <b>UD_DBGPRINT_LEVEL</b> environment variable and set it to <b>DETAILED</b>
+ * <h2>Collecting debugging information to report problems using the console interface</h2>
+ * -# Launch a <b>command prompt</b>. On Vista and above make sure to run as the Administrator user
+ *    by right-clicking on it and selecting <b>Run as Administrator</b>.
+ * -# Enter <b>set UD_DBGPRINT_LEVEL=DETAILED</b> and hit return.
+ * -# Enter <b>set UD_LOG_FILE_PATH=\%SystemRoot\%\\UltraDefrag\\Logs\\udefrag.log</b> and hit return.
+ * -# Execute <b>udefrag</b> with the action you have problems with.
+ *    You may just use the analysis to collect common debugging information too.
+ * -# Open an Explorer window and open the folder <b>\%SystemRoot\%\\UltraDefrag\\Logs</b> where the
+ *    <b>udefrag.log</b> file is located.
+ * -# Create a @ref create_bug_report_package "bug report package" and attach it to the tracker artifact.
  *
- * @par Collect debugging output
- * There are two ways:<br/>
- * - Using the <a href="http://technet.microsoft.com/en-us/sysinternals/bb896647.aspx">DbgView</a> program<br/>
- * - Using the <b>log_file_path</b> setting or the <b>UD_LOG_FILE_PATH</b> environment variable
- * @latexonly
- * \end{Indent}
- * @endlatexonly
- * 
- * <h2>How to create screen-shots</h2>
- * @latexonly
- * \begin{Indent}
- * @endlatexonly
- * @par Taking a screen-shot
- * Hit <b>[Alt]+[Print Screen]</b> to save an image of the currently active window to the clipboard.
- * You can use your favorite screen-capture tool too, a free one is <a href="http://www.gen.hardcopy.de/">Hardcopy</a>.
- *
- * @par Create a PNG image file
- * It is recommended to <b>not</b> paste the image from the clipboard into an Office document,
- * but to create a PNG image of it by pasting into <b>Paint</b> or any other drawing program.<br/>
- * If you use Hardcopy you can save it directly.
- * @latexonly
- * \end{Indent}
- * @endlatexonly
- * 
- * <h2>How to enable debugging</h2>
- * @latexonly
- * \begin{Indent}
- * @endlatexonly
- * @par Debugging the GUI
- * The <b>dbgprint_level</b> and <b>log_file_path</b> settings are contained in the options file,
- * which you can access via the wrench icon of the tool-bar or the settings menu.
- *
- * @par Debugging the console utility
- * Set the <b>UD_DBGPRINT_LEVEL</b> and <b>UD_LOG_FILE_PATH</b> environment variables before
- * you execute the udefrag utility in the command prompt.
- *
- * @par Debugging the boot time utility
- * Set the <b>UD_DBGPRINT_LEVEL</b> and <b>UD_LOG_FILE_PATH</b> variables before
- * you execute the udefrag command in the boot time script.<br/>
- * The log file <b>\%windir\%\\UltraDefrag\\Logs\\boot-startup-phase.log</b> is used internally
- * to collect debugging information before the boot time script is executed.
- * @latexonly
- * \end{Indent}
- * @endlatexonly
- * 
- * <h2>Using the DbgView program</h2>
- * Don't forget to check the <b>Capture Win32</b> item of the Capture menu of the DbgView program.
- * Check one of the <b>Log to file</b> items of the <b>File</b> menu to create a log file you can send us.
- *
- * Note that DbgView cannot capture information from the user mode driver during the Windows boot process.
- * This is a well known DbgView limitation. The latest version of DbgView cannot be used on NT 4.0 either,
- * check <a href="http://doc.sch130.nsc.ru/www.sysinternals.com/ntw2k/freeware/debugview.shtml">this page</a> for an earlier version.
- * <br/><br/>
+ * <h2>Collecting debugging information to report problems using the boot time interface</h2>
+ * -# Launch a <b>command prompt</b>, on Vista and above make sure to run as the Administrator user
+ *    by right-clicking on it and selecting <b>Run as Administrator</b>.
+ * -# Execute the <b>boot-config</b> utility to open the boot time script in the text editor.
+ *    -# Add the line <b>set UD_DBGPRINT_LEVEL=DETAILED</b> to the script.
+ *    -# Add the line <b>set UD_LOG_FILE_PATH=\%SystemRoot\%\\UltraDefrag\\Logs\\defrag_native.log</b> to the script.
+ *    -# Add the line <b>udefrag</b> with the action you have problems with to the script.
+ *       You may just use the analysis to collect common debugging information too.
+ *    -# Save the script and close the text editor.
+ * -# Execute the <b>boot-on</b> utility to enable boot time processing.
+ * -# Reboot the system to have the boot time processing executed.
+ * -# Open an Explorer window and open the folder <b>\%SystemRoot\%\\UltraDefrag\\Logs</b> where the
+ *    <b>defrag_native.log</b> file is located.
+ * -# Create a @ref create_bug_report_package "bug report package" and attach it to the tracker artifact.
  *
  * <h2>Disable debugging</h2>
  * For the GUI you just have to set <b>dbgprint_level</b> and <b>log_file_path</b> to an empty string.\n
@@ -88,11 +78,14 @@
  * <b>UD_DBGPRINT_LEVEL</b> and <b>UD_LOG_FILE_PATH</b> variables by adding a semicolon (;) at the beginning
  * of those lines.
  *
- * <h2>Creating a package to submit</h2>
+ * @anchor create_bug_report_package
+ * <h2>Creating a compressed archive to submit</h2>
  * It is best to ZIP your collected files into a single compressed archive, which will reduce the up- and download size immensely.
  * If you do not own a ZIP utility, check out <a href="http://sourceforge.net/projects/sevenzip/">7-zip</a>.
+ * Windows XP and above include the ability to create ZIP archives through the Explorer right-click menu <b>Send To => Compressed Folder</b>.
  *
- * Note that the Sourceforge trackers only allow uploading files of 256KB in size.
+ * @note
+ * The Sourceforge trackers only allow uploading files of 256KB in size.
  * For bigger files you may use one of the free file hosting services.
  *
  * @htmlonly

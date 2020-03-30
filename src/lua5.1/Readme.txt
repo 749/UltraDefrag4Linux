@@ -2,10 +2,34 @@
 
 RELEASE NOTES:
 
-Here are sources of a special version of Lua 5.1. With os.shellexec() call
-and a few other little improvements for Win32 environment.
+This special version of Lua includes the following extensions:
 
-The *.build files are included to produce Lua modules for three processor
+math.band(m, n)
+    Returns (m AND n).
+    
+math.bor(m, n)
+    Returns (m OR n).
+    
+math.lshift(m, n)
+    Returns m shifted left for n bits.
+
+math.rshift(m, n)
+    Returns m shifted right for n bits.
+
+os.setenv(name [, value])
+    Sets an environment variable for the current process.
+    Values in UTF-8 encoding are accepted as well as ASCII
+    strings. If value is not specified or is an empty string
+    the environment variable will be deleted.
+    If this function fails it raises an error.
+
+os.shellexec(path, action)
+    Performs an operation of a specified file. If this function
+    fails it returns an error code, which is always less than
+    or equal to 32, and a string describing the error. 
+    Read MSDN article on ShellExecute for details.
+
+The lua.build file is included to produce Lua modules for three processor
 architectures (i386, amd64 and ia64) during the automatic UltraDefrag
 build process.
 
@@ -37,4 +61,4 @@ PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
 OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
 OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

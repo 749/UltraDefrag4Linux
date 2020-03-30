@@ -351,15 +351,14 @@ static short * get_attribute_name(ATTRIBUTE *attr,mft_scan_parameters *sp)
     }
 
     /* never append $DATA attribute name */
-    if(attr_type == AttributeData || wcscmp(attr_name,L"$DATA") == 0) attr_name[0] = 0;
+    if(wcscmp(attr_name,L"$DATA") == 0) attr_name[0] = 0;
+    if(wcscmp(attr_name,L":$DATA") == 0) attr_name[0] = 0;
     
     /* do not append index allocation attribute names - required by get_directory_information */
-    if(attr_type == AttributeIndexAllocation){
-        attr_name[0] = 0;
-    } else {
-        if(wcscmp(attr_name,L"$I30") == 0) attr_name[0] = 0;
-        if(wcscmp(attr_name,L"$INDEX_ALLOCATION") == 0) attr_name[0] = 0;
-    }
+    if(wcscmp(attr_name,L"$I30") == 0) attr_name[0] = 0;
+    if(wcscmp(attr_name,L":$I30") == 0) attr_name[0] = 0;
+    if(wcscmp(attr_name,L"$INDEX_ALLOCATION") == 0) attr_name[0] = 0;
+    if(wcscmp(attr_name,L":$INDEX_ALLOCATION") == 0) attr_name[0] = 0;
     
     return attr_name;
 }

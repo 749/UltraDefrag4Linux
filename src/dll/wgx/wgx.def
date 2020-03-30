@@ -31,7 +31,6 @@ EXPORTS
     WgxSaveFont
 
     IncreaseGoogleAnalyticsCounter
-    IncreaseGoogleAnalyticsCounterAsynch
 
     WgxDbgPrint
     WgxDbgPrintLastError
@@ -42,3 +41,6 @@ EXPORTS
 
     WgxSetTaskbarIconOverlay
     WgxRemoveTaskbarIconOverlay
+    
+    WgxCreateProcess
+    WgxCreateThread

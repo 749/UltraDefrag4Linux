@@ -2,13 +2,6 @@
 name        = "udefrag"
 target_type = "console"
 
--- getopt* files are copied by the build.cmd tool to obj\console directory
--- during the build process, so they become accessible for the compiler
-src = {
-    "defrag.c", "getopt.c", "getopt1.c", "options.c", "map.c"
-}
-rc = { "defrag.rc" }
-
 -- list of directories containing headers the program relies on
 includes = { "console", "include", "lua5.1", "share", "udefrag", "wgx" }
 
@@ -17,5 +10,9 @@ adlibs = {
     "$(UDEFRAG_LIB_PATH)\\udefrag",
     "$(UDEFRAG_LIB_PATH)\\wgx"
 }
-
 umentry = "main"
+
+function mingw_project_rules()
+    output_dir = "../obj/console"
+    adsources = { "..\\share\\getopt.c", "..\\share\\getopt1.c" }
+end

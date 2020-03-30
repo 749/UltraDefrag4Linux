@@ -92,7 +92,6 @@ void validate_blockmap(winx_file_info *f)
     }
 #else
     /* a simplified version */
-    /* multiple blocks of zero VCN were detected on reparse points on 32-bit XP SP2 */
     b1 = f->disp.blockmap;
     if(b1) b2 = b1->next;
     if(b1 && b2 && b2 != b1){

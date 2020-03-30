@@ -22,10 +22,10 @@
  * <a href="http://ultradefrag.sourceforge.net/screenshots.html">View screenshots...</a>
  *
  * If the boot time defragmenter is enabled, it will run
- * at every boot. Note that you will have a chance
- * to exit immediately, just press any key when the appropriate
- * prompt is displayed. If no key is pressed during this
- * delay, the boot time script will be executed.
+ * at every boot.
+ * @note
+ * You will have a chance to exit immediately, just press any key when the appropriate
+ * prompt is displayed. If no key is pressed during this delay, the boot time script will be executed.
  *
  * You can always stop the disk analysis/defragmentation by pressing
  * the Pause/Break key on the keyboard.
@@ -195,6 +195,7 @@ TIME ... 12-04
  * <h1>Boot time script example</h1>
  * The following script is used by default:
  * @code
+ * @echo off
  * ;--------------------------------------------------------------------
  * ;                UltraDefrag Boot Time Shell Script
  * ;--------------------------------------------------------------------
@@ -203,6 +204,12 @@ TIME ... 12-04
  *
  * set UD_IN_FILTER=*windows*;*winnt*;*ntuser*;*pagefile.sys;*hiberfil.sys
  * set UD_EX_FILTER=*temp*;*tmp*;*.zip;*.7z;*.rar;*dllcache*;*ServicePackFiles*
+ *
+ * ; uncomment the following line to create debugging output
+ * ; set UD_DBGPRINT_LEVEL=DETAILED
+ *
+ * ; uncomment the following line to save debugging information to a log file
+ * ; set UD_LOG_FILE_PATH=%SystemRoot%\UltraDefrag\Logs\defrag_native.log
  *
  * udefrag c:
  *

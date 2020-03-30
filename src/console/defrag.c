@@ -167,15 +167,9 @@ DWORD WINAPI UpdateWebStatisticsThreadProc(LPVOID lpParameter)
  */
 void start_web_statistics(void)
 {
-    HANDLE h;
-    DWORD id;
-
-    h = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)UpdateWebStatisticsThreadProc,NULL,0,&id);
-    if(h == NULL){
+    if(!WgxCreateThread(UpdateWebStatisticsThreadProc,NULL)){
         WgxDbgPrintLastError("Cannot run UpdateWebStatisticsThreadProc");
         web_statistics_completed = 1;
-    } else {
-        CloseHandle(h);
     }
 }
 
@@ -732,7 +726,7 @@ static void RunScreenSaver(void)
     printf("Hello!\n");
 }
 
-/*DWORD WINAPI test_thread(LPVOID p)
+/*DWORD WINAPI test(LPVOID p)
 {
     udefrag_start_job('c',ANALYSIS_JOB,0,0,NULL,NULL,NULL);
     return 0;
@@ -741,10 +735,9 @@ static void RunScreenSaver(void)
 void test(void)
 {
     int i;
-    DWORD id;
     
     for(i = 0; i < 10; i++)
-        CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)test_thread,NULL,0,&id);
+        WgxCreateThread(test,NULL);
 }
 */
 

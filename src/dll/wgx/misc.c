@@ -24,10 +24,6 @@
  * @{
  */
 
-/*
-* We use STATUS_WAIT_0...
-* #define WIN32_NO_STATUS
-*/
 #include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>

@@ -94,20 +94,34 @@ void InitMap(void)
 LRESULT CALLBACK RectWndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
     PAINTSTRUCT ps;
+    RECT *rc;
 
-    if(iMsg == WM_ERASEBKGND)
+    switch(iMsg){
+    case WM_ERASEBKGND:
         return 1;
-    
-    if(iMsg == WM_PAINT){
+    case WM_PAINT:
         (void)BeginPaint(hWnd,&ps); /* (void)? */
         RedrawMap(current_job,0);
         EndPaint(hWnd,&ps);
+        break;
+    case WM_RESIZE_MAP:
+        /* 
+        * ResizeMap wrapper safe for calling
+        * from other threads through PostMessage.
+        */
+        rc = (RECT *)(DWORD_PTR)lParam;
+        ResizeMap(rc->left,rc->top,rc->right,rc->bottom);
+        break;
+    default:
+        break;
     }
     return WgxSafeCallWndProc(OldRectWndProc,hWnd,iMsg,wParam,lParam);
 }
 
 /**
  * @brief Resizes cluster map.
+ * @note Not safe to be called from threads, post 
+ * WM_RESIZE_MAP message to the map control instead.
  */
 void ResizeMap(int x, int y, int width, int height)
 {
@@ -261,9 +275,11 @@ void RedrawMap(volume_processing_job *job, int map_refill_required)
     HDC hdc;
     HDC hDC, hMainDC;
     HBITMAP hBitmap;
-    int i, j, k, x, ratio, color;
+    int i, j, k, ratio, color;
     int array[NUM_OF_SPACE_STATES];
     int maximum;
+    int mft_detected;
+    int used_cells = 0;
     
     if(job == NULL)
         return;
@@ -361,41 +377,60 @@ void RedrawMap(volume_processing_job *job, int map_refill_required)
                 k++;
             }
         }
-        for(; k < job->map.scaled_size; k++)
-            job->map.scaled_buffer[k] = job->map.buffer[i - 1];
+        used_cells = k;
     } else {
         /* scale down */
         ratio = job->map.size / job->map.scaled_size;
-        for(i = 0, k = 0; i < job->map.scaled_size - 1; i++){
+        if(ratio * job->map.scaled_size != job->map.size)
+            ratio ++; /* round up */
+        used_cells = job->map.size / ratio;
+        for(i = 0; i < used_cells - 1; i++){
+            /* get dominating color */
             memset(array,0,sizeof(array));
+            mft_detected = 0;
             for(j = 0; j < ratio; j++){
-                color = (int)job->map.buffer[k];
+                color = (int)job->map.buffer[i * ratio + j];
                 if(color >= 0 && color < NUM_OF_SPACE_STATES)
                     array[color] ++;
-                k++;
+                if(color == MFT_SPACE) mft_detected = 1;
             }
-            maximum = array[0], x = 0;
+            maximum = array[0], color = 0;
             for(j = 1; j < NUM_OF_SPACE_STATES; j++){
                 if(array[j] >= maximum){
-                    maximum = array[j], x = j;
+                    maximum = array[j], color = j;
                 }
             }
-            job->map.scaled_buffer[i] = (char)x;
-        }
-        memset(array,0,sizeof(array));
-        for(; k < job->map.size; k++){
-            color = (int)job->map.buffer[k];
-            if(color >= 0 && color < NUM_OF_SPACE_STATES)
-                array[color] ++;
-        }
-        maximum = array[0], x = 0;
-        for(j = 1; j < NUM_OF_SPACE_STATES; j++){
-            if(array[j] >= maximum){
-                maximum = array[j], x = j;
+            /* redraw cell */
+            if(mft_detected){
+                job->map.scaled_buffer[i] = MFT_SPACE;
+            } else {
+                job->map.scaled_buffer[i] = (char)color;
             }
         }
-        job->map.scaled_buffer[i] = (char)x;
+        /* redraw last used cell */
+        memset(array,0,sizeof(array));
+        mft_detected = 0;
+        for(j = (used_cells - 1) * ratio; j < job->map.size; j++){
+            color = (int)job->map.buffer[j];
+            if(color >= 0 && color < NUM_OF_SPACE_STATES)
+                array[color] ++;
+            if(color == MFT_SPACE) mft_detected = 1;
+        }
+        maximum = array[0], color = 0;
+        for(j = 1; j < NUM_OF_SPACE_STATES; j++){
+            if(array[j] >= maximum){
+                maximum = array[j], color = j;
+            }
+        }
+        if(mft_detected){
+            job->map.scaled_buffer[used_cells - 1] = MFT_SPACE;
+        } else {
+            job->map.scaled_buffer[used_cells - 1] = (char)color;
+        }
     }
+    /* remark unused cells */
+    for(i = used_cells; i < job->map.scaled_size; i++)
+        job->map.scaled_buffer[i] = UNUSED_MAP_SPACE;
     if(map_refill_required)
         FillScaledMap(job);
     

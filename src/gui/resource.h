@@ -95,6 +95,7 @@
 #define IDM_REPEAT_ACTION               1137
 #define IDM_IGNORE_REMOVABLE_MEDIA      1140
 #define IDM_RESCAN                      1150
+#define IDM_REPAIR                      1155
 
 #define IDM_WHEN_DONE                   1160
 #define IDM_WHEN_DONE_NONE              1161
@@ -127,6 +128,7 @@
 #define IDM_CONTENTS                    2710
 #define IDM_BEST_PRACTICE               2720
 #define IDM_FAQ                         2730
+#define IDM_CM_LEGEND                   2732
 #define IDM_CHECK_UPDATE                2735
 #define IDM_ABOUT                       2740
 

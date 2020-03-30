@@ -95,6 +95,7 @@ typedef struct _WINX_FILE {
 
 void winx_enable_dbg_log(char *path);
 void winx_disable_dbg_log(void);
+void winx_flush_dbg_log(void);
 void winx_dbg_print(char *format, ...);
 void winx_dbg_print_ex(unsigned long status,char *format, ...);
 void winx_dbg_print_header(char ch, int width, char *format, ...);

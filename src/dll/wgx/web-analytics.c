@@ -24,10 +24,6 @@
  * @{
  */
 
-/*
-* We use STATUS_WAIT_0...
-* #define WIN32_NO_STATUS
-*/
 #include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,9 +41,6 @@ typedef HRESULT (__stdcall *URLMON_PROCEDURE)(
     DWORD dwReserved,
     /*IBindStatusCallback*/ void *pBSC
 );
-
-/* forward declaration */
-DWORD WINAPI SendWebAnalyticsRequestThreadProc(LPVOID lpParameter);
 
 /**
  * @internal
@@ -107,15 +100,6 @@ fail:
 
 /**
  * @internal
- */
-DWORD WINAPI SendWebAnalyticsRequestThreadProc(LPVOID lpParameter)
-{
-    (void)SendWebAnalyticsRequest((char *)lpParameter);
-    return 0;
-}
-
-/**
- * @internal
  * @note Based on http://www.vdgraaf.info/google-analytics-without-javascript.html
  * and http://code.google.com/apis/analytics/docs/tracking/gaTrackingTroubleshooting.html
  */
@@ -127,8 +111,7 @@ static char *build_ga_request(char *hostname,char *path,char *account)
     
     ga_request = malloc(MAX_GA_REQUEST_LENGTH);
     if(ga_request == NULL){
-        WgxDbgPrint("build_ga_request: cannot allocate %u bytes of memory\n",
-            MAX_GA_REQUEST_LENGTH);
+        OutputDebugString("build_ga_request: cannot allocate memory\n");
         return NULL;
     }
     
@@ -197,6 +180,10 @@ static char *build_ga_request(char *hostname,char *path,char *account)
  *     IncreaseGoogleAnalyticsCounter("ultradefrag.sourceforge.net","/appstat/errors/winver.html","UA-15890458-1");
  * }
  * @endcode
+ *
+ * Note that the program should wait for the request
+ * completion. If the calling process will terminate
+ * before it, it will crash.
  */
 BOOL IncreaseGoogleAnalyticsCounter(char *hostname,char *path,char *account)
 {
@@ -207,36 +194,6 @@ BOOL IncreaseGoogleAnalyticsCounter(char *hostname,char *path,char *account)
         return FALSE;
     
     return SendWebAnalyticsRequest(url);
-}
-
-/**
- * @internal
- * @brief An asynchronous equivalent 
- * of IncreaseGoogleAnalyticsCounter.
- * @note Runs in a separate thread.
- * @bug This routine is not safe.
- * If the calling process terminates before
- * the request completion, the program
- * crashes.
- */
-void IncreaseGoogleAnalyticsCounterAsynch(char *hostname,char *path,char *account)
-{
-    char *url;
-    HANDLE h;
-    DWORD id;
-    
-    url = build_ga_request(hostname,path,account);
-    if(url == NULL)
-        return;
-    
-    h = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)SendWebAnalyticsRequestThreadProc,(void *)url,0,&id);
-    if(h == NULL){
-        WgxDbgPrintLastError("SendWebAnalyticsRequestAsynch: cannot create thread");
-        free(url);
-        return;
-    }
-    
-    CloseHandle(h);
 }
 
 /** @} */

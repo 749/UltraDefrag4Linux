@@ -31,17 +31,14 @@
  */
 static void ShowSingleReport(volume_processing_job *job)
 {
-    short l_path[] = L"C:\\fraglist.luar";
+    wchar_t l_path[] = L"C:\\fraglist.luar";
     char path[] = "C:\\fraglist.luar";
-    char cmd[MAX_PATH];
-    char buffer[MAX_PATH];
-    STARTUPINFO si;
-    PROCESS_INFORMATION pi;
+    char args[MAX_PATH];
     FILE *f;
 
     if(job == NULL) return;
 
-    l_path[0] = (short)job->volume_letter;
+    l_path[0] = (wchar_t)job->volume_letter;
     path[0] = job->volume_letter;
 
     if(job->job_type == NEVER_EXECUTED_JOB){
@@ -56,24 +53,12 @@ static void ShowSingleReport(volume_processing_job *job)
         return;
     }
 
-    strcpy(cmd,".\\lua5.1a_gui.exe");
-    _snprintf(buffer,MAX_PATH,".\\lua5.1a_gui.exe .\\scripts\\udreportcnv.lua \"%s\" . -v",path);
-    buffer[MAX_PATH - 1] = 0;
-
-    ZeroMemory(&si,sizeof(si));
-    si.cb = sizeof(si);
-    si.dwFlags = STARTF_USESHOWWINDOW;
-    si.wShowWindow = SW_SHOW;
-    ZeroMemory(&pi,sizeof(pi));
-
-    if(!CreateProcess(cmd,buffer,
-      NULL,NULL,FALSE,0,NULL,NULL,&si,&pi)){
+    _snprintf(args,MAX_PATH,".\\scripts\\udreportcnv.lua \"%s\" . -v",path);
+    args[MAX_PATH - 1] = 0;
+    if(!WgxCreateProcess(".\\lua5.1a_gui.exe",args)){
         WgxDisplayLastError(hWindow,MB_OK | MB_ICONHAND,
             "Cannot execute lua5.1a_gui.exe program!");
-        return;
     }
-    CloseHandle(pi.hProcess);
-    CloseHandle(pi.hThread);
 }
 
 /**

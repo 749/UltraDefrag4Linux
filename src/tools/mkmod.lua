@@ -20,9 +20,9 @@
 
 --[[
   Synopsis: lua mkmod.lua <filename>
-    If processing completes successfully, binary modules are placed in ../../bin directory;
-    *.lib or *.a files - in  ../../lib directory.
-  Note: BUILD_ENV environment variable must be set before.
+    If processing completes successfully, binary modules are placed
+    in ../../bin directory; *.lib or *.a files - in  ../../lib directory.
+  Note: BUILD_ENV environment variable must be set before the script run.
 
   Notes for C programmers: 
     1. the first element of each array has index 1.
@@ -34,20 +34,18 @@
     * kernel mode driver cannot be compiled
 
   If some library exports functions of __stdcall calling convention
-  the mingw_deffile variable should point to a separate file
-  containing names decorated by at signs and number of bytes needed
-  to pass all the parameters on a 32-bit machine.
+  a *mingw.def file must be presented; it must contain names 
+  decorated by at signs and number of bytes needed to pass all 
+  the parameters on a 32-bit machine.
 --]]
 
-name, deffile, mingw_deffile, baseaddr, nativedll, umentry = "", "", "", "", 0, ""
+nativedll = 0
 src, rc, includes, libs, adlibs = {}, {}, {}, {}, {}
+files, resources, headers, inc = {}, {}, {}, {}
 
-headers = {}
-inc = {}
-
-input_filename = ""
-target_type, target_ext, target_name = "", "", ""
-arch = ""
+-- files which names contain these patterns will be
+-- included as dependencies to MinGW makefiles
+rsrc_patterns = { "%.ico$", "%.bmp$", "%.manifest$" }
 
 -- FIXME: Only DDK compiler can compile native executable 
 -- with static zenwinx and udefrag libraries.
@@ -63,13 +61,13 @@ sdk_cmd = "nmake.exe /NOLOGO /A /f"
 -- common subroutines
 function copy(src, dst)
     if os.execute("cmd.exe /C copy /Y " .. src .. " " .. dst) ~= 0 then
-        error("Can't copy from " .. src .. " to " .. dst .. "!");
+        error("Cannot copy from " .. src .. " to " .. dst .. "!");
     end
 end
 
 function build_list_of_headers()
-    local f, i, j, dir, index, n, h
-    if includes[1] == nil then return end
+    local f, i, j, dir, n, h
+    if not includes[1] then return end
     -- include headers listed in 'headers' file,
     -- but only these locating in directories
     -- listed in 'includes' table
@@ -82,27 +80,22 @@ function build_list_of_headers()
     end
     f:close()
     if n == 0 then
-        error("the \"headers\" file seems to be empty!")
-        return
+        error("The \"headers\" file seems to be empty!")
     end
-    index = 1
     for i, dir in ipairs(includes) do
         n = 0 -- number of headers found for current directory
         for h in pairs(headers) do
             if headers[h] == dir then
-                inc[index] = h
-                index = index + 1
+                table.insert(inc,h)
                 n = n + 1
             end
         end
         if n == 0 then
-            error("no headers found in " .. dir .. "!")
+            error("No headers found in " .. dir .. "!")
             return
         end
     end
-    if inc[1] == nil then
-        error("no acceptable headers found in \"headers\" file!")
-    end
+    assert(inc[1],"No acceptable headers found in \"headers\" file!")
 end
 
 -- frontend subroutines
@@ -379,9 +372,7 @@ endef
 ]]
 
 function produce_mingw_makefile()
-    local adlibs_libs = {}
-    local adlibs_paths = {}
-    local pos, j
+    local adlibs_libs, adlibs_paths, path, lib
 
     local f = assert(io.open(".\\Makefile.mingw","w"))
 
@@ -428,20 +419,16 @@ function produce_mingw_makefile()
         f:write("-l", v, " ")
     end
 
-    j = 1
+    adlibs_libs = {}
+    adlibs_paths = {}
     for i, v in ipairs(adlibs) do
-        if string.find(v,"\\",1,true) == nil then
-            adlibs_libs[j] = v
-            adlibs_paths[j] = ""
+        i, j, path, lib = string.find(v,"^(.*)\\(.-)$")
+        if path == nil or lib == nil then
+            table.insert(adlibs_libs,v)
         else
-            pos = 0
-            repeat
-                pos = string.find(v,"\\",pos + 1,true)
-            until string.find(v,"\\",pos + 1,true) == nil
-            adlibs_libs[j] = string.sub(v,pos + 1)
-            adlibs_paths[j] = string.sub(v,0,pos - 1)
+            table.insert(adlibs_libs,lib)
+            table.insert(adlibs_paths,path)
         end
-        j = j + 1
     end
     for i, v in ipairs(adlibs_libs) do
         f:write("-l", v, " ")
@@ -502,6 +489,9 @@ function produce_mingw_makefile()
         for i, v in ipairs(inc) do
             f:write("\\\n", v, " ")
         end
+        for i, v in ipairs(resources) do
+            f:write("\\\n", v, " ")
+        end
         f:write("\n\t\$(compile_resource)\n\n")
     end
 
@@ -510,9 +500,7 @@ end
 
 -- MinGW x64 backend
 function produce_mingw_x64_makefile()
-    local adlibs_libs = {}
-    local adlibs_paths = {}
-    local pos, j
+    local adlibs_libs, adlibs_paths, path, lib
 
     local f = assert(io.open(".\\Makefile_x64.mingw","w"))
     
@@ -557,20 +545,16 @@ function produce_mingw_x64_makefile()
         f:write("-l", v, " ")
     end
 
-    j = 1
+    adlibs_libs = {}
+    adlibs_paths = {}
     for i, v in ipairs(adlibs) do
-        if string.find(v,"\\",1,true) == nil then
-            adlibs_libs[j] = v
-            adlibs_paths[j] = ""
+        i, j, path, lib = string.find(v,"^(.*)\\(.-)$")
+        if path == nil or lib == nil then
+            table.insert(adlibs_libs,v)
         else
-            pos = 0
-            repeat
-                pos = string.find(v,"\\",pos + 1,true)
-            until string.find(v,"\\",pos + 1,true) == nil
-            adlibs_libs[j] = string.sub(v,pos + 1)
-            adlibs_paths[j] = string.sub(v,0,pos - 1)
+            table.insert(adlibs_libs,lib)
+            table.insert(adlibs_paths,path)
         end
-        j = j + 1
     end
     for i, v in ipairs(adlibs_libs) do
         f:write("-l", v, " ")
@@ -627,6 +611,9 @@ function produce_mingw_x64_makefile()
         for i, v in ipairs(inc) do
             f:write("\\\n", v, " ")
         end
+        for i, v in ipairs(resources) do
+            f:write("\\\n", v, " ")
+        end
         f:write("\n\t\$(compile_resource)\n\n")
     end
 
@@ -635,16 +622,59 @@ end
 
 -- frontend
 input_filename = arg[1]
-if input_filename == nil then
-    error("Filename must be specified!")
-end
+assert(input_filename,"File name must be specified!")
 print(input_filename .. " Preparing the makefile generation...\n")
 
 dofile(input_filename)
 
-if arg[2] ~= nil then
-    if arg[2] == "static-lib" then
-        static_lib = 1
+if arg[2] == "static-lib" then
+    static_lib = 1
+end
+
+if os.execute("cmd.exe /C dir /S /B >project_files") ~= 0 then
+    error("Cannot get directory listing!")
+end
+f = assert(io.open("project_files","rt"))
+files = {}
+for line in f:lines() do
+    table.insert(files,line)
+end
+f:close()
+os.execute("cmd.exe /C del /Q project_files")
+assert(files[1],"No project files found!")
+
+-- search for .def files
+deffile, mingw_deffile = "", ""
+for i, v in ipairs(files) do
+    local i, j, def
+    i, j, def = string.find(v,"^.*\\(.-)$")
+    if not def then def = v end
+    if string.find(def,"%.def$") then
+        if string.find(def,"mingw%.def$") then
+            mingw_deffile = def
+        else
+            deffile = def
+        end
+    end
+end
+if deffile == "" then deffile = mingw_deffile end
+if mingw_deffile == "" then mingw_deffile = deffile end
+
+-- setup src, rc and resources tables
+for i, v in ipairs(files) do
+    local i, j, name, p
+    i, j, name = string.find(v,"^.*\\(.-)$")
+    if not name then name = v end
+    if string.find(name,"%.c$") then
+        table.insert(src,name)
+    elseif string.find(name,"%.rc$") then
+        table.insert(rc,name)
+    end
+    for i, p in ipairs(rsrc_patterns) do
+        if string.find(v,p) then
+            table.insert(resources,v)
+            break
+        end
     end
 end
 
@@ -665,10 +695,10 @@ if os.getenv("BUILD_ENV") == "winddk" then
     end
     print(input_filename .. " winddk build performing...\n")
     arch = "i386"
-    if os.getenv("AMD64") ~= nil then arch = "amd64" end
-    if os.getenv("IA64") ~= nil then arch = "ia64" end
+    if os.getenv("AMD64") then arch = "amd64" end
+    if os.getenv("IA64") then arch = "ia64" end
     if os.execute(ddk_cmd) ~= 0 then
-        error("Can't build the target!")
+        error("Cannot build the target!")
     end
     if static_lib == 0 then
         if arch == "i386" then
@@ -695,11 +725,11 @@ elseif os.getenv("BUILD_ENV") == "winsdk" then
         end
         print(input_filename .. " windows sdk build performing...\n")
         arch = "i386"
-        if os.getenv("AMD64") ~= nil then arch = "amd64" end
-        if os.getenv("IA64") ~= nil then arch = "ia64" end
+        if os.getenv("AMD64") then arch = "amd64" end
+        if os.getenv("IA64") then arch = "ia64" end
         sdk_cmd = sdk_cmd .. name .. ".mak"
         if os.execute(sdk_cmd) ~= 0 then
-            error("Can't build the target!")
+            error("Cannot build the target!")
         end
         if static_lib == 0 then
             if arch == "i386" then
@@ -722,7 +752,7 @@ elseif os.getenv("BUILD_ENV") == "mingw" then
     end
     print(input_filename .. " mingw build performing...\n")
     if os.execute(mingw_cmd) ~= 0 then
-        error("Can't build the target!")
+        error("Cannot build the target!")
     end
     if static_lib == 0 then
         copy(target_name,"..\\..\\bin\\")
@@ -740,7 +770,7 @@ elseif os.getenv("BUILD_ENV") == "mingw_x64" then
         end
         print(input_filename .. " mingw build performing...\n")
         if os.execute(mingw_x64_cmd) ~= 0 then
-            error("Can't build the target!")
+            error("Cannot build the target!")
         end
         if static_lib == 0 then
             copy(target_name,"..\\..\\bin\\amd64\\")

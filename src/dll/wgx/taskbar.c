@@ -1,5 +1,5 @@
 /*
- *  UltraDefrag - a powerful defragmentation tool for Windows NT.
+ *  WGX - Windows GUI Extended Library.
  *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -24,10 +24,6 @@
  * @{
  */
 
-/*
-* We use STATUS_WAIT_0...
-* #define WIN32_NO_STATUS
-*/
 #include <windows.h>
 #include "wgx.h"
 #include "taskbar.h"

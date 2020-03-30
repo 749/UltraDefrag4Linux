@@ -63,16 +63,16 @@ static void ResizeShutdownConfirmDialog(HWND hwnd,wchar_t *counter_msg)
     /* get dimensions of texts */
     switch(when_done_action){
     case IDM_WHEN_DONE_HIBERNATE:
-        text1 = WgxGetResourceString(i18n_table,L"REALLY_HIBERNATE_WHEN_DONE");
+        text1 = WgxGetResourceString(i18n_table,"REALLY_HIBERNATE_WHEN_DONE");
         break;
     case IDM_WHEN_DONE_LOGOFF:
-        text1 = WgxGetResourceString(i18n_table,L"REALLY_LOGOFF_WHEN_DONE");
+        text1 = WgxGetResourceString(i18n_table,"REALLY_LOGOFF_WHEN_DONE");
         break;
     case IDM_WHEN_DONE_REBOOT:
-        text1 = WgxGetResourceString(i18n_table,L"REALLY_REBOOT_WHEN_DONE");
+        text1 = WgxGetResourceString(i18n_table,"REALLY_REBOOT_WHEN_DONE");
         break;
     case IDM_WHEN_DONE_SHUTDOWN:
-        text1 = WgxGetResourceString(i18n_table,L"REALLY_SHUTDOWN_WHEN_DONE");
+        text1 = WgxGetResourceString(i18n_table,"REALLY_SHUTDOWN_WHEN_DONE");
         break;
     default:
         text1 = _wcsdup(L"");
@@ -230,21 +230,21 @@ BOOL CALLBACK ShutdownConfirmDlgProc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lPa
     case WM_INITDIALOG:
         if(use_custom_font_in_dialogs)
             WgxSetFont(hWnd,&wgxFont);
-        WgxSetText(hWnd,i18n_table,L"PLEASE_CONFIRM");
-        WgxSetText(GetDlgItem(hWnd,IDC_YES_BUTTON),i18n_table,L"YES");
-        WgxSetText(GetDlgItem(hWnd,IDC_NO_BUTTON),i18n_table,L"NO");
+        WgxSetText(hWnd,i18n_table,"PLEASE_CONFIRM");
+        WgxSetText(GetDlgItem(hWnd,IDC_YES_BUTTON),i18n_table,"YES");
+        WgxSetText(GetDlgItem(hWnd,IDC_NO_BUTTON),i18n_table,"NO");
         switch(when_done_action){
         case IDM_WHEN_DONE_HIBERNATE:
-            text = WgxGetResourceString(i18n_table,L"SECONDS_TILL_HIBERNATION");
+            text = WgxGetResourceString(i18n_table,"SECONDS_TILL_HIBERNATION");
             break;
         case IDM_WHEN_DONE_LOGOFF:
-            text = WgxGetResourceString(i18n_table,L"SECONDS_TILL_LOGOFF");
+            text = WgxGetResourceString(i18n_table,"SECONDS_TILL_LOGOFF");
             break;
         case IDM_WHEN_DONE_REBOOT:
-            text = WgxGetResourceString(i18n_table,L"SECONDS_TILL_REBOOT");
+            text = WgxGetResourceString(i18n_table,"SECONDS_TILL_REBOOT");
             break;
         case IDM_WHEN_DONE_SHUTDOWN:
-            text = WgxGetResourceString(i18n_table,L"SECONDS_TILL_SHUTDOWN");
+            text = WgxGetResourceString(i18n_table,"SECONDS_TILL_SHUTDOWN");
             break;
         }
         if(text){
@@ -317,6 +317,7 @@ int ShutdownOrHibernate(void)
     TOKEN_PRIVILEGES tkp;
     HMODULE hPowrProfDll;
     SET_SUSPEND_STATE_PROC pSetSuspendState = NULL;
+    BOOL shutdown_cmd_present;
     BOOL result;
 
     switch(when_done_action){
@@ -350,6 +351,18 @@ int ShutdownOrHibernate(void)
         WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,"ShutdownOrHibernate: cannot set shutdown privilege!");
         return 5;
     }
+    
+    /*
+    * Save log file before any action.
+    */
+    udefrag_flush_dbg_log();
+    
+    
+    /*
+    * Shutdown command works better on remote
+    * computers since it shows no confirmation.
+    */
+    shutdown_cmd_present = WgxCreateProcess("%windir%\\system32\\shutdown.exe","/?");
     
     /*
     * There is an opinion that SetSuspendState call
@@ -396,26 +409,40 @@ int ShutdownOrHibernate(void)
         }
         break;
     case IDM_WHEN_DONE_LOGOFF:
-        if(!ExitWindowsEx(EWX_LOGOFF | EWX_FORCEIFHUNG,
-          SHTDN_REASON_MAJOR_OTHER | SHTDN_REASON_MINOR_OTHER | SHTDN_REASON_FLAG_PLANNED)){
+        if(shutdown_cmd_present){
+            result = WgxCreateProcess("%windir%\\system32\\cmd.exe","/K shutdown -l -t 0");
+        } else {
+            result = ExitWindowsEx(EWX_LOGOFF | EWX_FORCEIFHUNG,
+                SHTDN_REASON_MAJOR_OTHER | SHTDN_REASON_MINOR_OTHER | \
+                SHTDN_REASON_FLAG_PLANNED);
+        }
+        if(!result){
             WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,"UltraDefrag: cannot log the user off!");
             return 8;
         }
         break;
     case IDM_WHEN_DONE_REBOOT:
-        if(!ExitWindowsEx(EWX_REBOOT | EWX_FORCEIFHUNG,
-          SHTDN_REASON_MAJOR_OTHER | SHTDN_REASON_MINOR_OTHER | SHTDN_REASON_FLAG_PLANNED)){
+        if(shutdown_cmd_present){
+            result = WgxCreateProcess("%windir%\\system32\\cmd.exe","/K shutdown -r -t 0");
+        } else {
+            result = ExitWindowsEx(EWX_REBOOT | EWX_FORCEIFHUNG,
+                SHTDN_REASON_MAJOR_OTHER | SHTDN_REASON_MINOR_OTHER | \
+                SHTDN_REASON_FLAG_PLANNED);
+        }
+        if(!result){
             WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,"UltraDefrag: cannot reboot the computer!");
             return 9;
         }
         break;
     case IDM_WHEN_DONE_SHUTDOWN:
-        /*
-        * InitiateSystemShutdown() works fine
-        * but doesn't power off the pc.
-        */
-        if(!ExitWindowsEx(EWX_POWEROFF | EWX_FORCEIFHUNG,
-          SHTDN_REASON_MAJOR_OTHER | SHTDN_REASON_MINOR_OTHER | SHTDN_REASON_FLAG_PLANNED)){
+        if(shutdown_cmd_present){
+            result = WgxCreateProcess("%windir%\\system32\\cmd.exe","/K shutdown -s -t 0");
+        } else {
+            result = ExitWindowsEx(EWX_POWEROFF | EWX_FORCEIFHUNG,
+                SHTDN_REASON_MAJOR_OTHER | SHTDN_REASON_MINOR_OTHER | \
+                SHTDN_REASON_FLAG_PLANNED);
+        }
+        if(!result){
             WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,"UltraDefrag: cannot shut down the computer!");
             return 10;
         }

@@ -18,7 +18,7 @@
  * disk.
  *
  * UltraDefrag saves file fragmentation reports in the
- * LuaReport format. This raw report format will be used
+ * LuaReport format. This raw format is used then
  * to generate HTML and plain text reports from.
  * You can configure the generated report type through the
  * udreportopts.lua file described below.
@@ -36,16 +36,17 @@
  *
  * When you are opening the LuaReport a single HTML page or plain text file is
  * generated and opened in your default web browser or text editor. It contains the
- * list of fragmented files. The meaning of the columns are described below.
+ * list of fragmented files. The meaning of the columns is described below.
  *
  * By default, all files are sorted by number of fragments
  * in descending order. To change the sorting click the column
- * heading by which to sort the list. Note that it is a slow
- * process (~350 lines/sec on 1.8GHz CPU). Sorting
- * implemented in JavaScript is slow, but very reliable.
+ * heading by which to sort the list.
+ * The sorting is a slow process (~350 lines/sec on 1.8GHz CPU).
+ * However, being implemented in JavaScript, it is very reliable.
  *
- * Note that files excluded from processing are never treated as fragmented.
- * Because only files affecting system performance should get our attention.
+ * @note
+ * Reports never contain files excluded from the processing,
+ * because only files affecting system performance should get our attention.
  *
  * <h1>Columns</h1>
  * @par Fragments

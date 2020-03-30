@@ -289,6 +289,7 @@ DWORD WINAPI StartJobsThreadProc(LPVOID lpParameter)
     char buffer[64];
     int index;
     TBBUTTONINFO tbi;
+    UINT id;
     udefrag_job_type job_type = (udefrag_job_type)(DWORD_PTR)lpParameter;
     
     /* return immediately if we are busy */
@@ -323,12 +324,29 @@ DWORD WINAPI StartJobsThreadProc(LPVOID lpParameter)
     SendMessage(hToolbar,TB_SETBUTTONINFO,IDM_REPEAT_ACTION,(LRESULT)&tbi);
     SendMessage(hToolbar,TB_ENABLEBUTTON,IDM_SHOW_REPORT,MAKELONG(FALSE,0));
     
+    /* set check mark in front of the selected optimization method */
+    switch(job_type){
+    case FULL_OPTIMIZATION_JOB:
+        id = IDM_FULL_OPTIMIZE;
+        break;
+    case QUICK_OPTIMIZATION_JOB:
+        id = IDM_QUICK_OPTIMIZE;
+        break;
+    case MFT_OPTIMIZATION_JOB:
+        id = IDM_OPTIMIZE_MFT;
+        break;
+    default:
+        id = 0;
+        break;
+    }
+    if(id) CheckMenuItem(hMainMenu,id,MF_BYCOMMAND | MF_CHECKED);
+    
     /* set taskbar icon overlay */
     if(show_taskbar_icon_overlay){
         if(WaitForSingleObject(hTaskbarIconEvent,INFINITE) != WAIT_OBJECT_0){
             WgxDbgPrintLastError("StartJobsThreadProc: wait on hTaskbarIconEvent failed");
         } else {
-            SetTaskbarIconOverlay(IDI_BUSY,L"JOB_IS_RUNNING");
+            SetTaskbarIconOverlay(IDI_BUSY,"JOB_IS_RUNNING");
             job_is_running = 1;
             SetEvent(hTaskbarIconEvent);
         }
@@ -356,6 +374,9 @@ DWORD WINAPI StartJobsThreadProc(LPVOID lpParameter)
     }
 
     busy_flag = 0;
+
+    /* remove check mark set in front of the selected optimization method */
+    if(id) CheckMenuItem(hMainMenu,id,MF_BYCOMMAND | MF_UNCHECKED);
 
     /* enable menu entries */
     EnableMenuItem(hMainMenu,IDM_ANALYZE,MF_BYCOMMAND | MF_ENABLED);
@@ -407,12 +428,9 @@ DWORD WINAPI StartJobsThreadProc(LPVOID lpParameter)
  */
 void start_selected_jobs(udefrag_job_type job_type)
 {
-    DWORD id;
-    HANDLE h;
     char *action = "disk analysis";
 
-    h = create_thread(StartJobsThreadProc,(LPVOID)(DWORD_PTR)job_type,&id);
-    if(h == NULL){
+    if(!WgxCreateThread(StartJobsThreadProc,(LPVOID)(DWORD_PTR)job_type)){
         if(job_type == DEFRAGMENTATION_JOB)
             action = "disk defragmentation";
         else if(job_type == FULL_OPTIMIZATION_JOB)
@@ -424,8 +442,6 @@ void start_selected_jobs(udefrag_job_type job_type)
         WgxDisplayLastError(hWindow,MB_OK | MB_ICONHAND,
             "Cannot create thread starting %s!",
             action);
-    } else {
-        CloseHandle(h);
     }
 }
 
@@ -455,6 +471,62 @@ void release_jobs(void)
             free(j->map.buffer);
         if(j->map.scaled_buffer)
             free(j->map.scaled_buffer);
+    }
+}
+
+/**
+ * @internal
+ * @brief Buffers for RepairSelectedVolumes.
+ */
+#define MAX_CMD_LENGTH 32768
+char args[MAX_CMD_LENGTH];
+char buffer[MAX_CMD_LENGTH];
+
+/**
+ * @brief Tries to repair all selected volumes.
+ */
+void RepairSelectedVolumes(void)
+{
+    LRESULT SelectedItem;
+    LV_ITEM lvi;
+    char letter;
+    int index;
+    int counter = 0;
+
+    strcpy(args,"");
+
+    index = -1;
+    while(1){
+        SelectedItem = SendMessage(hList,LVM_GETNEXTITEM,(WPARAM)index,LVNI_SELECTED);
+        if(SelectedItem == -1 || SelectedItem == index) break;
+        lvi.iItem = (int)SelectedItem;
+        lvi.iSubItem = 0;
+        lvi.mask = LVIF_TEXT;
+        lvi.pszText = buffer;
+        lvi.cchTextMax = 127;
+        if(SendMessage(hList,LVM_GETITEM,0,(LRESULT)&lvi)){
+            letter = buffer[0];
+            _snprintf(buffer,MAX_CMD_LENGTH,"%s %c:",args,letter);
+            buffer[MAX_CMD_LENGTH - 1] = 0;
+            strcpy(args,buffer);
+            counter ++;
+        }
+        index = (int)SelectedItem;
+    }
+    
+    if(counter == 0) return;
+
+    _snprintf(buffer,MAX_CMD_LENGTH,
+        "/C ( for %%D in ( %s ) do @echo. & echo chkdsk %%D & echo. & chkdsk %%D /V /F & echo. & echo %s & ping -n 6 localhost >nul ) & echo. & pause",
+        args,"-------------------------------------------------");
+    buffer[MAX_CMD_LENGTH - 1] = 0;
+    strcpy(args,buffer);
+    
+    WgxDbgPrint("Command Line: %s", args);
+
+    if(!WgxCreateProcess("%windir%\\system32\\cmd.exe",args)){
+        WgxDisplayLastError(hWindow,MB_OK | MB_ICONHAND,
+            "Cannot execute cmd.exe program!");
     }
 }
 

@@ -24,19 +24,15 @@
  * @{
  */
 
+#include <windows.h>
+
+#include "wgx.h"
+
 /*
 * An article of Mumtaz Zaheer from Pakistan helped us very much
 * to make a valid subclassing:
 * http://www.codeproject.com/KB/winsdk/safesubclassing.aspx
 */
-
-/*
-* We use STATUS_WAIT_0...
-* #define WIN32_NO_STATUS
-*/
-#include <windows.h>
-
-#include "wgx.h"
 
 /* 1024 child windows are more than enough for any serious application */
 #define WIN_ARRAY_SIZE 1024

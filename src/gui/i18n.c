@@ -41,93 +41,99 @@ int use_custom_font_in_dialogs = 0;
 
 WGX_I18N_RESOURCE_ENTRY i18n_table[] = {
     /* action menu */
-    {0, L"ACTION",                   L"&Action",                  NULL},
-    {0, L"ANALYSE",                  L"&Analyze",                 NULL},
-    {0, L"DEFRAGMENT",               L"&Defragment",              NULL},
-    {0, L"QUICK_OPTIMIZE",           L"&Quick optimization",      NULL},
-    {0, L"FULL_OPTIMIZE",            L"&Full optimization",       NULL},
-    {0, L"OPTIMIZE_MFT",             L"&Optimize MFT",             NULL},
-    {0, L"STOP",                     L"&Stop",                    NULL},
-    {0, L"REPEAT_ACTION",            L"Re&peat action",           NULL},
-    {0, L"SKIP_REMOVABLE_MEDIA",     L"Skip removable &media",    NULL},
-    {0, L"RESCAN_DRIVES",            L"&Rescan drives",           NULL},
-    {0, L"WHEN_DONE",                L"&When done",               NULL},
-    {0, L"WHEN_DONE_NONE",           L"&None",                    NULL},
-    {0, L"WHEN_DONE_EXIT",           L"E&xit",                    NULL},
-    {0, L"WHEN_DONE_STANDBY",        L"Stan&dby",                 NULL},
-    {0, L"WHEN_DONE_HIBERNATE",      L"&Hibernate",               NULL},
-    {0, L"WHEN_DONE_LOGOFF",         L"&Logoff",                  NULL},
-    {0, L"WHEN_DONE_REBOOT",         L"&Reboot",                  NULL},
-    {0, L"WHEN_DONE_SHUTDOWN",       L"&Shutdown",                NULL},
-    {0, L"EXIT",                     L"E&xit",                    NULL},
+    {0, "ACTION",                   L"&Action",                  NULL},
+    {0, "ANALYSE",                  L"&Analyze",                 NULL},
+    {0, "DEFRAGMENT",               L"&Defragment",              NULL},
+    {0, "QUICK_OPTIMIZE",           L"&Quick optimization",      NULL},
+    {0, "FULL_OPTIMIZE",            L"&Full optimization",       NULL},
+    {0, "OPTIMIZE_MFT",             L"&Optimize MFT",            NULL},
+    {0, "STOP",                     L"&Stop",                    NULL},
+    {0, "REPEAT_ACTION",            L"Re&peat action",           NULL},
+    {0, "SKIP_REMOVABLE_MEDIA",     L"Skip removable &media",    NULL},
+    {0, "RESCAN_DRIVES",            L"&Rescan drives",           NULL},
+    {0, "REPAIR_DRIVES",            L"Repair drives",            NULL},
+    {0, "WHEN_DONE",                L"&When done",               NULL},
+    {0, "WHEN_DONE_NONE",           L"&None",                    NULL},
+    {0, "WHEN_DONE_EXIT",           L"E&xit",                    NULL},
+    {0, "WHEN_DONE_STANDBY",        L"Stan&dby",                 NULL},
+    {0, "WHEN_DONE_HIBERNATE",      L"&Hibernate",               NULL},
+    {0, "WHEN_DONE_LOGOFF",         L"&Logoff",                  NULL},
+    {0, "WHEN_DONE_REBOOT",         L"&Reboot",                  NULL},
+    {0, "WHEN_DONE_SHUTDOWN",       L"&Shutdown",                NULL},
+    {0, "EXIT",                     L"E&xit",                    NULL},
 
     /* report menu */
-    {0, L"REPORT",                   L"&Report",                  NULL},
-    {0, L"SHOW_REPORT",              L"&Show report",             NULL},
+    {0, "REPORT",                   L"&Report",                  NULL},
+    {0, "SHOW_REPORT",              L"&Show report",             NULL},
 
     /* settings menu */
-    {0, L"SETTINGS",                 L"&Settings",                NULL},
-    {0, L"LANGUAGE",                 L"&Language",                NULL},
-    {0, L"TRANSLATIONS_FOLDER",      L"&Translations folder",     NULL},
-    {0, L"GRAPHICAL_INTERFACE",      L"&Graphical interface",     NULL},
-    {0, L"FONT",                     L"&Font",                    NULL},
-    {0, L"OPTIONS",                  L"&Options",                 NULL},
-    {0, L"BOOT_TIME_SCAN",           L"&Boot time scan",          NULL},
-    {0, L"ENABLE",                   L"&Enable",                  NULL},
-    {0, L"SCRIPT",                   L"&Script",                  NULL},
-    {0, L"REPORTS",                  L"&Reports",                 NULL},
+    {0, "SETTINGS",                 L"&Settings",                NULL},
+    {0, "LANGUAGE",                 L"&Language",                NULL},
+    {0, "TRANSLATIONS_FOLDER",      L"&Translations folder",     NULL},
+    {0, "GRAPHICAL_INTERFACE",      L"&Graphical interface",     NULL},
+    {0, "FONT",                     L"&Font",                    NULL},
+    {0, "OPTIONS",                  L"&Options",                 NULL},
+    {0, "BOOT_TIME_SCAN",           L"&Boot time scan",          NULL},
+    {0, "ENABLE",                   L"&Enable",                  NULL},
+    {0, "SCRIPT",                   L"&Script",                  NULL},
+    {0, "REPORTS",                  L"&Reports",                 NULL},
 
     /* help menu */
-    {0, L"HELP",                     L"&Help",                    NULL},
-    {0, L"CONTENTS",                 L"&Contents",                NULL},
-    {0, L"BEST_PRACTICE",            L"Best &practice",           NULL},
-    {0, L"FAQ",                      L"&FAQ",                     NULL},
-    {0, L"CHECK_UPDATE",             L"Check for &update",        NULL},
-    {0, L"ABOUT",                    L"&About",                   NULL},
+    {0, "HELP",                     L"&Help",                    NULL},
+    {0, "CONTENTS",                 L"&Contents",                NULL},
+    {0, "BEST_PRACTICE",            L"Best &practice",           NULL},
+    {0, "FAQ",                      L"&FAQ",                     NULL},
+    {0, "CM_LEGEND",                L"Cluster map &legend",      NULL},
+    {0, "CHECK_UPDATE",             L"Check for &update",        NULL},
+    {0, "ABOUT",                    L"&About",                   NULL},
 
     /* toolbar tooltips */
-    {0, L"BOOT_TIME_SCRIPT",         L"Boot time script",         NULL},
+    {0, "BOOT_TIME_SCRIPT",         L"Boot time script",         NULL},
 
     /* volume characteristics */
-    {0, L"VOLUME",                   L"Disk",                     NULL},
-    {0, L"STATUS",                   L"Status",                   NULL},
-    {0, L"TOTAL",                    L"Total Space",              NULL},
-    {0, L"FREE",                     L"Free Space",               NULL},
-    {0, L"PERCENT",                  L"% free",                   NULL},
+    {0, "VOLUME",                   L"Disk",                     NULL},
+    {0, "STATUS",                   L"Status",                   NULL},
+    {0, "TOTAL",                    L"Total Space",              NULL},
+    {0, "FREE",                     L"Free Space",               NULL},
+    {0, "PERCENT",                  L"% free",                   NULL},
 
     /* volume processing status */
-    {0, L"STATUS_RUNNING",           L"Executing",                NULL},
-    {0, L"STATUS_ANALYSED",          L"Analyzed",                 NULL},
-    {0, L"STATUS_DEFRAGMENTED",      L"Defragmented",             NULL},
-    {0, L"STATUS_OPTIMIZED",         L"Optimized",                NULL},
+    {0, "STATUS_RUNNING",           L"Executing",                NULL},
+    {0, "STATUS_ANALYSED",          L"Analyzed",                 NULL},
+    {0, "STATUS_DEFRAGMENTED",      L"Defragmented",             NULL},
+    {0, "STATUS_OPTIMIZED",         L"Optimized",                NULL},
+    {0, "STATUS_DIRTY",             L"Disk needs to be repaired",NULL},
 
     /* status bar */
-    {0, L"DIRS",                     L"folders",                  NULL},
-    {0, L"FILES",                    L"files",                    NULL},
-    {0, L"FRAGMENTED",               L"fragmented",               NULL},
-    {0, L"COMPRESSED",               L"compressed",               NULL},
-    {0, L"MFT",                      L"MFT",                      NULL},
+    {0, "DIRS",                     L"folders",                  NULL},
+    {0, "FILES",                    L"files",                    NULL},
+    {0, "FRAGMENTED",               L"fragmented",               NULL},
+    {0, "COMPRESSED",               L"compressed",               NULL},
 
     /* about box */
-    {0, L"ABOUT_WIN_TITLE",          L"About Ultra Defragmenter", NULL},
-    {0, L"CREDITS",                  L"&Credits",                 NULL},
-    {0, L"LICENSE",                  L"&License",                 NULL},
+    {0, "ABOUT_WIN_TITLE",          L"About Ultra Defragmenter", NULL},
+    {0, "CREDITS",                  L"&Credits",                 NULL},
+    {0, "LICENSE",                  L"&License",                 NULL},
 
     /* shutdown confirmation */
-    {0,                 L"PLEASE_CONFIRM",             L"Please Confirm",             NULL},
-    {0,                 L"REALLY_SHUTDOWN_WHEN_DONE",  L"Do you really want to shutdown when done?",  NULL},
-    {0,                 L"REALLY_HIBERNATE_WHEN_DONE", L"Do you really want to hibernate when done?", NULL},
-    {0,                 L"REALLY_LOGOFF_WHEN_DONE",    L"Do you really want to log off when done?",   NULL},
-    {0,                 L"REALLY_REBOOT_WHEN_DONE",    L"Do you really want to reboot when done?",    NULL},
-    {0,                 L"SECONDS_TILL_SHUTDOWN",      L"seconds until shutdown",     NULL},
-    {0,                 L"SECONDS_TILL_HIBERNATION",   L"seconds until hibernation",  NULL},
-    {0,                 L"SECONDS_TILL_LOGOFF",        L"seconds until logoff",       NULL},
-    {0,                 L"SECONDS_TILL_REBOOT",        L"seconds until reboot",       NULL},
-    {IDC_YES_BUTTON,    L"YES",                        L"&Yes",                       NULL},
-    {IDC_NO_BUTTON,     L"NO",                         L"&No",                        NULL},
-    
+    {0,                 "PLEASE_CONFIRM",             L"Please Confirm",             NULL},
+    {0,                 "REALLY_SHUTDOWN_WHEN_DONE",  L"Do you really want to shutdown when done?",  NULL},
+    {0,                 "REALLY_HIBERNATE_WHEN_DONE", L"Do you really want to hibernate when done?", NULL},
+    {0,                 "REALLY_LOGOFF_WHEN_DONE",    L"Do you really want to log off when done?",   NULL},
+    {0,                 "REALLY_REBOOT_WHEN_DONE",    L"Do you really want to reboot when done?",    NULL},
+    {0,                 "SECONDS_TILL_SHUTDOWN",      L"seconds until shutdown",     NULL},
+    {0,                 "SECONDS_TILL_HIBERNATION",   L"seconds until hibernation",  NULL},
+    {0,                 "SECONDS_TILL_LOGOFF",        L"seconds until logoff",       NULL},
+    {0,                 "SECONDS_TILL_REBOOT",        L"seconds until reboot",       NULL},
+    {IDC_YES_BUTTON,    "YES",                        L"&Yes",                       NULL},
+    {IDC_NO_BUTTON,     "NO",                         L"&No",                        NULL},
+
+    /* upgrade dialog */
+    {0,                 "UPGRADE_CAPTION",            L"You can upgrade me ^-^",     NULL},
+    {0,                 "UPGRADE_MESSAGE",            L"release is available for download!", NULL},
+
     /* taskbar icon overlay message */
-    {0,                 L"JOB_IS_RUNNING",             L"A job is running",           NULL},
+    {0,                 "JOB_IS_RUNNING",             L"A job is running",           NULL},
 
     /* end of the table */
     {0,                 NULL,                          NULL,                          NULL}
@@ -135,7 +141,7 @@ WGX_I18N_RESOURCE_ENTRY i18n_table[] = {
 
 struct menu_item {
     int id;         /* menu item identifier */
-    wchar_t *key;   /* i18n table entry key */
+    char *key;      /* i18n table entry key */
     char *hotkeys;  /* hotkeys assigned to the item */
 };
 
@@ -144,44 +150,46 @@ struct menu_item {
  * @brief Simplifies build of localized menu.
  */
 struct menu_item menu_items[] = {
-    {IDM_ANALYZE,                 L"ANALYSE",                  "F5"    },
-    {IDM_DEFRAG,                  L"DEFRAGMENT",               "F6"    },
-    {IDM_QUICK_OPTIMIZE,          L"QUICK_OPTIMIZE",           "F7"    },
-    {IDM_FULL_OPTIMIZE,           L"FULL_OPTIMIZE",            "Ctrl+F7"},
-    {IDM_OPTIMIZE_MFT,            L"OPTIMIZE_MFT",             "Shift+F7"},
-    {IDM_STOP,                    L"STOP",                     "Ctrl+C"},
-    {IDM_REPEAT_ACTION,           L"REPEAT_ACTION",            "Shift+R"},
-    {IDM_IGNORE_REMOVABLE_MEDIA,  L"SKIP_REMOVABLE_MEDIA",     "Ctrl+M"},
-    {IDM_RESCAN,                  L"RESCAN_DRIVES",            "Ctrl+D"},
-    {IDM_WHEN_DONE_NONE,          L"WHEN_DONE_NONE",           NULL},
-    {IDM_WHEN_DONE_EXIT,          L"WHEN_DONE_EXIT",           NULL},
-    {IDM_WHEN_DONE_STANDBY,       L"WHEN_DONE_STANDBY",        NULL},
-    {IDM_WHEN_DONE_HIBERNATE,     L"WHEN_DONE_HIBERNATE",      NULL},
-    {IDM_WHEN_DONE_LOGOFF,        L"WHEN_DONE_LOGOFF",         NULL},
-    {IDM_WHEN_DONE_REBOOT,        L"WHEN_DONE_REBOOT",         NULL},
-    {IDM_WHEN_DONE_SHUTDOWN,      L"WHEN_DONE_SHUTDOWN",       NULL},
-    {IDM_EXIT,                    L"EXIT",                     "Alt+F4"},
-    {IDM_SHOW_REPORT,             L"SHOW_REPORT",              "F8"    },
-    {IDM_TRANSLATIONS_FOLDER,     L"TRANSLATIONS_FOLDER",      NULL    },
-    {IDM_CFG_GUI_FONT,            L"FONT",                     "F9"    },
-    {IDM_CFG_GUI_SETTINGS,        L"OPTIONS",                  "F10"   },
-    {IDM_CFG_BOOT_ENABLE,         L"ENABLE",                   "F11"   },
-    {IDM_CFG_BOOT_SCRIPT,         L"SCRIPT",                   "F12"   },
-    {IDM_CFG_REPORTS,             L"REPORTS",                  "Ctrl+R"},
-    {IDM_CONTENTS,                L"CONTENTS",                 "F1"    },
-    {IDM_BEST_PRACTICE,           L"BEST_PRACTICE",            "F2"    },
-    {IDM_FAQ,                     L"FAQ",                      "F3"    },
-    {IDM_CHECK_UPDATE,            L"CHECK_UPDATE",             NULL    },
-    {IDM_ABOUT,                   L"ABOUT",                    "F4"    },
+    {IDM_ANALYZE,                 "ANALYSE",                  "F5"    },
+    {IDM_DEFRAG,                  "DEFRAGMENT",               "F6"    },
+    {IDM_QUICK_OPTIMIZE,          "QUICK_OPTIMIZE",           "F7"    },
+    {IDM_FULL_OPTIMIZE,           "FULL_OPTIMIZE",            "Ctrl+F7"},
+    {IDM_OPTIMIZE_MFT,            "OPTIMIZE_MFT",             "Shift+F7"},
+    {IDM_STOP,                    "STOP",                     "Ctrl+C"},
+    {IDM_REPEAT_ACTION,           "REPEAT_ACTION",            "Shift+R"},
+    {IDM_IGNORE_REMOVABLE_MEDIA,  "SKIP_REMOVABLE_MEDIA",     "Ctrl+M"},
+    {IDM_RESCAN,                  "RESCAN_DRIVES",            "Ctrl+D"},
+    {IDM_REPAIR,                  "REPAIR_DRIVES",            NULL},
+    {IDM_WHEN_DONE_NONE,          "WHEN_DONE_NONE",           NULL},
+    {IDM_WHEN_DONE_EXIT,          "WHEN_DONE_EXIT",           NULL},
+    {IDM_WHEN_DONE_STANDBY,       "WHEN_DONE_STANDBY",        NULL},
+    {IDM_WHEN_DONE_HIBERNATE,     "WHEN_DONE_HIBERNATE",      NULL},
+    {IDM_WHEN_DONE_LOGOFF,        "WHEN_DONE_LOGOFF",         NULL},
+    {IDM_WHEN_DONE_REBOOT,        "WHEN_DONE_REBOOT",         NULL},
+    {IDM_WHEN_DONE_SHUTDOWN,      "WHEN_DONE_SHUTDOWN",       NULL},
+    {IDM_EXIT,                    "EXIT",                     "Alt+F4"},
+    {IDM_SHOW_REPORT,             "SHOW_REPORT",              "F8"    },
+    {IDM_TRANSLATIONS_FOLDER,     "TRANSLATIONS_FOLDER",      NULL    },
+    {IDM_CFG_GUI_FONT,            "FONT",                     "F9"    },
+    {IDM_CFG_GUI_SETTINGS,        "OPTIONS",                  "F10"   },
+    {IDM_CFG_BOOT_ENABLE,         "ENABLE",                   "F11"   },
+    {IDM_CFG_BOOT_SCRIPT,         "SCRIPT",                   "F12"   },
+    {IDM_CFG_REPORTS,             "REPORTS",                  "Ctrl+R"},
+    {IDM_CONTENTS,                "CONTENTS",                 "F1"    },
+    {IDM_BEST_PRACTICE,           "BEST_PRACTICE",            "F2"    },
+    {IDM_FAQ,                     "FAQ",                      "F3"    },
+    {IDM_CM_LEGEND,               "CM_LEGEND",                NULL    },
+    {IDM_CHECK_UPDATE,            "CHECK_UPDATE",             NULL    },
+    {IDM_ABOUT,                   "ABOUT",                    "F4"    },
     /* submenus */
-    {IDM_WHEN_DONE,               L"WHEN_DONE",                NULL},
-    {IDM_LANGUAGE,                L"LANGUAGE",                 NULL},
-    {IDM_CFG_GUI,                 L"GRAPHICAL_INTERFACE",      NULL},
-    {IDM_CFG_BOOT,                L"BOOT_TIME_SCAN",           NULL},
-    {IDM_ACTION,                  L"ACTION",                   NULL},
-    {IDM_REPORT,                  L"REPORT",                   NULL},
-    {IDM_SETTINGS,                L"SETTINGS",                 NULL},
-    {IDM_HELP,                    L"HELP",                     NULL},
+    {IDM_WHEN_DONE,               "WHEN_DONE",                NULL},
+    {IDM_LANGUAGE,                "LANGUAGE",                 NULL},
+    {IDM_CFG_GUI,                 "GRAPHICAL_INTERFACE",      NULL},
+    {IDM_CFG_BOOT,                "BOOT_TIME_SCAN",           NULL},
+    {IDM_ACTION,                  "ACTION",                   NULL},
+    {IDM_REPORT,                  "REPORT",                   NULL},
+    {IDM_SETTINGS,                "SETTINGS",                 NULL},
+    {IDM_HELP,                    "HELP",                     NULL},
     {0, NULL, NULL}
 };
 
@@ -202,7 +210,7 @@ int stop_track_i18n_folder = 0;
 void ApplyLanguagePack(void)
 {
     char lang_name[MAX_PATH];
-    wchar_t path[MAX_PATH];
+    char path[MAX_PATH];
     udefrag_progress_info pi;
     MENUITEMINFOW mi;
     wchar_t *text;
@@ -219,7 +227,7 @@ void ApplyLanguagePack(void)
         UpdateToolbarTooltips();
         return;
     }
-    _snwprintf(path,MAX_PATH,L".\\i18n\\%hs.lng",lang_name);
+    _snprintf(path,MAX_PATH,".\\\\i18n\\\\%s.lng",lang_name);
     path[MAX_PATH - 1] = 0;
     
     /* destroy resource table */
@@ -230,27 +238,27 @@ void ApplyLanguagePack(void)
     
     /* apply new strings to the list of volumes */
     lvc.mask = LVCF_TEXT;
-    lvc.pszText = text = WgxGetResourceString(i18n_table,L"VOLUME");
+    lvc.pszText = text = WgxGetResourceString(i18n_table,"VOLUME");
     if(text){
         SendMessage(hList,LVM_SETCOLUMNW,0,(LPARAM)&lvc);
         free(text);
     }
-    lvc.pszText =  text = WgxGetResourceString(i18n_table,L"STATUS");
+    lvc.pszText =  text = WgxGetResourceString(i18n_table,"STATUS");
     if(text){
         SendMessage(hList,LVM_SETCOLUMNW,1,(LPARAM)&lvc);
         free(text);
     }
-    lvc.pszText =  text = WgxGetResourceString(i18n_table,L"TOTAL");
+    lvc.pszText =  text = WgxGetResourceString(i18n_table,"TOTAL");
     if(text){
         SendMessage(hList,LVM_SETCOLUMNW,2,(LPARAM)&lvc);
         free(text);
     }
-    lvc.pszText =  text = WgxGetResourceString(i18n_table,L"FREE");
+    lvc.pszText =  text = WgxGetResourceString(i18n_table,"FREE");
     if(text){
         SendMessage(hList,LVM_SETCOLUMNW,3,(LPARAM)&lvc);
         free(text);
     }
-    lvc.pszText =  text = WgxGetResourceString(i18n_table,L"PERCENT");
+    lvc.pszText =  text = WgxGetResourceString(i18n_table,"PERCENT");
     if(text){
         SendMessage(hList,LVM_SETCOLUMNW,4,(LPARAM)&lvc);
         free(text);
@@ -300,7 +308,7 @@ void ApplyLanguagePack(void)
         } else {
             RemoveTaskbarIconOverlay();
             if(job_is_running)
-                SetTaskbarIconOverlay(IDI_BUSY,L"JOB_IS_RUNNING");
+                SetTaskbarIconOverlay(IDI_BUSY,"JOB_IS_RUNNING");
             SetEvent(hTaskbarIconEvent);
         }
     }
@@ -396,7 +404,7 @@ void BuildLanguageMenu(void)
     }
     
     /* add translations folder menu item and a separator */
-    text = WgxGetResourceString(i18n_table,L"TRANSLATIONS_FOLDER");
+    text = WgxGetResourceString(i18n_table,"TRANSLATIONS_FOLDER");
     if(text){
         if(!AppendMenuW(hLangMenu,MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_FOLDER,text))
             WgxDbgPrintLastError("BuildLanguageMenu: cannot append menu item");
@@ -560,15 +568,9 @@ DWORD WINAPI LangIniChangesTrackingProc(LPVOID lpParameter)
  */
 void StartLangIniChangesTracking()
 {
-    HANDLE h;
-    DWORD id;
-    
-    h = create_thread(LangIniChangesTrackingProc,NULL,&id);
-    if(h == NULL){
+    if(!WgxCreateThread(LangIniChangesTrackingProc,NULL)){
         WgxDbgPrintLastError("Cannot create thread for lang.ini changes tracking");
         lang_ini_tracking_stopped = 1;
-    } else {
-        CloseHandle(h);
     }
 }
 
@@ -590,6 +592,7 @@ DWORD WINAPI I18nFolderChangesTrackingProc(LPVOID lpParameter)
 {
     HANDLE h;
     DWORD status;
+    ULONGLONG counter = 0;
     
     h = FindFirstChangeNotification(".\\i18n",
             FALSE,FILE_NOTIFY_CHANGE_LAST_WRITE \
@@ -605,9 +608,17 @@ DWORD WINAPI I18nFolderChangesTrackingProc(LPVOID lpParameter)
     while(!stop_track_i18n_folder){
         status = WaitForSingleObject(h,100);
         if(status == WAIT_OBJECT_0){
-            ApplyLanguagePack();
-            /* update language menu anyway */
-            BuildLanguageMenu();
+            if(counter % 2 == 0){
+                /*
+                * Do nothing; see comment in 
+                * settings.c::PrefsChangesTrackingProc
+                */
+            } else {
+                ApplyLanguagePack();
+                /* update language menu anyway */
+                BuildLanguageMenu();
+            }
+            counter ++;
             /* wait for the next notification */
             if(!FindNextChangeNotification(h)){
                 WgxDbgPrintLastError("I18nFolderChangesTrackingProc: FindNextChangeNotification failed");
@@ -627,15 +638,9 @@ DWORD WINAPI I18nFolderChangesTrackingProc(LPVOID lpParameter)
  */
 void StartI18nFolderChangesTracking()
 {
-    HANDLE h;
-    DWORD id;
-    
-    h = create_thread(I18nFolderChangesTrackingProc,NULL,&id);
-    if(h == NULL){
+    if(!WgxCreateThread(I18nFolderChangesTrackingProc,NULL)){
         WgxDbgPrintLastError("Cannot create thread for i18n folder changes tracking");
         i18n_folder_tracking_stopped = 1;
-    } else {
-        CloseHandle(h);
     }
 }
 

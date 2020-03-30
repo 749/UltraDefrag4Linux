@@ -79,6 +79,7 @@ EXPORTS
     winx_dbg_print_header
     winx_enable_dbg_log
     winx_disable_dbg_log
+    winx_flush_dbg_log
     winx_str2time
     winx_time2str
     winx_xtime

@@ -15,31 +15,34 @@
  * To obtain the latest version of the program please visit the 
  * <a href="http://sourceforge.net/projects/ultradefrag/files/">project's download page</a>.
  *
- * There are two different types of packages available for download:
- * - Full-featured installer, which installs all of the program features,
- * but require installation therefore cannot be used directly from USB sticks.
- * - Portable package. Download it, unpack it and use without an installation. 
- * Copy it on an USB stick and you will be able to use UltraDefrag everywhere by simply
- * running it from there. Note that boot time defragmenter is missing from the portable 
- * packages, but all other features are included. 
- * You can find more information about portable applications
- * <a href="http://en.wikipedia.org/wiki/Portable_application">here</a>.
+ * @note
+ * You must be an administrator to install and run UltraDefrag.<br /><br />
+ * UltraDefrag installs into the Windows directory. This is by design,
+ * because it highly simplifies the program development.
+ * Moreover, it is impossible to run the boot time defragmenter without having its
+ * files inside the System32 directory.<br/><br/>
+ * You must have a 64-bit version of Windows to run the 64-bit versions of the program.
+ * The IA-64 version was never tested by the authors. It requires the Intel Itanium processor
+ * and an appropriate 64-bit edition of Windows.
  *
+ * There are two different types of packages available for download:
+ * @par Full-featured installer
+ * It installs all of the program features, but requires installation
+ * therefore cannot be used directly from USB sticks.<br/><br/>
  * The installer allows installing the <b>UltraDefrag Micro Edition</b> too, which is a lightweight version
  * of the program containing only the command line tool and the boot time defragmenter.
  * It is intended to be used from the console only.
- * 
+ *
+ * @par Portable package
+ * Download it, unpack it and use without an installation. 
+ * Copy it on an USB stick and you will be able to use UltraDefrag everywhere by simply
+ * running it from there.
  * @note
- * <ul><li>You must have a 64-bit version of Windows to run the 64-bit versions of the program.<br/><br/></li>
- * <li>The IA-64 version was never tested by the authors. 
- * It requires the Intel Itanium processor and an appropriate 64-bit edition of Windows.<br/><br/></li>
- * <li>You must be an administrator to install and run UltraDefrag.</li></ul>
- *
- * Note that UltraDefrag installs into the Windows directory. This is by design,
- * because it highly simplifies the program development.
- * Moreover, it is impossible to run the boot time defragmenter without having its
- * files inside the System32 directory.
- *
+ * The boot time defragmenter is missing from the portable 
+ * packages, but all other features are included. 
+ * You can find more information about portable applications
+ * <a href="http://en.wikipedia.org/wiki/Portable_application">here</a>.<br/><br/>
+ * 
  * To expand usage statistics gathering by the website UltraDefrag sends also
  * requests to the <a href="http://www.google.com/analytics/">Google Analytics</a> 
  * service during startup. It takes no negative effect on security - many thousands
@@ -84,9 +87,6 @@
  * Install or remove the Explorer context menu handler.
  * Example: <b>/SHELLEXTENSION=0</b> removes the Explorer context menu handler.<br/>
  * Installing the context menu handler forces the console interface it depends on to be installed.
- *
- * @par /DISABLE_USAGE_TRACKING=(0|1)
- * Enable or disable web based usage tracking. Example: <b>/DISABLE_USAGE_TRACKING=1</b> disables usage tracking.
  *
  * @par /STARTMENUICON=(0|1)
  * Install or remove the start menu icon. Example: <b>/STARTMENUICON=1</b> installs the start menu icon.<br/>

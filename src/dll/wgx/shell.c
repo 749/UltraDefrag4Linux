@@ -24,10 +24,6 @@
  * @{
  */
 
-/*
-* We use STATUS_WAIT_0...
-* #define WIN32_NO_STATUS
-*/
 #include <windows.h>
 #include <shellapi.h>
 #include <stdio.h>
@@ -45,7 +41,7 @@ BOOL WgxShellExecuteW(HWND hwnd,LPCWSTR lpOperation,LPCWSTR lpFile,
     HINSTANCE hApp;
     int error_code;
     char *error_description = "";
-    short *error_msg;
+    wchar_t *error_msg;
     int buffer_length;
     
     hApp = ShellExecuteW(hwnd,lpOperation,lpFile,lpParameters,lpDirectory,nShowCmd);
@@ -104,17 +100,26 @@ BOOL WgxShellExecuteW(HWND hwnd,LPCWSTR lpOperation,LPCWSTR lpFile,
     if(!lpParameters) lpParameters = L"";
 
     buffer_length = wcslen(lpOperation) + wcslen(lpFile) + wcslen(lpParameters);
-    buffer_length += strlen(error_description);
+    if(error_description[0]){
+        buffer_length += strlen(error_description);
+    } else {
+        buffer_length += 64;
+    }
     buffer_length += 64;
 
-    error_msg = malloc(buffer_length * sizeof(short));
+    error_msg = malloc(buffer_length * sizeof(wchar_t));
     if(error_msg == NULL){
         MessageBoxW(hwnd,L"Not enough memory!",L"Error!",MB_OK | MB_ICONHAND);
         return FALSE;
     }
     
-    (void)_snwprintf(error_msg,buffer_length,L"Cannot %ls %ls %ls\n%hs",
-            lpOperation,lpFile,lpParameters,error_description);
+    if(error_description[0]){
+        (void)_snwprintf(error_msg,buffer_length,L"Cannot %ls %ls %ls\n%hs",
+                lpOperation,lpFile,lpParameters,error_description);
+    } else {
+        (void)_snwprintf(error_msg,buffer_length,L"Cannot %ls %ls %ls\nError code = 0x%x",
+                lpOperation,lpFile,lpParameters,error_code);
+    }
     error_msg[buffer_length-1] = 0;
 
     MessageBoxW(hwnd,error_msg,L"Error!",MB_OK | MB_ICONHAND);

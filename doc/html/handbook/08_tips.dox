@@ -14,7 +14,7 @@
  *
  * <h1>Performance Considerations</h1>
  * <h3><small>•</small> Initial usage</h3>
- * Before any disk defragmentation it's highly recommended
+ * Before any disk defragmentation we recommend
  * to disable the Windows paging file. It expands RAM, but
  * works much slower. So, its removing will take much bigger
  * effect on system performance than the disk defragmentation.
@@ -76,7 +76,7 @@
  * You may still encounter slower performance compared to running UltraDefrag
  * at boot or in safe mode.
  *
- * It is recommended to exclude as much files as possible from
+ * We recommend to exclude as much files as possible from
  * defragmentation - this will dramatically decrease the defragmentation
  * time. Temporary files and archives are usually rarely accessed and
  * may be left fragmented without a noticeable system performance

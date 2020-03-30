@@ -157,7 +157,8 @@
  * of the disk. This space may be used hereafter to
  * defragment large files.
  *
- * Note that UltraDefrag always skips files located directly in MFT
+ * @note
+ * UltraDefrag always skips files located directly in MFT
  * records (these files usually have sizes below 1kb), because they are
  * actually part of the MFT. Also files which have no content are skipped,
  * because actually there are no clusters on disk belonging to them.

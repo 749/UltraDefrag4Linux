@@ -49,12 +49,6 @@
 
 #endif /* !USE_WINDDK */
 
-#ifdef USE_MSVC
-#define DWORD_PTR DWORD
-typedef int intptr_t;
-typedef unsigned uintptr_t;
-#endif
-
 #ifndef LR_VGACOLOR
 /* this constant is not defined in winuser.h on mingw */
 #define LR_VGACOLOR         0x0080
@@ -63,7 +57,7 @@ typedef unsigned uintptr_t;
 /* wgx structures */
 typedef struct _WGX_I18N_RESOURCE_ENTRY {
     int ControlID;
-    wchar_t *Key;
+    char *Key;
     wchar_t *DefaultString;
     wchar_t *LoadedString;
 } WGX_I18N_RESOURCE_ENTRY, *PWGX_I18N_RESOURCE_ENTRY;
@@ -104,11 +98,10 @@ HMENU WgxBuildPopupMenu(WGX_MENU *menu_table,HBITMAP bitmap);
 
 HBITMAP WgxCreateMenuBitmapMasked(HBITMAP hSrc,COLORREF crTransparent);
 
-/* lines in language files are limited by 8191 characters, which is more than enough */
-BOOL WgxBuildResourceTable(PWGX_I18N_RESOURCE_ENTRY table,wchar_t *lng_file_path);
+BOOL WgxBuildResourceTable(PWGX_I18N_RESOURCE_ENTRY table,char *path);
 void WgxApplyResourceTable(PWGX_I18N_RESOURCE_ENTRY table,HWND hWindow);
-void WgxSetText(HWND hWnd, PWGX_I18N_RESOURCE_ENTRY table, wchar_t *key);
-wchar_t *WgxGetResourceString(PWGX_I18N_RESOURCE_ENTRY table,wchar_t *key);
+void WgxSetText(HWND hWnd, PWGX_I18N_RESOURCE_ENTRY table, char *key);
+wchar_t *WgxGetResourceString(PWGX_I18N_RESOURCE_ENTRY table,char *key);
 void WgxDestroyResourceTable(PWGX_I18N_RESOURCE_ENTRY table);
 
 void WgxEnableWindows(HANDLE hMainWindow, ...);
@@ -130,8 +123,6 @@ void WgxDestroyFont(PWGX_FONT pFont);
 BOOL WgxSaveFont(char *wgx_font_path,PWGX_FONT pFont);
 
 BOOL IncreaseGoogleAnalyticsCounter(char *hostname,char *path,char *account);
-/* NOTE: this routine is not safe, avoid its use */
-void IncreaseGoogleAnalyticsCounterAsynch(char *hostname,char *path,char *account);
 
 void WgxDbgPrint(char *format, ...);
 void WgxDbgPrintLastError(char *format, ...);
@@ -139,10 +130,13 @@ int WgxDisplayLastError(HWND hParent,UINT msgbox_flags, char *format, ...);
 
 typedef void (*WGX_SAVE_OPTIONS_CALLBACK)(char *error);
 
-BOOL WgxGetOptions(char *config_file_path,WGX_OPTION *opts_table);
-BOOL WgxSaveOptions(char *config_file_path,WGX_OPTION *opts_table,WGX_SAVE_OPTIONS_CALLBACK cb);
+BOOL WgxGetOptions(char *path,WGX_OPTION *table);
+BOOL WgxSaveOptions(char *path,WGX_OPTION *table,WGX_SAVE_OPTIONS_CALLBACK cb);
 
 BOOL WgxSetTaskbarIconOverlay(HWND hWindow,HINSTANCE hInstance,int resource_id, wchar_t *description);
 BOOL WgxRemoveTaskbarIconOverlay(HWND hWindow);
+
+BOOL WgxCreateProcess(char *cmd,char *args);
+BOOL WgxCreateThread(LPTHREAD_START_ROUTINE routine,LPVOID param);
 
 #endif /* _WGX_H_ */

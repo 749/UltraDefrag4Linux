@@ -1,10 +1,6 @@
 -- this is the UltraDefrag boot time (native) interface build options
-
 name        = "defrag_native"
 target_type = "native"
-
-src = { "defrag_native.c", "script.c", "commands.c", "udefrag.c" }
-rc = { "defrag_native.rc" }
 
 -- list of directories containing headers the program relies on
 includes = { "include", "native", "udefrag", "zenwinx" }
@@ -14,3 +10,7 @@ adlibs = {
     "$(UDEFRAG_LIB_PATH)\\zenwinx",
     "$(UDEFRAG_LIB_PATH)\\udefrag"
 }
+
+function mingw_project_rules()
+    output_dir = "../obj/native"
+end

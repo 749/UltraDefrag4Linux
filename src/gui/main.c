@@ -304,7 +304,7 @@ static void InitMainWindowCoordinates(void)
             ReleaseDC(NULL,hDC);
         }
     }
-    
+
     if(r_rc.left == UNDEFINED_COORD)
         center_on_the_screen = 1;
     else if(r_rc.top == UNDEFINED_COORD)
@@ -360,7 +360,7 @@ void ResizeMainWindow(int force)
     
     if(list_height == 0)
         list_height = DPI(VLIST_HEIGHT);
-
+    
     /* correct invalid list heights */
     min_list_height = GetMinVolListHeight();
     if(list_height < min_list_height)
@@ -496,7 +496,7 @@ int CreateMainWindow(int nShowCmd)
 
     /* maximize window if required */
     if(init_maximized_window)
-        SendMessage(hWindow,(WM_USER + 1),0,0);
+        SendMessage(hWindow,WM_MAXIMIZE_MAIN_WINDOW,0,0);
     
     /* resize controls */
     ResizeMainWindow(1);
@@ -541,17 +541,45 @@ int CreateMainWindow(int nShowCmd)
  * @brief Opens a page of the handbook, either
  * from local storage or from the network.
  */
-void OpenWebPage(char *page)
+void OpenWebPage(char *page, char *anchor)
 {
-    short path[MAX_PATH];
+    int i;
+    wchar_t path[MAX_PATH];
+    wchar_t exe[MAX_PATH] = {0};
+    char cd[MAX_PATH];
     HINSTANCE hApp;
-    
+
     (void)_snwprintf(path,MAX_PATH,L".\\handbook\\%hs",page);
+
+    if (anchor != NULL){
+        if(GetModuleFileName(NULL,cd,MAX_PATH)){
+            cd[MAX_PATH-1] = 0;
+
+            i = strlen(cd) - 1;
+            while(i >= 0) {
+                if(cd[i] == '\\'){
+                    cd[i] = 0;
+                    break;
+                }
+                i--;
+            }
+
+            (void)FindExecutableW(path,NULL,exe);
+
+            (void)_snwprintf(path,MAX_PATH,L"file://%hs\\handbook\\%hs#%hs",cd,page,anchor);
+        }
+    }
     path[MAX_PATH - 1] = 0;
 
-    hApp = ShellExecuteW(hWindow,L"open",path,NULL,NULL,SW_SHOW);
+    if (anchor != NULL && exe[0] != 0)
+        hApp = ShellExecuteW(hWindow,NULL,exe,path,NULL,SW_SHOW);
+    else
+        hApp = ShellExecuteW(hWindow,L"open",path,NULL,NULL,SW_SHOW);
     if((int)(LONG_PTR)hApp <= 32){
-        (void)_snwprintf(path,MAX_PATH,L"http://ultradefrag.sourceforge.net/handbook/%hs",page);
+        if (anchor != NULL)
+            (void)_snwprintf(path,MAX_PATH,L"http://ultradefrag.sourceforge.net/handbook/%hs#%hs",page,anchor);
+        else
+            (void)_snwprintf(path,MAX_PATH,L"http://ultradefrag.sourceforge.net/handbook/%hs",page);
         path[MAX_PATH - 1] = 0;
         (void)WgxShellExecuteW(hWindow,L"open",path,NULL,NULL,SW_SHOW);
     }
@@ -769,23 +797,24 @@ LRESULT CALLBACK MainWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
     MINMAXINFO *mmi;
     BOOL size_changed;
     RECT rc;
-    short path[MAX_PATH];
+    wchar_t path[MAX_PATH];
     CHOOSEFONT cf;
     UINT i, id;
     MENUITEMINFOW mi;
-    short lang_name[MAX_PATH];
+    wchar_t lang_name[MAX_PATH];
     wchar_t *report_opts_path;
     FILE *f;
     int flag, disable_latest_version_check_old;
     
+    /* handle shell restart */
     if(uMsg == TaskbarButtonCreatedMsg){
         /* set taskbar icon overlay */
         if(show_taskbar_icon_overlay){
             if(WaitForSingleObject(hTaskbarIconEvent,INFINITE) != WAIT_OBJECT_0){
-                WgxDbgPrintLastError("StartJobsThreadProc: wait on hTaskbarIconEvent failed");
+                WgxDbgPrintLastError("MainWindowProc: wait on hTaskbarIconEvent failed");
             } else {
                 if(job_is_running)
-                    SetTaskbarIconOverlay(IDI_BUSY,L"JOB_IS_RUNNING");
+                    SetTaskbarIconOverlay(IDI_BUSY,"JOB_IS_RUNNING");
                 SetEvent(hTaskbarIconEvent);
             }
         }
@@ -868,6 +897,10 @@ LRESULT CALLBACK MainWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
             if(!busy_flag)
                 UpdateVolList();
             return 0;
+        case IDM_REPAIR:
+            if(!busy_flag)
+                RepairSelectedVolumes();
+            return 0;
         case IDM_EXIT:
             goto done;
         /* Reports menu handler */
@@ -946,13 +979,16 @@ LRESULT CALLBACK MainWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
             return 0;
         /* Help menu handlers */
         case IDM_CONTENTS:
-            OpenWebPage("index.html");
+            OpenWebPage("index.html", NULL);
             return 0;
         case IDM_BEST_PRACTICE:
-            OpenWebPage("Tips.html");
+            OpenWebPage("Tips.html", NULL);
             return 0;
         case IDM_FAQ:
-            OpenWebPage("FAQ.html");
+            OpenWebPage("FAQ.html", NULL);
+            return 0;
+        case IDM_CM_LEGEND:
+            OpenWebPage("GUI.html", "cluster_map_legend");
             return 0;
         case IDM_CHECK_UPDATE:
             disable_latest_version_check_old = disable_latest_version_check;
@@ -1082,7 +1118,7 @@ LRESULT CALLBACK MainWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
         if(!maximized_window && !size_changed)
             memcpy((void *)&r_rc,(void *)&win_rc,sizeof(RECT));
         return 0;
-    case (WM_USER + 1):
+    case WM_MAXIMIZE_MAIN_WINDOW:
         /* maximize window */
         ShowWindow(hWnd,SW_MAXIMIZE);
         return 0;
@@ -1140,15 +1176,9 @@ DWORD WINAPI UpdateWebStatisticsThreadProc(LPVOID lpParameter)
  */
 void start_web_statistics(void)
 {
-    HANDLE h;
-    DWORD id;
-
-    h = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)UpdateWebStatisticsThreadProc,NULL,0,&id);
-    if(h == NULL){
+    if(!WgxCreateThread(UpdateWebStatisticsThreadProc,NULL)){
         WgxDbgPrintLastError("Cannot run UpdateWebStatisticsThreadProc");
         web_statistics_completed = 1;
-    } else {
-        CloseHandle(h);
     }
 }
 

@@ -59,6 +59,8 @@ WGX_MENU action_menu[] = {
     {MF_STRING | MF_ENABLED | MF_CHECKED,IDM_IGNORE_REMOVABLE_MEDIA, NULL, L"Skip removable &media\tCtrl+M", -1 },
     {MF_STRING | MF_ENABLED,IDM_RESCAN,                              NULL, L"&Rescan drives\tCtrl+D",        -1 },
     {MF_SEPARATOR,0,NULL,NULL,0},
+    {MF_STRING | MF_ENABLED,IDM_REPAIR,                              NULL, L"Repair drives",                 -1 },
+    {MF_SEPARATOR,0,NULL,NULL,0},
     {MF_STRING | MF_ENABLED | MF_POPUP,IDM_WHEN_DONE,                when_done_menu,L"&When done",           -1 },
     {MF_SEPARATOR,0,NULL,NULL,0},
     {MF_STRING | MF_ENABLED,IDM_EXIT,                                NULL, L"E&xit\tAlt+F4",                 -1 },
@@ -98,14 +100,15 @@ WGX_MENU settings_menu[] = {
 };
 
 WGX_MENU help_menu[] = {
-    {MF_STRING | MF_ENABLED,IDM_CONTENTS,      NULL, L"&Contents\tF1",       9 },
+    {MF_STRING | MF_ENABLED,IDM_CONTENTS,      NULL, L"&Contents\tF1",        9 },
     {MF_SEPARATOR,0,NULL,NULL,0},
-    {MF_STRING | MF_ENABLED,IDM_BEST_PRACTICE, NULL, L"Best &practice\tF2", 10 },
-    {MF_STRING | MF_ENABLED,IDM_FAQ,           NULL, L"&FAQ\tF3",           -1 },
+    {MF_STRING | MF_ENABLED,IDM_BEST_PRACTICE, NULL, L"Best &practice\tF2",  10 },
+    {MF_STRING | MF_ENABLED,IDM_FAQ,           NULL, L"&FAQ\tF3",            -1 },
+    {MF_STRING | MF_ENABLED,IDM_CM_LEGEND,     NULL, L"Cluster map &legend", -1 },
     {MF_SEPARATOR,0,NULL,NULL,0},
-    {MF_STRING | MF_ENABLED,IDM_CHECK_UPDATE,  NULL, L"Check for &update",  -1 },
+    {MF_STRING | MF_ENABLED,IDM_CHECK_UPDATE,  NULL, L"Check for &update",   -1 },
     {MF_SEPARATOR,0,NULL,NULL,0},
-    {MF_STRING | MF_ENABLED,IDM_ABOUT,         NULL, L"&About\tF4",         11 },
+    {MF_STRING | MF_ENABLED,IDM_ABOUT,         NULL, L"&About\tF4",          11 },
     {0,0,NULL,NULL,0}
 };
 

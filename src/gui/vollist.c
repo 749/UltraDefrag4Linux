@@ -58,7 +58,7 @@ void InitVolList(void)
 
     /* create header */
     lvc.mask = LVCF_TEXT;
-    lvc.pszText = text = WgxGetResourceString(i18n_table,L"VOLUME");
+    lvc.pszText = text = WgxGetResourceString(i18n_table,"VOLUME");
     if(text){
         (void)SendMessage(hList,LVM_INSERTCOLUMNW,0,(LRESULT)&lvc);
         free(text);
@@ -67,7 +67,7 @@ void InitVolList(void)
         (void)SendMessage(hList,LVM_INSERTCOLUMNW,0,(LRESULT)&lvc);
     }
 
-    lvc.pszText =  text = WgxGetResourceString(i18n_table,L"STATUS");
+    lvc.pszText =  text = WgxGetResourceString(i18n_table,"STATUS");
     if(text){
         (void)SendMessage(hList,LVM_INSERTCOLUMNW,1,(LRESULT)&lvc);
         free(text);
@@ -78,7 +78,7 @@ void InitVolList(void)
 
     lvc.mask |= LVCF_FMT;
     lvc.fmt = LVCFMT_RIGHT;
-    lvc.pszText =  text = WgxGetResourceString(i18n_table,L"TOTAL");
+    lvc.pszText =  text = WgxGetResourceString(i18n_table,"TOTAL");
     if(text){
         (void)SendMessage(hList,LVM_INSERTCOLUMNW,2,(LRESULT)&lvc);
         free(text);
@@ -87,7 +87,7 @@ void InitVolList(void)
         (void)SendMessage(hList,LVM_INSERTCOLUMNW,2,(LRESULT)&lvc);
     }
 
-    lvc.pszText =  text = WgxGetResourceString(i18n_table,L"FREE");
+    lvc.pszText =  text = WgxGetResourceString(i18n_table,"FREE");
     if(text){
         (void)SendMessage(hList,LVM_INSERTCOLUMNW,3,(LRESULT)&lvc);
         free(text);
@@ -96,7 +96,7 @@ void InitVolList(void)
         (void)SendMessage(hList,LVM_INSERTCOLUMNW,3,(LRESULT)&lvc);
     }
 
-    lvc.pszText =  text = WgxGetResourceString(i18n_table,L"PERCENT");
+    lvc.pszText =  text = WgxGetResourceString(i18n_table,"PERCENT");
     if(text){
         (void)SendMessage(hList,LVM_INSERTCOLUMNW,4,(LRESULT)&lvc);
         free(text);
@@ -276,6 +276,7 @@ void VolListNotifyHandler(LPARAM lParam)
 {
     volume_processing_job *job;
     LPNMLISTVIEW lpnm;
+    int id;
     
     lpnm = (LPNMLISTVIEW)lParam;
     if(lpnm->hdr.code == LVN_ITEMCHANGED && lpnm->iItem != (-1)){
@@ -290,8 +291,13 @@ void VolListNotifyHandler(LPARAM lParam)
         if(job) UpdateStatusBar(&job->pi);
     }
     /* perform a volume analysis when list item becomes double-clicked */
-    if(lpnm->hdr.hwndFrom == hList && lpnm->hdr.code == NM_DBLCLK)
-        PostMessage(hWindow,WM_COMMAND,(WPARAM)IDM_ANALYZE,0);
+    if(lpnm->hdr.hwndFrom == hList && lpnm->hdr.code == NM_DBLCLK){
+        job = get_first_selected_job();
+        if(job){
+            id = job->dirty_volume ? IDM_REPAIR : IDM_ANALYZE;
+            PostMessage(hWindow,WM_COMMAND,(WPARAM)id,0);
+        }
+    }
 }
 
 /**
@@ -346,19 +352,19 @@ static void VolListUpdateStatusFieldInternal(int index,volume_processing_job *jo
     
     /* each job starts with a volume analysis */
     if(job->pi.current_operation == VOLUME_ANALYSIS && job->job_type != NEVER_EXECUTED_JOB){
-        ProcessCaption = WgxGetResourceString(i18n_table,L"STATUS_ANALYSED");
+        ProcessCaption = WgxGetResourceString(i18n_table,"STATUS_ANALYSED");
     } else {
         switch(job->job_type){
             case ANALYSIS_JOB:
-                ProcessCaption = WgxGetResourceString(i18n_table,L"STATUS_ANALYSED");
+                ProcessCaption = WgxGetResourceString(i18n_table,"STATUS_ANALYSED");
                 break;
             case DEFRAGMENTATION_JOB:
-                ProcessCaption = WgxGetResourceString(i18n_table,L"STATUS_DEFRAGMENTED");
+                ProcessCaption = WgxGetResourceString(i18n_table,"STATUS_DEFRAGMENTED");
                 break;
             case FULL_OPTIMIZATION_JOB:
             case QUICK_OPTIMIZATION_JOB:
             case MFT_OPTIMIZATION_JOB:
-                ProcessCaption = WgxGetResourceString(i18n_table,L"STATUS_OPTIMIZED");
+                ProcessCaption = WgxGetResourceString(i18n_table,"STATUS_OPTIMIZED");
                 break;
         }
     }
@@ -400,15 +406,23 @@ static void VolListUpdateStatusFieldInternal(int index,volume_processing_job *jo
  */
 void SetVolumeDirtyStatus(int index, volume_info *v)
 {
+    volume_processing_job *job;
     LV_ITEMW lviw;
+    wchar_t *text;
 
+    job = get_job(v->letter);
+    if(job) job->dirty_volume = v->is_dirty;
+    
     lviw.iItem = index;
     lviw.iSubItem = 1;
     if(v->is_dirty){
         lviw.mask = LVIF_TEXT | LVIF_IMAGE;
-        lviw.pszText = L"Disk is dirty, run CHKDSK to repair it";
+        text = WgxGetResourceString(i18n_table,"STATUS_DIRTY");
+        if(text) lviw.pszText = text;
+        else lviw.pszText = L"Disk needs to be repaired";
         lviw.iImage = v->is_removable ? 3 : 2;
         (void)SendMessage(hList,LVM_SETITEMW,0,(LRESULT)&lviw);
+        if(text) free(text);
     } else {
         lviw.mask = LVIF_IMAGE;
         lviw.iImage = v->is_removable ? 1 : 0;
@@ -496,15 +510,9 @@ static DWORD WINAPI RescanDrivesThreadProc(LPVOID lpParameter)
  */
 void UpdateVolList(void)
 {
-    DWORD id;
-    HANDLE h;
-
-    h = create_thread(RescanDrivesThreadProc,NULL,&id);
-    if(h == NULL){
+    if(!WgxCreateThread(RescanDrivesThreadProc,NULL)){
         WgxDisplayLastError(hWindow,MB_OK | MB_ICONHAND,
             "Cannot create thread starting drives rescan!");
-    } else {
-        CloseHandle(h);
     }
 }
 

@@ -38,7 +38,7 @@ HANDLE hTaskbarIconEvent = NULL;
  * the description for overlay icon
  * to be retrieved from the i18n_table.
  */
-void SetTaskbarIconOverlay(int resource_id, wchar_t *description_key)
+void SetTaskbarIconOverlay(int resource_id, char *description_key)
 {
     wchar_t *text;
     

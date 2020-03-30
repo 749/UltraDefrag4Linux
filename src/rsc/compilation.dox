@@ -25,7 +25,9 @@
  * Type <b>build --help</b> (see below) for details.
  *
  * You can download the <a href="http://koti.mbnet.fi/vaultec/mingwstudio.php">MinGW Developer Studio</a>,
- * if you need a fully functional development environment for MinGW.
+ * if you need a fully functional development environment for MinGW. To build project files for it go to /src
+ * directory of the source tree and type:
+ * @code lua tools\make-mingw-projects.lua @endcode
  *
  * Regardless of the selected development environment you need to setup a few other little
  * tools on your system:

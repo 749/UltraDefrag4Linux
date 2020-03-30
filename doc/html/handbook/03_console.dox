@@ -109,7 +109,8 @@
  * @par --all-fixed
  * Process all disks except removable.
  *
- * Note that the --all-fixed key has higher precedence, if both keys are specified
+ * @note
+ * The --all-fixed key has higher precedence, if both keys are specified
  * UltraDefrag will process fixed drives only.</li>
  * </ul>
  *
@@ -189,7 +190,8 @@
  * \end{Indent}
  * @endlatexonly
  *
- * Note that all filters are case insensitive. Each filter substring represents a pattern,
+ * @note
+ * All filters are case insensitive. Each filter substring represents a pattern,
  * UltraDefrag will compare with paths. For example, the "*temp*;*tmp*" filter
  * will be applied both to temporary folders and to Internet Explorer's cache.
  *
@@ -197,10 +199,12 @@
  * character, '*' - any zero or more characters. *.* pattern matches any file
  * with an extension. An asterisk alone (*) matches anything (with or without an extension).
  *
- * Note that files marked temporary by system are always excluded regardless of filters
+ * @note
+ * Files marked temporary by system are always excluded regardless of filters,
  * because usually they take no effect on system performance.
  *
- * Note that files excluded from processing are never treated as fragmented.
+ * @note
+ * Files excluded from processing are never treated as fragmented.
  * Because only files affecting system performance should get our attention.
  *
  * <h1>Examples</h1>
@@ -317,7 +321,8 @@
  * To stop the defragmentation press Ctrl+C keys or close
  * the command prompt.
  *
- * Note that both UD_IN_FILTER and UD_EX_FILTER environment variables
+ * @note
+ * Both UD_IN_FILTER and UD_EX_FILTER environment variables
  * are ignored by the context menu handler. It is intended to defragment
  * exactly what is selected.
  *

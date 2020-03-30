@@ -50,6 +50,12 @@
 /** @} */
 
 /**
+ * @defgroup Exec Processes and Threads
+ * @{
+ */
+/** @} */
+
+/**
  * @defgroup Fonts Fonts
  * @{
  */
