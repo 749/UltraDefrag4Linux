@@ -520,6 +520,7 @@ end
 
 -- THE MAIN CODE STARTS HERE
 -- current version of configuration file
+-- 0 - 99 for v5; 100 - 199 for v6; 200+ for v7
 current_version = 115
 shellex_options = ""
 _G_copy = {}

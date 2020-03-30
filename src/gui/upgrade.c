@@ -189,7 +189,7 @@ static wchar_t *GetNewVersionAnnouncement(void)
     
     last_version = ParseVersionString(lv);
     if(last_version == -1) return NULL;
-    itrace("latest version is %s ... %u",lv,last_version);
+    itrace("latest  version is UltraDefrag %s ... %u",lv,last_version);
     
     /* v7 will not support nt4 and w2k */
     ZeroMemory(&osvi, sizeof(OSVERSIONINFO));

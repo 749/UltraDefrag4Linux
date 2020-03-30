@@ -170,7 +170,7 @@ HIDE                      = 隱藏
 
 ; Strings for the file fragmentation reports.
 
-FRAGMENTED_FILES_ON       = 分散檔案的於
+FRAGMENTED_FILES_ON       = 分散的檔案於
 
 VISIT_HOMEPAGE            = 拜訪我們的網站
 VIEW_REPORT_OPTIONS       = 查看報告設定

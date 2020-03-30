@@ -84,13 +84,13 @@ SCRIPT                    = &Script
 
 ; --- --- Sorting submenu
 
-SORT_BY_PATH              = Sort by &path
-SORT_BY_SIZE              = Sort by &size
-SORT_BY_C_TIME            = Sort by &creation time
-SORT_BY_M_TIME            = Sort by last &modification time
-SORT_BY_A_TIME            = Sort by &last access time
-SORT_ASCENDING            = Sort in &ascending order
-SORT_DESCENDING           = Sort in &descending order
+SORT_BY_PATH              = Ordenar por &caminho
+SORT_BY_SIZE              = Ordenar por %tamanho
+SORT_BY_C_TIME            = Ordenar por data de c&riação
+SORT_BY_M_TIME            = Ordenar por data de &modificação
+SORT_BY_A_TIME            = Ordenar por data de &acesso
+SORT_ASCENDING            = Ordem c&rescente
+SORT_DESCENDING           = Ordem &decrescente
 
 ; --- Help Menu
 

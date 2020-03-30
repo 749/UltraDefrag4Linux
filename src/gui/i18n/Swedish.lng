@@ -7,6 +7,7 @@
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
 ; Revised Aug. 17, 2010 by Patrick Palm
+; Revised Mar.  4, 2013 by Suranappar.se
 ;------------------------------------------------------------------------------
 
 ; Please keep the header and comments in English and use Latin letters,
@@ -31,7 +32,7 @@ DEFRAGMENT                = Defragmentera
 QUICK_OPTIMIZE            = Snabb optimering
 FULL_OPTIMIZE             = Utförlig optimering
 OPTIMIZE_MFT              = Optimera MFT
-PAUSE                     = &Pause
+PAUSE                     = &Paus
 STOP                      = Stoppa
 REPEAT_ACTION             = Upprepande aktivitet
 SKIP_REMOVABLE_MEDIA      = Hoppa över flyttbara medier
@@ -60,7 +61,7 @@ LANGUAGE                  = Språk
 GRAPHICAL_INTERFACE       = Grafiskt användargränssnitt
 BOOT_TIME_SCAN            = Boot-skanning
 REPORTS                   = Rapporter
-SORTING                   = &Sorting
+SORTING                   = &Sortera
 
 ; --- --- Language submenu
 
@@ -81,13 +82,13 @@ SCRIPT                    = Redigera skript
 
 ; --- --- Sorting submenu
 
-SORT_BY_PATH              = Sort by &path
-SORT_BY_SIZE              = Sort by &size
-SORT_BY_C_TIME            = Sort by &creation time
-SORT_BY_M_TIME            = Sort by last &modification time
-SORT_BY_A_TIME            = Sort by &last access time
-SORT_ASCENDING            = Sort in &ascending order
-SORT_DESCENDING           = Sort in &descending order
+SORT_BY_PATH              = Sortera efter &sökväg
+SORT_BY_SIZE              = Sortera efter &storlek
+SORT_BY_C_TIME            = Sortera efter &skapande datum
+SORT_BY_M_TIME            = Sortera efter last &modifierings datum
+SORT_BY_A_TIME            = Sortera efter &senast använd datum
+SORT_ASCENDING            = Sortera efter &stigande ordning
+SORT_DESCENDING           = Sortera efter &fallande ordning
 
 ; --- Help Menu
 

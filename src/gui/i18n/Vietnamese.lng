@@ -30,7 +30,7 @@ DEFRAGMENT                = &Chống phân mảnh
 QUICK_OPTIMIZE            = Tối ưu hóa &nhanh
 FULL_OPTIMIZE             = Tối ưu hóa &toàn bộ
 OPTIMIZE_MFT              = Tối ưu hóa &MFT
-PAUSE                     = &Pause
+PAUSE                     = &Tạm dừng
 STOP                      = &Dừng
 REPEAT_ACTION             = &Lặp lại hành động
 SKIP_REMOVABLE_MEDIA      = &Bỏ qua các thiết bị di động
@@ -59,7 +59,7 @@ LANGUAGE                  = &Ngôn ngữ
 GRAPHICAL_INTERFACE       = &Giao diện người dùng
 BOOT_TIME_SCAN            = &Quét khi khởi động
 REPORTS                   = &Báo cáo
-SORTING                   = &Sorting
+SORTING                   = &Sắp xếp theo
 
 ; --- --- Language submenu
 
@@ -80,13 +80,13 @@ SCRIPT                    = &Chỉnh sửa
 
 ; --- --- Sorting submenu
 
-SORT_BY_PATH              = Sort by &path
-SORT_BY_SIZE              = Sort by &size
-SORT_BY_C_TIME            = Sort by &creation time
-SORT_BY_M_TIME            = Sort by last &modification time
-SORT_BY_A_TIME            = Sort by &last access time
-SORT_ASCENDING            = Sort in &ascending order
-SORT_DESCENDING           = Sort in &descending order
+SORT_BY_PATH              = Sắp xếp theo &đường vào
+SORT_BY_SIZE              = Sắp xếp theo &kích cỡ
+SORT_BY_C_TIME            = Sắp xếp theo &thời gian tạo ra
+SORT_BY_M_TIME            = Sắp xếp theo lần sửa đổi &cuối
+SORT_BY_A_TIME            = Sắp xếp theo &lần vào cuối
+SORT_ASCENDING            = Sắp xếp theo &thứ tự tăng dần
+SORT_DESCENDING           = Sắp xếp theo &thứ tự giảm dần
 
 ; --- Help Menu
 

@@ -197,25 +197,6 @@
         Abort
     ${EndIf}
 
-    ; check for Windows 8 and Server 2012
-    Push $0
-    Push $1
-
-    ${WinVerGetMajor} $0
-    ${WinVerGetMinor} $1
-
-    ${If} $0 == 6
-    ${AndIf} $1 > 1
-        MessageBox MB_YESNO|MB_ICONINFORMATION \
-            "Windows 8 and above is not tested yet!$\n \
-            Install UltraDefrag at your own risk?" \
-            /SD IDYES IDYES continue
-        Abort
-    continue:
-    ${EndIf}
-    Pop $1
-    Pop $0
-
     /* this idea was suggested by bender647 at users.sourceforge.net */
     Push $R0
     ClearErrors
@@ -983,6 +964,7 @@ SkipMove:
 ;-----------------------------------------
 
 !macro RemoveObsoleteFiles
+    DetailPrint "Removing obsolete files and settings..."
 
     ; remove files of previous installations
     DeleteRegKey HKLM "SYSTEM\UltraDefrag"
@@ -1096,6 +1078,7 @@ SkipMove:
 ;-----------------------------------------
 
 !macro UpdateUninstallSizeValue
+    DetailPrint "Calculating installation size..."
 
     push $R0
     push $0

@@ -1,5 +1,20 @@
 ﻿HISTORY
 
+  Version 6.0.1 2013-04-01
+  ------------------------------------------------------------------------------
+    - Installer no longer warns about Windows 8 being untested
+    - shortened the delay after hitting the finish button of the installer
+    - increased Windows 8 compatibility
+    - the following translations were added:
+
+      Armenian
+
+    - the following translations were updated:
+
+      Chinese (Traditional), Filipino (Tagalog), Italian, Portuguese, Spanish (AR),
+      Ukrainian, Vietnamese
+
+
   Version 6.0.0 2013-03-02
   ------------------------------------------------------------------------------
     - the following translations were updated:
@@ -91,6 +106,7 @@
     - Windows Server 2003 DDK needs to be patched in order to compile
       the program; look at rsc/compilation.dox for details
 
+                                    ***
 
   Version 5.1.2  2012-12-18
   ------------------------------------------------------------------------------

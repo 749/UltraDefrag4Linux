@@ -32,7 +32,7 @@ DEFRAGMENT                = 断片ファイルのデフラグ
 QUICK_OPTIMIZE            = 迅速に最適化する
 FULL_OPTIMIZE             = 完全に最適化する
 OPTIMIZE_MFT              = MFTの最適化する
-PAUSE                     = &Pause
+PAUSE                     = 一時停止
 STOP                      = 停止
 REPEAT_ACTION             = 操作を繰り返す
 SKIP_REMOVABLE_MEDIA      = リムーバブルメディアは除外
@@ -61,7 +61,7 @@ LANGUAGE                  = 言語
 GRAPHICAL_INTERFACE       = グラフィカルユーザーインターフェイス
 BOOT_TIME_SCAN            = 起動時のスキャン
 REPORTS                   = レポートファイルの設定
-SORTING                   = &Sorting
+SORTING                   = 並べ替え
 
 ; --- --- Language submenu
 
@@ -82,13 +82,13 @@ SCRIPT                    = 起動時の設定
 
 ; --- --- Sorting submenu
 
-SORT_BY_PATH              = Sort by &path
-SORT_BY_SIZE              = Sort by &size
-SORT_BY_C_TIME            = Sort by &creation time
-SORT_BY_M_TIME            = Sort by last &modification time
-SORT_BY_A_TIME            = Sort by &last access time
-SORT_ASCENDING            = Sort in &ascending order
-SORT_DESCENDING           = Sort in &descending order
+SORT_BY_PATH              = パス
+SORT_BY_SIZE              = サイズ
+SORT_BY_C_TIME            = 作成日
+SORT_BY_M_TIME            = 最終更新日時
+SORT_BY_A_TIME            = 最終アクセス日時
+SORT_ASCENDING            = 昇順
+SORT_DESCENDING           = 降順
 
 ; --- Help Menu
 

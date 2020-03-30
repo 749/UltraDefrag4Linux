@@ -29,7 +29,7 @@ DEFRAGMENT                = &Дефрагментація
 QUICK_OPTIMIZE            = Швидка &оптимізація
 FULL_OPTIMIZE             = Повна оптимізація
 OPTIMIZE_MFT              = Оптимізація MFT
-PAUSE                     = &Pause
+PAUSE                     = &Пауза
 STOP                      = &Стоп
 REPEAT_ACTION             = Дозволити повтор
 SKIP_REMOVABLE_MEDIA      = Перейти &знімних носіїв
@@ -58,7 +58,7 @@ LANGUAGE                  = &Мова
 GRAPHICAL_INTERFACE       = &Графічний інтерфейс
 BOOT_TIME_SCAN            = За&пуск при завантаженні Windows
 REPORTS                   = &Звіти
-SORTING                   = &Sorting
+SORTING                   = &Сортування
 
 ; --- --- Language submenu
 
@@ -79,13 +79,13 @@ SCRIPT                    = &Сценарій
 
 ; --- --- Sorting submenu
 
-SORT_BY_PATH              = Sort by &path
-SORT_BY_SIZE              = Sort by &size
-SORT_BY_C_TIME            = Sort by &creation time
-SORT_BY_M_TIME            = Sort by last &modification time
-SORT_BY_A_TIME            = Sort by &last access time
-SORT_ASCENDING            = Sort in &ascending order
-SORT_DESCENDING           = Sort in &descending order
+SORT_BY_PATH              = Сортувати за &шляхом
+SORT_BY_SIZE              = Сортувати за &розмiром
+SORT_BY_C_TIME            = Сортувати за &часом створення
+SORT_BY_M_TIME            = Сортувати за часом &останньоi змiни
+SORT_BY_A_TIME            = Сортувати за часом &останньоi дii
+SORT_ASCENDING            = Сортувати в &порядку збiльшення
+SORT_DESCENDING           = Сортувати в &порядку зменшення
 
 ; --- Help Menu
 
@@ -147,8 +147,8 @@ SECONDS_TILL_SHUTDOWN     = секунд до вимикання системи
 SECONDS_TILL_HIBERNATION  = секунд до сплячки системи
 SECONDS_TILL_LOGOFF       = секунд до виходу із системи
 SECONDS_TILL_REBOOT       = секунд до перезавантаження
-YES                       = &Та
-NO                        = &Немає
+YES                       = &Так
+NO                        = &Нi
 
 ; Upgrade dialog
 

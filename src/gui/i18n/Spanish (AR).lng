@@ -26,14 +26,14 @@ HELP                      = &Ayuda
 ; --- Action Menu // Menú de Acciones
 
 ANALYSE                   = &Analizar
-DEFRAGMENT                = &Desfragmentar
+DEFRAGMENT                = &Defragmentar
 QUICK_OPTIMIZE            = Optimización rápida
 FULL_OPTIMIZE             = Optimización completa
 OPTIMIZE_MFT              = Optimizar MFT
 PAUSE                     = Pa&usa
 STOP                      = D&etener
-REPEAT_ACTION             = Re&petir acciónn
-SKIP_REMOVABLE_MEDIA      = &Ignorar discos removíbles
+REPEAT_ACTION             = Re&petir acción
+SKIP_REMOVABLE_MEDIA      = &Ignorar discos removibles
 RESCAN_DRIVES             = Re-Es&canear unidades
 REPAIR_DRIVES             = &Reparar unidades
 WHEN_DONE                 = Al &Terminar
@@ -43,7 +43,7 @@ EXIT                      = Salir
 
 WHEN_DONE_NONE            = &Nada
 WHEN_DONE_EXIT            = &Salir
-WHEN_DONE_STANDBY         = Es&perar
+WHEN_DONE_STANDBY         = &Suspender
 WHEN_DONE_HIBERNATE       = &Hibernar
 WHEN_DONE_LOGOFF          = &Cerrar sesión
 WHEN_DONE_REBOOT          = &Reiniciar
@@ -120,7 +120,7 @@ PERCENT                   = % de espacio libre
 
 STATUS_RUNNING            = Trabajando
 STATUS_ANALYSED           = Analizado
-STATUS_DEFRAGMENTED       = Desfragmentado
+STATUS_DEFRAGMENTED       = Defragmentado
 STATUS_OPTIMIZED          = Optimizado
 STATUS_DIRTY              = El disco necesita ser reparado
 
@@ -153,7 +153,7 @@ NO                        = &No
 
 ; Upgrade dialog
 
-UPGRADE_CAPTION           = Una actualización está disponible ^-^
+UPGRADE_CAPTION           = Actualización disponible ^-^
 UPGRADE_MESSAGE           = Una nueva versión está disponible para descargar!
 
 ; A string for the taskbar icon overlay, needed for accessibility.
@@ -178,7 +178,7 @@ SIZE                      = tamaño
 FILENAME                  = nombre de archivo
 COMMENT                   = comentario
 
-LOCKED                    = cerrado
+LOCKED                    = trabado
 MOVE_FAILED               = error al mover
 INVALID                   = inválido
 

@@ -1,0 +1,184 @@
+﻿;------------------------------------------------------------------------------
+; UltraDefrag GUI Armenian Language Pack.
+; Copyright (C) 2013 MrEgho.
+;------------------------------------------------------------------------------
+; History --- Date ---------- Full Name
+;------------------------------------------------------------------------------
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
+;------------------------------------------------------------------------------
+
+; Please keep the header and comments in English and use Latin letters,
+; so everyone understands them
+
+; THIS FILE MUST BE SAVED IN **UTF-8** ENCODING
+; Use \n as a newline character in strings.
+; Use an ampersand (&) before a letter to make it a keyboard accelerator
+
+
+; Main Menu
+
+ACTION                    = &Գործընթաց
+REPORT                    = &Զեկույց
+SETTINGS                  = &Կարգավորումներ
+HELP                      = &Տեղեկություն
+
+; --- Action Menu
+
+ANALYSE                   = &Վերլուծություն
+DEFRAGMENT                = &Դեֆրագմենտացիա
+QUICK_OPTIMIZE            = &Արագ օպտիմալացում
+FULL_OPTIMIZE             = Լրիվ օպտիմալացում
+OPTIMIZE_MFT              = &МFT-ի օպտիմալացում
+PAUSE                     = &Դադար
+STOP                      = &Կանգ
+REPEAT_ACTION             = &Թույլատրել կրկնություն
+SKIP_REMOVABLE_MEDIA      = Բաց փողել արտաքին կրիչները
+RESCAN_DRIVES             = Վերասկանավորել կրիչը
+REPAIR_DRIVES             = Կրիչների վերանորոգել
+WHEN_DONE                 = Վերջացնելուց հետո
+EXIT                      = Դուրս գալ
+
+; --- --- When done submenu
+
+WHEN_DONE_NONE            = Ոչինչ չձեռնարկել
+WHEN_DONE_EXIT            = Դուրս գալ ծրագրից
+WHEN_DONE_STANDBY         = Անցնել սպասման ռեժիմին
+WHEN_DONE_HIBERNATE       = Անցնել քնի ռեժիմ
+WHEN_DONE_LOGOFF          = Դուրս գալ համակարգից
+WHEN_DONE_REBOOT          = Համակարգիչը վերաբեռնավորել
+WHEN_DONE_SHUTDOWN        = Անջատել համակարգիչը
+
+; --- Report Menu
+
+SHOW_REPORT               = Ցուցադրել զեկույցը
+
+; --- Settings Menu
+
+LANGUAGE                  = Լեզու
+GRAPHICAL_INTERFACE       = Գրաֆիկական արտապատկերումը
+BOOT_TIME_SCAN            = Մեկնարկել ծրագիրը Windows-ի հետ
+REPORTS                   = Հաշվետվություններ
+SORTING                   = Դասավորություն
+
+; --- --- Language submenu
+
+TRANSLATIONS_CHANGE_LOG   = Դիտել փոփոխությունների մատյանը
+TRANSLATIONS_REPORT       = Դիտել թարգմանության հաշվետվությունը
+TRANSLATIONS_FOLDER       = Թարգմանությունների պանակ
+TRANSLATIONS_SUBMIT       = Ուղարկել ընթացիկ թարգմանությունը
+
+; --- --- Graphical interface submenu
+
+FONT                      = Տառատեսակ
+OPTIONS                   = Կարգաբերումներ
+
+; --- --- Boot time scan submenu
+
+ENABLE                    = Համակցել
+SCRIPT                    = Սկրիպտ
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Դասավորել ըստ ճանապարհների
+SORT_BY_SIZE              = Դասավորել ըստ չափերի
+SORT_BY_C_TIME            = Դասավորել ըստ ստեղծման ամսաթվերի
+SORT_BY_M_TIME            = Դասավորել ըստ փոփոխման ամսաթվերի
+SORT_BY_A_TIME            = Դասավորել ըստ հասանելիության ամսափվերի
+SORT_ASCENDING            = Դասավորել ըստ աճման
+SORT_DESCENDING           = Դասավորել ըստ նվազման
+
+; --- Help Menu
+
+CONTENTS                  = Պարունակությունը
+BEST_PRACTICE             = Օգտակար խորհուրդներ
+FAQ                       = Հաճախ տրվող հարցել
+CM_LEGEND                 = Կլաստերների արտապատկերման քարտեզ
+DEBUG                     = Կարգաբերում
+CHECK_UPDATE              = Ստուգել թարմացումները
+ABOUT                     = Ծրագրի մասին
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Բացել գրանցամատյանը
+REPORT_BUG                = Ուղարկել սխալի մասին հաղորդագրություն
+
+; --- Toolbar Tooltips
+
+BOOT_TIME_SCRIPT          = Windows աշխատանքի սցենարը նախքան բեռնավորումը
+
+; Drives list items.
+
+VOLUME                    = Բաժին
+STATUS                    = Կարգավիճակ
+FRAGMENTATION             = Մասնատում
+TOTAL                     = Ընդամենը
+FREE                      = Ազատ
+PERCENT                   = Տոկոսներով
+
+; Status messages
+
+STATUS_RUNNING            = Կատարվում է
+STATUS_ANALYSED           = Վերանայված է
+STATUS_DEFRAGMENTED       = Դեֆրագմենտացիա կարատված է
+STATUS_OPTIMIZED          = Օպտիմիզացված է
+STATUS_DIRTY              = Անհրաժեշտ է կրիչի ուղղում
+
+; Status bar messages.
+
+DIRS                      = Պանակներ
+FILES                     = Ֆայլեր
+FRAGMENTED                = Մասնատված
+COMPRESSED                = Խտացված
+
+; About window.
+
+ABOUT_WIN_TITLE           = Ultra Defragmenter ծրագրի մասին
+CREDITS                   = Հեղինակներ
+LICENSE                   = Լիցենզիա
+
+; Shutdown confirmation
+
+PLEASE_CONFIRM            = Խնդրում եմ, հաստատեք!
+REALLY_SHUTDOWN_WHEN_DONE = Դեֆրագմենացիաից հետո համակարգիչը անջատել?
+REALLY_HIBERNATE_WHEN_DONE= Դեֆրամգմենտացիաից հետո անցնել քնի ռեժիմ?
+REALLY_LOGOFF_WHEN_DONE   = Դեֆրամգմենտացիաից հետո դուրս համակարգից?
+REALLY_REBOOT_WHEN_DONE   = Դեֆրամգմենտացիաից հետո վերաբեռնավրոլ համակարգիչը?
+SECONDS_TILL_SHUTDOWN     = վայրկյան, մինչև համակարգչի անջատվելը
+SECONDS_TILL_HIBERNATION  = վայլկյան, մինչև քնի ռեժիմ անցնելը
+SECONDS_TILL_LOGOFF       = վայլկյան, մինչև համարկից դուրս գալը
+SECONDS_TILL_REBOOT       = վայլկյան, մինչև համակարգչի վերաբեռնավորումը
+YES                       = &Այո
+NO                        = &Ոչ
+
+; Upgrade dialog
+
+UPGRADE_CAPTION           = Դուք կարող եք Ինձ թարմացնել ^-^
+UPGRADE_MESSAGE           = ծրագիրը հասանելի է ներբեռնման!
+
+; A string for the taskbar icon overlay, needed for accessibility.
+
+JOB_IS_RUNNING            = Առաջադրանքը կատարվում է
+
+; Strings for system tray icon context menu.
+
+SHOW                      = Ցուցադրել
+HIDE                      = Թաքցնել
+
+; Strings for the file fragmentation reports.
+
+FRAGMENTED_FILES_ON       = մասնատել ֆայլերը, ըստ
+
+VISIT_HOMEPAGE            = Այցելեք մեր վեբէջ
+VIEW_REPORT_OPTIONS       = Հաշվետվությունների կարգավորումներ
+POWERED_BY_LUA            = Աշխատում է Lua-ում
+
+FRAGMENTS                 = Մասերի
+SIZE                      = Չափ
+FILENAME                  = Ֆայլի անուն
+COMMENT                   = մեկնաբանությունների
+
+LOCKED                    = Արգելափակված է
+MOVE_FAILED               = Չստացվեց տեղափոխել
+INVALID                   = Ալգորիթմի կամ համակարգի ֆայլերի սխալ
+
+; END OF FILE

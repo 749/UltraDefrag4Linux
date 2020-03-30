@@ -142,16 +142,16 @@ COMPRESSED                = compressi
 ; About window.
 
 ABOUT_WIN_TITLE           = Informazioni su UltraDefrag
-CREDITS                   = &Crediti
+CREDITS                   = &Riconoscimenti
 LICENSE                   = &Licenza
 
 ; Shutdown confirmation
 
 PLEASE_CONFIRM            = Conferma
-REALLY_SHUTDOWN_WHEN_DONE = Vuoi veramente spegnere il PC dopo la deframmentazione?
-REALLY_HIBERNATE_WHEN_DONE= Vuoi veramente ibernare il PC dopo la deframmentazione?
-REALLY_LOGOFF_WHEN_DONE   = Vuoi veramente disconnetterti quando il processo è terminato?
-REALLY_REBOOT_WHEN_DONE   = Vuoi veramente riavviare il sistema quando il processo è terminato?
+REALLY_SHUTDOWN_WHEN_DONE = Volete veramente spegnere il PC dopo la deframmentazione?
+REALLY_HIBERNATE_WHEN_DONE= Volete veramente ibernare il PC dopo la deframmentazione?
+REALLY_LOGOFF_WHEN_DONE   = Volete veramente disconnetterti quando il processo è terminato?
+REALLY_REBOOT_WHEN_DONE   = Volete veramente riavviare il sistema quando il processo è terminato?
 SECONDS_TILL_SHUTDOWN     = secondi allo spegnimento
 SECONDS_TILL_HIBERNATION  = secondi all'ibernazione
 SECONDS_TILL_LOGOFF       = secondi alla disconnessione utente
@@ -162,7 +162,7 @@ NO                        = &No
 ; Upgrade dialog
 
 UPGRADE_CAPTION           = Aggiornamento disponibile ^-^
-UPGRADE_MESSAGE           = Una nuova release è a disposizione per il download!
+UPGRADE_MESSAGE           = Una nuova versione è pronta per essere scaricata!
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 
@@ -178,7 +178,7 @@ HIDE                      = Nascondi
 FRAGMENTED_FILES_ON       = File frammentati su
 
 VISIT_HOMEPAGE            = Visita il sito web
-VIEW_REPORT_OPTIONS       = Vedi opzioni rapporto
+VIEW_REPORT_OPTIONS       = Visualizza opzioni rapporto
 POWERED_BY_LUA            = Powered by Lua
 
 FRAGMENTS                 = frammenti

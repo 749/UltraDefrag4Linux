@@ -2,7 +2,7 @@
 ; UltraDefrag GUI Portuguese Language Pack
 ; Copyright (C) 2008 Ricardo A. Garcia.
 ; Copyright (C) 2010 Carlos Rodrigues.
-; Copyright (C) 2011-2012 Sérgio Marques.
+; Copyright (C) 2011-2013 Sérgio Marques.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
@@ -31,12 +31,12 @@ DEFRAGMENT                = &Desfragmentar
 QUICK_OPTIMIZE            = Otimização &rápida
 FULL_OPTIMIZE             = Otimização &completa
 OPTIMIZE_MFT              = &Otimizar MFT
-PAUSE                     = &Pause
+PAUSE                     = Pau&sa
 STOP                      = &Parar
 REPEAT_ACTION             = Rep&etir ação
 SKIP_REMOVABLE_MEDIA      = Ignorar discos a&movíveis
 RESCAN_DRIVES             = Analisar d&iscos
-REPAIR_DRIVES             = Reparar unidades
+REPAIR_DRIVES             = Reparar &unidades
 WHEN_DONE                 = Ao &terminar
 EXIT                      = &Sair
 
@@ -60,7 +60,7 @@ LANGUAGE                  = &Idioma
 GRAPHICAL_INTERFACE       = Interface &gráfica
 BOOT_TIME_SCAN            = Des&fragmentar ao iniciar
 REPORTS                   = &Relatórios
-SORTING                   = &Sorting
+SORTING                   = &Ordenação
 
 ; --- --- Language submenu
 
@@ -81,13 +81,13 @@ SCRIPT                    = "&Script"
 
 ; --- --- Sorting submenu
 
-SORT_BY_PATH              = Sort by &path
-SORT_BY_SIZE              = Sort by &size
-SORT_BY_C_TIME            = Sort by &creation time
-SORT_BY_M_TIME            = Sort by last &modification time
-SORT_BY_A_TIME            = Sort by &last access time
-SORT_ASCENDING            = Sort in &ascending order
-SORT_DESCENDING           = Sort in &descending order
+SORT_BY_PATH              = Ordenar por &caminho
+SORT_BY_SIZE              = Ordenar por &tamanho
+SORT_BY_C_TIME            = Ordenar por &data de criação
+SORT_BY_M_TIME            = Ordenar por data de &modificação
+SORT_BY_A_TIME            = Ordenar por data de ace&sso
+SORT_ASCENDING            = Ordenar por ordem &ascendente
+SORT_DESCENDING           = Ordenar por &ordem descendente
 
 ; --- Help Menu
 
