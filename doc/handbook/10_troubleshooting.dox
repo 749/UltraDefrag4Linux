@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
@@ -13,7 +13,7 @@
  * @page Troubleshooting Troubleshooting
  *
  * If something went wrong don't hesitate to investigate the case and report
- * it via our <a href="http://sourceforge.net/p/ultradefrag/bugs/">bug tracker</a>.
+ * it via our <a href="https://sourceforge.net/p/ultradefrag/bugs/">bug tracker</a>.
  *
  * To help us find out what's going on please attach UltraDefrag debugging output to your report.
  *
@@ -43,9 +43,9 @@
  * tries to log into the <b>\%SystemDrive\%\\UltraDefrag_Logs</b> folder.
  *
  * For graphical interface issues please attach also
- * a <a href="http://en.wikipedia.org/wiki/Screenshot">screenshot</a>.
+ * a <a href="https://en.wikipedia.org/wiki/Screenshot">screenshot</a>.
  *
- * To speed things up compress logs by <a href="http://sourceforge.net/projects/sevenzip/">7-zip</a>
+ * To speed things up compress logs by <a href="https://sourceforge.net/projects/sevenzip/">7-zip</a>
  * and save screenshots in png format before their submission to the bug tracker.
  * 
  * @htmlonly

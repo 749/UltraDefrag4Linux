@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,14 +24,14 @@
  * @{
  */
 
-#include "ntndk.h"
+#include "prec.h"
 #include "zenwinx.h"
 
 /**
  * @brief fopen() native equivalent.
  * @note
  * - Accepts native paths only,
- * e.g. \\??\\C:\\file.txt
+ * like \\??\\C:\\file.txt
  * - Only r, w, a, r+, w+, a+
  * modes are supported.
  */
@@ -112,8 +112,8 @@ WINX_FILE *winx_fopen(const wchar_t *filename,const char *mode)
  * allocates a buffer to speed up
  * sequential write requests.
  * @details The last parameter specifies
- * the buffer size, in bytes. Returns
- * NULL if buffer allocation failed.
+ * size of the buffer, in bytes. Returns
+ * NULL if the buffer allocation failed.
  */
 WINX_FILE *winx_fbopen(const wchar_t *filename,const char *mode,int buffer_size)
 {
@@ -171,9 +171,9 @@ size_t winx_fread(void *buffer,size_t size,size_t count,WINX_FILE *f)
 /**
  * @internal
  * @brief winx_fwrite helper.
- * @details Writes to the file directly
- * regardless of whether it is opened for
- * buffered i/o or not.
+ * @details Writes to file directly
+ * regardless of whether it's opened
+ * for buffered i/o or not.
  */
 static size_t winx_fwrite_helper(const void *buffer,size_t size,size_t count,WINX_FILE *f)
 {
@@ -207,15 +207,15 @@ static size_t winx_fwrite_helper(const void *buffer,size_t size,size_t count,WIN
  */
 size_t winx_fwrite(const void *buffer,size_t size,size_t count,WINX_FILE *f)
 {
-    LARGE_INTEGER nwd_offset; /* offset of data not written yet, in file */
-    LARGE_INTEGER new_offset; /* current f->woffset */
+    LARGE_INTEGER nwd_offset; /* offset of data not written yet, in the file */
+    LARGE_INTEGER new_offset; /* the current f->woffset */
     size_t bytes, result;
     
     if(buffer == NULL || f == NULL)
         return 0;
     
     /*
-    * Check whether the file was
+    * Check whether the file has been
     * opened for buffered access or not.
     */
     bytes = size * count;
@@ -225,15 +225,15 @@ size_t winx_fwrite(const void *buffer,size_t size,size_t count,WINX_FILE *f)
         return winx_fwrite_helper(buffer,size,count,f);
     }
 
-    /* check whether file pointer has been adjusted or not */
+    /* check whether the file pointer has been adjusted or not */
     nwd_offset.QuadPart = f->wboffset.QuadPart - f->io_buffer_offset;
     new_offset.QuadPart = f->woffset.QuadPart;
     if(new_offset.QuadPart != nwd_offset.QuadPart){
-        /* flush buffer */
+        /* flush the buffer */
         f->woffset.QuadPart = nwd_offset.QuadPart;
         result = winx_fwrite_helper(f->io_buffer,1,f->io_buffer_offset,f);
         f->io_buffer_offset = 0;
-        /* update file pointer */
+        /* update the file pointer */
         f->wboffset.QuadPart = f->woffset.QuadPart = new_offset.QuadPart;
         if(result == 0){
             /* write request failed */
@@ -243,7 +243,7 @@ size_t winx_fwrite(const void *buffer,size_t size,size_t count,WINX_FILE *f)
 
     /* check whether the buffer is full or not */
     if(bytes > f->io_buffer_size - f->io_buffer_offset && f->io_buffer_offset){
-        /* flush buffer */
+        /* flush the buffer */
         result = winx_fwrite_helper(f->io_buffer,1,f->io_buffer_offset,f);
         f->io_buffer_offset = 0;
         if(result == 0){
@@ -267,17 +267,17 @@ size_t winx_fwrite(const void *buffer,size_t size,size_t count,WINX_FILE *f)
 
 /**
  * @brief Sends an I/O control code to the specified device.
- * @param[in] f the file handle.
+ * @param[in] f the device handle.
  * @param[in] code the IOCTL code.
- * @param[in] description the string explaining
- * the meaning of the request, used by error handling code.
- * @param[in] in_buffer the input buffer pointer.
- * @param[in] in_size the input buffer size, in bytes.
- * @param[out] out_buffer the output buffer pointer.
- * @param[in] out_size the output buffer size, in bytes.
- * @param[out] pbytes_returned pointer to the variable receiving
+ * @param[in] description a string describing request's
+ * meaning, intended for use by the error handling code.
+ * @param[in] in_buffer the input buffer.
+ * @param[in] in_size size of the input buffer, in bytes.
+ * @param[out] out_buffer the output buffer.
+ * @param[in] out_size size of the output buffer, in bytes.
+ * @param[out] pbytes_returned pointer to variable receiving
  * the number of bytes written to the output buffer.
- * @return Zero for success, negative value otherwise.
+ * @return Zero for success, a negative value otherwise.
  */
 int winx_ioctl(WINX_FILE *f,
     int code,char *description,
@@ -319,7 +319,8 @@ int winx_ioctl(WINX_FILE *f,
 
 /**
  * @brief fflush() native equivalent.
- * @return Zero for success, negative value otherwise.
+ * @return Zero for success,
+ * a negative value otherwise.
  */
 int winx_fflush(WINX_FILE *f)
 {
@@ -337,10 +338,7 @@ int winx_fflush(WINX_FILE *f)
 }
 
 /**
- * @brief Retrieves the size of a file.
- * @param[in] f pointer to structure returned
- * by winx_fopen() call.
- * @return The size of the file, in bytes.
+ * @brief Retrieves size of a file.
  */
 ULONGLONG winx_fsize(WINX_FILE *f)
 {
@@ -382,8 +380,8 @@ void winx_fclose(WINX_FILE *f)
 
 /**
  * @brief Creates a directory.
- * @param[in] path the native path to the directory.
- * @return Zero for success, negative value otherwise.
+ * @param[in] path the native path of the directory.
+ * @return Zero for success, a negative value otherwise.
  * @note If the requested directory already exists
  * this function completes successfully.
  */
@@ -424,8 +422,8 @@ int winx_create_directory(const wchar_t *path)
 
 /**
  * @brief Deletes a file.
- * @param[in] filename the native path to the file.
- * @return Zero for success, negative value otherwise.
+ * @param[in] filename the native path of the file.
+ * @return Zero for success, a negative value otherwise.
  */
 int winx_delete_file(const wchar_t *filename)
 {
@@ -448,12 +446,12 @@ int winx_delete_file(const wchar_t *filename)
 /**
  * @brief Reads a file entirely and returns
  * pointer to the data read.
- * @param[in] filename the native path to the file.
+ * @param[in] filename the native path of the file.
  * @param[out] bytes_read number of bytes read.
  * @return Pointer to the data, NULL indicates failure.
  * @note The returned buffer is two bytes larger than
- * the file contents. This allows to add the terminal
- * zero easily.
+ * the file contents. This helps to terminate the buffer
+ * by zero easily.
  */
 void *winx_get_file_contents(const wchar_t *filename,size_t *bytes_read)
 {
@@ -527,8 +525,8 @@ struct names_pair {
 
 /**
  * @internal
- * @brief Auxiliary table helping to replace
- * file name by name accepted by Windows
+ * @brief An auxiliary table helping to replace
+ * a file name by the name accepted by Windows
  * in case of special NTFS files.
  */
 struct names_pair special_file_names[] = {
@@ -548,12 +546,12 @@ struct names_pair special_file_names[] = {
 /**
  * @brief Opens a file for defragmentation related actions.
  * @param[in] f pointer to structure containing the file information.
- * @param[in] action one of the WINX_OPEN_XXX constants
- * indicating the action file needs to be opened for:
+ * @param[in] action one of the WINX_OPEN_XXX constants indicating
+ * the action the file needs to be opened for:
  * - WINX_OPEN_FOR_DUMP - open for FSCTL_GET_RETRIEVAL_POINTERS
  * - WINX_OPEN_FOR_BASIC_INFO - open for NtQueryInformationFile(FILE_BASIC_INFORMATION)
  * - WINX_OPEN_FOR_MOVE - open for FSCTL_MOVE_FILE
- * @param[out] phandle pointer to variable receiving the file handle.
+ * @param[out] phandle pointer to variable to store the file handle into.
  * @return NTSTATUS code.
  */
 NTSTATUS winx_defrag_fopen(winx_file_info *f,int action,HANDLE *phandle)
@@ -597,19 +595,22 @@ NTSTATUS winx_defrag_fopen(winx_file_info *f,int action,HANDLE *phandle)
         /*
         * All files can be opened with a single SYNCHRONIZE access.
         * More advanced FILE_GENERIC_READ rights prevent opening
-        * of $mft file as well as other internal NTFS files.
+        * of $MFT as well as other internal NTFS files:
         * http://forum.sysinternals.com/topic23950.html
         */
     } else {
         /*
-        * $Mft may require more advanced rights, 
-        * than a single SYNCHRONIZE.
+        * $MFT may require more advanced
+        * rights than a single SYNCHRONIZE.
         */
         access_rights |= FILE_READ_ATTRIBUTES;
     }
     
-    /* root folder needs FILE_READ_ATTRIBUTES to successfully retrieve FileBasicInformation,
-    see http://msdn.microsoft.com/en-us/library/ff567052(VS.85).aspx */
+    /*
+    * Root folders need FILE_READ_ATTRIBUTES to 
+    * successfully retrieve FileBasicInformation:
+    * http://msdn.microsoft.com/en-us/library/ff567052(VS.85).aspx
+    */
     if(action == WINX_OPEN_FOR_BASIC_INFO)
         access_rights |= FILE_READ_ATTRIBUTES;
     

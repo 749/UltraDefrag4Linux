@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,19 +19,19 @@
 
 /**
  * @file ldr.c
- * @brief GetProcAddress.
+ * @brief GetProcAddress native equivalent.
  * @addtogroup Loader
  * @{
  */
 
-#include "ntndk.h"
+#include "prec.h"
 #include "zenwinx.h"
 
 /**
  * @brief Retrieves the address of an exported function
  * or variable from the specified dynamic-link library (DLL).
- * @param[in] libname the library name.
- * @param[in] funcname the function or variable name.
+ * @param[in] libname the name of the library.
+ * @param[in] funcname the name of the function or variable.
  * @return The address of the requested function or variable.
  * NULL indicates failure.
  * @note The specified dynamic-link library 

@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,13 +18,14 @@
  */
 
 /**
+ * @if INTERNAL
  * @file entry.c
  * @brief Entry point.
  * @addtogroup Entry
  * @{
  */
 
-#include "ntndk.h"
+#include "prec.h"
 #include "zenwinx.h"
 
 /**
@@ -35,4 +36,7 @@ BOOL WINAPI DllMain(HANDLE hinstDLL,DWORD dwReason,LPVOID lpvReserved)
     return 1;
 }
 
-/** @} */
+/**
+ * @}
+ * @endif
+ */

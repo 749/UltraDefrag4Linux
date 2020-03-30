@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,18 +24,19 @@
  * @{
  */
 
-#include "ntndk.h"
+#include "prec.h"
 #include "zenwinx.h"
 
 /**
  * @brief Inserts an item to a double linked list.
  * @details Allocates memory for the item to be inserted.
- * @param[in,out] phead pointer to a variable pointing to the list head.
- * @param[in] prev pointer to an item preceeding to the new item.
+ * @param[in,out] phead pointer to variable pointing to the list's head.
+ * @param[in] prev pointer to the item preceeding the new item.
  * If this parameter is NULL, the new head will be inserted.
- * @param[in] size the size of the item to be inserted, in bytes.
+ * @param[in] size size of the item to be inserted, in bytes.
  * @return Pointer to the inserted list item. In case of allocation failure
- * this routine calls the killer registered by winx_set_killer and returns NULL then.
+ * this routine calls the killer registered by the winx_set_killer routine
+ * and returns NULL afterwards.
  */
 list_entry *winx_list_insert(list_entry **phead,list_entry *prev,long size)
 {
@@ -64,7 +65,7 @@ list_entry *winx_list_insert(list_entry **phead,list_entry *prev,long size)
         *phead = new_item;
     }
 
-    /* insert after the item specified by prev argument */
+    /* insert after the item specified by the prev argument */
     new_item->prev = prev;
     new_item->next = prev->next;
     new_item->prev->next = new_item;
@@ -74,9 +75,9 @@ list_entry *winx_list_insert(list_entry **phead,list_entry *prev,long size)
 
 /**
  * @brief Removes an item from a double linked list.
- * @details Frees memory allocated for the item to be removed.
- * @param[in,out] phead pointer to a variable pointing to the list head.
- * @param[in] item pointer to the item which must be removed.
+ * @details Releases memory allocated for the item to be removed.
+ * @param[in,out] phead pointer to variable pointing to the list's head.
+ * @param[in] item the item to be removed.
  */
 void winx_list_remove(list_entry **phead,list_entry *item)
 {
@@ -109,9 +110,10 @@ void winx_list_remove(list_entry **phead,list_entry *item)
 
 /**
  * @brief Destroys a double linked list.
- * @details Frees memory allocated for all list items.
- * @param[in,out] phead pointer to a variable
- * pointing to the list head.
+ * @details Releases memory allocated for
+ * all the list items.
+ * @param[in,out] phead pointer to variable
+ * pointing to the list's head.
  */
 void winx_list_destroy(list_entry **phead)
 {

@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,14 +24,12 @@
  * @{
  */
 
-#include "ntndk.h"
+#include "prec.h"
 #include "zenwinx.h"
 
 /**
  * @internal
- * @brief Opens root directory of the volume.
- * @param[in] volume_letter the volume letter.
- * @return File handle, NULL indicates failure.
+ * @brief Opens the root directory of a volume.
  */
 static HANDLE OpenRootDirectory(unsigned char volume_letter)
 {
@@ -58,9 +56,9 @@ static HANDLE OpenRootDirectory(unsigned char volume_letter)
 }
 
 /**
- * @brief A Win32 GetDriveType() native equivalent.
+ * @brief A native equivalent of Win32 GetDriveType().
  * @param[in] letter the volume letter
- * @return The drive type, negative value indicates failure.
+ * @return Type of the drive, negative values indicate failure.
  */
 int winx_get_drive_type(char letter)
 {
@@ -88,7 +86,7 @@ int winx_get_drive_type(char letter)
     if(winx_query_symbolic_link(link_name,link_target,MAX_TARGET_LENGTH) < 0)
         return (-1);
     
-    /* check for an assignment made by subst command */
+    /* check for an assignment made by the subst command */
     if(wcsstr(link_target,L"\\??\\") == (wchar_t *)link_target)
         return DRIVE_ASSIGNED_BY_SUBST_COMMAND;
 
@@ -175,13 +173,10 @@ int winx_get_drive_type(char letter)
 
 /**
  * @internal
- * @brief Retrieves the drive geometry.
- * @param[in] hRoot handle to the
- * root directory.
- * @param[out] pointer to the structure
- * receiving the drive geometry.
- * @return Zero for success, negative
- * value otherwise.
+ * @brief Retrieves geometry of a drive.
+ * @param[in] hRoot handle of the root directory.
+ * @param[out] v pointer to structure receiving the information.
+ * @return Zero for success, a negative value otherwise.
  */
 static int get_drive_geometry(HANDLE hRoot,winx_volume_information *v)
 {
@@ -190,7 +185,6 @@ static int get_drive_geometry(HANDLE hRoot,winx_volume_information *v)
     NTSTATUS status;
     WINX_FILE *f;
     DISK_GEOMETRY dg;
-    char buffer[32];
     
     /* get drive geometry */
     RtlZeroMemory(&ffs,sizeof(FILE_FS_SIZE_INFORMATION));
@@ -220,8 +214,6 @@ static int get_drive_geometry(HANDLE hRoot,winx_volume_information *v)
           &dg,sizeof(dg),NULL) >= 0){
             v->device_capacity = dg.Cylinders.QuadPart * \
                 dg.TracksPerCylinder * dg.SectorsPerTrack * dg.BytesPerSector;
-            winx_bytes_to_hr(v->device_capacity,1,buffer,sizeof(buffer));
-            itrace("%c: device capacity = %s",v->volume_letter,buffer);
         }
         winx_fclose(f);
     }
@@ -230,13 +222,12 @@ static int get_drive_geometry(HANDLE hRoot,winx_volume_information *v)
 
 /**
  * @internal
- * @brief Retrieves the name of the file system.
- * @param[in] hRoot handle to the root directory.
- * @param[out] pointer to the structure receiving
- * the filesystem name.
- * @return Zero for success, negative value otherwise.
+ * @brief Retrieves the file system name for the specified volume.
+ * @param[in] hRoot handle of the root directory.
+ * @param[out] v pointer to structure receiving the name.
+ * @return Zero for success, a negative value otherwise.
  * @note We could analyze the first sector of the 
- * partition directly, but this method is not so swift
+ * partition directly, but this method is not so fast
  * as it accesses the disk physically.
  */
 static int get_filesystem_name(HANDLE hRoot,winx_volume_information *v)
@@ -262,7 +253,7 @@ static int get_filesystem_name(HANDLE hRoot,winx_volume_information *v)
     
     /*
     * pfa->FileSystemName.Buffer may be not NULL terminated
-    * (theoretically), so name extraction is more tricky
+    * (theoretically), so the name extraction is more tricky
     * than it should be.
     */
     length = min(MAX_FS_NAME_LENGTH,pfa->FileSystemNameLength / sizeof(wchar_t));
@@ -278,10 +269,9 @@ static int get_filesystem_name(HANDLE hRoot,winx_volume_information *v)
 
 /**
  * @internal
- * @brief Retrieves the NTFS data for the filesystem.
- * @param[out] pointer to the structure
- * receiving the information.
- * @return Zero for success, negative value otherwise.
+ * @brief Retrieves NTFS specific data for the specified volume.
+ * @param[in,out] v pointer to structure receiving the information.
+ * @return Zero for success, a negative value otherwise.
  */
 static int get_ntfs_data(winx_volume_information *v)
 {
@@ -303,11 +293,9 @@ static int get_ntfs_data(winx_volume_information *v)
 
 /**
  * @internal
- * @brief Retrieves the volume label.
- * @param[in] hRoot handle to the
- * root directory.
- * @param[out] pointer to the structure
- * receiving the volume label.
+ * @brief Retrieves the label of the specified volume.
+ * @param[in] hRoot handle of the root directory.
+ * @param[out] v pointer to structure receiving the label.
  */
 static void get_volume_label(HANDLE hRoot,winx_volume_information *v)
 {
@@ -340,9 +328,8 @@ static void get_volume_label(HANDLE hRoot,winx_volume_information *v)
 
 /**
  * @internal
- * @brief Retrieves the volume dirty flag.
- * @param[out] pointer to the structure
- * receiving the volume dirty flag.
+ * @brief Retrieves the dirty flag for the specified volume.
+ * @param[in,out] v pointer to structure receiving the flag.
  */
 static void get_volume_dirty_flag(winx_volume_information *v)
 {
@@ -367,13 +354,10 @@ static void get_volume_dirty_flag(winx_volume_information *v)
 }
 
 /**
- * @brief Retrieves the detailed information
- * about a disk volume.
+ * @brief Retrieves detailed information about the specified volume.
  * @param[in] volume_letter the volume letter.
- * @param[in,out] v pointer to structure
- * receiving the volume information.
- * @return Zero for success, negative
- * value otherwise.
+ * @param[in,out] v pointer to structure receiving the information.
+ * @return Zero for success, a negative value otherwise.
  */
 int winx_get_volume_information(char volume_letter,winx_volume_information *v)
 {
@@ -393,7 +377,7 @@ int winx_get_volume_information(char volume_letter,winx_volume_information *v)
     if(volume_letter < 'A' || volume_letter > 'Z')
         return (-1);
     
-    /* open root directory */
+    /* open the root directory */
     hRoot = OpenRootDirectory(volume_letter);
     if(hRoot == NULL)
         return (-1);
@@ -404,7 +388,7 @@ int winx_get_volume_information(char volume_letter,winx_volume_information *v)
         return (-1);
     }
     
-    /* get the name of contained file system */
+    /* get name of the file system */
     if(get_filesystem_name(hRoot,v) < 0){
         NtClose(hRoot);
         return (-1);
@@ -432,7 +416,8 @@ int winx_get_volume_information(char volume_letter,winx_volume_information *v)
 /**
  * @brief Opens a volume for read access.
  * @param[in] volume_letter the volume letter.
- * @return File descriptor, NULL indicates failure.
+ * @return The descriptor of the opened volume,
+ * NULL indicates failure.
  */
 WINX_FILE *winx_vopen(char volume_letter)
 {
@@ -443,7 +428,7 @@ WINX_FILE *winx_vopen(char volume_letter)
 }
 
 /**
- * @brief fflush equivalent for entire volume.
+ * @brief fflush() equivalent for entire volumes.
  */
 int winx_vflush(char volume_letter)
 {
@@ -462,21 +447,20 @@ int winx_vflush(char volume_letter)
 }
 
 /**
- * @brief Retrieves the list of free regions on the volume.
+ * @brief Enumerates free regions on the specified volume.
  * @param[in] volume_letter the volume letter.
- * @param[in] flags the combination of WINX_GVR_xxx flags.
+ * @param[in] flags a combination of WINX_GVR_xxx flags.
  * @param[in] cb the address of the procedure to be called
- * each time when the free region is found on the volume.
- * If the callback procedure returns nonzero value,
+ * each time when a free region is found on the volume.
+ * If the callback procedure returns a nonzero value,
  * the scan terminates immediately.
- * @param[in] user_defined_data pointer to the data
- * passed to the registered callback.
- * @return List of the free regions, NULL indicates that
- * either disk is full (unlikely) or some error occured.
+ * @param[in] user_defined_data pointer to data
+ * to be passed to the registered callback.
+ * @return The list of free regions, NULL indicates that
+ * either the disk is full (unlikely) or some error occured.
  * @note
- * - It is possible to scan disk partially by
- * requesting the scan termination through the callback
- * procedure.
+ * - It is possible to scan the disk partially by requesting
+ * the scan termination through the callback procedure.
  * - The callback procedure should complete as quickly
  * as possible to avoid slowdown of the scan.
  */
@@ -501,7 +485,7 @@ winx_volume_region *winx_get_free_volume_regions(char volume_letter,
     /* allocate memory */
     bitmap = winx_malloc(BITMAPSIZE);
     
-    /* open volume */
+    /* open the volume */
     f = winx_vopen(volume_letter);
     if(f == NULL){
         winx_free(bitmap);
@@ -581,13 +565,16 @@ done:
 }
 
 /**
- * @brief Adds a range of clusters to the list of regions.
- * @param[in,out] rlist the list of volume regions.
- * @param[in] lcn the logical cluster number of the region to be added.
- * @param[in] length the size of the region to be added, in clusters.
- * @return Pointer to updated list of regions.
- * @note For performance reason this routine doesn't insert
- * regions of zero length.
+ * @brief Adds a range of clusters to
+ * the specified list of volume regions.
+ * @param[in,out] rlist the list of regions.
+ * @param[in] lcn the logical cluster number
+ * of the region to be added.
+ * @param[in] length size of the region to be
+ * added, in clusters.
+ * @return Pointer to the updated list of regions.
+ * @note For performance sake this routine doesn't
+ * insert regions of zero length.
  */
 winx_volume_region *winx_add_volume_region(winx_volume_region *rlist,
         ULONGLONG lcn,ULONGLONG length)
@@ -608,7 +595,7 @@ winx_volume_region *winx_add_volume_region(winx_volume_region *rlist,
         }
     }
 
-    /* hits the new region previous one? */
+    /* hits the new region the previous one? */
     if(rprev){
         if(rprev->lcn + rprev->length == lcn){
             rprev->length += length;
@@ -640,11 +627,14 @@ winx_volume_region *winx_add_volume_region(winx_volume_region *rlist,
 }
 
 /**
- * @brief Subtracts a range of clusters from the list of regions.
- * @param[in,out] rlist the list of volume regions.
- * @param[in] lcn the logical cluster number of the region to be subtracted.
- * @param[in] length the size of the region to be subtracted, in clusters.
- * @return Pointer to updated list of regions.
+ * @brief Subtracts a range of clusters from
+ * the specified list of volume regions.
+ * @param[in,out] rlist the list of regions.
+ * @param[in] lcn the logical cluster number 
+ * of the region to be subtracted.
+ * @param[in] length size of the region to be
+ * subtracted, in clusters.
+ * @return Pointer to the updated list of regions.
  */
 winx_volume_region *winx_sub_volume_region(winx_volume_region *rlist,
         ULONGLONG lcn,ULONGLONG length)
@@ -659,10 +649,10 @@ winx_volume_region *winx_sub_volume_region(winx_volume_region *rlist,
         next = r->next;
         if(r->lcn >= lcn + length) break;
         if(r->lcn + r->length > lcn){
-            /* sure, at least a part of region is inside a specified range */
+            /* sure, at least part of the region is inside of the specified range */
             if(r->lcn >= lcn && (r->lcn + r->length) <= (lcn + length)){
                 /*
-                * list entry is inside a specified range
+                * the list entry is inside of the specified range
                 * |--------------------|
                 *        |-r-|
                 */
@@ -696,7 +686,7 @@ winx_volume_region *winx_sub_volume_region(winx_volume_region *rlist,
             }
             if(r->lcn < lcn && (r->lcn + r->length) > (lcn + length)){
                 /*
-                * specified range is inside list entry
+                * the specified range is inside of the list entry
                 *   |----|
                 * |-------r--------|
                 */
@@ -715,7 +705,7 @@ next_region:
 }
 
 /**
- * @brief Frees memory allocated
+ * @brief Releases memory allocated
  * by winx_get_free_volume_regions.
  */
 void winx_release_free_volume_regions(winx_volume_region *rlist)

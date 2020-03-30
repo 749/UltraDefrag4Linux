@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 //
 //  UltraDefrag - a powerful defragmentation tool for Windows NT.
-//  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+//  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
 //  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -34,6 +34,7 @@
 //                            Declarations
 // =======================================================================
 
+#include "prec.h"
 #include "main.h"
 
 // =======================================================================
@@ -71,7 +72,6 @@ void MainFrame::InitToolbar()
     m_toolBar->SetToolBitmapSize(wxSize(g_iconSize,g_iconSize));
 
     UD_MakeToolItem(ID_Analyze         , glass   );
-    UD_MakeToolCheckItem(ID_Repeat     , repeat  );
     UD_MakeToolItem(ID_Defrag          , defrag  );
     UD_MakeToolItem(ID_QuickOpt        , quick   );
     UD_MakeToolItem(ID_FullOpt         , full    );
@@ -91,7 +91,7 @@ void MainFrame::InitToolbar()
     m_toolBar->Realize();
 
     // initial settings (must be after realize)
-    m_toolBar->ToggleTool(ID_Repeat,m_repeat);
+    // m_toolBar->ToggleTool(ID_XXX,m_xxx);
 }
 
 /** @} */

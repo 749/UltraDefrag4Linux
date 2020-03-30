@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
 *    Windows%20NT%20Undocumented%20APIs/1996%20AppE_apnilife.pdf
 * 2. http://www.opensource.apple.com/source/ntfs/ntfs-52/kext/ntfs_layout.h
 *
-* Both files can also be found in /doc subdirectory of source tree in svn repository.
+* Both files can also be found at https://ultradefrag.net/doc/man/ntfs/
 */
 
 /*
@@ -38,7 +38,7 @@
 * are internal - for ftw_ntfs.c file only.
 */
 
-/* extracts low 48 bits of File Reference Number */
+/* extracts low 48 bits of a File Reference Number */
 #define GetMftIdFromFRN(n) ((n) & 0xffffffffffffLL)
 
 #ifndef TAG

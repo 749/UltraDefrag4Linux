@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -25,7 +25,7 @@
  * @{
  */
 
-#include "ntndk.h"
+#include "prec.h"
 #include "zenwinx.h"
 
 /*
@@ -109,7 +109,7 @@ static DWORD WINAPI kb_wait_for_input(LPVOID p)
                 Status = NtWaitForSingleObject(kbd->hKbEvent,FALSE,&interval);
                 if(stop_kb_wait_for_input){
                     if(Status == STATUS_TIMEOUT){
-                        /* cancel the pending operation */
+                        /* cancel pending operations */
                         Status = NtCancelIoFile(kbd->hKbDevice,&iosb);
                         if(NT_SUCCESS(Status)){
                             Status = NtWaitForSingleObject(kbd->hKbEvent,FALSE,NULL);
@@ -125,7 +125,7 @@ static DWORD WINAPI kb_wait_for_input(LPVOID p)
             } while(Status == STATUS_TIMEOUT);
             if(NT_SUCCESS(Status)) Status = iosb.Status;
         }
-        /* here we have either an input gathered or an error */
+        /* here we have either some input gathered or an error */
         if(!NT_SUCCESS(Status)){
             winx_printf("\nCannot read the KeyboadClass%u device: %x!\n%s\n",
                 kbd->device_number,(UINT)Status,winx_get_status_description((ULONG)Status));
@@ -140,7 +140,7 @@ static DWORD WINAPI kb_wait_for_input(LPVOID p)
                 goto done;
             }
 
-            /* push new item to the keyboard queue */
+            /* push the new item to the keyboard queue */
             if(start_index < 0 || start_index >= KB_QUEUE_LENGTH){
                 winx_printf("\nkb_wait_for_input: unexpected condition #1!\n\n");
                 start_index = 0;
@@ -177,11 +177,11 @@ done:
 
 /**
  * @internal
- * @brief Lights up the keyboard indicators.
+ * @brief Lights up keyboard indicators.
  * @param[in] hKbDevice the handle of the keyboard device.
  * @param[in] LedFlags the flags specifying
- * which indicators must be lighten up.
- * @return Zero for success, negative value otherwise.
+ * which indicators should be lighten up.
+ * @return Zero for success, a negative value otherwise.
  */
 static int kb_light_up_indicators(HANDLE hKbDevice,USHORT LedFlags)
 {
@@ -210,9 +210,9 @@ static int kb_light_up_indicators(HANDLE hKbDevice,USHORT LedFlags)
 
 /**
  * @internal
- * @brief Checks the keyboard for existence.
+ * @brief Checks a keyboard for existence.
  * @param[in] hKbDevice the handle of the keyboard device.
- * @return Zero for success, negative value otherwise.
+ * @return Zero for success, a negative value otherwise.
  */
 static int kb_check(HANDLE hKbDevice)
 {
@@ -256,7 +256,7 @@ static int kb_check(HANDLE hKbDevice)
  * @internal
  * @brief Opens a keyboard device.
  * @param[in] device_number the number of the keyboard device.
- * @return Zero for success, negative value otherwise.
+ * @return Zero for success, a negative value otherwise.
  */
 static int kb_open_device(int device_number)
 {
@@ -328,8 +328,8 @@ static int kb_open_device(int device_number)
 
 /**
  * @internal
- * @brief Opens all initialized keyboards.
- * @return Zero for success, negative value otherwise.
+ * @brief Opens all the initialized keyboards.
+ * @return Zero for success, a negative value otherwise.
  */
 static int kb_open(void)
 {
@@ -350,7 +350,7 @@ static int kb_open(void)
     }
     (void)NtSetEvent(hKbSynchEvent,NULL);
 
-    /* open all initialized keyboards */
+    /* open all the initialized keyboards */
     for(i = 0; i < MAX_NUM_OF_KEYBOARDS; i++) kb_open_device(i);
     
     /* start threads waiting for user input */
@@ -374,7 +374,7 @@ static int kb_open(void)
 
 /**
  * @internal
- * @brief Closes all opened keyboards.
+ * @brief Closes all the opened keyboards.
  */
 void kb_close(void)
 {
@@ -396,7 +396,7 @@ void kb_close(void)
         if(kb[i].hKbDevice == NULL) break;
         NtCloseSafe(kb[i].hKbDevice);
         NtCloseSafe(kb[i].hKbEvent);
-        /* don't reset device_number member here */
+        /* don't reset the device_number member here */
         number_of_keyboards --;
     }
     
@@ -412,10 +412,9 @@ void kb_close(void)
 */
 
 /**
- * @brief Prepares all existing keyboards
- * for work with user input related procedures.
- * @return Zero for success, negative value otherwise.
- * @note This routine does not intended to be called
+ * @brief Initializes all the connected keyboards.
+ * @return Zero for success, a negative value otherwise.
+ * @note This routine isn't intended to be called
  * more than once.
  */
 int winx_kb_init(void)
@@ -456,11 +455,12 @@ int winx_kb_init(void)
 /**
  * @internal
  * @brief Checks the console for keyboard input.
- * @details Tries to read from all keyboard devices 
- * until specified time-out expires.
+ * @details Tries to read from all the detected 
+ * keyboard devices till the specified timeout
+ * interval elapses.
  * @param[out] pKID pointer to the structure receiving keyboard input.
- * @param[in] msec_timeout time-out interval in milliseconds.
- * @return Zero if some key was pressed, negative value otherwise.
+ * @param[in] msec_timeout the timeout interval, in milliseconds.
+ * @return Zero if any key was pressed, a negative value otherwise.
  */
 int kb_read(PKEYBOARD_INPUT_DATA pKID,int msec_timeout)
 {
@@ -486,7 +486,7 @@ int kb_read(PKEYBOARD_INPUT_DATA pKID,int msec_timeout)
             return (-1);
         }
 
-        /* pop item from the keyboard queue */
+        /* pop an item from the keyboard queue */
         if(n_written > 0){
             memcpy(pKID,&kids[start_index],sizeof(KEYBOARD_INPUT_DATA));
             start_index ++;

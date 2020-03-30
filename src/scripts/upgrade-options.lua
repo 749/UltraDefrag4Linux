@@ -1,7 +1,7 @@
 #!/usr/local/bin/lua
 --[[
   upgrade-options.lua - upgrades UltraDefrag configuration file.
-  Copyright (c) 2011-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+  Copyright (c) 2011-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ config_file_contents = [[
 -- accepted by UltraDefrag console interface. Read the appropriate
 -- chapter of the UltraDefrag Handbook for detailed information.
 -- You should have received it along with this program; if not, go to
--- http://ultradefrag.sourceforge.net/handbook/
+-- https://ultradefrag.net/handbook/
 -------------------------------------------------------------------------------
 
 -------------------------------------------------------------------------------
@@ -128,6 +128,9 @@ optimizer_file_size_threshold = "$optimizer_file_size_threshold"
 -- Example:
 --   fragments_threshold = 5 -- skip files having 4 fragments or less
 -- Keep it empty ("") or set to zero ("0") to turn this filter off.
+-- Note: for solid state drives (SSD) we recommend to set this parameter
+-- to 20 to exclude slightly fragmented content which doesn't affect
+-- performance.
 -------------------------------------------------------------------------------
 
 fragments_threshold = $fragments_threshold
@@ -182,8 +185,8 @@ dbgprint_level = "$dbgprint_level"
 -- Set it to redirect debugging output to a log file. Keep it
 -- empty ("") if everything works fine and no logging is needed.
 -- Examples:
---   log_file_path = "C:\\Windows\\UltraDefrag\\Logs\\ultradefrag.log"
---   log_file_path = ".\\Logs\\ultradefrag.log"
+--   log_file_path = "C:\\Windows\\UltraDefrag\\logs\\ultradefrag.log"
+--   log_file_path = ".\\logs\\ultradefrag.log"
 -- Environment variables can be used as shown below:
 --   log_file_path = os.getenv("TEMP") .. "\\UltraDefrag_Logs\\ultradefrag.log"
 -- Note:
@@ -200,9 +203,12 @@ log_file_path = "$log_file_path"
 -------------------------------------------------------------------------------
 
 if shellex_flag then
-    -- the context menu handler takes into account
-    -- everything defined above as well as options
-    -- defined here exclusively for it $shellex_options
+    -- the context menu handler takes into account everything defined above
+    -- as well as options defined here exclusively for it; to pass sorting
+    -- options to the context menu handler use the following code:
+    --   os.setenv("UD_SORTING","PATH")
+    --   os.setenv("UD_SORTING_ORDER","ASC")
+    -- refer to the Console chapter of UltraDefrag Handbook for details $shellex_options
 end
 
 -------------------------------------------------------------------------------
@@ -321,13 +327,6 @@ split_long_names = $split_long_names
 max_chars_per_line = $max_chars_per_line
 
 -------------------------------------------------------------------------------
--- Set it to zero if your web browser, being too old,
--- throws error messages about invalid javascript code.
--------------------------------------------------------------------------------
-
-enable_sorting = $enable_sorting
-
--------------------------------------------------------------------------------
 -- To adjust style of HTML reports edit the following file:
 -- {installation folder}\scripts\udreport.css
 -------------------------------------------------------------------------------
@@ -405,7 +404,7 @@ function save_preferences(f)
 end
 
 function extract_preferences(file)
-    local path = instdir .. "\\options\\" .. file
+    local path = instdir .. "\\" .. file
     local f = io.open(path, "r")
     if f then
         f:close()
@@ -414,7 +413,7 @@ function extract_preferences(file)
 end
 
 function get_preferences()
-    -- version of the old configuration file
+    -- the version of the old configuration file
     version = 0
     
     -- set defaults
@@ -461,21 +460,21 @@ function get_preferences()
     
     produce_html_report = 1
     produce_plain_text_report = 0
-    enable_sorting = 1
     split_long_names = 0
     max_chars_per_line = 50
     
     -- get user preferences
-    path = instdir .. "\\options.lua"
+    path = instdir .. "\\conf\\options.lua"
     f = io.open(path, "r")
     if f then
         f:close()
         dofile(path)
     else
         -- try to gain something from obsolete configuration files
-        extract_preferences("guiopts.lua")
-        extract_preferences("udreportopts.lua")
-        extract_preferences("udreportopts-custom.lua")
+        extract_preferences("options\\guiopts.lua")
+        extract_preferences("options\\udreportopts.lua")
+        extract_preferences("options\\udreportopts-custom.lua")
+        extract_preferences("options.lua")
     end
 
     -- upgrade preferences
@@ -492,7 +491,7 @@ function get_preferences()
     if version < 8 then path_upgrade_needed = 1 end
     if version > 99 and version < 107 then path_upgrade_needed = 1 end
     if path_upgrade_needed ~= 0 and log_file_path == "" then
-        -- default log is needed for easier bug reporting
+        -- enable logging to file, to simplify troubleshooting
         log_file_path = ".\\logs\\ultradefrag.log"
     end
     if orig_in_filter then in_filter = orig_in_filter end
@@ -500,9 +499,9 @@ function get_preferences()
 end
 
 -- THE MAIN CODE STARTS HERE
--- current version of configuration file
--- 0 - 99 for v5; 100 - 199 for v6; 200+ for v7
-current_version = 202
+-- the current version of the configuration file
+-- 0 - 99 for v5; 100 - 199 for v6; 200+ for v7+
+current_version = 206
 shellex_options = ""
 _G_copy = {}
 
@@ -545,7 +544,7 @@ end
 
 -- upgrade configuration file when needed
 if version < current_version then
-    path = instdir .. "\\options.lua"
+    path = instdir .. "\\conf\\options.lua"
     -- make a backup copy
     f = io.open(path, "r")
     if f then
@@ -559,5 +558,11 @@ if version < current_version then
     -- save the upgraded configuration
     f = assert(io.open(path, "w"))
     save_preferences(f)
+
+    -- flush configuration file to the disk
+    -- right now to prepare it for tracking
+    -- via FindFirstChangeNotification()
+    f:flush()
+
     f:close()
 end

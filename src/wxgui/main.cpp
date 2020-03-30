@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 //
 //  UltraDefrag - a powerful defragmentation tool for Windows NT.
-//  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+//  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
 //  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -34,6 +34,7 @@
 //                            Declarations
 // =======================================================================
 
+#include "prec.h"
 #include "main.h"
 
 #if !defined(__GNUC__)
@@ -134,6 +135,8 @@ static int out_of_memory_handler(size_t n)
  */
 bool App::OnInit()
 {
+    m_mutex = NULL;
+    
     // initialize wxWidgets
     SetAppName(wxT("UltraDefrag"));
     wxInitAllImageHandlers();
@@ -187,12 +190,17 @@ bool App::OnInit()
     // initialize debug log
     wxFileName logpath(wxT(".\\logs\\ultradefrag.log"));
     logpath.Normalize();
-    wxSetEnv(wxT("UD_LOG_FILE_PATH"),logpath.GetFullPath());
+    m_logPath = new wxString(logpath.GetFullPath());
+    wxSetEnv(wxT("UD_LOG_FILE_PATH"),*m_logPath);
     ::udefrag_set_log_file_path();
 
     // initialize logging
     m_log = new Log();
 
+    // forbid installation / upgrade while UltraDefrag is running
+    m_mutex = CreateMutex(NULL,FALSE,L"Global\\ultradefrag_mutex");
+    if(m_mutex == NULL) letrace("cannot create the mutex");
+    
     // use global config object for internal settings
     wxFileConfig *cfg = new wxFileConfig(wxT(""),wxT(""),
         wxT("gui.ini"),wxT(""),wxCONFIG_USE_RELATIVE_PATH);
@@ -217,7 +225,7 @@ bool App::OnInit()
     if(!Utils::CheckAdminRights()){
         wxMessageDialog dlg(NULL,
             wxT("Administrative rights are needed to run the program!"),
-            wxT("UltraDefrag"),wxOK | wxICON_ERROR
+            wxT("UltraDefrag"),wxOK | wxICON_ERROR | wxCENTRE
         );
         dlg.ShowModal(); Cleanup();
         return false;
@@ -229,7 +237,7 @@ bool App::OnInit()
         letrace("cannot create synchronization event");
         wxMessageDialog dlg(NULL,
             wxT("Cannot create synchronization event!"),
-            wxT("UltraDefrag"),wxOK | wxICON_ERROR
+            wxT("UltraDefrag"),wxOK | wxICON_ERROR | wxCENTRE
         );
         dlg.ShowModal(); Cleanup();
         return false;
@@ -271,7 +279,11 @@ void App::Cleanup()
 
     // deinitialize logging
     ::winx_flush_dbg_log(0);
+    delete m_logPath;
     delete m_log;
+    
+    // release resources
+    if(m_mutex) CloseHandle(m_mutex);
 }
 
 /**
@@ -301,6 +313,7 @@ MainFrame::MainFrame()
     m_currentJob = NULL;
     m_busy = false;
     m_paused = false;
+    m_sizeAdjustmentEnabled = false;
 
     // set main window icon
     wxIconBundle icons;
@@ -347,8 +360,6 @@ MainFrame::MainFrame()
     Move(m_x,m_y);
     if(m_maximized) Maximize(true);
 
-    SetMinSize(wxSize(DPI(MAIN_WINDOW_MIN_WIDTH),DPI(MAIN_WINDOW_MIN_HEIGHT)));
-
     // create menu, tool and status bars
     InitMenu(); InitToolbar(); InitStatusBar();
 
@@ -388,6 +399,15 @@ MainFrame::MainFrame()
     InitVolList();
     m_vList->SetFocus();
 
+    // finally we have all map dimensions
+    // set, so it's time to adjust frame
+    // size accordingly to avoid gaps
+    // between map cells and map borders
+    m_sizeAdjustmentEnabled = true;
+    ProcessCommandEvent(this,ID_AdjustMinFrameSize);
+    evt.SetSize(wxSize(m_width,m_height));
+    GetEventHandler()->ProcessEvent(evt);
+
     // populate list of volumes
     m_listThread = new ListThread();
 
@@ -395,12 +415,12 @@ MainFrame::MainFrame()
     wxFileName btdFile(wxT("%SystemRoot%\\system32\\defrag_native.exe"));
     btdFile.Normalize();
     bool btd = btdFile.FileExists();
-    m_menuBar->FindItem(ID_BootEnable)->Enable(btd);
-    m_menuBar->FindItem(ID_BootScript)->Enable(btd);
+    m_menuBar->Enable(ID_BootEnable,btd);
+    m_menuBar->Enable(ID_BootScript,btd);
     m_toolBar->EnableTool(ID_BootEnable,btd);
     m_toolBar->EnableTool(ID_BootScript,btd);
     if(btd && ::winx_bootex_check(L"defrag_native") > 0){
-        m_menuBar->FindItem(ID_BootEnable)->Check(true);
+        m_menuBar->Check(ID_BootEnable,true);
         m_toolBar->ToggleTool(ID_BootEnable,true);
         m_btdEnabled = true;
     } else {
@@ -417,6 +437,8 @@ MainFrame::MainFrame()
     if(item) item->Check();
 
     m_upgradeThread = new UpgradeThread(ulevel);
+
+    m_rdiThread = new RefreshDrivesInfoThread();
 
     // set system tray icon
     m_systemTrayIcon = new SystemTrayIcon();
@@ -446,6 +468,7 @@ MainFrame::~MainFrame()
     delete m_configThread;
     delete m_jobThread;
     delete m_listThread;
+    delete m_rdiThread;
 
     // save configuration
     SaveAppConfiguration();
@@ -488,8 +511,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
     EVT_MENU(ID_ShowReport, MainFrame::OnShowReport)
 
-    EVT_MENU(ID_Repeat,  MainFrame::OnRepeat)
-
     EVT_MENU(ID_SkipRem, MainFrame::OnSkipRem)
     EVT_MENU(ID_Rescan,  MainFrame::OnRescan)
 
@@ -498,10 +519,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(ID_Exit, MainFrame::OnExit)
 
     // settings menu
-    EVT_MENU(ID_LangTranslateOnline, MainFrame::OnLangTranslateOnline)
-    EVT_MENU(ID_LangTranslateOffline, MainFrame::OnLangTranslateOffline)
-    EVT_MENU(ID_LangOpenFolder, MainFrame::OnLangOpenFolder)
-
     EVT_MENU_RANGE(ID_LocaleChange, ID_LocaleChange \
         + wxUD_LANGUAGE_LAST, MainFrame::OnLocaleChange)
 
@@ -529,8 +546,10 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MOVE(MainFrame::OnMove)
     EVT_SIZE(MainFrame::OnSize)
 
+    EVT_MENU(ID_AdjustFrameSize,   MainFrame::AdjustFrameSize)
     EVT_MENU(ID_AdjustListColumns, MainFrame::AdjustListColumns)
     EVT_MENU(ID_AdjustListHeight,  MainFrame::AdjustListHeight)
+    EVT_MENU(ID_AdjustMinFrameSize,MainFrame::AdjustMinFrameSize)
     EVT_MENU(ID_AdjustSystemTrayIcon,     MainFrame::AdjustSystemTrayIcon)
     EVT_MENU(ID_AdjustTaskbarIconOverlay, MainFrame::AdjustTaskbarIconOverlay)
     EVT_MENU(ID_BootChange,        MainFrame::OnBootChange)
@@ -541,6 +560,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(ID_PopulateList,      MainFrame::PopulateList)
     EVT_MENU(ID_ReadUserPreferences,   MainFrame::ReadUserPreferences)
     EVT_MENU(ID_RedrawMap,         MainFrame::RedrawMap)
+    EVT_MENU(ID_RefreshDrivesInfo, MainFrame::RefreshDrivesInfo)
+    EVT_MENU(ID_RefreshFrame,      MainFrame::RefreshFrame)
     EVT_MENU(ID_SelectAll,         MainFrame::SelectAll)
     EVT_MENU(ID_SetWindowTitle,    MainFrame::SetWindowTitle)
     EVT_MENU(ID_ShowUpgradeDialog, MainFrame::ShowUpgradeDialog)
@@ -598,10 +619,95 @@ void MainFrame::OnMove(wxMoveEvent& event)
     event.Skip();
 }
 
+void MainFrame::AdjustMinFrameSize(wxCommandEvent& WXUNUSED(event))
+{
+    int min_width = DPI(MAIN_WINDOW_MIN_WIDTH);
+    int min_height = DPI(MAIN_WINDOW_MIN_HEIGHT);
+
+    int map_width, map_height;
+    m_cMap->GetClientSize(&map_width,&map_height);
+    int block_size = CheckOption(wxT("UD_MAP_BLOCK_SIZE"));
+    int line_width = CheckOption(wxT("UD_GRID_LINE_WIDTH"));
+    int cell_size = block_size + line_width;
+
+    if(cell_size > 1){
+        int dx = (min_width - (m_width - map_width) - line_width) % cell_size;
+        int dy = (min_height - (m_height - map_height) - line_width) % cell_size;
+        if(dx) min_width += cell_size - dx; if(dy) min_height += cell_size - dy;
+    }
+    SetMinSize(wxSize(min_width,min_height));
+}
+
+void MainFrame::AdjustFrameSize(wxCommandEvent& event)
+{
+    if(IsMaximized() || IsIconized()){
+        m_sizeAdjustmentEnabled = true;
+        return;
+    }
+
+    int block_size = CheckOption(wxT("UD_MAP_BLOCK_SIZE"));
+    int line_width = CheckOption(wxT("UD_GRID_LINE_WIDTH"));
+    int cell_size = block_size + line_width;
+    if(cell_size < 2){ m_sizeAdjustmentEnabled = true; return; }
+
+    bool resize_required = false;
+
+    int map_width, map_height, dx, dy, flags;
+    m_cMap->GetClientSize(&map_width,&map_height);
+    dx = (map_width - line_width) % cell_size;
+    dy = (map_height - line_width) % cell_size;
+    flags = event.GetInt();
+    if(dx){
+        if(flags & FRAME_WIDTH_INCREASED)
+            m_width += cell_size - dx;
+        else
+            m_width -= dx;
+        resize_required = true;
+    }
+    if(dy){
+        if(flags & FRAME_HEIGHT_INCREASED)
+            m_height += cell_size - dy;
+        else
+            m_height -= dy;
+        resize_required = true;
+    }
+
+    int min_width = GetMinWidth();
+    int min_height = GetMinHeight();
+    while(m_width < min_width){
+        m_width += cell_size;
+        resize_required = true;
+    }
+    while(m_height < min_height){
+        m_height += cell_size;
+        resize_required = true;
+    }
+
+    if(resize_required){
+        SetSize(m_width,m_height);
+        ProcessCommandEvent(this,ID_RefreshFrame);
+    }
+
+    m_sizeAdjustmentEnabled = true;
+}
+
 void MainFrame::OnSize(wxSizeEvent& event)
 {
-    if(!IsMaximized() && !IsIconized())
+    if(!IsMaximized() && !IsIconized()){
+        int old_width = m_width;
+        int old_height = m_height;
         GetSize(&m_width,&m_height);
+        if(m_sizeAdjustmentEnabled){
+            wxCommandEvent *event = new wxCommandEvent(
+                wxEVT_COMMAND_MENU_SELECTED,ID_AdjustFrameSize
+            );
+            int flags = 0;
+            if(m_width > old_width) flags |= FRAME_WIDTH_INCREASED;
+            if(m_height > old_height) flags |= FRAME_HEIGHT_INCREASED;
+            event->SetInt(flags); GetEventHandler()->QueueEvent(event);
+            m_sizeAdjustmentEnabled = false;
+        }
+    }
     if(m_cMap) m_cMap->Refresh();
     event.Skip();
 }

@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,14 +24,14 @@
  * @{
  */
 
-#include "ntndk.h"
+#include "prec.h"
 #include "zenwinx.h"
 
 /**
  * @brief Enables a user privilege for the current process.
  * @param[in] luid the identifier of the requested privilege, 
- * ntndk.h file contains definitions of various privileges.
- * @return Zero for success, negative value otherwise.
+ * check ntndk.h file for definitions of various privileges.
+ * @return Zero for success, a negative value otherwise.
  * @par Example:
  * @code
  * winx_enable_privilege(SE_SHUTDOWN_PRIVILEGE);

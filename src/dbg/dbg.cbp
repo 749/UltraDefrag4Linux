@@ -7,7 +7,7 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Debug">
+			<Target title="Debug (GCC)">
 				<Option platforms="Windows;" />
 				<Option output="../bin/udefrag-dbg" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../bin" />
@@ -16,10 +16,19 @@
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
+                    <Add option="-mwindows" />
 					<Add option="-g" />
 				</Compiler>
+				<Linker>
+                    <Add option="-mwindows" />
+                    <Add library="libzenwinx.dll.a" />
+                    <Add library="libkernel32.a" />
+                    <Add library="libuser32.a" />
+                    <Add library="libcomctl32.a" />
+                    <Add library="liburlmon.a" />
+				</Linker>
 			</Target>
-			<Target title="Release">
+			<Target title="Release (GCC)">
 				<Option platforms="Windows;" />
 				<Option output="../bin/udefrag-dbg" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../bin" />
@@ -27,23 +36,56 @@
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+                    <Add option="-mwindows" />
+				</Compiler>
 				<Linker>
+                    <Add option="-mwindows" />
 					<Add option="-s" />
+                    <Add library="libzenwinx.dll.a" />
+                    <Add library="libkernel32.a" />
+                    <Add library="libuser32.a" />
+                    <Add library="libcomctl32.a" />
+                    <Add library="liburlmon.a" />
+				</Linker>
+			</Target>
+            <!-- debugging of MSVC targets is not supported, so let's define Relese target only -->
+			<Target title="Release (MSVC)">
+				<Option platforms="Windows;" />
+				<Option output="../bin/udefrag-dbg" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../bin" />
+				<Option object_output="../obj/dbg/" />
+				<Option type="0" />
+				<Option compiler="msvc10" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="/arch:SSE2" />
+					<Add option="/D &quot;_CRT_SECURE_NO_WARNINGS&quot;" />
+					<Add option="/D &quot;_MBCS&quot;" />
+					<Add option="/D &quot;_WINDOWS&quot;" />
+					<Add option="/D &quot;NDEBUG&quot;" />
+					<Add option="/D &quot;USE_WINSDK&quot;" />
+					<Add option="/D &quot;WIN32&quot;" />
+					<Add option="/EHsc" />
+					<Add option="/Gd" />
+					<Add option="/GS-" />
+					<Add option="/MT" />
+				</Compiler>
+				<Linker>
+                    <Add option="/entry:&quot;mainCRTStartup&quot;" />
+                    <Add library="zenwinx.lib" />
+                    <Add library="kernel32.lib" />
+                    <Add library="user32.lib" />
+                    <Add library="comctl32.lib" />
+                    <Add library="urlmon.lib" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-mwindows" />
 		</Compiler>
 		<ResourceCompiler>
 		</ResourceCompiler>
 		<Linker>
-			<Add option="-mwindows" />
-			<Add library="libzenwinx.dll.a" />
-			<Add library="libkernel32.a" />
-			<Add library="libuser32.a" />
-			<Add library="libcomctl32.a" />
-			<Add library="liburlmon.a" />
 			<Add directory="../lib" />
 		</Linker>
 		<Unit filename="init.c" />

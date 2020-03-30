@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
  * @{
  */
 
-#include "ntndk.h"
+#include "prec.h"
 #include "zenwinx.h"
 
 /*
@@ -36,10 +36,9 @@
 
 /**
  * @brief Queries an environment variable.
- * @param[in] name the environment variable name.
- * @return The value of the environment variable.
- * NULL indicates failure.
- * @note The returned string should be freed
+ * @param[in] name the name of the variable.
+ * @return The value. NULL indicates failure.
+ * @note The returned string should be released
  * by the winx_free call after its use.
  */
 wchar_t *winx_getenv(wchar_t *name)
@@ -71,14 +70,11 @@ wchar_t *winx_getenv(wchar_t *name)
 
 /**
  * @brief Sets an environment variable.
- * @param[in] name the environment variable name.
- * @param[in] value the null-terminated value string.
- * NULL pointer causes a variable deletion.
- * @return Zero for success, negative value otherwise.
- * @note value buffer size must not exceed 32767 characters,
- * including terminal zero, as mentioned in MSDN. This is
- * because unsigned short data type can hold numbers
- * less than or equal to 32767.
+ * @param[in] name the name of the variable.
+ * @param[in] value the value; NULL causes deletion of the variable.
+ * @return Zero for success, a negative value otherwise.
+ * @note The value must not exceed 32767 characters,
+ * including terminal zero, as mentioned in MSDN.
  */
 int winx_setenv(wchar_t *name, wchar_t *value)
 {

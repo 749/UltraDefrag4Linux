@@ -44,7 +44,7 @@ BEGIN
             VALUE "FileDescription", "Hibernate for Windows\0"
             VALUE "FileVersion", "1, 0, 2, 0\0"
             VALUE "InternalName", "hibernate\0"
-            VALUE "LegalCopyright", "Copyright © 2007-2013 UltraDefrag Development Team\0"
+            VALUE "LegalCopyright", "Copyright © 2009-2013 UltraDefrag Development Team\0"
             VALUE "OriginalFilename", "hibernate.exe\0"
             VALUE "ProductName", "Hibernate for Windows\0"
             VALUE "ProductVersion", "1, 0, 2, 0\0"

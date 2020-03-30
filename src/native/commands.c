@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -30,16 +30,18 @@
 int echo_flag = DEFAULT_ECHO_FLAG;
 
 /*
-* boot-off command modifies registry, 
-* but shutdown\reboot commands releases its effect,
-* because all registry modifications becomes lost.
-* Therefore we track pending boot-off request through
-* a special pending-boot-off file in windows directory.
+* The boot-off command would lose its effect after subsequent
+* shutdown/reboot calls as registry changes wouldn't be saved
+* to the disk in that case. To overcome that the program creates
+* a special file named 'pending-boot-off' in the Windows directory
+* and checks for its existence during the next boot. Whenever that
+* file gets found the program turns the boot time defragmentation off
+* and passes control back to the Windows boot process immediately then.
 */
 int pending_boot_off = 0;
 
 /**
- * @brief Defines whether command is executed
+ * @brief Defines whether a command is executed
  * in scripting mode or in interactive mode.
  */
 int scripting_mode = 1;
@@ -115,7 +117,7 @@ static int list_installed_man_pages(int argc,wchar_t **argv,wchar_t **envp)
         return (-1);
     }
 
-    /* try to get list of installed man pages through winx_ftw call */
+    /* try to get the list of installed man pages through winx_ftw call */
     _snwprintf(path,MAX_PATH,L"\\??\\%ws\\man",instdir);
     path[MAX_PATH] = 0;
     filelist = winx_ftw(path,0,NULL,NULL,man_listing_terminator,NULL);
@@ -147,7 +149,7 @@ static int list_installed_man_pages(int argc,wchar_t **argv,wchar_t **envp)
             f = winx_fopen(path,"r");
             if(f != NULL){
                 winx_fclose(f);
-                /* display man page filename on the screen */
+                /* display the filename on the screen */
                 _snwprintf(path,MAX_PATH,L"%ws.man",cmd_table[i].cmd_name);
                 path[MAX_PATH] = 0;
                 winx_printf("%-15ws",path);
@@ -182,7 +184,7 @@ static int man_handler(int argc,wchar_t **argv,wchar_t **envp)
         return list_installed_man_pages(argc,argv,envp);
     }
     
-    /* build path to requested manual page */
+    /* build path to the requested manual page */
     instdir = winx_getenv(L"UD_INSTALL_DIR");
     if(instdir == NULL){
         winx_printf("\n%ws: cannot get %%ud_install_dir%% path\n\n",argv[0]);
@@ -192,7 +194,7 @@ static int man_handler(int argc,wchar_t **argv,wchar_t **envp)
     path[MAX_PATH] = 0;
     winx_free(instdir);
 
-    /* build argv for type command handler */
+    /* build argv for the type command handler */
     type_argv[0] = L"man";
     type_argv[1] = path;
     return type_handler(2,type_argv,envp);
@@ -231,7 +233,7 @@ static int history_handler(int argc,wchar_t **argv,wchar_t **envp)
     if(scripting_mode || history.head == NULL)
         return 0;
     
-    /* convert list of strings to array */
+    /* convert the list of strings to an array */
     strings = winx_malloc((history.n_entries + 3) * sizeof(char *));
     strings[0] = "Typed commands history:"; strings[1] = ""; i = 2;
     for(entry = history.head; i < history.n_entries; entry = entry->next){
@@ -269,7 +271,7 @@ static int echo_handler(int argc,wchar_t **argv,wchar_t **envp)
         return 0;
     }
     
-    /* check whether echo status is requested */
+    /* check whether the echo status is requested */
     if(argc < 2){
         if(echo_flag)
             winx_printf("echo is on\n");
@@ -289,7 +291,7 @@ static int echo_handler(int argc,wchar_t **argv,wchar_t **envp)
         }
     }
     
-    /* handle echo command */
+    /* handle the echo command */
     for(i = 1; i < argc; i++){
         winx_printf("%ws",argv[i]);
         if(i != argc - 1)
@@ -317,7 +319,7 @@ static int type_handler(int argc,wchar_t **argv,wchar_t **envp)
     if(argc < 1)
         return (-1);
 
-    /* display boot time script if filename is missing */
+    /* display the boot time script if filename is missing */
     if(argc < 2){
         windir = winx_get_windows_directory();
         if(windir == NULL){
@@ -347,15 +349,15 @@ static int type_handler(int argc,wchar_t **argv,wchar_t **envp)
     /* read file contents entirely */
     buffer = winx_get_file_contents(path,&filesize);
     if(buffer == NULL)
-        return 0; /* file is empty or some error */
+        return 0; /* the file is empty or some error */
     
-    /* terminate buffer by two zeros */
+    /* terminate the buffer by two zeros */
     buffer[filesize] = buffer[filesize + 1] = 0;
 
     /* check for UTF-16 signature which exists in files edited in Notepad */
     unicode_detected = 0;
     if(filesize >= sizeof(wchar_t)){
-        if(buffer[0] == 0xFF && buffer[1] == 0xFE)
+        if((unsigned char)buffer[0] == 0xFF && (unsigned char)buffer[1] == 0xFE)
             unicode_detected = 1;
     }
 
@@ -462,7 +464,7 @@ static int hexview_handler(int argc,wchar_t **argv,wchar_t **envp)
             winx_fclose(f);
             return (-1);
         }
-        /* fill a screen */
+        /* fill the screen */
         bytes_to_print = bytes_to_read;
         j = 0;
         while(bytes_to_print){
@@ -497,7 +499,7 @@ static int hexview_handler(int argc,wchar_t **argv,wchar_t **envp)
         /* go to the next portion of data */
         filesize -= bytes_to_read;
         if(filesize && !scripting_mode){
-            /* display prompt to hit any key in interactive mode */
+            /* display prompt to hit any key in the interactive mode */
             winx_printf("\n%s\n\n",DEFAULT_PAGING_PROMPT_TO_HIT_ANY_KEY);
             /* wait for any key */
             if(winx_kb_read(&kbd_rec,INFINITE) < 0){
@@ -507,7 +509,7 @@ static int hexview_handler(int argc,wchar_t **argv,wchar_t **envp)
             if(kbd_rec.wVirtualScanCode == 0x1){
                 escape_detected = 1;
             } else if(kbd_rec.wVirtualScanCode == 0x1d){
-                /* distinguish between control keys and break key */
+                /* distinguish between control keys and the break key */
                 if(!(kbd_rec.dwControlKeyState & LEFT_CTRL_PRESSED) && \
                   !(kbd_rec.dwControlKeyState & RIGHT_CTRL_PRESSED)){
                     break_detected = 1;
@@ -524,7 +526,7 @@ static int hexview_handler(int argc,wchar_t **argv,wchar_t **envp)
 }
 
 /**
- * @brief Displays list of all environment variables.
+ * @brief Enumerates all environment variables.
  */
 static int list_environment_variables(int argc,wchar_t **argv,wchar_t **envp)
 {
@@ -542,7 +544,7 @@ static int list_environment_variables(int argc,wchar_t **argv,wchar_t **envp)
     if(argc > 1)
         filter_strings = 1;
     
-    /* convert envp to array of ANSI strings */
+    /* convert envp to an array of ANSI strings */
     for(n = 0; envp[n] != NULL; n++) {}
     strings = winx_malloc((n + 1) * sizeof(char *));
     RtlZeroMemory((void *)strings,(n + 1) * sizeof(char *));
@@ -584,18 +586,18 @@ static int set_handler(int argc,wchar_t **argv,wchar_t **envp)
         return (-1);
 
     /*
-    * Check whether environment variables
+    * Check whether the environment variables
     * listing is requested or not.
     */
     if(argc < 2){
         /* list all environment variables */
         return list_environment_variables(argc,argv,envp);
     } else {
-        /* check whether the first parameter contains '=' character */
+        /* check whether the first parameter contains the '=' character */
         if(!wcschr(argv[1],'=')){
             /*
             * List variables containing argv[1] string
-            * in the beginning of their names.
+            * in the beginning of their name.
             */
             return list_environment_variables(argc,argv,envp);
         }
@@ -608,12 +610,12 @@ static int set_handler(int argc,wchar_t **argv,wchar_t **envp)
                 break;
             }
         }
-        /* validate '=' character position */
+        /* validate the '=' character position */
         if(name_length == 0 || (value_length == 0 && argc >= 3)){
             winx_printf("\n%ws: invalid syntax\n\n",argv[0]);
             return (-1);
         }
-        /* append all remaining parts of the value string */
+        /* append all the remaining parts of the value string */
         for(i = 2; i < argc; i++)
             value_length += 1 + (int)wcslen(argv[i]);
         /* allocate memory */
@@ -639,11 +641,11 @@ static int set_handler(int argc,wchar_t **argv,wchar_t **envp)
             }
         }
         if(value_length){
-            /* set environment variable */
+            /* set the environment variable */
             result = winx_setenv(name,value);
             winx_free(value);
         } else {
-            /* clear environment variable */
+            /* clear the environment variable */
             result = winx_setenv(name,NULL);
         }
         /* handle a special case of %UD_LOG_FILE_PATH% */
@@ -676,16 +678,17 @@ static int pause_handler(int argc,wchar_t **argv,wchar_t **envp)
         return 0;
     }
     
-    /* pause execution for specified time interval */
+    /* pause execution for the specified time interval */
     msec = (int)_wtol(argv[1]);
     winx_sleep(msec);
     return 0;
 }
 
 /**
- * @brief Executes pending boot-off command.
- * @return Boolean value indicating whether
- * pending boot-off command was detected or not.
+ * @brief Executes the pending boot-off command.
+ * @return Boolean value indicating whether the
+ * pending boot-off command has been detected
+ * or not.
  */
 int ExecPendingBootOff(void)
 {
@@ -943,7 +946,7 @@ static wchar_t *expand_environment_variables(wchar_t *command)
 }
 
 /**
- * @brief List of supported commands.
+ * @brief The list of supported commands.
  */
 cmd_table_entry cmd_table[] = {
     { L"boot-off",  boot_off_handler },
@@ -969,7 +972,7 @@ cmd_table_entry cmd_table[] = {
 int first_command = 1;
 
 /**
- * @brief Executes the command.
+ * @brief Executes a command.
  * @param[in] cmdline the command line.
  * @return Zero for success, negative 
  * value otherwise.
@@ -1044,9 +1047,9 @@ int parse_command(wchar_t *cmdline)
                 argc ++;
         }
     }
-    /* c. allocate memory for argv array */
+    /* c. allocate memory for the argv array */
     argv = winx_malloc(sizeof(wchar_t *) * argc);
-    /* d. fill argv array */
+    /* d. fill the argv array */
     j = 0; arg_detected = 0;
     for(i = 0; i < n; i++){
         if(cmdline_copy[i]){
@@ -1064,7 +1067,7 @@ int parse_command(wchar_t *cmdline)
     if(peb){
         if(peb->ProcessParameters){
             if(peb->ProcessParameters->Environment){
-                /* build array of unicode strings */
+                /* build an array of unicode strings */
                 string = peb->ProcessParameters->Environment;
                 for(n = 0; ; n++){
                     /* empty line indicates the end of environment */
@@ -1089,11 +1092,10 @@ int parse_command(wchar_t *cmdline)
     }
     
     /*
-    * Print command line if echo is on
-    * and the name of the command is not
-    * preceeding by the at sign.
-    * Don't print also if echo command
-    * is executed.
+    * Print command line on the screen whenever
+    * it has no @ sign in the beginning and echo
+    * is on. Besides, never print echo commands
+    * themselves.
     */
     if(echo_flag && !at_detected && wcscmp(argv[0],L"echo") && \
         wcscmp(argv[0],L"echo.")) winx_printf("%ws\n",cmdline);

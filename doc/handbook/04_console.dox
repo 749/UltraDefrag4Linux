@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
@@ -23,14 +23,18 @@
  * To stop defragmentation hit <b>Ctrl+C</b> or close the command prompt.
  * To configure the context menu handler click <b>Settings > Options</b>
  * in UltraDefrag GUI or edit the following file manually:
- * <b>{installation folder}\\options.lua</b>.
+ * <b>{installation folder}\\conf\\options.lua</b>.
  *
  * @note
  * The context menu handler is not available from the portable
  * edition of the program.
  *
- * UltraDefrag puts its command line tool to the <b>\%SystemRoot\%\\system32</b>
- * folder, so it can be used without the full path specification:
+ * UltraDefrag puts its command line tool to the <b>\%SystemRoot\%\\system32</b> folder,
+ * so it can be used without the full path specification. Just make sure you run it from
+ * an <a href="https://www.bleepingcomputer.com/tutorials/how-to-open-a-windows-10-elevated-command-prompt/">elevated command prompt</a>
+ * as it requires administrative rights.
+ *
+ * Usage:
  *
  * @code
  * udefrag [command] [options] [driveletter:] [path(s)]
@@ -41,14 +45,14 @@
  * @par -a, \--analyze
  * Analyze specified objects.
  *
- * @par \--optimize-mft
- * Optimize master file tables only.
- *
- * @par -q, \--quick-optimize
- * Perform quick optimization.
- *
  * @par -o, \--optimize
  * Perform full optimization.
+ *
+ * @par -q, \--quick-optimization
+ * Perform quick optimization.
+ *
+ * @par \--optimize-mft
+ * Optimize master file tables only.
  *
  * @par -l, \--list-available-volumes
  * List all fixed disks available for defragmentation.
@@ -64,10 +68,6 @@
  * If none is specified the program defragments selected objects.
  *
  * Options:
- * @par -r, \--repeat
- * Repeat the disk processing multiple times whenever it makes sense.
- * Usually it increases processing time, but leads to better results.
- *
  * @par -b, \--use-system-color-scheme
  * Disable colorization of output.
  *
@@ -317,7 +317,7 @@
  * <div class="line"><span class="comment">:: sort files on drive g: by creation time in descending order</span></div>
  * <div class="line"><span class="keyword">set</span> UD_SORTING=C_TIME</div>
  * <div class="line"><span class="keyword">set</span> UD_SORTING_ORDER=DESC</div>
- * <div class="line"><span class="keyword">udefrag</span> -o -r g:</div>
+ * <div class="line"><span class="keyword">udefrag</span> -o g:</div>
  * <div class="line"></div>
  * <div class="line"><span class="comment">:: defragment drive h: only if its fragmentation level is above 10%</span></div>
  * <div class="line"><span class="keyword">set</span> UD_FRAGMENTATION_THRESHOLD=10</div>
@@ -326,6 +326,22 @@
  * <div class="line"><span class="comment">:: defragment all fixed disks except of c:, d:, g: and h:</span></div>
  * <div class="line"><span class="keyword">set</span> UD_EX_FILTER=%UD_EX_FILTER%;C:\*;D:\*;G:\*;H:\*</div>
  * <div class="line"><span class="keyword">udefrag</span> --all-fixed</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: defragment a disk with no drive letter assigned,</span></div>
+ * <div class="line"><span class="comment">:: mounted to C:\Games, using the diskpart utility</span></div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: first of all, assign a drive letter to the disk</span></div>
+ * <div class="line"><span class="keyword">echo</span> select volume c:\games &gt; script</div>
+ * <div class="line"><span class="keyword">echo</span> assign letter=t &gt;&gt; script</div>
+ * <div class="line"><span class="keyword">diskpart</span> /s script</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: then, defragment the disk</span></div>
+ * <div class="line"><span class="keyword">udefrag</span> t:</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: after all, remove the assigned letter</span></div>
+ * <div class="line"><span class="keyword">echo</span> select volume c:\games &gt; script</div>
+ * <div class="line"><span class="keyword">echo</span> remove letter=t &gt;&gt; script</div>
+ * <div class="line"><span class="keyword">diskpart</span> /s script</div>
  * <div class="line"></div>
  * <div class="line"><span class="comment">:: hibernate the computer using a special</span></div>
  * <div class="line"><span class="comment">:: command line tool shipped with UltraDefrag</span></div>
@@ -388,7 +404,7 @@
  * \rem{:: sort files on drive g: by creation time in descending order}
  * \cmd{set} UD\_SORTING=C\_TIME
  * \cmd{set} UD\_SORTING\_ORDER=DESC
- * \cmd{udefrag} -o -r g:
+ * \cmd{udefrag} -o g:
  *
  * \rem{:: defragment drive h: only if its fragmentation level is above 10%}
  * \cmd{set} UD\_FRAGMENTATION\_THRESHOLD=10
@@ -397,6 +413,22 @@
  * \rem{:: defragment all fixed disks except of c:, d:, g: and h:}
  * \cmd{set} UD\_EX\_FILTER=%UD\_EX\_FILTER%;C:\(\backslash\)*;D:\(\backslash\)*;G:\(\backslash\)*;H:\(\backslash\)*
  * \cmd{udefrag} --all-fixed
+ *
+ * \rem{:: defragment a disk with no drive letter assigned,}
+ * \rem{:: mounted to C:\(\backslash\)Games, using the diskpart utility}
+ *
+ * \rem{:: first of all, assign a drive letter to the disk}
+ * \cmd{echo} select volume c:\(\backslash\)games > script
+ * \cmd{echo} assign letter=t >> script
+ * \cmd{diskpart} /s script
+ *
+ * \rem{:: then, defragment the disk}
+ * \cmd{udefrag} t:
+ *
+ * \rem{:: after all, remove the assigned letter}
+ * \cmd{echo} select volume c:\(\backslash\)games > script
+ * \cmd{echo} remove letter=t >> script
+ * \cmd{diskpart} /s script
  *
  * \rem{:: hibernate the computer using a special}
  * \rem{:: command line tool shipped with UltraDefrag}
@@ -412,7 +444,7 @@
  *  <TABLE STYLE="border: none; width: 97%; margin:auto;">
  *    <TR>
  *      <TD STYLE="text-align: left; width: 50%;">Previous: <a href="GUI.html">Graphical Interface</a></TD>
- *      <TD STYLE="text-align: right; width: 50%;">Next: <a href="Schedule.html">Scheduled Defragmentation</a></TD>
+ *      <TD STYLE="text-align: right; width: 50%;">Next: <a href="Boot.html">Boot Time Defragmentation</a></TD>
  *    </TR>
  *  </TABLE>
  * @endhtmlonly

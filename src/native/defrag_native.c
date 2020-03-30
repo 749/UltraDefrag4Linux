@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -27,24 +27,24 @@
 /*
 * We're releasing this module as a monolithic thing to
 * prevent BSOD in case of missing UltraDefrag native libraries.
-* Otherwise the following modules becomes critical for the Windows
+* Otherwise the following modules become critical for the Windows
 * boot process: udefrag.dll, zenwinx.dll.
 */
 
 /**
- * @brief Process Environment Block.
+ * @brief The process environment block.
  */
 PEB *peb = NULL;
 
 /**
- * @brief History of commands
- * typed in interactive mode.
+ * @brief The history of commands
+ * typed in the interactive mode.
  */
 winx_history history = {0};
 
 /**
- * @brief Defines whether the program
- * must exit from interactive mode or not.
+ * @brief Defines whether the program must
+ * exit from the interactive mode or not.
  */
 int exit_flag = 0;
 
@@ -61,7 +61,7 @@ static int out_of_memory_handler(size_t n)
 }
 
 /**
- * @brief Initializes the native application.
+ * @brief Initializes the application.
  */
 static int native_app_init(void)
 {
@@ -79,9 +79,9 @@ static int native_app_init(void)
 }
 
 /**
- * @brief Handles boot in Windows Safe Mode.
- * @return Nonzero value if safe mode is
- * detected, zero otherwise.
+ * @brief Handles Safe Mode boots.
+ * @return A nonzero value if Windows
+ * is in Safe Mode, zero otherwise.
  */
 static int handle_safe_mode_boot(void)
 {
@@ -94,9 +94,9 @@ static int handle_safe_mode_boot(void)
     */
     safe_mode = winx_windows_in_safe_mode();
     /*
-    * In case of errors we'll assume that we're running in Safe Mode.
-    * To avoid a very unpleasant situation when ultradefrag works
-    * in background and nothing happens on the black screen.
+    * In case of errors we'll assume that we're running in Safe Mode
+    * to avoid a very unpleasant situation when ultradefrag works in
+    * background and nothing happens on the black screen.
     */
     if(safe_mode > 0 || safe_mode < 0){
         /* display yet a message, for debugging purposes */
@@ -110,14 +110,14 @@ static int handle_safe_mode_boot(void)
 }
 
 /**
- * @brief Native application entry point.
+ * @brief The native application's entry point.
  */
 void __stdcall NtProcessStartup(PPEB Peb)
 {
     int init_result;
     /*
     * No longer than MAX_LINE_WIDTH to ensure that escape and backspace
-    * keys will work properly with winx_prompt() function.
+    * keys will work properly with the winx_prompt() function.
     */
     char buffer[MAX_LINE_WIDTH + 1];
     wchar_t wbuffer[MAX_LINE_WIDTH + 1];
@@ -129,8 +129,8 @@ void __stdcall NtProcessStartup(PPEB Peb)
 
     /* display copyrights */
     winx_print("\n\n");
-    winx_print(VERSIONINTITLE " boot time interface\n"
-        "Copyright (c) Dmitri Arkhangelski, 2007-2013.\n"
+    winx_print(VERSIONINTITLE " boot time interface.\n"
+        "Copyright (c) Dmitri Arkhangelski, 2007-2018.\n"
         "Copyright (c) Stefan Pendl, 2010-2013.\n\n"
         "UltraDefrag comes with ABSOLUTELY NO WARRANTY.\n\n"
         "If something is wrong, hit F8 on startup\n"
@@ -177,7 +177,7 @@ void __stdcall NtProcessStartup(PPEB Peb)
     }
     winx_printf("\n\n");
 
-    /* process default boot time script */
+    /* process the default boot time script */
     ProcessScript(NULL);
 
     /* start interactive mode */
@@ -187,14 +187,14 @@ void __stdcall NtProcessStartup(PPEB Peb)
     abort_flag = 0;
     winx_init_history(&history);
     while(winx_prompt("# ",buffer,MAX_LINE_WIDTH,&history) >= 0){
-        /* convert command to unicode */
+        /* convert the command to unicode */
         if(_snwprintf(wbuffer,MAX_LINE_WIDTH,L"%hs",buffer) < 0){
             winx_printf("Command line is too long!\n");
             continue;
         }
         wbuffer[MAX_LINE_WIDTH] = 0;
 
-        /* execute command */
+        /* execute the command */
         parse_command(wbuffer);
 
         /* break on exit */
@@ -207,10 +207,10 @@ void __stdcall NtProcessStartup(PPEB Peb)
 }
 
 /**
- * @brief Sets debugging log path.
- * @details Intended primarily to log
- * debugging information during the
- * native application startup.
+ * @brief Turns on logging to file.
+ * @details Intended to save debugging
+ * information during the application
+ * startup.
  */
 static void set_dbg_log(char *name)
 {

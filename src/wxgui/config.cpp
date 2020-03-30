@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 //
 //  UltraDefrag - a powerful defragmentation tool for Windows NT.
-//  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+//  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
 //  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -34,6 +34,7 @@
 //                            Declarations
 // =======================================================================
 
+#include "prec.h"
 #include "main.h"
 
 extern "C" {
@@ -88,17 +89,15 @@ void MainFrame::ReadAppConfiguration()
         (long)DPI(DEFAULT_LIST_HEIGHT)
     );
 
-    double r[LIST_COLUMNS] = {
-        110.0/615, 110.0/615, 110.0/615,
-        110.0/615, 110.0/615, 65.0/615
+    int defaultColumnWidths[LIST_COLUMNS] = {
+        110, 110, 110, 110, 110, 65
     };
     for(int i = 0; i < LIST_COLUMNS; i++){
         cfg->Read(wxString::Format(wxT("/DrivesList/width%d"),i),
-            &m_r[i], r[i]
+            &m_origColumnWidths[i], defaultColumnWidths[i]
         );
     }
 
-    cfg->Read(wxT("/Algorithm/RepeatAction"),&m_repeat,false);
     cfg->Read(wxT("/Algorithm/SkipRemovableMedia"),&m_skipRem,true);
 }
 
@@ -119,35 +118,29 @@ void MainFrame::SaveAppConfiguration()
     cfg->Write(wxT("/MainFrame/SeparatorPosition"),
         (long)m_splitter->GetSashPosition());
 
-    int cwidth = 0;
-    for(int i = 0; i < LIST_COLUMNS; i++)
-        cwidth += m_vList->GetColumnWidth(i);
-
     for(int i = 0; i < LIST_COLUMNS; i++){
-        cfg->Write(wxString::Format(wxT("/DrivesList/width%d"),i),
-            (double)m_vList->GetColumnWidth(i) / (double)cwidth
-        );
+        // save original widths whenever possible to keep rounding errors out
+        cfg->Write(wxString::Format(wxT("/DrivesList/width%d"),i),m_origColumnWidths[i]);
     }
 
     cfg->Write(wxT("/Language/Selected"),(long)g_locale->GetLanguage());
     cfg->Write(wxT("/Language/Version"),wxVERSION_NUM_DOT_STRING);
 
-    cfg->Write(wxT("/Algorithm/RepeatAction"),m_repeat);
     cfg->Write(wxT("/Algorithm/SkipRemovableMedia"),m_skipRem);
 
     // save sorting parameters
-    if(m_menuBar->FindItem(ID_SortByPath)->IsChecked()){
+    if(m_menuBar->IsChecked(ID_SortByPath)){
         cfg->Write(wxT("/Algorithm/Sorting"),wxT("path"));
-    } else if(m_menuBar->FindItem(ID_SortBySize)->IsChecked()){
+    } else if(m_menuBar->IsChecked(ID_SortBySize)){
         cfg->Write(wxT("/Algorithm/Sorting"),wxT("size"));
-    } else if(m_menuBar->FindItem(ID_SortByCreationDate)->IsChecked()){
+    } else if(m_menuBar->IsChecked(ID_SortByCreationDate)){
         cfg->Write(wxT("/Algorithm/Sorting"),wxT("c_time"));
-    } else if(m_menuBar->FindItem(ID_SortByModificationDate)->IsChecked()){
+    } else if(m_menuBar->IsChecked(ID_SortByModificationDate)){
         cfg->Write(wxT("/Algorithm/Sorting"),wxT("m_time"));
-    } else if(m_menuBar->FindItem(ID_SortByLastAccessDate)->IsChecked()){
+    } else if(m_menuBar->IsChecked(ID_SortByLastAccessDate)){
         cfg->Write(wxT("/Algorithm/Sorting"),wxT("a_time"));
     }
-    if(m_menuBar->FindItem(ID_SortAscending)->IsChecked()){
+    if(m_menuBar->IsChecked(ID_SortAscending)){
         cfg->Write(wxT("/Algorithm/SortingOrder"),wxT("asc"));
     } else {
         cfg->Write(wxT("/Algorithm/SortingOrder"),wxT("desc"));
@@ -169,6 +162,11 @@ void MainFrame::SaveAppConfiguration()
 
 void MainFrame::ReadUserPreferences(wxCommandEvent& WXUNUSED(event))
 {
+    /* save cluster map options */
+    int block_size = CheckOption(wxT("UD_MAP_BLOCK_SIZE"));
+    int line_width = CheckOption(wxT("UD_GRID_LINE_WIDTH"));
+    int old_cell_size = block_size + line_width;
+
     /*
     * The program should be configurable
     * through the options.lua file only.
@@ -204,7 +202,7 @@ void MainFrame::ReadUserPreferences(wxCommandEvent& WXUNUSED(event))
 
     /* interprete guiopts.lua file */
     lua_State *L; int status; wxString error = wxT("");
-    wxFileName path(wxT(".\\options.lua"));
+    wxFileName path(wxT(".\\conf\\options.lua"));
     path.Normalize();
     if(!path.FileExists()){
         etrace("%ls file not found",
@@ -256,16 +254,44 @@ done:
     UD_AdjustOption(SHOW_TASKBAR_ICON_OVERLAY);
 
     // reset log file path
-    wxString v;
+    wxString v, logpath;
     if(wxGetEnv(wxT("UD_LOG_FILE_PATH"),&v)){
-        wxFileName logpath(v); logpath.Normalize();
-        wxSetEnv(wxT("UD_LOG_FILE_PATH"),logpath.GetFullPath());
+        wxFileName path(v); path.Normalize();
+        logpath << path.GetFullPath();
+        wxSetEnv(wxT("UD_LOG_FILE_PATH"),logpath);
+    } else {
+        logpath << wxT("");
     }
-    ::udefrag_set_log_file_path();
+    if(wxGetApp().m_logPath->CmpNoCase(logpath) != 0){
+        delete wxGetApp().m_logPath;
+        wxGetApp().m_logPath = new wxString(logpath);
+        ::udefrag_set_log_file_path();
+    }
+
+    if(m_sizeAdjustmentEnabled){
+        /* force the map perfectly fit into the main frame */
+        block_size = CheckOption(wxT("UD_MAP_BLOCK_SIZE"));
+        line_width = CheckOption(wxT("UD_GRID_LINE_WIDTH"));
+        int cell_size = block_size + line_width;
+        if(cell_size != old_cell_size){
+            ProcessCommandEvent(this,ID_AdjustMinFrameSize);
+            wxCommandEvent *event = new wxCommandEvent(
+                wxEVT_COMMAND_MENU_SELECTED,ID_AdjustFrameSize
+            );
+            int flags = 0;
+            if(cell_size > old_cell_size){
+                flags |= FRAME_WIDTH_INCREASED;
+                flags |= FRAME_HEIGHT_INCREASED;
+            }
+            event->SetInt(flags);
+            GetEventHandler()->QueueEvent(event);
+            m_sizeAdjustmentEnabled = false;
+        }
+    }
 
     if(!error.IsEmpty()){
         wxMessageDialog dlg(this,error,wxT("UltraDefrag"),
-            wxOK | wxICON_ERROR/* | wxSTAY_ON_TOP*/);
+            wxOK | wxICON_ERROR | wxCENTRE/* | wxSTAY_ON_TOP*/);
         dlg.ShowModal();
     }
 }
@@ -287,9 +313,9 @@ int MainFrame::CheckOption(const wxString& name)
 
 /**
  * @note This thread reloads the main configuration file
- * whenever something gets changed in the installation
- * directory, even when the last modification time
- * gets changed for its subdirectories.
+ * whenever something gets changed in the conf subfolder
+ * of the installation directory, even when the last
+ * modification time gets changed for its subfolders.
  */
 void *ConfigThread::Entry()
 {
@@ -297,7 +323,7 @@ void *ConfigThread::Entry()
 
     itrace("configuration tracking started");
 
-    HANDLE h = FindFirstChangeNotification(wxT("."),
+    HANDLE h = FindFirstChangeNotification(wxT(".\\conf"),
         FALSE,FILE_NOTIFY_CHANGE_LAST_WRITE);
     if(h == INVALID_HANDLE_VALUE){
         letrace("FindFirstChangeNotification failed");
@@ -354,9 +380,9 @@ done:
 void MainFrame::OnGuiOptions(wxCommandEvent& WXUNUSED(event))
 {
     if(m_title->Find(wxT("Portable")) != wxNOT_FOUND)
-        Utils::ShellExec(wxT("notepad"),wxT("open"),wxT(".\\options.lua"));
+        Utils::ShellExec(wxT("notepad"),wxT("open"),wxT(".\\conf\\options.lua"));
     else
-        Utils::ShellExec(wxT(".\\options.lua"),wxT("edit"));
+        Utils::ShellExec(wxT(".\\conf\\options.lua"),wxT("edit"));
 }
 
 void MainFrame::OnBootScript(wxCommandEvent& WXUNUSED(event))

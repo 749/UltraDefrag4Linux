@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,11 +31,10 @@ int escape_flag = 0;
 
 /**
  * @brief Processes the boot time script.
- * @param[in] filename the name of file,
- * with full path. If NULL is passed,
- * default boot time script will be used.
- * @return Zero for success, negative
- * value otherwise.
+ * @param[in] filename the full path of the script.
+ * If NULL is passed, the default boot time script
+ * will be used.
+ * @return Zero for success, a negative value otherwise.
  */
 int ProcessScript(wchar_t *filename)
 {
@@ -49,7 +48,7 @@ int ProcessScript(wchar_t *filename)
     scripting_mode = 1;
     escape_flag = 0;
 
-    /* read script file entirely */
+    /* read the script file entirely */
     if(filename == NULL){
         windir = winx_get_windows_directory();
         if(windir == NULL){
@@ -66,22 +65,22 @@ int ProcessScript(wchar_t *filename)
 
     buffer = winx_get_file_contents(path,&filesize);
     if(buffer == NULL)
-        return 0; /* file is empty or some error */
+        return 0; /* the file is empty or some error occured */
 
     /* get file size, in characters */
     n = filesize / sizeof(wchar_t);
     if(n == 0)
-        goto cleanup; /* file has no valuable contents */
+        goto cleanup; /* the file has no valuable contents */
 
-    /* terminate buffer */
+    /* terminate the buffer */
     buffer[n] = 0;
     
-    /* replace all newline characters by zeros */
+    /* replace all the newline characters by zeros */
     for(i = 0; i < n; i++){
         if(buffer[i] == '\n' || buffer[i] == '\r')
             buffer[i] = 0;
     }
-    /* skip first 0xFEFF character added by Notepad */
+    /* skip the first 0xFEFF character added by Notepad */
     if(buffer[0] == 0xFEFF)
         buffer[0] = 0;
 

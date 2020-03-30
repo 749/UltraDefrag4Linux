@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
  * @{
  */
 
-#include "ntndk.h"
+#include "prec.h"
 #include "zenwinx.h"
 
 void winx_init_case_tables(void);
@@ -32,7 +32,7 @@ int winx_create_global_heap(void);
 void winx_destroy_global_heap(void);
 int winx_dbg_init(void);
 void winx_dbg_close(void);
-void MarkWindowsBootAsSuccessful(void);
+void mark_windows_boot_as_successful(void);
 char *winx_get_status_description(unsigned long status);
 void kb_close(void);
 
@@ -41,7 +41,7 @@ void kb_close(void);
  * @details This routine needs to be called
  * before any use of other routines (except
  * a few ones like winx_print).
- * @return Zero for success, negative value otherwise.
+ * @return Zero for success, a negative value otherwise.
  */
 int winx_init_library(void)
 {
@@ -67,12 +67,12 @@ void winx_unload_library(void)
 
 /**
  * @internal
- * @brief Displays error message when
- * either debug print or memory
+ * @brief Displays an error message
+ * when either debug print or memory
  * allocation may be not available.
  * @param[in] msg the error message.
  * @param[in] Status the NT status code.
- * @note Intended to be used after winx_exit,
+ * @note Intended to be used on winx_exit,
  * winx_shutdown and winx_reboot failures.
  */
 static void print_post_scriptum(char *msg,NTSTATUS Status)
@@ -107,15 +107,15 @@ void winx_exit(int exit_code)
 /**
  * @brief Reboots the computer.
  * @note If SE_SHUTDOWN privilege adjusting fails
- * then the computer will not be rebooted and the program 
- * will continue the execution after this call.
+ * then the computer won't be rebooted and the 
+ * program will continue execution after this call.
  */
 void winx_reboot(void)
 {
     NTSTATUS Status;
     
     kb_close();
-    MarkWindowsBootAsSuccessful();
+    mark_windows_boot_as_successful();
     (void)winx_enable_privilege(SE_SHUTDOWN_PRIVILEGE);
     winx_flush_dbg_log(0);
     Status = NtShutdownSystem(ShutdownReboot);
@@ -127,15 +127,15 @@ void winx_reboot(void)
 /**
  * @brief Shuts down the computer.
  * @note If SE_SHUTDOWN privilege adjusting fails
- * then the computer will not be shut down and the program 
- * will continue the execution after this call.
+ * then the computer won't be shut down and the
+ * program will continue execution after this call.
  */
 void winx_shutdown(void)
 {
     NTSTATUS Status;
     
     kb_close();
-    MarkWindowsBootAsSuccessful();
+    mark_windows_boot_as_successful();
     (void)winx_enable_privilege(SE_SHUTDOWN_PRIVILEGE);
     winx_flush_dbg_log(0);
     Status = NtShutdownSystem(ShutdownPowerOff);

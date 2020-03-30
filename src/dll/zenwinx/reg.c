@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,13 +25,16 @@
  */
 
 /*
-* Use standard RtlXxx functions whenever,
+* Use standard RtlXxx functions whenever
 * possible - they're much easier for use.
 */
 
-#include "ntndk.h"
+#include "prec.h"
 #include "zenwinx.h"
 
+/**
+ * @internal
+ */
 struct cmd {
     struct cmd *next;  /* pointer to the next command */
     struct cmd *prev;  /* pointer to the previous command */
@@ -57,7 +60,7 @@ NTSTATUS NTAPI query_routine(PWSTR ValueName,
     wchar_t *cmd;
     
     if(list == NULL){
-        etrace("list is equal to NULL");
+        etrace("the list is equal to NULL");
         return STATUS_UNSUCCESSFUL;
     }
     
@@ -86,10 +89,10 @@ NTSTATUS NTAPI query_routine(PWSTR ValueName,
 
 /**
  * @internal
- * @brief Retrieves the list of
- * registered boot execute programs.
- * @return Zero for success,
- * negative value otherwise.
+ * @brief Retrieves the list of commands
+ * registered to be executed at Windows boot.
+ * @return Zero for success, a negative value
+ * otherwise.
  */
 static int get_boot_exec_list(struct cmd **list)
 {
@@ -110,13 +113,13 @@ static int get_boot_exec_list(struct cmd **list)
 
 /**
  * @internal
- * @brief Compares two boot execute commands.
+ * @brief Compares two commands intended to be executed at Windows boot.
  * @details Treats 'command' and 'autocheck command' as the same.
  * @param[in] reg_cmd the command read from the registry.
  * @param[in] cmd the command to be searched for.
- * @return Positive value indicates that the commands are equal,
- * zero indicates that they're different, negative value
- * indicates a failure of the comparison.
+ * @return A positive value if the commands are equal,
+ * zero if they're different, a negative value in case
+ * of comparison failure.
  */
 static int cmd_compare(wchar_t *reg_cmd,const wchar_t *cmd)
 {
@@ -141,10 +144,9 @@ static int cmd_compare(wchar_t *reg_cmd,const wchar_t *cmd)
 
 /**
  * @internal
- * @brief Saves the list of boot
- * execute programs to registry.
- * @return Zero for success,
- * negative value otherwise.
+ * @brief Saves a list of commands intended to 
+ * be executed at Windows boot to the registry.
+ * @return Zero for success, a negative value otherwise.
  */
 static int save_boot_exec_list(struct cmd *list)
 {
@@ -180,8 +182,8 @@ static int save_boot_exec_list(struct cmd *list)
 
 /**
  * @internal
- * @brief Destroys list of
- * boot execute programs.
+ * @brief Destroys a list of commands
+ * intended to be executed at Windows boot.
  */
 static void destroy_boot_exec_list(struct cmd *list)
 {
@@ -204,10 +206,10 @@ static void destroy_boot_exec_list(struct cmd *list)
  * @brief Checks wheter a command is registered for
  * being executed during the Windows boot process or not.
  * @param[in] command the name of the command's
- * executable, without the extension.
- * @return Positive value indicates that the command
- * is registered, zero indicates that it isn't,
- * negative value indicates a failure of the check.
+ * executable, without extension.
+ * @return A positive value if the command
+ * is registered, zero if it isn't,
+ * a negative value in case of check failure.
  */
 int winx_bootex_check(const wchar_t *command)
 {
@@ -219,10 +221,10 @@ int winx_bootex_check(const wchar_t *command)
     if(!wcscmp(command,L""))
         return 0;
     
-    /* get list of registered commands */
+    /* get the list of the registered commands */
     if(get_boot_exec_list(&list) < 0) goto done;
     
-    /* check for specified command presence */
+    /* check for the specified command presence */
     result = 0;
     for(c = list; c; c = c->next){
         if(cmd_compare(c->cmd,command) > 0){
@@ -241,9 +243,9 @@ done:
  * @brief Registers a command to be executed
  * during the Windows boot process.
  * @param[in] command the name of the command's
- * executable, without the extension.
- * @return Zero for success, negative value otherwise.
- * @note Command's executable must be placed inside 
+ * executable, without extension.
+ * @return Zero for success, a negative value otherwise.
+ * @note The command's executable must be placed inside 
  * the system32 directory to be executed successfully.
  */
 int winx_bootex_register(const wchar_t *command)
@@ -259,10 +261,10 @@ int winx_bootex_register(const wchar_t *command)
     if(!wcscmp(command,L""))
         return 0;
     
-    /* get list of registered commands */
+    /* get the list of the registered commands */
     if(get_boot_exec_list(&list) < 0) goto done;
     
-    /* append specified command if necessary */
+    /* append the specified command whenever necessary */
     for(c = list; c; c = c->next){
         if(cmd_compare(c->cmd,command) > 0){
             cmd_found = 1;
@@ -286,7 +288,7 @@ int winx_bootex_register(const wchar_t *command)
         sizeof(struct cmd));
     c->cmd = cmd_copy;
     
-    /* save list of registered commands */
+    /* save the list */
     result = save_boot_exec_list(list);
 
 done:
@@ -295,11 +297,11 @@ done:
 }
 
 /**
- * @brief Deregisters a command from being executed
- * during the Windows boot process.
- * @param[in] command the name of the command's
- * executable, without the extension.
- * @return Zero for success, negative value otherwise.
+ * @brief Deregisters a command from being
+ * executed during the Windows boot process.
+ * @param[in] command the name of the
+ * command's executable, without extension.
+ * @return Zero for success, a negative value otherwise.
  */
 int winx_bootex_unregister(const wchar_t *command)
 {
@@ -312,10 +314,10 @@ int winx_bootex_unregister(const wchar_t *command)
     if(!wcscmp(command,L""))
         return 0;
     
-    /* get list of registered commands */
+    /* get the list of the registered commands */
     if(get_boot_exec_list(&list) < 0) goto done;
     
-    /* remove specified command */
+    /* remove the command */
     for(c = list; c; c = next){
         head = list;
         next = c->next;
@@ -327,7 +329,7 @@ int winx_bootex_unregister(const wchar_t *command)
         if(next == head) break;
     }
     
-    /* save list of registered commands */
+    /* save the list */
     result = save_boot_exec_list(list);
 
 done:

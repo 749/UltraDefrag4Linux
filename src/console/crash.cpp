@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 //
 //  UltraDefrag - a powerful defragmentation tool for Windows NT.
-//  Copyright (c) 2007-2016 Dmitri Arkhangelski (dmitriar@gmail.com).
+//  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -30,8 +30,9 @@
 //                            Declarations
 // =======================================================================
 
-#include <signal.h>
+#include "prec.h"
 #include "main.h"
+#include <signal.h>
 
 #define STATUS_FATAL_APP_EXIT        0x40000015
 #define STATUS_HEAP_CORRUPTION       0xC0000374

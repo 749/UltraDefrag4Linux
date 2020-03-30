@@ -5,7 +5,7 @@
 */
 
 /*
-* os.setenv and os.shellexec calls has been
+* os.setenv and os.shellexec calls have been
 * added by Dmitri Arkhangelski (2008, 2012).
 *
 * Note: luaL_error doesn't accept %x
@@ -58,7 +58,7 @@ static int os_execute (lua_State *L) {
   return 1;
 }
 
-/* converts UTF-8 string to UTF-16 string, returns also Win32 error */
+/* converts a UTF-8 string to UTF-16 encoding, returns also Win32 error */
 static wchar_t *convert_to_utf16(const char *utf8_string,int *error) {
   int length = (int)strlen(utf8_string);
   wchar_t *utf16_string = malloc((length + 1) * 2);
@@ -74,7 +74,7 @@ static wchar_t *convert_to_utf16(const char *utf8_string,int *error) {
   return utf16_string;
 }
 
-/* converts UTF-16 string to UTF-8 string, returns also Win32 error */
+/* converts a UTF-16 string to UTF-8 encoding, returns also Win32 error */
 static char *convert_to_utf8(const wchar_t *utf16_string,int *error) {
   int length = (int)wcslen(utf16_string);
   char *utf8_string = malloc((length + 1) * 2);

@@ -22,7 +22,7 @@ EXPORTS
     prb_t_cur
     prb_t_replace
 
-    winx_acquire_spin_lock
+    winx_acquire_lock
     winx_add_volume_region
     winx_bootex_check
     winx_bootex_register
@@ -31,6 +31,7 @@ EXPORTS
     winx_bytes_to_hr
     winx_create_directory
     winx_create_event
+    winx_create_lock
     winx_create_mutex
     winx_create_path
     winx_create_thread
@@ -41,8 +42,8 @@ EXPORTS
     winx_delete_file
     winx_destroy_event
     winx_destroy_history
+    winx_destroy_lock
     winx_destroy_mutex
-    winx_destroy_spin_lock
     winx_enable_privilege
     winx_exit
     winx_exit_thread
@@ -77,7 +78,6 @@ EXPORTS
     winx_hr_to_bytes
     winx_init_history
     winx_init_library
-    winx_init_spin_lock
     winx_ioctl
     winx_kbhit
     winx_kb_init
@@ -104,8 +104,8 @@ EXPORTS
     winx_reboot
     winx_release_file_contents
     winx_release_free_volume_regions
+    winx_release_lock
     winx_release_mutex
-    winx_release_spin_lock
     winx_scan_disk
     winx_setenv
     winx_set_dbg_log

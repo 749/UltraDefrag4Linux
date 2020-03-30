@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,6 +17,14 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+/*
+ * NOTE: to build internal documentation include the following 
+ * definitions to the supplied Doxyfile:
+ *
+ * INTERNAL_DOCS          = YES
+ * ENABLED_SECTIONS       = INTERNAL
+ */
+
 /**
  * @mainpage ZenWINX Library
  *
@@ -25,137 +33,32 @@
  *
  * @note
  * Undocumented native API, being used improperly, can easily crash your
- * application. Inspect the <b>ntndk.h</b> file for some hints.
+ * application. The included <b>ntndk.h</b> file contains some hints.
+ *
+ * @defgroup BinaryTrees         Binary trees
+ * @defgroup Console             Console
+ * @defgroup Debug               Debug
+ * @defgroup Disks               Disks
+ *
+ * @if INTERNAL
+ * @defgroup Entry               Entry point
+ * @endif
+ *
+ * @defgroup Environment         Environment
+ * @defgroup Events              Events
+ * @defgroup File                File
+ * @defgroup Keyboard            Keyboard
+ * @defgroup Lists               Lists
+ * @defgroup Loader              Loader
+ * @defgroup Locks               Locks
+ * @defgroup Memory              Memory
+ * @defgroup Miscellaneous       Miscellaneous
+ * @defgroup Mutexes             Mutexes
+ * @defgroup Paths               Paths
+ * @defgroup Privileges          Privileges
+ * @defgroup Registry            Registry
+ * @defgroup StartupAndShutdown  Startup and shutdown
+ * @defgroup Strings             Strings
+ * @defgroup Threads             Threads
+ * @defgroup Time                Time
  */
-
-/**
- * @defgroup BinaryTrees Binary trees
- * @{
- */
-/** @} */
-
-/**
- * @defgroup Console Console
- * @{
- */
-/** @} */
-
-/**
- * @defgroup Debug Debug
- * @{
- */
-/** @} */
-
-/**
- * @defgroup Disks Disks
- * @{
- */
-/** @} */
-
-/**
- * @defgroup Entry Entry point
- * @{
- */
-/** @} */
-
-/**
- * @defgroup Environment Environment
- * @{
- */
-/** @} */
-
-/**
- * @defgroup Events Events
- * @{
- */
-/** @} */
-
-/**
- * @defgroup File File
- * @{
- */
-/** @} */
-
-/**
- * @defgroup Keyboard Keyboard
- * @{
- */
-/** @} */
-
-/**
- * @defgroup Lists Lists
- * @{
- */
-/** @} */
-
-/**
- * @defgroup Loader Loader
- * @{
- */
-/** @} */
-
-/**
- * @defgroup Locks Locks
- * @{
- */
-/** @} */
-
-/**
- * @defgroup Memory Memory
- * @{
- */
-/** @} */
-
-/**
- * @defgroup Miscellaneous Miscellaneous
- * @{
- */
-/** @} */
-
-/**
- * @defgroup Mutexes Mutexes
- * @{
- */
-/** @} */
-
-/**
- * @defgroup Paths Paths
- * @{
- */
-/** @} */
-
-/**
- * @defgroup Privileges Privileges
- * @{
- */
-/** @} */
-
-/**
- * @defgroup Registry Registry
- * @{
- */
-/** @} */
-
-/**
- * @defgroup StartupAndShutdown Startup and shutdown
- * @{
- */
-/** @} */
-
-/**
- * @defgroup String String
- * @{
- */
-/** @} */
-
-/**
- * @defgroup Threads Threads
- * @{
- */
-/** @} */
-
-/**
- * @defgroup Time Time
- * @{
- */
-/** @} */

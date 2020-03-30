@@ -1,10 +1,9 @@
 -- Lua interpreter with graphical interface build options
-name        = "lua5.1a_gui"
-target_type = "gui"
+name = "lua5.1a_gui"; target_type = "gui"
 
 -- list of directories containing headers the program relies on
 includes = { "include", "lua5.1" }
 
-libs = { "msvcrt", "kernel32", "user32", "comctl32" }
-adlibs = { "$(UDEFRAG_LIB_PATH)\\lua5.1a" }
+libs = { "msvcrt", "kernel32", "user32", "comctl32", "lua5.1a" }
+
 umentry = "main"

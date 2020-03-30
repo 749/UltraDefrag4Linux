@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
@@ -11,7 +11,7 @@
 
 /*
  * This handbook requires doxygen to be compiled. However, it's always
- * available online at http://ultradefrag.sourceforge.net/handbook/
+ * available online at https://ultradefrag.net/handbook/
  */
 
 /*
@@ -32,8 +32,8 @@
  * -# @ref Installation
  * -# @ref GUI
  * -# @ref Console
- * -# @ref Schedule
  * -# @ref Boot
+ * -# @ref Schedule
  * -# @ref Reports
  * -# @ref Tips
  * -# @ref FAQ

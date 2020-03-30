@@ -1,8 +1,5 @@
 UDEFRAG(1)         UltraDefrag Boot Time Commands          UDEFRAG(1)
 
-NAME
-        udefrag - manual page for udefrag v7.0.0
-
 SYNOPSIS
         udefrag [OPTION]...
 
@@ -23,28 +20,25 @@ OPTIONS
                 cannot be combined with other options
 
         -a
-                analyze the drives; cannot be combined
-                with '-o' and --quick-optimize options
+                analyze the drives; cannot be combined with
+                '-o', '-q' and '--optimize-mft' options
 
         -o
-                optimize the drives; cannot be combined
-                with '-a' and '-q' options
+                optimize the drives; cannot be combined with
+                '-a', '-q' and '--optimize-mft' options
 
-        -q, --quick-optimize
-                optimize the drives quickly; cannot be combined
-                with '-a' and '-o' options
+        -q
+                perform quick optimization of the specified
+                drives; cannot be combined with '-a', '-o'
+                and '--optimize-mft' options
 
         --optimize-mft
-                optimize the master file tables
-                on the specified drives
-
-        -r, --repeat
-                repeat the disk processing multiple times whenever
-                it makes sense; usually it increases processing time,
-                but leads to better results
+                optimize the master file tables on the specified
+                drives; cannot be combined with '-a', '-o' and
+                '-q' options
 
         {drive letter}:
-                ist of space separated drive letters
+                list of space separated drive letters
                 or one of the following switches:
 
         --all
@@ -87,11 +81,11 @@ AUTHOR
         Written by UltraDefrag Development Team.
 
 COPYRIGHT
-        Copyright (C) 2010-2015 UltraDefrag Development Team
+        Copyright (C) 2010-2018 UltraDefrag Development Team
         This is free software. You may redistribute copies of
         it under the terms of the GNU General Public License
         <http://www.gnu.org/licenses/gpl.html>. There is NO
         warranty; not even for MERCHANTABILITY or FITNESS
         FOR A PARTICULAR PURPOSE.
 
-udefrag                       April 2015                            1
+udefrag                       March 2018                            1

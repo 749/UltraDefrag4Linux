@@ -1,5 +1,34 @@
 ﻿HISTORY
 
+  Version 7.1.0 2018-09-28
+  ------------------------------------------------------------------------------
+    - the repeat action option was retired, now all the disk
+      processing algorithms decide themselves whether it's worth
+      to run one more pass or not
+    - compatibility with Windows 8.1 and Windows 10 was improved
+    - cluster map was adjusted to always fit perfectly into the main frame
+    - file fragmentation reports appearance was improved
+    - options.lua file was moved to conf subfolder to fix configuration
+      tracking bugs (#222 and #225)
+    - explorer's context menu entries were fixed to never show up
+      for special objects like recycle bin and control panel
+    - file fragmentation reports were fixed to take daylight saving time
+      settings into account
+    - a lot of minor bugs were fixed
+    - documentation was expanded
+    - the following translations were updated:
+
+      Chinese (China), English (United Kingdom), Estonian, French,
+      Galician, German, Iloko, Italian, Japanese, Lithuanian, Polish,
+      Portuguese, Portuguese (Brazil), Spanish, Spanish (Argentina),
+      Spanish (Mexico), Swedish
+
+    - website was moved from http://ultradefrag.sourceforge.net/ to
+      https://ultradefrag.net/ for the sake of performance - now it
+      works approximately 10 times faster
+    - Internals: compilation was optimized for speed
+
+
   Version 7.0.2 2016-12-17
   ------------------------------------------------------------------------------
     - graphical and command line tools were optimized for speed and size

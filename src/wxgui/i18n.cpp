@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 //
 //  UltraDefrag - a powerful defragmentation tool for Windows NT.
-//  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+//  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
 //  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -34,6 +34,7 @@
 //                            Declarations
 // =======================================================================
 
+#include "prec.h"
 #include "main.h"
 
 // =======================================================================
@@ -61,14 +62,14 @@ wxLocale *g_locale = NULL;
     if(::strlen(accel)){ \
         wxString ItemLabel = _(label); \
         ItemLabel << wxT("\t") << wxT(accel); \
-        m_menuBar->FindItem(id)->SetItemLabel(ItemLabel); \
+        m_menuBar->SetLabel(id,ItemLabel); \
         if(m_toolBar->FindById(id)){ \
             ItemLabel = _(label); \
             ItemLabel << wxT(" (") << wxT(accel) << wxT(")"); \
             m_toolBar->SetToolShortHelp(id,ItemLabel); \
         } \
     } else { \
-        m_menuBar->FindItem(id)->SetItemLabel(_(label)); \
+        m_menuBar->SetLabel(id,_(label)); \
         if(m_toolBar->FindById(id)) \
             m_toolBar->SetToolShortHelp(id,_(label)); \
     } \
@@ -170,7 +171,6 @@ void MainFrame::OnLocaleChange(wxCommandEvent& event)
     UD_UpdateMenuItemLabel(ID_Pause      , "Pa&use"                , "Space");
     UD_UpdateMenuItemLabel(ID_Stop       , "&Stop"                 , "Ctrl+C");
     UD_UpdateMenuItemLabel(ID_ShowReport , "&Show report"          , "F8");
-    UD_UpdateMenuItemLabel(ID_Repeat     , "Re&peat action"        , "Shift+R");
     UD_UpdateMenuItemLabel(ID_SkipRem    , "Skip removable &media" , "Ctrl+M");
     UD_UpdateMenuItemLabel(ID_Rescan     , "&Rescan drives"        , "Ctrl+D");
     UD_UpdateMenuItemLabel(ID_Repair     , "Repair dri&ves"        , "");
@@ -191,11 +191,6 @@ void MainFrame::OnLocaleChange(wxCommandEvent& event)
     UD_UpdateMenuItemLabel(ID_GuiOptions , "&Options" , "F10");
     m_subMenuSortingConfig->SetItemLabel(_("&Sorting"));
     m_subMenuBootConfig->SetItemLabel(_("&Boot time scan"));
-
-    // language sub-menu
-    UD_UpdateMenuItemLabel(ID_LangTranslateOnline  , "Translate &online"    , "");
-    UD_UpdateMenuItemLabel(ID_LangTranslateOffline , "Translate o&ffline"   , "");
-    UD_UpdateMenuItemLabel(ID_LangOpenFolder       , "&Translations folder" , "");
 
     // boot time scan sub-menu
     UD_UpdateMenuItemLabel(ID_BootEnable , "&Enable" , "F11");
@@ -302,34 +297,6 @@ void App::SaveReportTranslation()
     UD_AddTranslationString("INVALID             = ", _("invalid")            );
     file.Write();
     file.Close();
-}
-
-// =======================================================================
-//                            Event handlers
-// =======================================================================
-
-void MainFrame::OnLangTranslateOnline(wxCommandEvent& WXUNUSED(event))
-{
-    wxString url(wxT("https://www.transifex.com/projects/p/ultradefrag/resource/main/"));
-    if(!wxLaunchDefaultBrowser(url))
-        Utils::ShowError(wxT("Cannot open %ls!"),ws(url));
-}
-
-void MainFrame::OnLangTranslateOffline(wxCommandEvent& WXUNUSED(event))
-{
-    Utils::OpenHandbook(wxT("Translation.html"));
-}
-
-void MainFrame::OnLangOpenFolder(wxCommandEvent& WXUNUSED(event))
-{
-    wxString AppPoDir(wxGetCwd() + wxT("/po"));
-
-    if(!wxDirExists(AppPoDir)){
-        etrace("po dir not found: %ls",ws(AppPoDir));
-    } else {
-        if(!wxLaunchDefaultBrowser(AppPoDir))
-            Utils::ShowError(wxT("Cannot open %ls!"),ws(AppPoDir));
-    }
 }
 
 /** @} */

@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 //
 //  UltraDefrag - a powerful defragmentation tool for Windows NT.
-//  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+//  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
 //  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -34,6 +34,7 @@
 //                            Declarations
 // =======================================================================
 
+#include "prec.h"
 #include "main.h"
 
 enum {
@@ -42,8 +43,8 @@ enum {
     UPGRADE_ALL
 };
 
-#define VERSION_URL        "http://ultradefrag.sourceforge.net/version.ini"
-#define STABLE_VERSION_URL "http://ultradefrag.sourceforge.net/stable-version.ini"
+#define VERSION_URL        "http://ultradefrag.net/version.ini"
+#define STABLE_VERSION_URL "http://ultradefrag.net/stable-version.ini"
 
 // =======================================================================
 //                          Upgrade handling
@@ -56,13 +57,6 @@ void *UpgradeThread::Entry()
             wxFileName target(wxT(".\\tmp"));
             target.Normalize();
             wxString dir(target.GetFullPath());
-            if(!wxDirExists(dir)) wxMkdir(dir);
-
-            /*
-            * Use a subfolder to prevent configuration files
-            * reload (see ConfigThread::Entry() for details).
-            */
-            dir << wxT("\\data");
             if(!wxDirExists(dir)) wxMkdir(dir);
 
             wxString url(wxT(""));
@@ -178,9 +172,9 @@ void MainFrame::ShowUpgradeDialog(wxCommandEvent& event)
     message.Printf(_("Release %ls is available for download!"),ws(event.GetString()));
 
     if(Utils::MessageDialog(this,_("You can upgrade me ^-^"),
-      wxART_INFORMATION,_("&Upgrade"),_("&Cancel"),message) == wxID_OK)
+      wxART_INFORMATION,_("&Upgrade"),_("&Cancel"),ts(message)) == wxID_OK)
     {
-        wxString url(wxT("http://ultradefrag.sourceforge.net"));
+        wxString url(wxT("https://ultradefrag.net"));
         if(!wxLaunchDefaultBrowser(url))
             Utils::ShowError(wxT("Cannot open %ls!"),ws(url));
     }

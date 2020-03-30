@@ -18,15 +18,15 @@
  */
 
 /*
-* Routines to select the components based on the command line switches
-* and the previous selections read from the registry,
-* and to save them for the future.
+* Routines to select components based on the command line switches
+* and the previous selections read from the registry, and to save
+* them for the future.
 */
 
 !ifndef _PRESET_SECTIONS_NSH_
 !define _PRESET_SECTIONS_NSH_
 
-; --- support command line parsing
+; --- command line parsing support
 !include "FileFunc.nsh"
 !insertmacro GetParameters
 !insertmacro GetOptions
@@ -39,8 +39,8 @@
 !define ClearSectionFlag "!insertmacro ClearSectionFlag"
 
 /*
- * This collects the previous selections from the registry
- * add to .onInit
+ * Collects the previous selections from the registry,
+ * intended to be called from .onInit
  */
 !macro CollectFromRegistry
 
@@ -147,8 +147,8 @@
 ;-----------------------------------------------------------
 
 /*
- * This collects selections from the command line
- * add to .onInit
+ * Collects selections from the command line,
+ * intended to be called from .onInit
  */
 !macro ParseCommandLine
 
@@ -292,8 +292,8 @@
 ;-----------------------------------------------------------
 
 /*
- * This writes the selections to the registry for future reference
- * add to .onInstSuccess
+ * Saves selections to the registry for future use,
+ * intended to be called from .onInstSuccess
  */
 !macro PreserveInRegistry
 
@@ -375,8 +375,8 @@
 ;-----------------------------------------------------------
 
 /*
- * This verifies the selections
- * add to .onSelChange
+ * Selections verification procedure,
+ * intended to be used from .onSelChange
  */
 !macro VerifySelections
 

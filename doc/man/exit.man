@@ -1,8 +1,5 @@
 EXIT(1)            UltraDefrag Boot Time Commands             EXIT(1)
 
-NAME
-        exit - manual page for exit v7.0.0
-
 SYNOPSIS
         exit [OPTION]
 
@@ -25,11 +22,11 @@ AUTHOR
         Written by UltraDefrag Development Team.
 
 COPYRIGHT
-        Copyright (C) 2010-2015 UltraDefrag Development Team
+        Copyright (C) 2010-2018 UltraDefrag Development Team
         This is free software. You may redistribute copies of
         it under the terms of the GNU General Public License
         <http://www.gnu.org/licenses/gpl.html>. There is NO
         warranty; not even for MERCHANTABILITY or FITNESS
         FOR A PARTICULAR PURPOSE.
 
-exit                          April 2015                            1
+exit                          March 2018                            1

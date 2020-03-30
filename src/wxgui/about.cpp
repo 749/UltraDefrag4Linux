@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 //
 //  UltraDefrag - a powerful defragmentation tool for Windows NT.
-//  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+//  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
 //  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -34,9 +34,10 @@
 //                            Declarations
 // =======================================================================
 
+#include "prec.h"
 #include "main.h"
 
-#define HOMEPAGE wxT("http://ultradefrag.sourceforge.net")
+#define HOMEPAGE wxT("https://ultradefrag.net")
 
 class HomePageLink: public wxGenericHyperlinkCtrl {
 public:
@@ -103,9 +104,9 @@ void MainFrame::OnHelpAbout(wxCommandEvent& WXUNUSED(event))
     version->SetFont(fontBig);
 
     wxStaticText *copyright = new wxStaticText(&dlg,wxID_ANY,
-        wxT("(C) 2007-2016 UltraDefrag development team"));
+        wxT("\u00A9 2007-2018 UltraDefrag Development Team"));
     wxStaticText *description = new wxStaticText(&dlg,wxID_ANY,
-        _("An open source defragmentation utility."));
+        _("A powerful defragmentation utility."));
     wxStaticText *credits = new wxStaticText(&dlg,wxID_ANY,
         _("Credits and licenses are listed in the handbook."));
 

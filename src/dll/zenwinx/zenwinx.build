@@ -1,9 +1,7 @@
 -- zenwinx library build options
-name        = "zenwinx"
-target_type = "dll"
-nativedll   = 1
+name = "zenwinx"; target_type = "dll"; nativedll = 1
 
 -- list of directories containing headers the library relies on
-includes = { "include", "zenwinx" }
+includes = { "include", "dll\\zenwinx" }
 
 libs = { "ntdll" }

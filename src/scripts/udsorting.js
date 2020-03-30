@@ -1,6 +1,6 @@
 /*
 * UltraDefrag reports sorting engine.
-* Copyright (C) 2008-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+* Copyright (C) 2008-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -26,22 +26,16 @@
 
 /* global variables */
 var
- table,
- whitelist,
- blacklist,
- // order = 0 - descending; 1 - ascending
- order = 0,
+ // 0 - descending, 1 - ascending
  fragments_order = 1,
- size_order = 1,
+ size_order = 0,
  name_order = 0,
  comment_order = 1,
  status_order = 1,
- msie_browser = false, // true for ms internet explorer
- table_head = "$TABLE_HEAD";  // the report converter adjusts it
+ msie_browser = false;
 
 function init_sorting_engine()
 {
- table = document.getElementById("main_table");
  if(window.navigator.appName === "Microsoft Internet Explorer")
   msie_browser = true;
 }
@@ -91,12 +85,8 @@ function sort_by_status(a,b)
 
 function sort_items(criteria)
 {
- whitelist = "";
- blacklist = "";
- var
-  i,
-  data,
-  a = [],
+ var i, a = [], rows = "",
+  table = document.getElementById("main_table"),
   items = table.getElementsByTagName("tr"),
   header = "<tr>" + items[0].innerHTML + "</tr>\n";
 
@@ -105,8 +95,6 @@ function sort_items(criteria)
   a[i-1] = items[i];
 
  // sort items
- // Note that sorting is slow: about 1.5
- // seconds for 550 items on 1.8GHz CPU.
  if(criteria === 'fragments'){
   a.sort(sort_by_fragments);
   fragments_order = fragments_order ? 0 : 1;
@@ -126,22 +114,16 @@ function sort_items(criteria)
   return; // invalid criteria
 
  // loop through the array of sorted items
- for(i = 0; i < a.length; i++){
-  data = a[i].innerHTML;
-  if(a[i].className === "u")
-   whitelist += "<tr class=\"u\">" + data + "</tr>\n";
-  else
-   blacklist += "<tr class=\"f\">" + data + "</tr>\n";
- }
+ for(i = 0; i < a.length; i++)
+  rows += "<tr>" + a[i].innerHTML + "</tr>\n";
 
  // replace the old contents with the new sorted one
  if(!msie_browser){
-  table.innerHTML = header + whitelist + blacklist;
+  table.innerHTML = header + rows;
  } else {
   // On Internet Explorer the table.innerHTML is read only,
   // so we need to replace the whole table ...
   document.getElementById("for_msie").innerHTML =
-   table_head + header + whitelist + blacklist + "</table>";
-  table = document.getElementById("main_table");
+   "<table id=\"main_table\">" + header + rows + "</table>";
  }
 }

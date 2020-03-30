@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
@@ -111,8 +111,8 @@ Type 'help' to list available commands.
  * @par udefrag
  * The boot time equivalent of the @ref Console.
  * Accepts the following command line switches:
- * <b>-l, -la, -a, -o, -q, \--quick-optimize, \--optimize-mft,
- * \--all, \--all-fixed, -r, \--repeat</b>. To process single
+ * <b>-l, -la, -a, -o, -q, \--optimize-mft,
+ * \--all, \--all-fixed</b>. To process single
  * files or directories specify their absolute paths. 
  * If they include spaces enclose them by double quotes:
  * <br /><br />
@@ -144,15 +144,16 @@ Type 'help' to list available commands.
  *
  * <h1>Restrictions</h1>
  * Encrypted disks cannot be defragmented at boot time because the
- * <a href="http://en.wikipedia.org/wiki/Local_Security_Authority_Subsystem_Service">local
+ * <a href="https://en.wikipedia.org/wiki/Local_Security_Authority_Subsystem_Service">local
  * security service</a> is inactive on early stages of Windows boot.
  *
  * UltraDefrag terminates immediately in 
- * <a href="http://en.wikipedia.org/wiki/Safe_mode">Windows safe mode</a>
- * because it cannot display texts on the screen there.
+ * <a href="https://en.wikipedia.org/wiki/Safe_mode">Windows safe mode</a>
+ * because it cannot display text on the screen there.
  *
  * <h1>Script samples</h1>
- * The following script is used by default:
+ * By default the program defragments the Windows folder, registry
+ * hives, paging and hibernation files using the following script:
  *
  * @htmlonly
  * <div class="fragment">
@@ -164,15 +165,24 @@ Type 'help' to list available commands.
  * <div class="line"><span class="comment">;------------------------------------------------------------------------------</span></div>
  * <div class="line"></div>
  * <div class="line"><span class="keyword">set</span> UD_IN_FILTER=*windows*;*winnt*;*ntuser*;*pagefile.sys;*hiberfil.sys</div>
- * <div class="line"><span class="keyword">set</span> UD_EX_FILTER=*temp*;*tmp*;*.zip;*.7z;*.rar;*dllcache*;*ServicePackFiles*</div>
+ * <div class="line"><span class="keyword">set</span> UD_EX_FILTER=*temp*;*tmp*;*dllcache*;*ServicePackFiles*</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">; exclude big fragments which rarely benefit from defragmentation</span></div>
+ * <div class="line"><span class="keyword">set</span> UD_FRAGMENT_SIZE_THRESHOLD=20MB</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">; if your system drive is an SSD uncomment the following</span></div>
+ * <div class="line"><span class="comment">; line to exclude slightly fragmented content as well</span></div>
+ * <div class="line"><span class="comment">; set UD_FRAGMENTS_THRESHOLD=20</span></div>
  * <div class="line"></div>
  * <div class="line"><span class="comment">; uncomment the following line to increase amount of debugging output</span></div>
  * <div class="line"><span class="comment">; set UD_DBGPRINT_LEVEL=DETAILED</span></div>
  * <div class="line"></div>
  * <div class="line"><span class="comment">; uncomment the following line to save debugging information to a log file</span></div>
- * <div class="line"><span class="comment">; set UD_LOG_FILE_PATH=%UD_INSTALL_DIR%\logs\defrag_native.log</span></div>
+ * <div class="line"><span class="comment">; set UD_LOG_FILE_PATH=%UD_INSTALL_DIR%\logs\ud-boot-time.log</span></div>
  * <div class="line"></div>
- * <div class="line"><span class="keyword">udefrag</span> c:</div>
+ * <div class="line"><span class="keyword">udefrag</span> %SystemDrive%</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="keyword">boot-off</span></div>
  * <div class="line"></div>
  * <div class="line"><span class="keyword">exit</span></div>
  * </div>
@@ -188,26 +198,35 @@ Type 'help' to list available commands.
 \rem{;------------------------------------------------------------------------------}
 
 \cmd{set} UD\_IN\_FILTER=*windows*;*winnt*;*ntuser*;*pagefile.sys;*hiberfil.sys
-\cmd{set} UD\_EX\_FILTER=*temp*;*tmp*;*.zip;*.7z;*.rar;*dllcache*;*ServicePackFiles*
+\cmd{set} UD\_EX\_FILTER=*temp*;*tmp*;*dllcache*;*ServicePackFiles*
+
+\rem{; exclude big fragments which rarely benefit from defragmentation}
+\cmd{set} UD\_FRAGMENT\_SIZE\_THRESHOLD=20MB
+
+\rem{; if your system drive is an SSD uncomment the following}
+\rem{; line to exclude slightly fragmented content as well}
+\rem{; set UD\_FRAGMENTS\_THRESHOLD=20}
 
 \rem{; uncomment the following line to increase amount of debugging output}
 \rem{; set UD\_DBGPRINT\_LEVEL=DETAILED}
 
 \rem{; uncomment the following line to save debugging information to a log file}
-\rem{; set UD\_LOG\_FILE\_PATH=%UD\_INSTALL\_DIR%\(\backslash\)logs\(\backslash\)defrag\_native.log}
+\rem{; set UD\_LOG\_FILE\_PATH=%UD\_INSTALL\_DIR%\(\backslash\)logs\(\backslash\)ud-boot-time.log}
 
-\cmd{udefrag} c:
+\cmd{udefrag} %SystemDrive%
+
+\cmd{boot-off}
 
 \cmd{exit}
 \end{DoxyCode}
 @endlatexonly
  *
- * The next script utilizes environment variables:
+ * The next script utilizes special environment variables mentioned above:
  *
  * @htmlonly
  * <div class="fragment">
  * <div class="line"><span class="comment">; create a timestamped log file</span></div>
- * <div class="line"><span class="keyword">set</span> UD_LOG_FILE_PATH=%UD_INSTALL_DIR%\logs\defrag_native_%DATE%_%TIME%.log</div>
+ * <div class="line"><span class="keyword">set</span> UD_LOG_FILE_PATH=%UD_INSTALL_DIR%\logs\ud-boot-time-%DATE%-%TIME%.log</div>
  * <div class="line"></div>
  * <div class="line"><span class="keyword">udefrag</span> %SystemDrive%</div>
  * <div class="line"></div>
@@ -218,7 +237,7 @@ Type 'help' to list available commands.
 @latexonly
 \begin{DoxyCode}
 \rem{; create a timestamped log file}
-\cmd{set} UD\_LOG\_FILE\_PATH=%UD\_INSTALL\_DIR%\(\backslash\)logs\(\backslash\)defrag\_native\_%DATE%\_%TIME%.log
+\cmd{set} UD\_LOG\_FILE\_PATH=%UD\_INSTALL\_DIR%\(\backslash\)logs\(\backslash\)ud-boot-time-%DATE%-%TIME%.log
 
 \cmd{udefrag} %SystemDrive%
 
@@ -230,8 +249,8 @@ Type 'help' to list available commands.
  * <HR>
  *  <TABLE STYLE="border: none; width: 97%; margin:auto;">
  *    <TR>
- *      <TD STYLE="text-align: left; width: 50%;">Previous: <a href="Schedule.html">Scheduled Defragmentation</a></TD>
- *      <TD STYLE="text-align: right; width: 50%;">Next: <a href="Reports.html">File Fragmentation Reports</a></TD>
+ *      <TD STYLE="text-align: left; width: 50%;">Previous: <a href="Console.html">Console Interface</a></TD>
+ *      <TD STYLE="text-align: right; width: 50%;">Next: <a href="Schedule.html">Scheduled Defragmentation</a></TD>
  *    </TR>
  *  </TABLE>
  * @endhtmlonly

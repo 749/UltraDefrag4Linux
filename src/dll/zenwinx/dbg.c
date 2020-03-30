@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,27 +20,30 @@
 /**
  * @file dbg.c
  * @brief Debugging.
- * @details All the debugging messages will be delivered
- * to the Debug View program whenever possible. If logging
- * to the file is enabled, they will be saved there too.
- * Size of the log is limited by available memory. This
- * technique prevents the log file update on disk, thus
- * it makes the disk defragmentation more efficient.
- * @note A few prefixes are defined for the debugging
- * messages. They're listed in ../../include/dbg.h
- * file and are intended for easier analysis of logs. To keep
- * logs clean always use one of those prefixes.
+ * @details The library delivers debugging output
+ * to the Debug View program whenever possible.
+ * Additionally, logging to file can be enabled
+ * at any moment.
+ * @note
+ * - To avoid frequent log file updates, which might
+ * drop down defragmentation efficiency, the library
+ * uses a memory cache for debugging output. So, size
+ * of the log is limited by available memory.
+ * - A few prefixes are defined for debugging messages.
+ * They are listed in ../../include/dbg.h file and are
+ * intended for easier analysis of logs. To keep logs
+ * clean always use one of those prefixes.
  * @addtogroup Debug
  * @{
  */
 
-#include "ntndk.h"
+#include "prec.h"
 #include "zenwinx.h"
 
 /*
 * Note: to avoid recursion all the code in this file should
 * call with care either winx_malloc (handling the out of memory
-* condition in a special way) or tracing functions as well.
+* condition in a special way) or tracing functions.
 */
 
 /* controls whether the messages will be collected or not */
@@ -48,8 +51,7 @@ int logging_enabled = 0;
 
 /**
  * @internal
- * @brief Describes
- * a log list entry.
+ * @brief Describes a log list entry.
  */
 typedef struct _winx_dbg_log_entry {
     struct _winx_dbg_log_entry *next;
@@ -62,19 +64,16 @@ typedef struct _winx_dbg_log_entry {
 winx_dbg_log_entry *dbg_log = NULL;
 
 wchar_t *log_path = NULL;
-HANDLE hListSynchEvent = NULL;
-HANDLE hLogSynchEvent = NULL;
+HANDLE hListLock = NULL;
+HANDLE hFileLock = NULL;
 
 extern char *reserved_memory;
 
-/*
-**************************************************************
-*                   auxiliary functions                      *
-*     (independent from winx_malloc and tracing calls)       *
-**************************************************************
-*/
+/******************************************************************************/
+/*    Auxiliary functions (independent from winx_malloc and tracing calls)    */
+/******************************************************************************/
 
-list_entry *dbg_list_insert(list_entry **phead,list_entry *prev,long size)
+static list_entry *dbg_list_insert(list_entry **phead,list_entry *prev,long size)
 {
     list_entry *new_item;
     
@@ -95,7 +94,7 @@ list_entry *dbg_list_insert(list_entry **phead,list_entry *prev,long size)
         *phead = new_item;
     }
 
-    /* insert after the item specified by prev argument */
+    /* insert after the item specified by the prev argument */
     new_item->prev = prev;
     new_item->next = prev->next;
     new_item->prev->next = new_item;
@@ -103,7 +102,7 @@ list_entry *dbg_list_insert(list_entry **phead,list_entry *prev,long size)
     return new_item;
 }
 
-int dbg_get_local_time(winx_time *t)
+static int dbg_get_local_time(winx_time *t)
 {
     LARGE_INTEGER SystemTime;
     LARGE_INTEGER LocalTime;
@@ -128,63 +127,36 @@ int dbg_get_local_time(winx_time *t)
     return 0;
 }
 
+/******************************************************************************/
+/*                    Initialization and deinitialization                     */
+/******************************************************************************/
 
 /**
  * @internal
- * @brief Initializes the
- * debugging facility.
+ * @brief Initializes
+ * debugging facilities.
  * @return Zero for success,
- * negative value otherwise.
+ * a negative value otherwise.
  */
 int winx_dbg_init(void)
 {
-    unsigned int id;
-    wchar_t *name;
-    UNICODE_STRING us;
-    OBJECT_ATTRIBUTES oa;
-    NTSTATUS status;
+    if(hListLock == NULL){
+        if(winx_create_lock(L"winx_dbg_list_lock", \
+            &hListLock) < 0) return (-1);
+    }
+    
+    if(hFileLock == NULL){
+        if(winx_create_lock(L"winx_dbg_file_lock", \
+            &hFileLock) < 0) return (-1);
+    }
 
-    if(!hListSynchEvent){
-        /* attach PID to lock the current process only */
-        id = (unsigned int)(DWORD_PTR)(NtCurrentTeb()->ClientId.UniqueProcess);
-        name = winx_swprintf(L"\\winx_dbg_list_lock_%u",id);
-        if(name == NULL) return (-1);
-        
-        RtlInitUnicodeString(&us,name);
-        InitializeObjectAttributes(&oa,&us,0,NULL,NULL);
-        status = NtCreateEvent(&hListSynchEvent,STANDARD_RIGHTS_ALL | 0x1ff,
-            &oa,SynchronizationEvent,1);
-        if(!NT_SUCCESS(status)){
-            hListSynchEvent = NULL;
-            return (-1);
-        }
-    }
-    if(!hLogSynchEvent){
-        /* attach PID to lock the current process only */
-        id = (unsigned int)(DWORD_PTR)(NtCurrentTeb()->ClientId.UniqueProcess);
-        name = winx_swprintf(L"\\winx_dbg_log_lock_%u",id);
-        if(name == NULL){
-            NtCloseSafe(hListSynchEvent);
-            return (-1);
-        }
-        
-        RtlInitUnicodeString(&us,name);
-        InitializeObjectAttributes(&oa,&us,0,NULL,NULL);
-        status = NtCreateEvent(&hLogSynchEvent,STANDARD_RIGHTS_ALL | 0x1ff,
-            &oa,SynchronizationEvent,1);
-        if(!NT_SUCCESS(status)){
-            hLogSynchEvent = NULL;
-            NtCloseSafe(hListSynchEvent);
-            return (-1);
-        }
-    }
     return 0;
 }
 
 /**
  * @internal
  * @brief Deinitializes
- * the debugging facility.
+ * debugging facilities.
  */
 void winx_dbg_close(void)
 {
@@ -193,48 +165,18 @@ void winx_dbg_close(void)
         winx_free(log_path);
         log_path = NULL;
     }
-    NtCloseSafe(hListSynchEvent);
-    NtCloseSafe(hLogSynchEvent);
+    winx_destroy_lock(hListLock);
+    winx_destroy_lock(hFileLock);
+    hListLock = hFileLock = NULL;
 }
+
+/******************************************************************************/
+/*                     Logging to the Debug View program                      */
+/******************************************************************************/
 
 /**
  * @internal
- * @brief Appends a string to the log list.
- */
-static void add_dbg_log_entry(char *msg)
-{
-    LARGE_INTEGER interval;
-    winx_dbg_log_entry *new_log_entry = NULL;
-    winx_dbg_log_entry *last_log_entry = NULL;
-
-    /* synchronize with other threads */
-    interval.QuadPart = MAX_WAIT_INTERVAL;
-    if(NtWaitForSingleObject(hListSynchEvent,FALSE,&interval) == WAIT_OBJECT_0){
-        if(logging_enabled){
-            if(dbg_log) last_log_entry = dbg_log->prev;
-            new_log_entry = (winx_dbg_log_entry *)dbg_list_insert((list_entry **)(void *)&dbg_log,
-                (list_entry *)last_log_entry,sizeof(winx_dbg_log_entry));
-            if(new_log_entry == NULL){
-                /* not enough memory */
-            } else {
-                new_log_entry->buffer = winx_strdup(msg);
-                if(new_log_entry->buffer == NULL){
-                    /* not enough memory */
-                    winx_list_remove((list_entry **)(void *)&dbg_log,(list_entry *)new_log_entry);
-                } else {
-                    memset(&new_log_entry->time_stamp,0,sizeof(winx_time));
-                    (void)dbg_get_local_time(&new_log_entry->time_stamp);
-                }
-            }
-        }
-        NtSetEvent(hListSynchEvent,NULL);
-    }
-}
-
-/**
- * @internal
- * @brief Internal structure used to deliver
- * information to the Debug View program.
+ * @brief Debug View shared data structure.
  */
 typedef struct _DBG_OUTPUT_DEBUG_STRING_BUFFER {
     ULONG ProcessId;
@@ -245,11 +187,10 @@ typedef struct _DBG_OUTPUT_DEBUG_STRING_BUFFER {
 
 /**
  * @internal
- * @brief Low-level routine for delivering
- * of debugging messages to the Debug View program.
+ * @brief Delivers a message to the Debug View program.
  * @details OutputDebugString is not safe - being called
- * from DllMain it might crash the application (confirmed on w2k).
- * Because of that we're maintaining this routine.
+ * from DllMain it might crash the application (confirmed
+ * on w2k). Because of that we're maintaining this routine.
  */
 static void deliver_message(char *string)
 {
@@ -289,7 +230,7 @@ static void deliver_message(char *string)
     
     /* send a message */
     /*
-    * wait a maximum of 10 seconds for the debug monitor 
+    * wait maximum of 10 seconds for the debug monitor 
     * to finish processing the shared buffer
     */
     interval.QuadPart = -(10000 * 10000);
@@ -328,6 +269,189 @@ done:
         (void)NtUnmapViewOfSection(NtCurrentProcess(),BaseAddress);
     NtCloseSafe(hSection);
 }
+
+/******************************************************************************/
+/*                              Logging to file                               */
+/******************************************************************************/
+
+/**
+ * @internal
+ * @brief Appends a string to the log list.
+ */
+static void add_dbg_log_entry(char *msg)
+{
+    winx_dbg_log_entry *new_log_entry = NULL;
+    winx_dbg_log_entry *last_log_entry = NULL;
+
+    /* synchronize with other threads */
+    if(winx_acquire_lock(hListLock,INFINITE) == 0){
+        if(logging_enabled){
+            if(dbg_log) last_log_entry = dbg_log->prev;
+            new_log_entry = (winx_dbg_log_entry *)dbg_list_insert((list_entry **)(void *)&dbg_log,
+                (list_entry *)last_log_entry,sizeof(winx_dbg_log_entry));
+            if(new_log_entry == NULL){
+                /* not enough memory */
+            } else {
+                new_log_entry->buffer = winx_strdup(msg);
+                if(new_log_entry->buffer == NULL){
+                    /* not enough memory */
+                    winx_list_remove((list_entry **)(void *)&dbg_log,(list_entry *)new_log_entry);
+                } else {
+                    memset(&new_log_entry->time_stamp,0,sizeof(winx_time));
+                    (void)dbg_get_local_time(&new_log_entry->time_stamp);
+                }
+            }
+        }
+        winx_release_lock(hListLock);
+    }
+}
+
+/**
+ * @brief Appends all the collected messages to the log file.
+ * @param[in] flags a combination of FLUSH_XXX flags defined
+ * in zenwinx.h file.
+ */
+void winx_flush_dbg_log(int flags)
+{
+    #define DBG_BUFFER_SIZE (100 * 1024) /* 100 KB */
+    winx_dbg_log_entry *old_dbg_log, *log_entry;
+    char out_of_memory[] = "\r\n*** Out of memory! ***\r\n";
+    char crlf[] = "\r\n";
+    char *time_stamp;
+    WINX_FILE *f;
+    int length;
+
+    /* synchronize with other threads */
+    if(!(flags & FLUSH_ALREADY_SYNCHRONIZED)){
+        if(winx_acquire_lock(hFileLock,INFINITE) < 0){
+            winx_print("\nflush_dbg_log: synchronization failed!\n");
+            return;
+        }
+    }
+    
+    /* release reserved memory  */
+    winx_free(reserved_memory);
+    
+    /* disable parallel access to the dbg_log list */
+    if(winx_acquire_lock(hListLock,INFINITE) < 0) goto done;
+    old_dbg_log = dbg_log; dbg_log = NULL;
+    winx_release_lock(hListLock);
+    
+    if(!old_dbg_log || !log_path) goto done;
+    if(log_path[0] == 0) goto done;
+    
+    /* open the log file */
+    f = winx_fbopen(log_path,"a",DBG_BUFFER_SIZE);
+    if(f == NULL)
+        f = winx_fopen(log_path,"a");
+
+    /* save the log */
+    if(f != NULL){
+        for(log_entry = old_dbg_log; log_entry; log_entry = log_entry->next){
+            if(log_entry->buffer){
+                length = (int)strlen(log_entry->buffer);
+                if(length){
+                    /* get rid of trailing new line characters */
+                    if(log_entry->buffer[length - 1] == '\n'){
+                        log_entry->buffer[length - 1] = 0;
+                        length --;
+                    }
+                    time_stamp = winx_sprintf("%04d-%02d-%02d %02d:%02d:%02d.%03d ",
+                        log_entry->time_stamp.year, log_entry->time_stamp.month, log_entry->time_stamp.day,
+                        log_entry->time_stamp.hour, log_entry->time_stamp.minute, log_entry->time_stamp.second,
+                        log_entry->time_stamp.milliseconds);
+                    if(time_stamp){
+                        (void)winx_fwrite(time_stamp,sizeof(char),strlen(time_stamp),f);
+                        winx_free(time_stamp);
+                    }
+                    (void)winx_fwrite(log_entry->buffer,sizeof(char),length,f);
+                    /* add proper newline characters */
+                    (void)winx_fwrite(crlf,sizeof(char),2,f);
+                }
+                winx_free(log_entry->buffer);
+            }
+            if(log_entry->next == old_dbg_log) break;
+        }
+        
+        if(flags & FLUSH_IN_OUT_OF_MEMORY)
+            (void)winx_fwrite(out_of_memory,sizeof(char),strlen(out_of_memory),f);
+        
+        winx_fclose(f);
+        winx_list_destroy((list_entry **)(void *)&old_dbg_log);
+    }
+
+done:
+    /* reserve memory for the out of memory condition handling again */
+    reserved_memory = (char *)winx_tmalloc(1024 * 1024);
+    
+    /* end of synchronization */
+    if(!(flags & FLUSH_ALREADY_SYNCHRONIZED))
+        winx_release_lock(hFileLock);
+}
+
+/**
+ * @brief Turns logging to file on/off.
+ * @param[in] path the log file path.
+ * NULL or an empty string forces to flush
+ * all the collected data to the disk and
+ * disable logging to the file afterwards.
+ */
+void winx_set_dbg_log(wchar_t *path)
+{
+    wchar_t *lb;
+    
+    /* synchronize with other threads */
+    if(winx_acquire_lock(hFileLock,INFINITE) < 0){
+        etrace("synchronization failed");
+        winx_print("\nwinx_set_dbg_log: synchronization failed!\n");
+        return;
+    }
+    
+    if(path == NULL){
+        logging_enabled = 0;
+    } else {
+        logging_enabled = path[0] ? 1 : 0;
+    }
+    
+    if(logging_enabled){
+        /* create the path */
+        lb = wcsrchr(path,'\\');
+        if(lb) *lb = 0;
+        if(winx_create_path(path) < 0){
+            etrace("cannot create directory tree for log path");
+            winx_print("\nwinx_set_dbg_log: cannot create directory tree for log path\n");
+        }
+        if(lb) *lb = '\\';
+    }
+    
+    /* flush the old log to the disk */
+    if(path || log_path){
+        if(!path || !log_path) winx_flush_dbg_log(FLUSH_ALREADY_SYNCHRONIZED);
+        else if(wcscmp(path,log_path)) winx_flush_dbg_log(FLUSH_ALREADY_SYNCHRONIZED);
+    }
+    
+    /* set new log path */
+    if(log_path){
+        winx_free(log_path);
+        log_path = NULL;
+    }
+    if(logging_enabled){
+        itrace("log_path = %ws",path);
+        /*winx_printf("\nUsing log file \"%ws\" ...\n",&path[4]);*/
+        log_path = winx_wcsdup(path);
+        if(log_path == NULL){
+            mtrace();
+            winx_print("\nCannot allocate memory for log path!\n");
+        }
+    }
+    
+    /* end of synchronization */
+    winx_release_lock(hFileLock);
+}
+
+/******************************************************************************/
+/*                            Auxiliary functions                             */
+/******************************************************************************/
 
 /**
  * @internal
@@ -378,8 +502,8 @@ NT_STATUS_DESCRIPTION descriptions[] = {
 
 /**
  * @internal
- * @brief Returns NT status description.
- * @param[in] status the NT status code.
+ * @brief Returns description of an NT status code.
+ * @param[in] status the status code.
  * @note This function returns descriptions
  * only for well known codes. Otherwise it
  * returns an empty string.
@@ -410,7 +534,7 @@ enum {
 
 /**
  * @internal
- * @brief Retuns error description.
+ * @brief Retuns description of an error code.
  * @param[in] error the error code.
  * @param[out] encoding pointer to variable
  * receiving the string encoding.
@@ -443,6 +567,7 @@ static void *winx_get_error_description(ULONG error,int *encoding)
 }
 
 /**
+ * @internal
  * @brief Replaces CR and LF
  * characters in a string by spaces.
  * @details Intended for use in winx_dbg_print
@@ -460,9 +585,12 @@ static void remove_crlf(char *s)
     }
 }
 
+/******************************************************************************/
+/*                      General purpose tracing routines                      */
+/******************************************************************************/
+
 /**
- * @brief Delivers a message to the Debug View
- * program and appends it to the log file as well.
+ * @brief Produces a single line of debugging output.
  * @param[in] flags one of the flags defined in
  * ../../include/dbg.h file.
  * If NT_STATUS_FLAG is set, the
@@ -475,7 +603,8 @@ static void remove_crlf(char *s)
  * @param[in] ... the parameters.
  * @note
  * - Not all system API set the last status code.
- * Use strace macro to catch the status for sure.
+ * Use strace macro to reliably display the result
+ * of the last operation.
  */
 void winx_dbg_print(int flags, const char *format, ...)
 {
@@ -492,7 +621,7 @@ void winx_dbg_print(int flags, const char *format, ...)
     status = NtCurrentTeb()->LastStatusValue;
     error = NtCurrentTeb()->LastErrorValue;
     
-    /* format message */
+    /* format the message */
     if(format){
         va_start(arg,format);
         msg = winx_vsprintf(format,arg);
@@ -500,7 +629,7 @@ void winx_dbg_print(int flags, const char *format, ...)
     }
     if(!msg) return;
     
-    /* get rid of trailing new line character */
+    /* get rid of trailing new line characters */
     length = (int)strlen(msg);
     if(length){
         if(msg[length - 1] == '\n')
@@ -530,7 +659,7 @@ void winx_dbg_print(int flags, const char *format, ...)
                 deliver_message(ext_msg ? ext_msg : msg);
             } else {
                 length = ((int)wcslen((wchar_t *)err_msg) + 1) * sizeof(wchar_t);
-                length *= 2; /* enough to hold UTF-8 string */
+                length *= 2; /* enough to convert the string to UTF-8 encoding */
                 cnv_msg = winx_tmalloc(length);
                 if(cnv_msg){
                     /* write message to log in UTF-8 encoding */
@@ -573,10 +702,8 @@ no_description:
 }
 
 /**
- * @brief Delivers a message to the Debug View
- * program and appends it to the log file as well.
- * @brief Decorates the message by specified
- * character at both sides.
+ * @brief Produces a single line of debugging output,
+ * decorated by the specified character at both sides.
  * @param[in] ch the character to be used for decoration.
  * If zero value is passed, DEFAULT_DBG_PRINT_DECORATION_CHAR is used.
  * @param[in] width the width of the resulting message, in characters.
@@ -602,7 +729,7 @@ void winx_dbg_print_header(char ch, int width, const char *format, ...)
         va_start(arg,format);
         string = winx_vsprintf(format,arg);
         if(string){
-            /* print prefix before decorated body */
+            /* print the prefix before the decorated body */
             prefix = ""; body = string;
             if(strstr(string,I) == string){
                 prefix = I; body += strlen(I);
@@ -613,26 +740,26 @@ void winx_dbg_print_header(char ch, int width, const char *format, ...)
             }
             length = (int)strlen(body);
             if(length > (width - 4)){
-                /* print string not decorated */
+                /* print the string not decorated */
                 winx_dbg_print(0,"%s",string);
             } else {
-                /* allocate buffer for entire string */
+                /* allocate a buffer for the entire string */
                 buffer = winx_tmalloc(width + 1);
                 if(buffer == NULL){
-                    /* print string not decorated */
+                    /* print the string not decorated */
                     winx_dbg_print(0,"%s",string);
                 } else {
-                    /* fill buffer by character */
+                    /* fill the buffer by the character */
                     memset(buffer,ch,width);
                     buffer[width] = 0;
-                    /* paste leading space */
+                    /* paste the leading space */
                     left = (width - length - 2) / 2;
                     buffer[left] = 0x20;
-                    /* paste string */
+                    /* paste the string */
                     memcpy(buffer + left + 1,body,length);
-                    /* paste closing space */
+                    /* paste the closing space */
                     buffer[left + 1 + length] = 0x20;
-                    /* print decorated string */
+                    /* print the decorated string */
                     winx_dbg_print(0,"%s%s",prefix,buffer);
                     winx_free(buffer);
                 }
@@ -641,159 +768,6 @@ void winx_dbg_print_header(char ch, int width, const char *format, ...)
         }
         va_end(arg);
     }
-}
-
-/**
- * @brief Appends all collected debugging
- * information to the log file.
- * @param[in] flags combination of FLUSH_XXX
- * flags defined in zenwinx.h file.
- */
-void winx_flush_dbg_log(int flags)
-{
-    #define DBG_BUFFER_SIZE (100 * 1024) /* 100 KB */
-    LARGE_INTEGER interval;
-    winx_dbg_log_entry *old_dbg_log, *log_entry;
-    char out_of_memory[] = "\r\n*** Out of memory! ***\r\n";
-    char crlf[] = "\r\n";
-    char *time_stamp;
-    WINX_FILE *f;
-    int length;
-
-    /* synchronize with other threads */
-    if(!(flags & FLUSH_ALREADY_SYNCHRONIZED)){
-        interval.QuadPart = MAX_WAIT_INTERVAL;
-        if(NtWaitForSingleObject(hLogSynchEvent,FALSE,&interval) != WAIT_OBJECT_0){
-            winx_print("\nflush_dbg_log: synchronization failed!\n");
-            return;
-        }
-    }
-    
-    /* release reserved memory  */
-    winx_free(reserved_memory);
-    
-    /* disable parallel access to dbg_log list */
-    interval.QuadPart = MAX_WAIT_INTERVAL;
-    if(NtWaitForSingleObject(hListSynchEvent,FALSE,&interval) != WAIT_OBJECT_0) goto done;
-    old_dbg_log = dbg_log;
-    dbg_log = NULL;
-    NtSetEvent(hListSynchEvent,NULL);
-    
-    if(!old_dbg_log || !log_path) goto done;
-    if(log_path[0] == 0) goto done;
-    
-    /* open log file */
-    f = winx_fbopen(log_path,"a",DBG_BUFFER_SIZE);
-    if(f == NULL)
-        f = winx_fopen(log_path,"a");
-
-    /* save log */
-    if(f != NULL){
-        winx_printf("\nWriting log file \"%ws\" ...\n",&log_path[4]);
-
-        for(log_entry = old_dbg_log; log_entry; log_entry = log_entry->next){
-            if(log_entry->buffer){
-                length = (int)strlen(log_entry->buffer);
-                if(length){
-                    /* get rid of trailing new line character */
-                    if(log_entry->buffer[length - 1] == '\n'){
-                        log_entry->buffer[length - 1] = 0;
-                        length --;
-                    }
-                    time_stamp = winx_sprintf("%04d-%02d-%02d %02d:%02d:%02d.%03d ",
-                        log_entry->time_stamp.year, log_entry->time_stamp.month, log_entry->time_stamp.day,
-                        log_entry->time_stamp.hour, log_entry->time_stamp.minute, log_entry->time_stamp.second,
-                        log_entry->time_stamp.milliseconds);
-                    if(time_stamp){
-                        (void)winx_fwrite(time_stamp,sizeof(char),strlen(time_stamp),f);
-                        winx_free(time_stamp);
-                    }
-                    (void)winx_fwrite(log_entry->buffer,sizeof(char),length,f);
-                    /* add a proper newline characters */
-                    (void)winx_fwrite(crlf,sizeof(char),2,f);
-                }
-                winx_free(log_entry->buffer);
-            }
-            if(log_entry->next == old_dbg_log) break;
-        }
-        
-        if(flags & FLUSH_IN_OUT_OF_MEMORY)
-            (void)winx_fwrite(out_of_memory,sizeof(char),strlen(out_of_memory),f);
-        
-        winx_fclose(f);
-        winx_list_destroy((list_entry **)(void *)&old_dbg_log);
-    }
-
-done:
-    /* reserve memory for the out of memory condition handling again */
-    reserved_memory = (char *)winx_tmalloc(1024 * 1024);
-    
-    /* end of synchronization */
-    if(!(flags & FLUSH_ALREADY_SYNCHRONIZED))
-        NtSetEvent(hLogSynchEvent,NULL);
-}
-
-/**
- * @brief Enables or disables
- * debug logging to the file.
- * @param[in] path the path to the logfile.
- * NULL or an empty string forces to flush
- * all collected data to the disk and disable
- * logging to the file.
- */
-void winx_set_dbg_log(wchar_t *path)
-{
-    LARGE_INTEGER interval;
-    wchar_t *lb;
-    
-    if(path == NULL){
-        logging_enabled = 0;
-    } else {
-        logging_enabled = path[0] ? 1 : 0;
-    }
-    
-    if(logging_enabled){
-        /* create path */
-        lb = wcsrchr(path,'\\');
-        if(lb) *lb = 0;
-        if(winx_create_path(path) < 0){
-            etrace("cannot create directory tree for log path");
-            winx_print("\nwinx_set_dbg_log: cannot create directory tree for log path\n");
-        }
-        if(lb) *lb = '\\';
-    }
-    
-    /* synchronize with other threads */
-    interval.QuadPart = MAX_WAIT_INTERVAL;
-    if(NtWaitForSingleObject(hLogSynchEvent,FALSE,&interval) != WAIT_OBJECT_0){
-        etrace("synchronization failed");
-        winx_print("\nwinx_enable_dbg_log: synchronization failed!\n");
-        return;
-    }
-    
-    /* flush old log to disk */
-    if(path || log_path){
-        if(!path || !log_path) winx_flush_dbg_log(FLUSH_ALREADY_SYNCHRONIZED);
-        else if(wcscmp(path,log_path)) winx_flush_dbg_log(FLUSH_ALREADY_SYNCHRONIZED);
-    }
-    
-    /* set new log path */
-    if(log_path){
-        winx_free(log_path);
-        log_path = NULL;
-    }
-    if(logging_enabled){
-        itrace("log_path = %ws",path);
-        winx_printf("\nUsing log file \"%ws\" ...\n",&path[4]);
-        log_path = winx_wcsdup(path);
-        if(log_path == NULL){
-            mtrace();
-            winx_print("\nCannot allocate memory for log path!\n");
-        }
-    }
-    
-    /* end of synchronization */
-    NtSetEvent(hLogSynchEvent,NULL);
 }
 
 /** @} */

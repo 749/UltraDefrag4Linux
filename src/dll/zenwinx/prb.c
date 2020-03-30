@@ -22,22 +22,22 @@
 
 /**
  * @file prb.c
- * @brief Red-black trees with parent pointers.
- * @details The entire code was copied from the 
- * <a href="http://www.stanford.edu/~blp/avl/">GNU libavl</a>
- * sources. Just a few minor changes were applied to it.
+ * @brief Red-black binary trees with parent pointers.
+ * @details This file is a part of the <a href="http://www.stanford.edu/~blp/avl/">GNU libavl</a>
+ * library. Just a few minor changes have been applied to it to make it compatible with zenwinx library
+ * and to ensure that all the routines will complete gracefully in case of invalid parameters passed on.
  * @addtogroup BinaryTrees
  * @{
  */
 
+#include "prec.h"
 #ifndef NDEBUG
 #define NDEBUG
 #endif
 #include <assert.h>
-#include <stdio.h>
-/*#include <stdlib.h>*/
+/*#include <stdio.h>
+#include <stdlib.h>*/
 #include "prb.h"
-#include "ntndk.h"
 #include "zenwinx.h"
 #define malloc winx_malloc
 #define free winx_free
@@ -52,7 +52,8 @@ prb_create (prb_comparison_func *compare, void *param,
 {
   struct prb_table *tree;
 
-  assert (compare != NULL);
+  if (compare == NULL)
+    return NULL;
 
   if (allocator == NULL)
     allocator = &prb_allocator_default;
@@ -77,7 +78,9 @@ prb_find (const struct prb_table *tree, const void *item)
 {
   const struct prb_node *p;
 
-  assert (tree != NULL && item != NULL);
+  if (tree == NULL || item == NULL)
+    return NULL;
+  
   for (p = tree->prb_root; p != NULL; )
     {
       int cmp = tree->prb_compare (item, p->prb_data, tree->prb_param);
@@ -105,7 +108,8 @@ prb_probe (struct prb_table *tree, void *item)
   struct prb_node *n; /* Newly inserted node. */
   int dir = 0;        /* Side of |q| on which |n| is inserted. */
 
-  assert (tree != NULL && item != NULL);
+  if (tree == NULL || item == NULL)
+    return NULL;
 
   for (q = NULL, p = tree->prb_root; p != NULL; q = p, p = p->prb_link[dir])
     {
@@ -275,7 +279,8 @@ prb_delete (struct prb_table *tree, const void *item)
   int dir = 0;        /* Side of |q| on which |p| is a child;
                          side of |f| from which node was deleted. */
 
-  assert (tree != NULL && item != NULL);
+  if (tree == NULL || item == NULL)
+    return NULL;
 
   if (tree->prb_root == NULL)
     return NULL;
@@ -516,8 +521,11 @@ prb_delete (struct prb_table *tree, const void *item)
 void
 prb_t_init (struct prb_traverser *trav, struct prb_table *tree)
 {
-  trav->prb_table = tree;
-  trav->prb_node = NULL;
+  if (trav != NULL)
+    {
+      trav->prb_table = tree;
+      trav->prb_node = NULL;
+    }
 }
 
 /* Initializes |trav| for |tree|.
@@ -526,7 +534,8 @@ prb_t_init (struct prb_traverser *trav, struct prb_table *tree)
 void *
 prb_t_first (struct prb_traverser *trav, struct prb_table *tree)
 {
-  assert (tree != NULL && trav != NULL);
+  if (tree == NULL || trav == NULL)
+    return NULL;
 
   trav->prb_table = tree;
   trav->prb_node = tree->prb_root;
@@ -546,7 +555,8 @@ prb_t_first (struct prb_traverser *trav, struct prb_table *tree)
 void *
 prb_t_last (struct prb_traverser *trav, struct prb_table *tree)
 {
-  assert (tree != NULL && trav != NULL);
+  if (tree == NULL || trav == NULL)
+    return NULL;
 
   trav->prb_table = tree;
   trav->prb_node = tree->prb_root;
@@ -571,7 +581,11 @@ prb_t_find (struct prb_traverser *trav, struct prb_table *tree, void *item)
   struct prb_node *p;
   int dir;
 
-  assert (trav != NULL && tree != NULL && item != NULL);
+  if (trav == NULL || tree == NULL || item == NULL)
+    {
+      prb_t_init (trav, tree);
+      return NULL;
+    }
 
   trav->prb_table = tree;
   for (p = tree->prb_root; p != NULL; p = p->prb_link[dir])
@@ -603,7 +617,11 @@ prb_t_insert (struct prb_traverser *trav,
 {
   void **p;
 
-  assert (trav != NULL && tree != NULL && item != NULL);
+  if (trav == NULL || tree == NULL || item == NULL)
+    {
+      prb_t_init (trav, tree);
+      return NULL;
+    }
 
   p = prb_probe (tree, item);
   if (p != NULL)
@@ -625,7 +643,13 @@ prb_t_insert (struct prb_traverser *trav,
 void *
 prb_t_copy (struct prb_traverser *trav, const struct prb_traverser *src)
 {
-  assert (trav != NULL && src != NULL);
+  if (trav == NULL || src == NULL)
+    {
+      /* reset |trav| whenever possible */
+      if (trav != NULL)
+        trav->prb_node = NULL;
+      return NULL;
+    }
 
   trav->prb_table = src->prb_table;
   trav->prb_node = src->prb_node;
@@ -639,7 +663,8 @@ prb_t_copy (struct prb_traverser *trav, const struct prb_traverser *src)
 void *
 prb_t_next (struct prb_traverser *trav)
 {
-  assert (trav != NULL);
+  if (trav == NULL)
+    return NULL;
 
   if (trav->prb_node == NULL)
     return prb_t_first (trav, trav->prb_table);
@@ -669,7 +694,8 @@ prb_t_next (struct prb_traverser *trav)
 void *
 prb_t_prev (struct prb_traverser *trav)
 {
-  assert (trav != NULL);
+  if (trav == NULL)
+    return NULL;
 
   if (trav->prb_node == NULL)
     return prb_t_last (trav, trav->prb_table);
@@ -697,7 +723,8 @@ prb_t_prev (struct prb_traverser *trav)
 void *
 prb_t_cur (struct prb_traverser *trav)
 {
-  assert (trav != NULL);
+  if (trav == NULL)
+    return NULL;
 
   return trav->prb_node != NULL ? trav->prb_node->prb_data : NULL;
 }
@@ -710,7 +737,9 @@ prb_t_replace (struct prb_traverser *trav, void *new)
 {
   void *old;
 
-  assert (trav != NULL && trav->prb_node != NULL && new != NULL);
+  if (trav == NULL || trav->prb_node == NULL || new == NULL)
+    return NULL;
+
   old = trav->prb_node->prb_data;
   trav->prb_node->prb_data = new;
   return old;
@@ -756,7 +785,9 @@ prb_copy (const struct prb_table *org, prb_copy_func *copy,
   const struct prb_node *x;
   struct prb_node *y;
 
-  assert (org != NULL);
+  if (org == NULL)
+    return NULL;
+
   new = prb_create (org->prb_compare, org->prb_param,
                     allocator != NULL ? allocator : org->prb_alloc);
   if (new == NULL)
@@ -852,7 +883,8 @@ prb_destroy (struct prb_table *tree, prb_item_func *destroy)
 {
   struct prb_node *p, *q;
 
-  assert (tree != NULL);
+  if (tree == NULL)
+    return;
 
   for (p = tree->prb_root; p != NULL; p = q)
     if (p->prb_link[0] == NULL)

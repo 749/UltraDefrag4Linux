@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 //
 //  UltraDefrag - a powerful defragmentation tool for Windows NT.
-//  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+//  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
 //  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -34,6 +34,7 @@
 //                            Declarations
 // =======================================================================
 
+#include "prec.h"
 #include "main.h"
 
 #if !defined(__GNUC__)
@@ -65,7 +66,6 @@ bool g_all = false;
 bool g_all_fixed = false;
 bool g_list_volumes = false;
 bool g_list_all = false;
-bool g_repeat = false;
 bool g_no_progress = false;
 bool g_show_vol_info = false;
 bool g_show_map = false;
@@ -85,6 +85,8 @@ short  g_default_color = 0x7; // default text color
 
 bool g_first_progress_update = true;
 bool g_stop = false;
+
+HANDLE g_mutex = NULL;
 
 // =======================================================================
 //                                Logging
@@ -235,38 +237,53 @@ void update_progress(udefrag_progress_info *pi, void *p)
                 (void)SetConsoleCursorPosition(g_out,pos);
             }
         }
-
-        const char *op_name = "optimize: ";
-        if(pi->current_operation == VOLUME_ANALYSIS) op_name = "analyze:  ";
-        else if(pi->current_operation == VOLUME_DEFRAGMENTATION) op_name = "defrag:   ";
+        
+        clear_line();
 
         char letter = (char)(DWORD_PTR)p;
+        const char *op_name = "defragmentation";
+        
+        if(pi->completion_status == 0 || g_stop){
+            /*
+            * if the job is still running or aborted
+            * display progress of the current operation
+            */
+            if(pi->current_operation == VOLUME_ANALYSIS)
+                op_name = "analysis";
+            if(pi->current_operation == VOLUME_OPTIMIZATION)
+                op_name = "optimization";
 
-        clear_line();
-        if(pi->current_operation == VOLUME_OPTIMIZATION && !g_stop && pi->completion_status == 0){
-            if(pi->pass_number > 1)
-                printf("\r%c: %s%6.2lf%% complete, pass %lu, moves total = %I64u",
-                    letter,op_name,pi->percentage,pi->pass_number,pi->total_moves);
-            else
-                printf("\r%c: %s%6.2lf%% complete, moves total = %I64u",
-                    letter,op_name,pi->percentage,pi->total_moves);
+            if(pi->current_operation == VOLUME_OPTIMIZATION && pi->completion_status == 0 && !g_stop){
+                if(pi->pass_number > 1)
+                    printf("\r%c: %s: %.2lf%%, pass %lu, moves total = %I64u",
+                        letter,op_name,pi->percentage,pi->pass_number,pi->total_moves);
+                else
+                    printf("\r%c: %s: %.2lf%%, moves total = %I64u",
+                        letter,op_name,pi->percentage,pi->total_moves);
+            } else {
+                if(pi->pass_number > 1)
+                    printf("\r%c: %s: %.2lf%%, pass %lu, fragmented/total = %lu/%lu",
+                        letter,op_name,pi->percentage,pi->pass_number,pi->fragmented,pi->files);
+                else
+                    printf("\r%c: %s: %.2lf%%, fragmented/total = %lu/%lu",
+                        letter,op_name,pi->percentage,pi->fragmented,pi->files);
+            }
         } else {
+            /*
+            * if the job is completed display
+            * progress of the entire job
+            */
+            if(g_analyze) op_name = "analysis";
+            if(g_optimize || g_quick_optimization || \
+                g_optimize_mft) op_name = "optimization";
+
             if(pi->pass_number > 1)
-                printf("\r%c: %s%6.2lf%% complete, pass %lu, fragmented/total = %lu/%lu",
-                    letter,op_name,pi->percentage,pi->pass_number,pi->fragmented,pi->files);
-            else
-                printf("\r%c: %s%6.2lf%% complete, fragmented/total = %lu/%lu",
-                    letter,op_name,pi->percentage,pi->fragmented,pi->files);
-        }
-        if(pi->completion_status != 0 && !g_stop){
-            /* set progress indicator to 100% state */
-            clear_line();
-            if(pi->pass_number > 1)
-                printf("\r%c: %s100.00%% complete, %lu passes needed, fragmented/total = %lu/%lu",
+                printf("\r%c: %s: 100.00%%, %lu passes, fragmented/total = %lu/%lu",
                     letter,op_name,pi->pass_number,pi->fragmented,pi->files);
             else
-                printf("\r%c: %s100.00%% complete, fragmented/total = %lu/%lu",
+                printf("\r%c: %s: 100.00%%, fragmented/total = %lu/%lu",
                     letter,op_name,pi->fragmented,pi->files);
+
             if(!g_show_map) printf("\n");
         }
 
@@ -307,10 +324,9 @@ static bool process_single_volume(char letter)
     else if(g_quick_optimization) job_type = QUICK_OPTIMIZATION_JOB;
     else if(g_optimize_mft) job_type = MFT_OPTIMIZATION_JOB;
 
-    int flags = g_repeat ? UD_JOB_REPEAT : 0;
-    if(g_shellex) flags |= UD_JOB_CONTEXT_MENU_HANDLER;
+    int flags = g_shellex ? UD_JOB_CONTEXT_MENU_HANDLER : 0;
 
-    g_stop = false; g_first_progress_update = true;
+    g_first_progress_update = true;
 
     result = udefrag_start_job(letter,job_type,flags,map_size,
         update_progress,terminator,(void *)(DWORD_PTR)letter);
@@ -516,6 +532,10 @@ bool init(int argc, char **argv)
     // initialize logging
     g_Log = new Log();
 
+    // forbid installation / upgrade while UltraDefrag is running
+    g_mutex = CreateMutex(NULL,FALSE,L"Global\\ultradefrag_mutex");
+    if(g_mutex == NULL) letrace("cannot create the mutex");
+    
     // start web statistics
     g_statThread = new StatThread();
 
@@ -560,6 +580,8 @@ void cleanup(void)
 
     // deinitialize wxWidgets
     wxUninitialize();
+
+    if(g_mutex) CloseHandle(g_mutex);
 }
 
 // =======================================================================
@@ -608,7 +630,7 @@ int __cdecl main(int argc, char **argv)
         return 0;
     }
 
-    printf(VERSIONINTITLE ", Copyright (c) UltraDefrag Development Team, 2007-2016.\n"
+    printf(VERSIONINTITLE ", Copyright (c) UltraDefrag Development Team, 2007-2018.\n"
         "UltraDefrag comes with ABSOLUTELY NO WARRANTY. This is free software, \n"
         "and you are welcome to redistribute it under certain conditions.\n\n"
     );

@@ -1,6 +1,6 @@
 #!/usr/local/bin/lua
 --[[
-  set-doxyfile-project-number.lua - Sets PROJECT_NUMBER field in doxyfile.
+  set-doxyfile-project-number.lua - Sets PROJECT_NUMBER field in a Doxyfile.
   Copyright (c) 2010-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
 
   This program is free software; you can redistribute it and/or modify

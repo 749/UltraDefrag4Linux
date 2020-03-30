@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
@@ -12,27 +12,25 @@
 /**
  * @page Introduction Introduction
  *
- * UltraDefrag is an open source disk defragmenter for Windows.
- * It eliminates the file fragmentation problem speeding up the
- * computers which need less mechanical work to read continuous
- * data from disks. UltraDefrag can fix almost everything
- * including files which are usually locked - it launches
- * inside of the Windows boot process when most of the files
- * are still not in use.
+ * UltraDefrag is a powerful disk defragmenter for Windows. It can
+ * quickly boost performance of your computer and is easy to use.
  *
  * UltraDefrag has the following features:
- * - simple but efficient defragmentation algorithms
+ * - fast and efficient defragmentation algorithms
  * - safe environment preventing files corruption
- * - defragmentation of locked paging and hibernation files
+ * - detailed file fragmentation reports
+ * - defragmentation of individual files/folders
+ * - defragmentation of locked system files
  * - defragmentation of NTFS metafiles (including MFT) and streams
- * - flexible filters allowing exclusion of files by various criteria
- * - defragmentation of disks having specified fragmentation level
- * - one click defragmentation via Windows Explorer context menu
+ * - exclusion of files by path, size and number of fragments
+ * - fully configurable disk optimization
+ * - drive processing time limit
+ * - defragmentation of disks having the specified fragmentation level
+ * - automatic hibernation or shutdown after the job completion
  * - multilingual graphical interface (over 60 languages available)
+ * - one click defragmentation via Windows Explorer's context menu
  * - powerful command line interface
  * - scheduled defragmentation (using Windows Task Scheduler)
- * - automatic termination when specified time interval elapses
- * - automatic hibernation or shutdown after the job completion
  * - small size of installers (about 2 MB)
  * - availability of portable packages requiring no installation
  * - full support of 64-bit editions of Windows
@@ -46,10 +44,9 @@
  * However, the program tries to optimize those files placing their fragments close to each other
  * behind the first one.
  *
- * UltraDefrag can be used on Windows XP, Windows Server 2003, 
- * Windows Vista, Windows Server 2008, Windows 7 and Windows 8.
- * Elder versions of the program (prior to v7) can be used on
- * Windows NT 4.0 and Windows 2000 as well, with some limitations.
+ * UltraDefrag can be used on Windows XP/Vista/7/8/10 as well as Windows Server
+ * 2003/2008/2012/2016. Elder versions of the program (prior to v7) can be used
+ * on Windows NT 4.0 and Windows 2000 as well, with some limitations.
  * Additionally <a href="http://jp-andre.pagesperso-orange.fr/advanced-ntfs-3g.html">UltraDefrag for Linux</a>
  * exists which is an independent port of the program based on NTFS-3G capabilities.
  *
@@ -64,7 +61,7 @@
  * Defragmentation eliminates little fragments joining them together.
  *
  * Full optimization moves all small files and fragments to the end of the disk
- * to release some space in the beginning. Then it moves them back, sorted by user
+ * to release some space in the beginning. Then it moves them back, sorted by a user
  * defined criteria, to speed up access to groups of small files. By default files
  * are sorted by path in ascending order. Additionally FAT directories and NTFS
  * master file tables get fixed up as mentioned above.
@@ -110,8 +107,11 @@
  *
  * <h1>Web resources</h1>
  *
- * Recent news and updates can be found at <a href="http://ultradefrag.sourceforge.net/">UltraDefrag website</a>.
- * Also you can find us at <a href="http://www.facebook.com/ultradefrag/">Facebook</a>.
+ * Everything related to the program
+ * @htmlonly
+ * including printable versions of this handbook
+ * @endhtmlonly
+ * can be found at <a href="https://ultradefrag.net/">UltraDefrag website</a>.
  *
  * @htmlonly
  * <HR>

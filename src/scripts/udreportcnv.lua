@@ -2,7 +2,7 @@
 --[[
   udreportcnv.lua - UltraDefrag report converter.
   Converts lua reports to HTML and other formats.
-  Copyright (c) 2008-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+  Copyright (c) 2008-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 --]]
 
 usage = [[
-USAGE: lua udreportcnv.lua {path to Lua Report} {UltraDefrag installation directory} [-v]
+USAGE: lua udreportcnv.lua {path to lua report} [-v]
 ]]
 
 -------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ function hrsize(n)
     return m .. " " .. suffixes[i]
 end
 
--- writes path to the file, splitted when requested
+-- writes a path to a file, splitted when requested
 function write_file_path(path,f)
     local split = false
     if split_long_names ~= 1 then
@@ -83,10 +83,10 @@ function write_file_path(path,f)
             end
             table.insert(part,c)
         elseif b < 0xC2 then
-            -- 2-nd or 3-rd byte of multibyte sequence
+            -- 2-nd or 3-rd byte of a multibyte sequence
             seq = seq .. c
         else
-            -- 1-st byte of multibyte sequence
+            -- 1-st byte of a multibyte sequence
             if string.len(seq) ~= 0 then
                 table.insert(part,seq)
             end
@@ -117,7 +117,7 @@ function write_file_path(path,f)
                 f:write(seq); break_at_end = false
             end
             chars_to_write = chars_to_write - part_len
-        else -- current part is too long
+        else -- the current part is too long
             for k, seq in ipairs(part) do
                 f:write(seq); break_at_end = false
                 chars_to_write = chars_to_write - 1
@@ -171,13 +171,13 @@ end
 -- information from. So, let's avoid their localization.
 
 function write_text_header(f)
-    local compname, formatted_time = "", ""
+    local formatted_time = ""
     
-    if computer_name then
-        compname = computer_name .. ': '
+    if computer_name ~= "" then
+        computer_name = computer_name .. ': '
     end
     
-    -- format time appropriate for locale
+    -- format time according to the current locale
     if current_time then
         formatted_time = os.date("%c",os.time(current_time))
     end
@@ -186,7 +186,7 @@ function write_text_header(f)
     f:write(string.char(0xEF,0xBB,0xBF))
 
     f:write(";---------------------------------------------------------------------------------------------\n")
-    f:write("; ", compname, "Fragmented files on ", volume_letter, ": [", formatted_time, "]\n;\n")
+    f:write("; ", computer_name, "Fragmented files on ", volume_letter, ": [", formatted_time, "]\n;\n")
     f:write("; Fragments    Filesize  Comment      Status    Filename\n")
     f:write(";---------------------------------------------------------------------------------------------\n")
     f:write("\n")
@@ -220,29 +220,21 @@ end
 -- HTML reports are intended to be opened in a web
 -- browser. So, let's use localized strings there.
 
--- these markups must be identical, except of representation
-table_head        = [[<table id="main_table" border="1" cellspacing="0" width="100%">]]
-table_head_for_js = [[<table id=\"main_table\" border=\"1\" cellspacing=\"0\" width=\"100%%\">]]
-
-js, css = "", ""
 formatted_time = ""
 
 header = [[
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-    <title>$compname$FRAGMENTED_FILES_ON $volume_letter: [$formatted_time]</title>
-    <style type="text/css">
-      $css
-    </style>
-    <script language="javascript">
-      $js
-    </script>
+    <title>$computer_name$FRAGMENTED_FILES_ON $volume_letter: [$formatted_time]</title>
+    <link rel="stylesheet" type="text/css" href="../scripts/udreport.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="../scripts/udreport-custom.css" media="screen" />
+    <script type="text/javascript" src="../scripts/udsorting.js"></script>
   </head>
   <body>
-    <h3 class="title">$compname$FRAGMENTED_FILES_ON $volume_letter: ($formatted_time)</h3>
+    <h3 class="title">$computer_name$FRAGMENTED_FILES_ON $volume_letter: ($formatted_time)</h3>
     <div id="for_msie">
-      $table_head
+      <table id="main_table">
       <tr>
         <td class="c"><a href="javascript:sort_items('fragments')">$FRAGMENTS</a></td>
         <td class="c"><a href="javascript:sort_items('size')">$SIZE</a></td>
@@ -255,10 +247,10 @@ header = [[
 footer = [[
       </table>
     </div>
-    <table class="links_toolbar" width="100%"><tbody>
+    <table class="links_toolbar"><tbody>
       <tr>
-        <td class="left"><a href="http://ultradefrag.sourceforge.net">$VISIT_HOMEPAGE</a></td>
-        <td class="center"><a href="file:///$instdir_utf8\options.lua">$VIEW_REPORT_OPTIONS</a></td>
+        <td class="left"><a href="https://ultradefrag.net/">$VISIT_HOMEPAGE</a></td>
+        <td class="center"><a href="../conf/options.lua">$VIEW_REPORT_OPTIONS</a></td>
         <td class="right"><a href="http://www.lua.org/">$POWERED_BY_LUA</a></td>
       </tr>
     </tbody></table>
@@ -288,7 +280,7 @@ end
 
 function write_main_table_body(f)
     for i, file in ipairs(files) do
-        f:write("<tr class=\"u\">",
+        f:write("<tr>",
             "<td class=\"c\">",file.fragments,"</td>",
             "<td class=\"filesize\" id=\"", file.size, "\">",
             string.gsub(hrsize(file.size)," ","&nbsp;"),"</td>"
@@ -303,57 +295,15 @@ function write_main_table_body(f)
     end
 end
 
-function get_javascript()
-    local js = ""
-    if(enable_sorting == 1) then
-        -- read udsorting.js file contents
-        local f = assert(io.open(instdir .. "\\scripts\\udsorting.js", "r"))
-        js = f:read("*all")
-        if not js then js = "" end
-        f:close()
-    end
-    if js == "" then
-        js = "function init_sorting_engine(){}\nfunction sort_items(criteria){}\n"
-    end
-
-    -- replace $TABLE_HEAD by actual markup
-    return string.gsub(js,"$TABLE_HEAD",table_head_for_js)
-end
-
-function get_css()
-    -- read udreport.css file contents
-    local f = assert(io.open(instdir .. "\\scripts\\udreport.css", "r"))
-    local css = f:read("*all")
-    if not css then css = "" end
-    f:close()
-
-    -- read udreport-custom.css file contents
-    local custom_css = ""
-    f = io.open(instdir .. "\\scripts\\udreport-custom.css", "r")
-    if f then
-        custom_css = f:read("*all")
-        if not custom_css then custom_css = "" end
-        f:close()
-    end
-
-    return (css .. custom_css)
-end
-
 function build_html_report()
     local filename = string.gsub(report_path,"%.luar$","%.html")
     local f = assert(io.open(filename,"w"))
 
-    -- get JavaScript and CSS
-    js = get_javascript()
-    css = get_css()
-    
-    if computer_name then
-        compname = computer_name .. ': '
-    else
-        compname = ""
+    if computer_name ~= "" then
+        computer_name = computer_name .. ': '
     end
     
-    -- format time appropriate for locale
+    -- format time according to the current locale
     if current_time then
         formatted_time = os.date("%c",os.time(current_time))
     end
@@ -367,21 +317,18 @@ function build_html_report()
 end
 
 -------------------------------------------------------------------------------
--- Main Code
+-- The main code
 -------------------------------------------------------------------------------
 report_path = arg[1]
-instdir     = arg[2]
-
-instdir_utf8 = os.getenv("UD_INSTALL_DIR")
-if not instdir_utf8 then instdir_utf8 = instdir end
-
 assert(report_path, usage)
-assert(instdir, usage)
+
+instdir = string.gsub(report_path,"\\reports\\fraglist_.%.luar$","")
+if instdir == report_path then instdir = ".." end
 
 -- get report options
-dofile(instdir .. "\\options.lua")
+dofile(instdir .. "\\conf\\options.lua")
 
--- read source file
+-- read the source file
 dofile(report_path)
 
 error_msg = [[
@@ -394,7 +341,7 @@ if format_version == nil or format_version < 7 then
     error(error_msg)
 end
 
--- read i18n strings
+-- read localization strings
 get_localization_strings()
 
 -- build file fragmentation reports
@@ -405,8 +352,8 @@ if produce_plain_text_report == 1 then
     text_report_path = build_text_report()
 end
 
--- display report if requested
-if arg[3] == "-v" then
+-- display the report if requested
+if arg[2] == "-v" then
     if produce_html_report == 1 then
         display_report(html_report_path)
     elseif produce_plain_text_report == 1 then

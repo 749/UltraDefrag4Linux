@@ -6,19 +6,33 @@
 
 body {
     text-align: center;
+    font-family: monospace;
 }
 
-h3 {
-    font-family: monospace;
+.title {
+    margin: 10px 0 11px 0;
+}
+
+table {
+    width: 100%;
+    font-size: 10pt;
+}
+
+#main_table {
+    border-collapse: collapse;
+}
+
+#main_table td {
+    border: 1px solid #DDD;
+    padding: 1px 4px;
 }
 
 a {
     color: #0000FF;
 }
 
-td {
-    font-family: monospace;
-    font-size: 10pt;
+#main_table a {
+    text-decoration: none;
 }
 
 /* auxiliary definitions */

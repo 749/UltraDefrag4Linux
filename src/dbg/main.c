@@ -1,6 +1,6 @@
 /*
- *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2016 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  UltraDefrag debugger.
+ *  Copyright (c) 2015, 2016 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,10 +17,6 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/*
-* UltraDefrag debugger.
-*/
-
 #include "main.h"
 
 udefrag_shared_data *sd = NULL;
@@ -30,7 +26,7 @@ wchar_t tracking_path[1024];
 
 /**
  * @brief Tries to pick up shared objects.
- * @return Positive value for success,
+ * @return A positive value for success,
  * zero otherwise.
  */
 static int pick_up_shared_objects(void)
@@ -164,7 +160,7 @@ static void show_advice(void)
        "hardware or a virus infection. However, if\n"
        "it's not your case, don't hesitate to report\n"
        "the crash via our bug tracker:\n\n"
-       "http://sourceforge.net/p/ultradefrag/bugs/\n\n"
+       "https://sourceforge.net/p/ultradefrag/bugs/\n\n"
        "Also you might downgrade to UltraDefrag v6\n"
        "which is known to be very stable.",
        "UltraDefrag debugger",

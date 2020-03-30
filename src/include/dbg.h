@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2016 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,11 +27,10 @@ extern "C" {
 /**
  * @brief Prefixes for debugging messages.
  * @details These prefixes are intended for
- * use with messages passed to winx_dbg_print,
- * winx_dbg_print_header, udefrag_dbg_print
- * routines. To keep logs clean and suitable
- * for easy analysis always use one of the
- * prefixes listed here.
+ * use with messages passed to winx_dbg_print
+ * and winx_dbg_print_header routines. To keep
+ * logs clean and suitable for easy analysis
+ * always use one of the prefixes listed here.
  */
 #define I "INFO:  "  /* for general purpose progress information */
 #define E "ERROR: "  /* for errors */
@@ -46,8 +45,8 @@ extern "C" {
  * description. If LAST_ERROR_FLAG is set,
  * the same stuff will be done for the last
  * error value.
- * @note These flags are intended for use with
- * winx_dbg_print and udefrag_dbg_print routines.
+ * @note These flags are intended
+ * for the winx_dbg_print routine.
  */
 #define NT_STATUS_FLAG  0x1
 #define LAST_ERROR_FLAG 0x2

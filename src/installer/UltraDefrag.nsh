@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2016 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -28,10 +28,9 @@
 /*
 * 1. ${DisableX64FSRedirection} is required before
 *    all macros except CheckWinVersion and UninstallTheProgram.
-* 2. Most macros require the $INSTDIR variable
-*    to be set and plugins directory to be initialized.
-*    It is safe to do both initialization actions
-*    in the .onInit function.
+* 2. Most macros require the $INSTDIR variable to be set and the
+*    plugins directory to be initialized. It is safe to initialize
+*    them both in the .onInit function.
 */
 
 !macro LogAndDisplayAbort _Message
@@ -47,7 +46,6 @@
         ${WinVerGetBuild} $R3
 
         FileOpen $R0 ${UD_LOG_FILE} w
-
         ${Unless} ${Errors}
             FileWrite $R0 "$\r$\n"
             FileWrite $R0 "This file contains information to debug installation problems.$\r$\n"
@@ -57,7 +55,7 @@
             FileWrite $R0 "Command Line ...... $CMDLINE$\r$\n"
             FileWrite $R0 "$\r$\n"
             FileWrite $R0 "Installer Path .... $EXEPATH$\r$\n"
-            FileWrite $R0 "Installer Type .... ${ULTRADFGARCH}$\r$\n"
+            FileWrite $R0 "Installer Type .... $%ULTRADFGARCH%$\r$\n"
             FileWrite $R0 "$\r$\n"
             FileWrite $R0 "Windows Version ... $R1.$R2.$R3$\r$\n"
             FileWrite $R0 "$\r$\n"
@@ -69,7 +67,6 @@
             FileWrite $R0 "Plugin Dir ........ $PLUGINSDIR$\r$\n"
             FileWrite $R0 "Temporary Dir ..... $TEMP$\r$\n"
             FileWrite $R0 "$\r$\n"
-
             FileClose $R0
         ${EndUnless}
 
@@ -112,7 +109,10 @@
     Push $R0
 
     ; check if UltraDefrag is running
-    System::Call 'kernel32::OpenMutex(i 0x100000, b 0, t "ultradefrag_mutex") i .R0'
+    System::Call 'kernel32::OpenMutex(i 0x100000, b 0, t "Global\ultradefrag_mutex") i .R0'
+    ${If} $R0 == 0
+        System::Call 'kernel32::OpenMutex(i 0x100000, b 0, t "ultradefrag_mutex") i .R0'
+    ${EndIf}
     ${If} $R0 == 0
         System::Call 'kernel32::OpenMutex(i 0x100000, b 0, t "\BaseNamedObjects\ultradefrag_mutex") i .R0'
     ${EndIf}
@@ -121,7 +121,7 @@
     ${EndIf}
     ${If} $R0 != 0
         System::Call 'kernel32::CloseHandle(i $R0)'
-        ${LogAndDisplayAbort} "Ultra Defragmenter is running. Please close it first!"
+        ${LogAndDisplayAbort} "UltraDefrag is running. Please close it first!"
         Abort
     ${EndIf}
 
@@ -163,26 +163,26 @@
 
     ${Unless} ${Errors}
         ${If} $R0 == "x86"
-        ${AndIf} ${ULTRADFGARCH} != "i386"
+        ${AndIf} "$%ULTRADFGARCH%" != "i386"
             ${LogAndDisplayAbort} \
                 "This installer cannot be used on 32-bit Windows!$\n \
-                Download the i386 version from http://ultradefrag.sourceforge.net/"
+                Download the i386 version from https://ultradefrag.net/"
             Pop $R0
             Abort
         ${EndIf}
         ${If} $R0 == "amd64"
-        ${AndIf} ${ULTRADFGARCH} != "amd64"
+        ${AndIf} "$%ULTRADFGARCH%" != "amd64"
             ${LogAndDisplayAbort} \
                 "This installer cannot be used on x64 versions of Windows!$\n \
-                Download the amd64 version from http://ultradefrag.sourceforge.net/"
+                Download the amd64 version from https://ultradefrag.net/"
             Pop $R0
             Abort
         ${EndIf}
         ${If} $R0 == "ia64"
-        ${AndIf} ${ULTRADFGARCH} != "ia64"
+        ${AndIf} "$%ULTRADFGARCH%" != "ia64"
             ${LogAndDisplayAbort} \
                 "This installer cannot be used on IA-64 versions of Windows!$\n \
-                Download the ia64 version from http://ultradefrag.sourceforge.net/"
+                Download the ia64 version from https://ultradefrag.net/"
             Pop $R0
             Abort
         ${EndIf}
@@ -196,8 +196,8 @@
 ;-----------------------------------------
 
 /**
- * This procedure validates the destination folder
- * and is only used by the directory page verify callback.
+ * This procedure validates destination folder and is
+ * only used by the directory page verification callback.
  * Only empty folders or folders containing an existing
  * UltraDefrag installation are valid.
  */
@@ -205,7 +205,7 @@
 
     StrCpy $ValidDestDir "1"
 
-    ; if $INSTDIR is a ultradefrag directory, let us install there
+    ; if $INSTDIR is an ultradefrag directory, let us install there
     IfFileExists "$INSTDIR\lua5.1a_gui.exe" PathGood
 
     ; if $INSTDIR is not empty, don't let us install there
@@ -217,15 +217,12 @@
         ${If} $R2 != ""
             ${Do}
                 ${If} $R2 != "."
-                    ${AndIf} $R2 != ".."
-
+                ${AndIf} $R2 != ".."
                     ${ExitDo}
                 ${EndIf}
-
                 FindNext $R1 $R2
             ${Loop}
         ${EndIf}
-
         FindClose $R1
     ${EndIf}
 
@@ -247,33 +244,32 @@ PathGood:
 /**
  * This procedure installs all mandatory files and
  * upgrades already existing configuration files
- * if they are in obsolete format.
+ * if they are in an obsolete format.
  */
 !macro InstallCoreFiles
 
     ${DisableX64FSRedirection}
 
-    ; validate destination folder for silent installation here,
-    ; since the directory page is not displayed in silent mode
+    ; validate destination folder for silent installations here,
+    ; since the directory page is not displayed in the silent mode
     ${If} ${Silent}
         ${CheckDestFolder}
-
         ${If} $ValidDestDir == "0"
             ${LogAndDisplayAbort} "Destination folder is invalid!"
             Abort
         ${EndIf}
     ${EndIf}
 
-    ; move old installation to new location
+    ; relocate the installation
     IfFileExists "$OldInstallDir\*.*" 0 SkipMove
     StrCmp "$INSTDIR" "$OldInstallDir" SkipMove
 
-    DetailPrint "Moving old installation to new location..."
+    DetailPrint "Relocating the installation..."
     CreateDirectory "$INSTDIR"
     ClearErrors
     CopyFiles /SILENT "$OldInstallDir\*" "$INSTDIR"
     ${If} ${Errors}
-        ${LogAndDisplayAbort} "Cannot move old installation to new location!"
+        ${LogAndDisplayAbort} "Cannot relocate the installation!"
         Abort
     ${EndIf}
 
@@ -283,32 +279,33 @@ PathGood:
 
 SkipMove:
     DetailPrint "Removing old executable files..."
-        Delete "$INSTDIR\*.exe"
-        Delete "$INSTDIR\*.dll"
+    Delete "$INSTDIR\*.exe"
+    Delete "$INSTDIR\*.dll"
 
     DetailPrint "Installing core files..."
     SetOutPath "$SYSDIR"
-        File "lua5.1a.dll"
-        File "zenwinx.dll"
-        File "udefrag.dll"
-        File /oname=hibernate4win.exe "hibernate.exe"
-        File "udefrag-dbg.exe"
+    File "lua5.1a.dll"
+    File "zenwinx.dll"
+    File "udefrag.dll"
+    File /oname=hibernate4win.exe "hibernate.exe"
+    File "udefrag-dbg.exe"
 
     SetOutPath "$INSTDIR"
-        File "${ROOTDIR}\src\HISTORY.TXT"
-        File "README.TXT"
+    File "${ROOTDIR}\src\HISTORY.TXT"
+    File "${ROOTDIR}\src\LICENSE.TXT"
+    File "README.TXT"
 
-        File "lua5.1a.exe"
-        File "lua5.1a_gui.exe"
+    File "lua5.1a.exe"
+    File "lua5.1a_gui.exe"
 
     SetOutPath "$INSTDIR\scripts"
-        File "${ROOTDIR}\src\scripts\udreportcnv.lua"
-        File "${ROOTDIR}\src\scripts\udsorting.js"
-        File "${ROOTDIR}\src\scripts\upgrade-options.lua"
+    File "${ROOTDIR}\src\scripts\udreportcnv.lua"
+    File "${ROOTDIR}\src\scripts\udsorting.js"
+    File "${ROOTDIR}\src\scripts\upgrade-options.lua"
 
-    DetailPrint "Upgrade configuration files..."
+    DetailPrint "Configuration files upgrade..."
     ; ensure that target directory exists
-    CreateDirectory "$INSTDIR\options"
+    CreateDirectory "$INSTDIR\conf"
     ${If} ${Silent}
         ExecWait '"$INSTDIR\lua5.1a_gui.exe" -s "$INSTDIR\scripts\upgrade-options.lua" "$INSTDIR"'
     ${Else}
@@ -316,22 +313,16 @@ SkipMove:
     ${EndIf}
 
     ; install default CSS for file fragmentation reports
-    ${If} ${FileExists} "$INSTDIR\scripts\udreport.css"
-        ${Unless} ${FileExists} "$INSTDIR\scripts\udreport.css.old"
-            ; ensure that user's choice will not be lost
-            Rename "$INSTDIR\scripts\udreport.css" "$INSTDIR\scripts\udreport.css.old"
-        ${EndUnless}
-    ${EndIf}
     File "${ROOTDIR}\src\scripts\udreport.css"
 
-    DetailPrint "Register .luar file extension..."
+    DetailPrint "Registering .luar file extension..."
     WriteRegStr HKCR ".luar" "" "LuaReport"
     WriteRegStr HKCR "LuaReport" "" "Lua Report"
     WriteRegStr HKCR "LuaReport\DefaultIcon" "" "$INSTDIR\lua5.1a_gui.exe,1"
     WriteRegStr HKCR "LuaReport\shell" "" "view"
     WriteRegStr HKCR "LuaReport\shell\view" "" "View report"
     WriteRegStr HKCR "LuaReport\shell\view\command" "" \
-        "$\"$INSTDIR\lua5.1a_gui.exe$\" $\"$INSTDIR\scripts\udreportcnv.lua$\" $\"%1$\" $\"$INSTDIR$\" -v"
+        "$\"$INSTDIR\lua5.1a_gui.exe$\" $\"$INSTDIR\scripts\udreportcnv.lua$\" $\"%1$\" -v"
 
     ${EnableX64FSRedirection}
 
@@ -347,11 +338,12 @@ SkipMove:
 
     DetailPrint "Removing core files..."
     Delete "$INSTDIR\HISTORY.TXT"
+    Delete "$INSTDIR\LICENSE.TXT"
     Delete "$INSTDIR\README.TXT"
     Delete "$INSTDIR\lua5.1a.exe"
     Delete "$INSTDIR\lua5.1a_gui.exe"
     RMDir /r "$INSTDIR\scripts"
-    RMDir /r "$INSTDIR\options"
+    RMDir /r "$INSTDIR\conf"
 
     Delete "$SYSDIR\zenwinx.dll"
     Delete "$SYSDIR\udefrag.dll"
@@ -359,7 +351,7 @@ SkipMove:
     Delete "$SYSDIR\hibernate4win.exe"
     Delete "$SYSDIR\udefrag-dbg.exe"
 
-    DetailPrint "Deregister .luar file extension..."
+    DetailPrint "Deregistering .luar file extension..."
     DeleteRegKey HKCR "LuaReport"
     DeleteRegKey HKCR ".luar"
 
@@ -376,21 +368,20 @@ SkipMove:
     ${DisableX64FSRedirection}
 
     ${If} ${FileExists} "$SYSDIR\defrag_native.exe"
-        DetailPrint "Removing current boot interface..."
+        DetailPrint "Removing old boot time interface..."
         ClearErrors
         Delete "$SYSDIR\defrag_native.exe"
         ${If} ${Errors}
             /*
-            * If the native app depends on native DLL's
-            * it may cause BSOD in case of inconsistency
-            * between their versions. Therefore, we must
-            * force upgrade to the latest monolithic native
-            * defragmenter.
+            * It's not safe to leave it as is, because some
+            * older versions of it may cause BSOD in case of
+            * inconsistency between them and udefrag/zenwinx
+            * libraries they depend on.
             */
             ${LogAndDisplayAbort} "Cannot update $SYSDIR\defrag_native.exe file!"
-            ; try to recover the problem
+            ; turn the boot time interface off
             ExecWait '"$SYSDIR\bootexctrl.exe" /u /s defrag_native'
-            ; the second attempt, just for safety
+            ; try to remove it once again, just for safety
             ${EnableX64FSRedirection}
             SetOutPath $PLUGINSDIR
             File "bootexctrl.exe"
@@ -400,7 +391,7 @@ SkipMove:
         ${EndIf}
     ${EndIf}
 
-    DetailPrint "Installing boot interface..."
+    DetailPrint "Installing boot time interface..."
     SetOutPath "$INSTDIR\man"
     File "${ROOTDIR}\doc\man\*.*"
 
@@ -416,7 +407,7 @@ SkipMove:
         File "${ROOTDIR}\src\installer\ud-boot-time.ini"
     ${Else}
         ; the script of v5.0 is not compatible with previous
-        ; versions because of the filter syntax changes
+        ; versions because of filter syntax changes
         ${Unless} ${FileExists} "$SYSDIR\ud-boot-time.ini"
             Rename "$SYSDIR\ud-boot-time.cmd" "$SYSDIR\ud-boot-time.cmd.old"
             File "${ROOTDIR}\src\installer\ud-boot-time.cmd"
@@ -436,7 +427,7 @@ SkipMove:
 
     ${DisableX64FSRedirection}
 
-    DetailPrint "Removing boot interface..."
+    DetailPrint "Removing boot time interface..."
     RMDir /r "$INSTDIR\man"
 
     ExecWait '"$SYSDIR\bootexctrl.exe" /u /s defrag_native'
@@ -464,7 +455,7 @@ SkipMove:
 
     DetailPrint "Installing console interface..."
     SetOutPath "$SYSDIR"
-        File "udefrag.exe"
+    File "udefrag.exe"
 
     ${EnableX64FSRedirection}
 
@@ -493,27 +484,27 @@ SkipMove:
 
     ${DisableX64FSRedirection}
 
-    DetailPrint "Installing GUI interface..."
+    DetailPrint "Installing graphical interface..."
     SetOutPath "$INSTDIR"
-        File /nonfatal /r /x *.pot /x *.header /x *.svn "${ROOTDIR}\src\wxgui\locale"
+    File /nonfatal /r /x *.pot /x *.header /x *.svn "${ROOTDIR}\src\wxgui\locale"
 
     SetOutPath "$INSTDIR\po"
-        File /nonfatal "${ROOTDIR}\src\tools\transifex\translations\ultradefrag.main\*.po"
-        File /nonfatal "${ROOTDIR}\src\wxgui\locale\*.pot"
+    File /nonfatal "${ROOTDIR}\src\tools\transifex\translations\ultradefrag.main\*.po"
+    File /nonfatal "${ROOTDIR}\src\wxgui\locale\*.pot"
 
     SetOutPath "$INSTDIR"
-        Delete "$INSTDIR\ultradefrag.exe"
-        File "ultradefrag.exe"
+    Delete "$INSTDIR\ultradefrag.exe"
+    File "ultradefrag.exe"
 
-    DetailPrint "Update report translation..."
+    DetailPrint "Fragmentation reports translation update..."
     ExecWait '"$INSTDIR\ultradefrag.exe" --setup'
 
     Push $R0
     Push $0
 
-    DetailPrint "Register file extensions..."
-    ; Without $SYSDIR because x64 system applies registry redirection for HKCR before writing.
-    ; When we are using $SYSDIR Windows always converts them to C:\WINDOWS\SysWow64.
+    DetailPrint "Registering file extensions..."
+    ; Without $SYSDIR because x64 systems apply registry redirection for HKCR before writing.
+    ; Whenever we are using $SYSDIR Windows converts it to C:\WINDOWS\SysWow64.
 
     ClearErrors
     ReadRegStr $R0 HKCR ".lua" ""
@@ -551,7 +542,7 @@ SkipMove:
 
     ${DisableX64FSRedirection}
 
-    DetailPrint "Removing GUI interface..."
+    DetailPrint "Removing graphical interface..."
     RMDir /r "$INSTDIR\locale"
     RMDir /r "$INSTDIR\po"
 
@@ -559,7 +550,7 @@ SkipMove:
 
     Push $R0
 
-    DetailPrint "Unregister file extensions..."
+    DetailPrint "Deregistering file extensions..."
     ClearErrors
     ReadRegStr $R0 HKLM ${UD_UNINSTALL_REG_KEY} "Registered.lua"
     ${Unless} ${Errors}
@@ -601,7 +592,7 @@ SkipMove:
     RMDir /r "$INSTDIR\handbook"
 
     SetOutPath "$INSTDIR\handbook"
-        File "${ROOTDIR}\doc\handbook\doxy-doc\html\*.*"
+    File "${ROOTDIR}\doc\handbook\doxy-doc\html\*.*"
 
     ${EnableX64FSRedirection}
 
@@ -628,12 +619,16 @@ SkipMove:
 
 !macro InstallShellHandlerFiles
 
+    ; get rid of old context menu handler to make
+    ; sure that it won't interfere with the new one
+    ${RemoveShellHandlerFiles}
+    
     ${DisableX64FSRedirection}
 
-    DetailPrint "Installing the context menu handler..."
+    DetailPrint "Installing context menu handler..."
     SetOutPath "$INSTDIR\icons"
-        File "${ROOTDIR}\src\installer\shellex.ico"
-        File "${ROOTDIR}\src\installer\shellex-folder.ico"
+    File "${ROOTDIR}\src\installer\shellex.ico"
+    File "${ROOTDIR}\src\installer\shellex-folder.ico"
 
     Push $0
     Push $1
@@ -643,15 +638,6 @@ SkipMove:
     StrCpy $0 "$INSTDIR\icons\shellex.ico"
     StrCpy $1 "$INSTDIR\icons\shellex-folder.ico"
 
-    DeleteRegKey HKCR "Drive\shell\udefrag"
-    DeleteRegKey HKCR "Drive\shell\udefrag-folder"
-    DeleteRegKey HKCR "Drive\shell\udefrag-drive-analyze"
-    DeleteRegKey HKCR "Drive\shell\udefrag-drive-optimize"
-    DeleteRegKey HKCR "Drive\shell\udefrag-drive-qoptimize"
-    DeleteRegKey HKCR "Folder\shell\udefrag"
-    DeleteRegKey HKCR "Folder\shell\udefrag-folder"
-    DeleteRegKey HKCR "*\shell\udefrag"
-
     ${If} ${AtLeastWin7}
         WriteRegStr HKCR "Drive\shell\udefrag.W7menu" "MUIVerb"                "&UltraDefrag"
         WriteRegStr HKCR "Drive\shell\udefrag.W7menu" "ExtendedSubCommandsKey" "Drive\udefragW7menu"
@@ -659,90 +645,85 @@ SkipMove:
 
         StrCpy $R0 "&Analyze"
         StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -a -v $\"%1$\""
-        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag-drive-analyze"           ""     $R0
-        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag-drive-analyze\command"   ""     $R1
+        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag-drive-analyze"            ""     $R0
+        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag-drive-analyze\command"    ""     $R1
 
         StrCpy $R0 "&Defragment"
         StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder $\"%1$\""
-        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag"                         ""     $R0
-        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag\command"                 ""     $R1
+        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag-drive-defragment"         ""     $R0
+        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag-drive-defragment\command" ""     $R1
 
-        StrCpy $R0 "&Defragment root folder itself"
+        StrCpy $R0 "Perform &full optimization"
+        StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -o -v $\"%1$\""
+        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag-drive-full-optimization"          ""     $R0
+        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag-drive-full-optimization\command"  ""     $R1
+
+        StrCpy $R0 "Perform &quick optimization"
+        StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -q -v $\"%1$\""
+        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag-drive-quick-optimization"         ""     $R0
+        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag-drive-quick-optimization\command" ""     $R1
+
+        StrCpy $R0 "Defragment &root folder itself"
         StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder-itself $\"%1$\""
         WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag-folder"                  ""     $R0
         WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag-folder"                  "Icon" $1
         WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag-folder\command"          ""     $R1
 
-        StrCpy $R0 "&Fully optimize"
-        StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -o -v $\"%1$\""
-        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag-drive-optimize"          ""     $R0
-        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag-drive-optimize\command"  ""     $R1
-
-        StrCpy $R0 "&Quickly optimize"
-        StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -q -v $\"%1$\""
-        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag-drive-qoptimize"         ""     $R0
-        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag-drive-qoptimize\command" ""     $R1
-
-        WriteRegStr HKCR "Folder\shell\udefrag.W7menu" "MUIVerb"                "&UltraDefrag"
-        WriteRegStr HKCR "Folder\shell\udefrag.W7menu" "ExtendedSubCommandsKey" "Folder\udefragW7menu"
-        WriteRegStr HKCR "Folder\shell\udefrag.W7menu" "Icon" $0
+        WriteRegStr HKCR "Directory\shell\udefrag.W7menu" "MUIVerb"                "&UltraDefrag"
+        WriteRegStr HKCR "Directory\shell\udefrag.W7menu" "ExtendedSubCommandsKey" "Directory\udefragW7menu"
+        WriteRegStr HKCR "Directory\shell\udefrag.W7menu" "Icon" $0
 
         StrCpy $R0 "&Defragment"
         StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder $\"%1$\""
-        WriteRegStr HKCR "Folder\udefragW7menu\shell\udefrag"                ""     $R0
-        WriteRegStr HKCR "Folder\udefragW7menu\shell\udefrag\command"        ""     $R1
+        WriteRegStr HKCR "Directory\udefragW7menu\shell\udefrag"                ""     $R0
+        WriteRegStr HKCR "Directory\udefragW7menu\shell\udefrag\command"        ""     $R1
 
         StrCpy $R0 "&Defragment folder itself"
         StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder-itself $\"%1$\""
-        WriteRegStr HKCR "Folder\udefragW7menu\shell\udefrag-folder"         ""     $R0
-        WriteRegStr HKCR "Folder\udefragW7menu\shell\udefrag-folder"         "Icon" $1
-        WriteRegStr HKCR "Folder\udefragW7menu\shell\udefrag-folder\command" ""     $R1
+        WriteRegStr HKCR "Directory\udefragW7menu\shell\udefrag-folder"         ""     $R0
+        WriteRegStr HKCR "Directory\udefragW7menu\shell\udefrag-folder"         "Icon" $1
+        WriteRegStr HKCR "Directory\udefragW7menu\shell\udefrag-folder\command" ""     $R1
 
-        WriteRegStr HKCR "*\shell\udefrag.W7menu" "MUIVerb"                "&UltraDefrag"
-        WriteRegStr HKCR "*\shell\udefrag.W7menu" "ExtendedSubCommandsKey" "*\udefragW7menu"
-        WriteRegStr HKCR "*\shell\udefrag.W7menu" "Icon" $0
-
-        StrCpy $R0 "&Defragment"
+        StrCpy $R0 "&Defragment with UltraDefrag"
         StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex $\"%1$\""
-        WriteRegStr HKCR "*\udefragW7menu\shell\udefrag"         ""     $R0
-        WriteRegStr HKCR "*\udefragW7menu\shell\udefrag\command" ""     $R1
+        WriteRegStr HKCR "*\shell\udefrag"         ""     $R0
+        WriteRegStr HKCR "*\shell\udefrag"         "Icon" $0
+        WriteRegStr HKCR "*\shell\udefrag\command" ""     $R1
     ${Else}
-        ${If} ${AtLeastWinXP}
-            StrCpy $R0 "&Analyze with UltraDefrag"
-            StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -a -v $\"%1$\""
-            WriteRegStr HKCR "Drive\shell\udefrag-drive-analyze"           ""     $R0
-            WriteRegStr HKCR "Drive\shell\udefrag-drive-analyze\command"   ""     $R1
-
-            StrCpy $R0 "&Defragment with UltraDefrag"
-            StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder $\"%1$\""
-            WriteRegStr HKCR "Drive\shell\udefrag"                         ""     $R0
-            WriteRegStr HKCR "Drive\shell\udefrag\command"                 ""     $R1
-
-            StrCpy $R0 "&Defragment root folder itself with UltraDefrag"
-            StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder-itself $\"%1$\""
-            WriteRegStr HKCR "Drive\shell\udefrag-folder"                  ""     $R0
-            WriteRegStr HKCR "Drive\shell\udefrag-folder\command"          ""     $R1
-
-            StrCpy $R0 "&Fully optimize with UltraDefrag"
-            StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -o -v $\"%1$\""
-            WriteRegStr HKCR "Drive\shell\udefrag-drive-optimize"          ""     $R0
-            WriteRegStr HKCR "Drive\shell\udefrag-drive-optimize\command"  ""     $R1
-
-            StrCpy $R0 "&Quickly optimize with UltraDefrag"
-            StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -q -v $\"%1$\""
-            WriteRegStr HKCR "Drive\shell\udefrag-drive-qoptimize"         ""     $R0
-            WriteRegStr HKCR "Drive\shell\udefrag-drive-qoptimize\command" ""     $R1
-        ${EndIf}
+        StrCpy $R0 "&Analyze with UltraDefrag"
+        StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -a -v $\"%1$\""
+        WriteRegStr HKCR "Drive\shell\udefrag-drive-analyze"            ""     $R0
+        WriteRegStr HKCR "Drive\shell\udefrag-drive-analyze\command"    ""     $R1
 
         StrCpy $R0 "&Defragment with UltraDefrag"
         StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder $\"%1$\""
-        WriteRegStr HKCR "Folder\shell\udefrag"                ""     $R0
-        WriteRegStr HKCR "Folder\shell\udefrag\command"        ""     $R1
+        WriteRegStr HKCR "Drive\shell\udefrag-drive-defragment"         ""     $R0
+        WriteRegStr HKCR "Drive\shell\udefrag-drive-defragment\command" ""     $R1
+
+        StrCpy $R0 "Perform &full optimization with UltraDefrag"
+        StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -o -v $\"%1$\""
+        WriteRegStr HKCR "Drive\shell\udefrag-drive-full-optimization"          ""     $R0
+        WriteRegStr HKCR "Drive\shell\udefrag-drive-full-optimization\command"  ""     $R1
+
+        StrCpy $R0 "Perform &quick optimization with UltraDefrag"
+        StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -q -v $\"%1$\""
+        WriteRegStr HKCR "Drive\shell\udefrag-drive-quick-optimization"         ""     $R0
+        WriteRegStr HKCR "Drive\shell\udefrag-drive-quick-optimization\command" ""     $R1
+
+        StrCpy $R0 "Defragment &root folder itself with UltraDefrag"
+        StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder-itself $\"%1$\""
+        WriteRegStr HKCR "Drive\shell\udefrag-folder"                  ""     $R0
+        WriteRegStr HKCR "Drive\shell\udefrag-folder\command"          ""     $R1
+
+        StrCpy $R0 "&Defragment with UltraDefrag"
+        StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder $\"%1$\""
+        WriteRegStr HKCR "Directory\shell\udefrag"                ""     $R0
+        WriteRegStr HKCR "Directory\shell\udefrag\command"        ""     $R1
 
         StrCpy $R0 "&Defragment folder itself with UltraDefrag"
         StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder-itself $\"%1$\""
-        WriteRegStr HKCR "Folder\shell\udefrag-folder"         ""     $R0
-        WriteRegStr HKCR "Folder\shell\udefrag-folder\command" ""     $R1
+        WriteRegStr HKCR "Directory\shell\udefrag-folder"         ""     $R0
+        WriteRegStr HKCR "Directory\shell\udefrag-folder\command" ""     $R1
 
         StrCpy $R0 "&Defragment with UltraDefrag"
         StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex $\"%1$\""
@@ -767,25 +748,23 @@ SkipMove:
 
     ${DisableX64FSRedirection}
 
-    DetailPrint "Removing the context menu handler..."
+    DetailPrint "Removing context menu handler..."
     Delete "$INSTDIR\icons\shellex.ico"
     Delete "$INSTDIR\icons\shellex-folder.ico"
-    RmDir "$INSTDIR\icons"
+    RMDir "$INSTDIR\icons"
 
     DeleteRegKey HKCR "Drive\shell\udefrag.W7menu"
     DeleteRegKey HKCR "Drive\udefragW7menu"
-    DeleteRegKey HKCR "Folder\shell\udefrag.W7menu"
-    DeleteRegKey HKCR "Folder\udefragW7menu"
-    DeleteRegKey HKCR "*\shell\udefrag.W7menu"
-    DeleteRegKey HKCR "*\udefragW7menu"
+    DeleteRegKey HKCR "Directory\shell\udefrag.W7menu"
+    DeleteRegKey HKCR "Directory\udefragW7menu"
 
-    DeleteRegKey HKCR "Drive\shell\udefrag"
-    DeleteRegKey HKCR "Drive\shell\udefrag-folder"
     DeleteRegKey HKCR "Drive\shell\udefrag-drive-analyze"
-    DeleteRegKey HKCR "Drive\shell\udefrag-drive-optimize"
-    DeleteRegKey HKCR "Drive\shell\udefrag-drive-qoptimize"
-    DeleteRegKey HKCR "Folder\shell\udefrag"
-    DeleteRegKey HKCR "Folder\shell\udefrag-folder"
+    DeleteRegKey HKCR "Drive\shell\udefrag-drive-defragment"
+    DeleteRegKey HKCR "Drive\shell\udefrag-drive-full-optimization"
+    DeleteRegKey HKCR "Drive\shell\udefrag-drive-quick-optimization"
+    DeleteRegKey HKCR "Drive\shell\udefrag-folder"
+    DeleteRegKey HKCR "Directory\shell\udefrag"
+    DeleteRegKey HKCR "Directory\shell\udefrag-folder"
     DeleteRegKey HKCR "*\shell\udefrag"
 
     ${EnableX64FSRedirection}
@@ -957,6 +936,16 @@ SkipMove:
     SetRegView 32
     DeleteRegKey HKLM "Software\UltraDefrag"
 
+    DeleteRegKey HKCR "Drive\shell\udefrag"
+    DeleteRegKey HKCR "Drive\shell\udefrag-drive-optimize"
+    DeleteRegKey HKCR "Drive\shell\udefrag-drive-qoptimize"
+    DeleteRegKey HKCR "Folder\shell\udefrag"
+    DeleteRegKey HKCR "Folder\shell\udefrag-folder"
+    DeleteRegKey HKCR "Folder\shell\udefrag.W7menu"
+    DeleteRegKey HKCR "Folder\udefragW7menu"
+    DeleteRegKey HKCR "*\shell\udefrag.W7menu"
+    DeleteRegKey HKCR "*\udefragW7menu"
+    
     RMDir /r "$SYSDIR\UltraDefrag"
     Delete "$SYSDIR\udefrag-gui-dbg.cmd"
     Delete "$SYSDIR\udefrag-gui.exe"
@@ -975,18 +964,20 @@ SkipMove:
 
     RMDir /r "$INSTDIR\doc"
     RMDir /r "$INSTDIR\i18n"
-    RMDir /r "$INSTDIR\logs"
     RMDir /r "$INSTDIR\options"
-    RMDir /r "$INSTDIR\portable_${ULTRADFGARCH}_package"
+    RMDir /r "$INSTDIR\portable_$%ULTRADFGARCH%_package"
     RMDir /r "$INSTDIR\presets"
 
     Delete "$INSTDIR\scripts\udctxhandler.lua"
     Delete "$INSTDIR\scripts\upgrade-guiopts.lua"
     Delete "$INSTDIR\scripts\upgrade-rptopts.lua"
+    Delete "$INSTDIR\scripts\udreport.css.old"
+
+    Delete "$INSTDIR\options.lua"
+    Delete "$INSTDIR\options.lua.old"
 
     Delete "$INSTDIR\dfrg.exe"
     Delete "$INSTDIR\CREDITS.TXT"
-    Delete "$INSTDIR\LICENSE.TXT"
     Delete "$INSTDIR\INSTALL.TXT"
     Delete "$INSTDIR\FAQ.TXT"
     Delete "$INSTDIR\UltraDefragScheduler.NET.exe"
@@ -998,7 +989,6 @@ SkipMove:
     Delete "$INSTDIR\repair-drives.cmd"
 
     Delete "$INSTDIR\udefrag-scheduler.exe"
-    Delete "$INSTDIR\*.lng"
     Delete "$INSTDIR\udefrag-gui-config.exe"
     Delete "$INSTDIR\LanguageSelector.exe"
     Delete "$INSTDIR\lang.ini"
@@ -1009,8 +999,31 @@ SkipMove:
 
     Delete "$INSTDIR\crash-info.ini"
     Delete "$INSTDIR\crash-info.log"
+    
+    ; remove outdated *.lng files, but keep installed reports.lng
+    Rename "$INSTDIR\reports.lng" "$INSTDIR\reports.tmp"
+    Delete "$INSTDIR\*.lng"
+    Rename "$INSTDIR\reports.tmp" "$INSTDIR\reports.lng"
 
-    ; remove shortcuts of any previous version of the program
+    ; remove empty translations
+    Delete "$INSTDIR\po\ach.po"
+    Delete "$INSTDIR\po\ar_EG.po"
+    Delete "$INSTDIR\po\ar_SA.po"
+    Delete "$INSTDIR\po\eu.po"
+    Delete "$INSTDIR\po\eu_ES.po"
+    Delete "$INSTDIR\po\si_LK.po"
+    Delete "$INSTDIR\po\szl.po"
+    RMDir /r "$INSTDIR\locale\ach"
+    RMDir /r "$INSTDIR\locale\ar_EG"
+    RMDir /r "$INSTDIR\locale\ar_SA"
+    RMDir /r "$INSTDIR\locale\eu"
+    RMDir /r "$INSTDIR\locale\eu_ES"
+    RMDir /r "$INSTDIR\locale\si_LK"
+    RMDir /r "$INSTDIR\locale\szl"
+    
+    RMDir /r "$INSTDIR\tmp\data"
+    
+    ; remove obsolete shortcuts
     SetShellVarContext all
     RMDir /r "$SMPROGRAMS\DASoft"
     RMDir /r "$SMPROGRAMS\UltraDefrag"
@@ -1046,17 +1059,17 @@ SkipMove:
 
     ${DisableX64FSRedirection}
 
-    DetailPrint "Creating the uninstall information..."
+    DetailPrint "Creating uninstaller..."
     SetOutPath "$INSTDIR"
 
     WriteRegStr   HKLM ${UD_UNINSTALL_REG_KEY} "DisplayName"     "Ultra Defragmenter"
     !ifdef RELEASE_STAGE
-        WriteRegStr   HKLM ${UD_UNINSTALL_REG_KEY} "DisplayVersion"  "${ULTRADFGVER} ${RELEASE_STAGE}"
+        WriteRegStr   HKLM ${UD_UNINSTALL_REG_KEY} "DisplayVersion"  "$%ULTRADFGVER% ${RELEASE_STAGE}"
     !else
-        WriteRegStr   HKLM ${UD_UNINSTALL_REG_KEY} "DisplayVersion"  "${ULTRADFGVER}"
+        WriteRegStr   HKLM ${UD_UNINSTALL_REG_KEY} "DisplayVersion"  "$%ULTRADFGVER%"
     !endif
     WriteRegStr   HKLM ${UD_UNINSTALL_REG_KEY} "Publisher"       "UltraDefrag Development Team"
-    WriteRegStr   HKLM ${UD_UNINSTALL_REG_KEY} "URLInfoAbout"    "http://ultradefrag.sourceforge.net/"
+    WriteRegStr   HKLM ${UD_UNINSTALL_REG_KEY} "URLInfoAbout"    "https://ultradefrag.net/"
     WriteRegStr   HKLM ${UD_UNINSTALL_REG_KEY} "UninstallString" "$INSTDIR\uninstall.exe"
     WriteRegStr   HKLM ${UD_UNINSTALL_REG_KEY} "DisplayIcon"     "$INSTDIR\uninstall.exe"
     WriteRegStr   HKLM ${UD_UNINSTALL_REG_KEY} "InstallLocation" "$INSTDIR"
@@ -1083,7 +1096,7 @@ SkipMove:
 
     ${DisableX64FSRedirection}
 
-    ; update the uninstall size value
+    ; save estimated size of the installation to system registry
     ${GetSize} "$INSTDIR" "/S=0K" $0 $1 $2
     IntFmt $0 "0x%08X" $0
     WriteRegDWORD HKLM ${UD_UNINSTALL_REG_KEY} "EstimatedSize" "$0"

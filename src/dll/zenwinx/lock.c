@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,123 +20,107 @@
 /**
  * @file lock.c
  * @brief Locks.
- * @details Spin locks are intended for thread-safe
- * synchronization of access to shared data.
+ * @details Locks can be used to 
+ * synchronize access to shared data.
  * @addtogroup Locks
  * @{
  */
 
-#include "ntndk.h"
+#include "prec.h"
 #include "zenwinx.h"
 
 /*
-* winx_acquire_spin_lock and winx_release_spin_lock
-* are used in debugging routines, therefore winx_dbg_xxx
-* calls must be avoided there to avoid recursion.
+* winx_acquire_lock and winx_release_lock
+* are intended for use from debugging routines,
+* so avoid use of tracing facilities there
+* to avoid recursion.
 */
 
 /**
- * @brief Initializes a spin lock.
- * @param[in] name the spin lock name.
- * @return Pointer to the intialized spin lock.
- * NULL indicates failure.
+ * @brief Creates a lock.
+ * @param[in] name the name of the lock.
+ * @param[out] phandle pointer to variable
+ * to store the lock's handle into.
+ * @return Zero for success,
+ * a negative value otherwise.
  */
-winx_spin_lock *winx_init_spin_lock(char *name)
+int winx_create_lock(wchar_t *name,HANDLE *phandle)
 {
-    wchar_t *fullname;
     unsigned int id;
-    winx_spin_lock *sl;
+    wchar_t *fullname;
+    int result;
+    
+    DbgCheck2(name,phandle,-1);
     
     /* attach PID to lock the current process only */
-    id = (unsigned int)(DWORD_PTR)(NtCurrentTeb()->ClientId.UniqueProcess);
-    fullname = winx_swprintf(L"\\%hs_%u",name,id);
+    id = (unsigned int)(DWORD_PTR)(NtCurrentTeb()-> \
+        ClientId.UniqueProcess);
+    fullname = winx_swprintf(L"\\%ls_%u",name,id);
     if(fullname == NULL){
-        etrace("not enough memory for %s",name);
-        return NULL;
+        etrace("not enough memory for %ls",name);
+        *phandle = NULL;
+        return (-1);
     }
 
-    sl = winx_malloc(sizeof(winx_spin_lock));
-    
-    if(winx_create_event(fullname,SynchronizationEvent,&sl->hEvent) < 0){
-        etrace("cannot create synchronization event");
-        winx_free(sl);
-        winx_free(fullname);
-        return NULL;
-    }
-    
+    result = winx_create_event(fullname, \
+        SynchronizationEvent,phandle);
     winx_free(fullname);
-    
-    if(winx_release_spin_lock(sl) < 0){
-        winx_destroy_event(sl->hEvent);
-        winx_free(sl);
-        return NULL;
+
+    if(result < 0)
+        return result;
+
+    if(winx_release_lock(*phandle) < 0){
+        etrace("cannot release %ls",name);
+        winx_destroy_event(*phandle);
+        *phandle = NULL;
+        return (-1);
     }
     
-    return sl;
+    return 0;
 }
 
 /**
- * @brief Acquires a spin lock.
- * @param[in] sl pointer to the spin lock.
- * @param[in] msec the timeout interval.
- * If INFINITE constant is passed, 
- * the interval never elapses.
+ * @brief Acquires a lock.
+ * @param[in] h the lock's handle.
+ * @param[in] msec the timeout interval,
+ * in milliseconds. If the INFINITE constant
+ * is passed, the interval never elapses.
  * @return Zero for success,
- * negative value otherwise.
+ * a negative value otherwise.
  */
-int winx_acquire_spin_lock(winx_spin_lock *sl,int msec)
+int winx_acquire_lock(HANDLE h,int msec)
 {
     LARGE_INTEGER interval;
-    NTSTATUS status;
-
-    if(sl == NULL)
-        return (-1);
-    
-    if(sl->hEvent == NULL)
-        return (-1);
+    NTSTATUS s;
 
     if(msec != INFINITE)
         interval.QuadPart = -((signed long)msec * 10000);
     else
         interval.QuadPart = MAX_WAIT_INTERVAL;
-    status = NtWaitForSingleObject(sl->hEvent,FALSE,&interval);
-    if(status != WAIT_OBJECT_0)
-        return (-1);
 
-    return 0;
+    s = NtWaitForSingleObject(h,FALSE,&interval);
+    return (s == WAIT_OBJECT_0) ? 0 : (-1);
 }
 
 /**
- * @brief Releases a spin lock.
+ * @brief Releases a lock.
+ * @param[in] h the lock's handle.
  * @return Zero for success,
- * negative value otherwise.
+ * a negative value otherwise.
  */
-int winx_release_spin_lock(winx_spin_lock *sl)
+int winx_release_lock(HANDLE h)
 {
-    NTSTATUS status;
-    
-    if(sl == NULL)
-        return (-1);
-    
-    if(sl->hEvent == NULL)
-        return (-1);
-    
-    status = NtSetEvent(sl->hEvent,NULL);
-    if(status != STATUS_SUCCESS)
-        return (-1);
-    
-    return 0;
+    NTSTATUS s = NtSetEvent(h,NULL);
+    return (s == STATUS_SUCCESS) ? 0 : (-1);
 }
 
 /**
- * @brief Destroys a spin lock.
+ * @brief Destroys a lock.
+ * @param[in] h the lock's handle.
  */
-void winx_destroy_spin_lock(winx_spin_lock *sl)
+void winx_destroy_lock(HANDLE h)
 {
-    if(sl){
-        winx_destroy_event(sl->hEvent);
-        winx_free(sl);
-    }
+    winx_destroy_event(h);
 }
 
 /** @} */

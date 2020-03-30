@@ -1,1 +1,1 @@
-These scripts and binaries are used as UltraDefrag build tools.
+This folder contains UltraDefrag build tools.

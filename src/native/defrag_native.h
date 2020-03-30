@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -37,24 +37,24 @@
 #define long_dbg_delay()  winx_sleep(10000)
 
 /* define how many lines to display for each text page,
-   smallest boot screen height is 24 rows,
+   the smallest boot screen height is 24 rows,
    which must be reduced by one row for the prompt */
 #define MAX_DISPLAY_ROWS 23
 
 /* define how many characters may be
-   printed on line after a prompt */
+   printed on a line after the prompt */
 #define MAX_LINE_WIDTH 70
 
-/* message to terminate volume processing */
+/* message to terminate the volume processing */
 #define BREAK_MESSAGE "Use Pause/Break key to abort the process early.\n\n"
 
 /* define whether @echo is on by default or not */
 #define DEFAULT_ECHO_FLAG 1
 
-/* message to be shown when pause command is used without parameters */
+/* message to be shown when the pause command is used without parameters */
 #define PAUSE_MESSAGE "Hit any key to continue..."
 
-/* Returns current debug level, declared in udefrag.c */
+/* Returns the current debug level, declared in udefrag.c */
 int GetDebugLevel();
 
 #define MAX_ENV_VARIABLE_LENGTH 32766

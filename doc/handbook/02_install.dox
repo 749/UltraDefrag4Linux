@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
@@ -13,8 +13,8 @@
  * @page Installation Installation
  *
  * The latest version of the program can be obtained at
- * <a href="http://sourceforge.net/projects/ultradefrag/files/">SourceForge</a>. Both installers 
- * and <a href="http://en.wikipedia.org/wiki/Portable_application">portable packages</a>
+ * <a href="https://sourceforge.net/projects/ultradefrag/files/">SourceForge</a>. Both installers 
+ * and <a href="https://en.wikipedia.org/wiki/Portable_application">portable packages</a>
  * are available. The latter require no installation, thus can be used directly from USB
  * sticks. They include all the components except of the boot time defragmenter.
  *
@@ -31,7 +31,7 @@
  *
  * The installation process is pretty straightforward, only one thing deserves
  * to be mentioned. During startup the program sends a bit of usage statistics
- * to the <a href="http://www.google.com/analytics/">Google Analytics</a>
+ * to the <a href="https://www.google.com/analytics/">Google Analytics</a>
  * service. It helps us to understand better your needs. However, you may turn
  * this feature off during the installation.
  *

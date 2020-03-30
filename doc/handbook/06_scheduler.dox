@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
@@ -13,7 +13,7 @@
  * @page Schedule Scheduled Defragmentation
  *
  * To set scheduled defragmentation up use
- * <a href="http://en.wikipedia.org/wiki/Task_Scheduler">Windows Task Scheduler</a>:
+ * <a href="https://en.wikipedia.org/wiki/Task_Scheduler">Windows Task Scheduler</a>:
  *
  * @htmlonly
  * <div class="fragment">
@@ -41,15 +41,15 @@
  * \end{DoxyCode}
  * @endlatexonly
  *
- * Visit <a href="http://sourceforge.net/p/ultradefrag/wiki/Home/">UltraDefrag Wiki</a> 
+ * Visit <a href="https://sourceforge.net/p/ultradefrag/wiki/Home/">UltraDefrag Wiki</a> 
  * for more information.
  *
  * @htmlonly
  * <HR>
  *  <TABLE STYLE="border: none; width: 97%; margin:auto;">
  *    <TR>
- *      <TD STYLE="text-align: left; width: 50%;">Previous: <a href="Console.html">Console Interface</a></TD>
- *      <TD STYLE="text-align: right; width: 50%;">Next: <a href="Boot.html">Boot Time Defragmentation</a></TD>
+ *      <TD STYLE="text-align: left; width: 50%;">Previous: <a href="Boot.html">Boot Time Defragmentation</a></TD>
+ *      <TD STYLE="text-align: right; width: 50%;">Next: <a href="Reports.html">File Fragmentation Reports</a></TD>
  *    </TR>
  *  </TABLE>
  * @endhtmlonly

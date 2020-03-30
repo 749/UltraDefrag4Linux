@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
@@ -13,8 +13,8 @@
  * @page Development Development
  *
  * If you'd like to know what's under the hood you are welcome to inspect UltraDefrag sources.
- * You can either use <a href="http://sourceforge.net/p/ultradefrag/code/">online svn browser</a>
- * or download sources from <a href="http://sourceforge.net/projects/ultradefrag/files/">SourceForge</a>.
+ * You can either use an <a href="https://sourceforge.net/p/ultradefrag/code/">online svn browser</a>
+ * or download sources from <a href="https://sourceforge.net/projects/ultradefrag/files/">SourceForge</a>.
  * Alternatively you can setup an SVN client (for instance <a href="http://tortoisesvn.net/">TortoiseSVN</a>)
  * and check sources out from their <a href="https://svn.code.sf.net/p/ultradefrag/code/">base address</a>.
  *
@@ -30,16 +30,18 @@
  * @endlatexonly
  * </center>
  *
- * UltraDefrag <a href="http://ultradefrag.sourceforge.net/doc/lib/">core libraries</a>
- * are written in pure C for compatibility with Windows boot environment where only bare
+ * UltraDefrag <a href="https://ultradefrag.net/doc/lib/">core libraries</a>
+ * are written in pure C for compatibility with Windows boot environment where only primitive
  * ntdll interfaces are available. Both graphical and command line tools are written in C++
  * on top of <a href="http://www.wxwidgets.org/">wxWidgets</a> library which helps to keep
- * things simple. For configuration purposes and reports convertion the program uses
+ * things simple. For configuration purposes and reports generation the program uses the
  * <a href="http://www.lua.org/">Lua</a> scripting language. UltraDefrag installers are
  * written in <a href="http://nsis.sourceforge.net/">NSIS</a>.
  *
  * <h1>Compilation</h1>
- * To build the program install the following software:
+ * First of all, to build the program download and unpack its sources somewhere. Make sure the path doesn't contain spaces 
+ * (<a href="http://stackoverflow.com/questions/9838384/can-gnu-make-handle-filenames-with-spaces">GNU make doesn't like them</a>).
+ * Then install the following software:
  *
  * - <a href="http://sourceforge.net/projects/tdm-gcc/">MinGW</a>,
  *   <a href="http://github.com/wxWidgets/wxWidgets/releases/download/v3.1.0/wxWidgets-3.1.0.7z">wxWidgets 3.1.0</a>,
@@ -141,21 +143,21 @@
  * <a href="http://www.robvanderwoude.com/">Rob van der Woude's scripting pages</a>
  *
  * <h2>Binary trees</h2>
- * <a href="http://en.wikipedia.org/wiki/The_Art_of_Computer_Programming">The Art of Computer Programming</a>
+ * <a href="https://en.wikipedia.org/wiki/The_Art_of_Computer_Programming">The Art of Computer Programming</a>
  *
  * <h2>Boot time interface</h2>
- * <a href="http://ultradefrag.sourceforge.net/doc/man/Windows NT(2000) Native API Reference.pdf">Windows native API reference</a>\n
+ * <a href="https://ultradefrag.net/doc/man/Windows NT(2000) Native API Reference.pdf">Windows native API reference</a>\n
  * <a href="http://j00ru.vexillium.org/ntapi/">Windows x86 system call table</a>
  *
  * <h2>Defragmentation</h2>
- * <a href="http://ultradefrag.sourceforge.net/doc/man/Inside Windows NT Disk Defragmenting.pdf">Inside Windows NT disk defragmenting</a>\n
+ * <a href="https://ultradefrag.net/doc/man/Inside Windows NT Disk Defragmenting.pdf">Inside Windows NT disk defragmenting</a>\n
  * <a href="http://blogs.msdn.com/b/e7/archive/2009/01/25/disk-defragmentation-background-and-engineering-the-windows-7-improvements.aspx">Improvements in Windows 7</a>\n
  * <a href="http://download.microsoft.com/download/e/b/a/eba1050f-a31d-436b-9281-92cdfeae4b45/2kuptoXP.doc">Improvements in Windows XP</a>\n
  * <a href="http://msdn.microsoft.com/en-us/library/aa363911(VS.85).aspx">Defragmenting Files (Windows)</a>\n
  * <a href="http://msdn.microsoft.com/en-us/library/aa365230(VS.85).aspx">Master File Table (Windows)</a>
  *
  * <h2>File systems</h2>
- * <a href="http://ultradefrag.sourceforge.net/doc/man/ntfs/">NTFS on-disk structure</a>
+ * <a href="https://ultradefrag.net/doc/man/ntfs/">NTFS on-disk structure</a>
  *
  * <h2>Graphical interface</h2>
  * <a href="http://msdn.microsoft.com/en-us/library/aa511258.aspx">Design apps for the Windows desktop</a>\n

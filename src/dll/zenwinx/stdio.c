@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
  * @{
  */
 
-#include "ntndk.h"
+#include "prec.h"
 #include "zenwinx.h"
 
 #define INTERNAL_BUFFER_SIZE 2048
@@ -35,10 +35,9 @@ void IntTranslateKey(PKEYBOARD_INPUT_DATA InputData, KBD_RECORD *kbd_rec);
 /**
  * @brief Displays an ANSI string on the screen.
  * @details This routine requires no library
- * initialization, therefore may be used when
- * it fails.
+ * initialization, thus may be used when it fails.
  * @param[in] string the string to be displayed.
- * @note Does not recognize \\b character.
+ * @note Doesn't recognize the <b>\\b</b> character.
  */
 void winx_print(char *string)
 {
@@ -71,7 +70,7 @@ second_algorithm:
 
 /**
  * @brief putch() native equivalent.
- * @note Does not recognize \\b character.
+ * @note Doesn't recognize the <b>\\b</b> character.
  */
 int winx_putch(int ch)
 {
@@ -99,7 +98,7 @@ int winx_putch(int ch)
 
 /**
  * @brief puts() native equivalent.
- * @note Does not recognize \\b character.
+ * @note Doesn't recognize the <b>\\b</b> character.
  */
 int winx_puts(const char *string)
 {
@@ -109,7 +108,7 @@ int winx_puts(const char *string)
 
 /**
  * @brief printf() native equivalent.
- * @note Does not recognize \\b character.
+ * @note Doesn't recognize the <b>\\b</b> character.
  */
 int winx_printf(const char *format, ...)
 {
@@ -133,13 +132,13 @@ int winx_printf(const char *format, ...)
 
 /**
  * @brief Checks the console for keyboard input.
- * @details Waits for an input during the specified time interval.
- * @param[in] msec the time interval, in milliseconds.
- * @return If any key was pressed, the return value is
- * the ascii character or zero for the control keys.
- * Negative value indicates failure.
- * @note If an INFINITE time constant is passed, 
- * the time-out interval never elapses.
+ * @details Waits for input during the specified time interval.
+ * @param[in] msec the timeout interval, in milliseconds.
+ * @return Whenever the user hits any key this function
+ * returns its corresponding ASCII character (zero for
+ * control keys). Negative values indicate failure.
+ * @note If the INFINITE time constant is passed, 
+ * the timeout interval never elapses.
  */
 int winx_kbhit(int msec)
 {
@@ -149,15 +148,15 @@ int winx_kbhit(int msec)
 }
 
 /**
- * @brief Low level winx_kbhit() equivalent.
- * @param[in] kbd_rec pointer to structure receiving
- * the key information.
+ * @brief A low level winx_kbhit() equivalent.
+ * @param[in] kbd_rec pointer to structure
+ * receiving the key information.
  * @param[in] msec the timeout interval, in milliseconds.
- * @return If any key was pressed, the return value is
- * the ascii character or zero for the control keys.
- * Negative value indicates failure.
- * @note If an INFINITE time constant is passed, 
- * the time-out interval never elapses.
+ * @return Whenever the user hits any key this function
+ * returns its corresponding ASCII character (zero for
+ * control keys). Negative values indicate failure.
+ * @note If the INFINITE time constant is passed, 
+ * the timeout interval never elapses.
  */
 int winx_kb_read(KBD_RECORD *kbd_rec,int msec)
 {
@@ -173,14 +172,13 @@ int winx_kb_read(KBD_RECORD *kbd_rec,int msec)
 }
 
 /**
- * @brief Checks the console for the 'Break'
- * character on the keyboard input.
- * @details Waits for an input during the specified time interval.
- * @param[in] msec the time interval, in milliseconds.
- * @return If the 'Break' key was pressed, the return value is zero.
- * Otherwise it returns negative value.
- * @note If an INFINITE time constant is passed, 
- * the time-out interval never elapses.
+ * @brief Waits for the Break key hits
+ * during the specified time interval.
+ * @param[in] msec the timeout interval, in milliseconds.
+ * @return Whenever the user hits the Break key this function
+ * returns zero. Otherwise it returns a negative value.
+ * @note If the INFINITE time constant is passed, 
+ * the timeout interval never elapses.
  */
 int winx_breakhit(int msec)
 {
@@ -209,8 +207,8 @@ int winx_getch(void)
 /**
  * @brief getche() native equivalent.
  * @note 
- * - Does not recognize \\b character.
- * - Does not recognize tabulation.
+ * - Doesn't recognize the <b>\\b</b> character.
+ * - Doesn't recognize tabulation.
  */
 int winx_getche(void)
 {
@@ -223,13 +221,13 @@ int winx_getche(void)
 }
 
 /**
- * @brief gets() native equivalent
- * with limited number of characters to read.
- * @param[out] string the storage for the input string.
- * @param[in] n the maximum number of characters to read.
- * @return Number of characters read including terminal zero.
- * Negative value indicates failure.
- * @note Does not recognize tabulation.
+ * @brief gets() native equivalent with
+ * limited number of characters to read.
+ * @param[out] string the output buffer.
+ * @param[in] n size of the buffer, in characters.
+ * @return Number of characters read including the
+ * terminal zero. Negative values indicate failure.
+ * @note Doesn't recognize tabulation.
  */
 int winx_gets(char *string,int n)
 {
@@ -238,8 +236,7 @@ int winx_gets(char *string,int n)
 
 /**
  * @brief Initializes commands history.
- * @param[in] h pointer to structure holding
- * the commands history.
+ * @param[in] h pointer to commands history.
  */
 void winx_init_history(winx_history *h)
 {
@@ -253,10 +250,7 @@ void winx_init_history(winx_history *h)
 
 /**
  * @brief Destroys commands history.
- * @param[in] h pointer to structure holding
- * the commands history.
- * @note There is no need to call winx_init_history()
- * after this call to reinitialize the structure.
+ * @param[in] h pointer to commands history.
  */
 void winx_destroy_history(winx_history *h)
 {
@@ -304,23 +298,20 @@ static void winx_add_history_entry(winx_history *h,char *string)
 }
 
 /**
- * @brief Displays prompt on the screen and waits for
- * the user input. When user hits the return key it
- * fills the string pointed by the second parameter 
- * by characters read.
- * @param[in] prompt the string to be printed as prompt.
- * @param[out] string the storage for the input string.
- * @param[in] n the size of the string, in characters.
- * @param[in,out] h pointer to structure holding
- * the commands history. May be NULL.
- * @return Number of characters read including terminal zero.
- * Negative value indicates failure.
+ * @brief Displays a prompt on the screen and waits for
+ * user input. Whenever the user hits the return key it
+ * fills the output buffer by characters read.
+ * @param[in] prompt the prompt to be displayed.
+ * @param[out] string the output buffer.
+ * @param[in] n size of the buffer, in characters.
+ * @param[in,out] h pointer to commands history. May be NULL.
+ * @return Number of characters read, including the terminal
+ * zero. Negative values indicate failure.
  * @note
- * - Recognizes properly both backslash and escape keys.
- * - The sentence above works fine only when user input
- * stands in a single line of the screen.
- * - Recognizes arrow keys to walk through commands history.
- * @note Does not recognize tabulation.
+ * - Recognizes properly both backslash and escape keys, but
+ * only when the input takes just a single line on the screen.
+ * - Recognizes arrow keys to walk through the history of commands.
+ * - Doesn't recognize tabulation.
  */
 int winx_prompt(char *prompt,char *string,int n,winx_history *h)
 {
@@ -346,10 +337,10 @@ int winx_prompt(char *prompt,char *string,int n,winx_history *h)
     
     winx_printf("%s",prompt);
     
-    /* keep string always null terminated */
+    /* keep the string always null-terminated */
     RtlZeroMemory(string,n);
     for(i = 0; i < (n - 1); i ++){
-        /* read keyboard until an ordinary character appearance */
+        /* read keyboards until an ordinary character appearance */
         do {
             do{
                 if(kb_read(&kbd,INFINITE) < 0) goto fail;
@@ -358,23 +349,20 @@ int winx_prompt(char *prompt,char *string,int n,winx_history *h)
             ch = (int)kbd_rec.AsciiChar;
             /*
             * Truncate the string if either backspace or escape pressed.
-            * Walk through history if one of arrow keys pressed.
+            * Walk through the history if one of the arrow keys pressed.
             */
             if(ch == 0x08 || kbd_rec.wVirtualScanCode == 0x1 || \
               kbd_rec.wVirtualScanCode == 0x48 || kbd_rec.wVirtualScanCode == 0x50){
                 line_length = (int)strlen(prompt) + (int)strlen(string);
-                /* handle escape key */
+                /* handle escape hits */
                 if(kbd_rec.wVirtualScanCode == 0x1){
-                    /* truncate the string if escape pressed */
+                    /* truncate the string */
                     RtlZeroMemory(string,n);
                     i = 0;
                 }
-                /* handle backspace key */
+                /* handle backspace hits */
                 if(ch == 0x08){
-                    /*
-                    * make the string one character shorter
-                    * if backspace pressed
-                    */
+                    /* make the string one character shorter */
                     if(i > 0){
                         i--;
                         string[i] = 0;
@@ -417,7 +405,7 @@ int winx_prompt(char *prompt,char *string,int n,winx_history *h)
                     }
                 }
                 
-                /* clear history_listed_to_the_last_entry flag */
+                /* clear the history_listed_to_the_last_entry flag */
                 if(ch == 0x08 || kbd_rec.wVirtualScanCode == 0x1)
                     history_listed_to_the_last_entry = 0;
                 
@@ -428,8 +416,8 @@ int winx_prompt(char *prompt,char *string,int n,winx_history *h)
                 format[sizeof(format) - 1] = 0;
                 winx_printf(format,buffer);
                 /*
-                * redraw the prompt again to set carriage position
-                * exactly behind the string printed
+                * redraw the prompt once again to set carriage
+                * position exactly behind the string printed
                 */
                 line_length = (int)strlen(prompt) + (int)strlen(string);
                 _snprintf(format,sizeof(format),"\r%%-%us",line_length);
@@ -440,10 +428,10 @@ int winx_prompt(char *prompt,char *string,int n,winx_history *h)
         } while(ch == 0 || ch == 0x08 || kbd_rec.wVirtualScanCode == 0x1 || \
               kbd_rec.wVirtualScanCode == 0x48 || kbd_rec.wVirtualScanCode == 0x50);
         
-        /* print a character read */
+        /* print the character read */
         winx_putch(ch);
 
-        /* return when \r character appears */
+        /* return when the \r character appears */
         if(ch == '\r'){
             winx_putch('\n');
             goto done;
@@ -470,7 +458,7 @@ fail:
     return (-1);
 }
 
-/* returns 1 if break or escape was pressed, zero otherwise */
+/* returns 1 if either break or escape have been pressed, zero otherwise */
 static int print_line(char *line_buffer,
     char *prompt,int max_rows,int *rows_printed,
     int last_line)
@@ -493,7 +481,7 @@ static int print_line(char *line_buffer,
         if(kbd_rec.wVirtualScanCode == 0x1){
             escape_detected = 1;
         } else if(kbd_rec.wVirtualScanCode == 0x1d){
-            /* distinguish between control keys and break key */
+            /* distinguish between control keys and the break key */
             if(!(kbd_rec.dwControlKeyState & LEFT_CTRL_PRESSED) && \
               !(kbd_rec.dwControlKeyState & RIGHT_CTRL_PRESSED)){
                 break_detected = 1;
@@ -506,32 +494,29 @@ static int print_line(char *line_buffer,
 }
 
 /**
- * @brief Displays a text on the screen,
- * divided to pages if requested so.
- * Accepts array of strings as input.
- * @param[in] strings - array of strings
- * to be displayed. The last entry of it
- * must be NULL to indicate the end of
- * the array.
- * @param[in] line_width - the maximum
+ * @brief Displays an array of strings on the 
+ * screen, divided to pages whenever requested.
+ * @param[in] strings the array of strings
+ * to be displayed. The last entry must be
+ * NULL to indicate the end of the array.
+ * @param[in] line_width the maximum
  * line width, in characters.
- * @param[in] max_rows - the maximum
+ * @param[in] max_rows the maximum
  * number of lines on the screen.
- * @param[in] prompt - the string to be
- * displayed as the prompt to hit any key
- * to list forward.
- * @param[in] divide_to_pages - boolean
- * value indicating whether the text
- * must be divided to pages or not.
- * If this parameter is zero, all others,
- * except of the first one, will be
- * ignored.
- * @note If user hits Escape or Pause
- * at the prompt, the text listing breaks
- * immediately.
- * @return Zero for success, negative
+ * @param[in] prompt a string to be
+ * displayed as the prompt to hit any
+ * key to list forward.
+ * @param[in] divide_to_pages defines
+ * whether the text must be divided to
+ * pages or not. If this parameter is
+ * equal to zero, all others, except
+ * the first one, will be ignored.
+ * @return Zero for success, a negative
  * value otherwise.
- * @note Does not recognize \\b character.
+ * @note
+ * - If the user hits either Escape or
+ * Pause the listing terminates immediately.
+ * - Doesn't recognize the <b>\\b</b> character.
  */
 int winx_print_strings(char **strings,int line_width,
     int max_rows,char *prompt,int divide_to_pages)
@@ -541,17 +526,17 @@ int winx_print_strings(char **strings,int line_width,
     int n, r;
     int rows_printed;
     
-    /* check the main parameter for correctness */
+    /* validate the main parameter */
     DbgCheck1(strings, -1);
     
-    /* handle situation when text must be displayed entirely */
+    /* handle the case when the text must be displayed entirely */
     if(!divide_to_pages){
         for(i = 0; strings[i] != NULL; i++)
             winx_printf("%s\n",strings[i]);
         return 0;
     }
 
-    /* check other parameters */
+    /* validate other parameters */
     if(!line_width){
         etrace("line_width = 0!");
         return (-1);
@@ -562,13 +547,11 @@ int winx_print_strings(char **strings,int line_width,
     }
     if(prompt == NULL) prompt = DEFAULT_PAGING_PROMPT_TO_HIT_ANY_KEY;
     
-    /* allocate space for prompt on the screen */
+    /* allocate space for the prompt */
     max_rows -= 4;
     
-    /* allocate memory for line buffer */
+    /* allocate memory */
     line_buffer = winx_malloc(line_width + 1);
-
-    /* allocate memory for second ancillary buffer */
     second_buffer = winx_malloc(line_width + 1);
     
     /* start to display strings */
@@ -583,14 +566,14 @@ int winx_print_strings(char **strings,int line_width,
             if(strings[i][j] == '\n') n = 1;
             else if(strings[i][j] == '\r') r = 1;
             if(n || r){
-                /* print buffer */
+                /* print the buffer */
                 line_buffer[index] = 0;
                 if(print_line(line_buffer,prompt,max_rows,&rows_printed,0))
                     goto cleanup;
-                /* reset buffer */
+                /* reset the buffer */
                 line_buffer[0] = 0;
                 index = 0;
-                /* skip sequence */
+                /* skip the sequence */
                 j++;
                 if(j == length) goto print_rest_of_string;
                 if((strings[i][j] == '\n' && r) || (strings[i][j] == '\r' && n)){
@@ -601,10 +584,10 @@ int winx_print_strings(char **strings,int line_width,
                         j--;
                         continue;
                     }
-                    /* we have an ordinary character or tabulation -> process them */
+                    /* we have an ordinary character or a tabulation -> process them */
                 }
             }
-            /* handle horizontal tabulation by replacing it by DEFAULT_TAB_WIDTH spaces */
+            /* handle horizontal tabulations by replacing them by DEFAULT_TAB_WIDTH spaces */
             if(strings[i][j] == '\t'){
                 for(k = 0; k < DEFAULT_TAB_WIDTH; k++){
                     line_buffer[index] = 0x20;
@@ -627,11 +610,11 @@ int winx_print_strings(char **strings,int line_width,
             if(index == line_width){
                 if(j == length - 1) goto print_rest_of_string;
                 line_buffer[index] = 0;
-                /* break line between words, if possible */
+                /* break the line between words, whenever possible */
                 for(k = index - 1; k > 0; k--){
                     if(line_buffer[k] == 0x20) break;
                 }
-                if(line_buffer[k] == 0x20){ /* space character found */
+                if(line_buffer[k] == 0x20){ /* the space character found */
                     strcpy(second_buffer,line_buffer + k + 1);
                     line_buffer[k] = 0;
                     if(print_line(line_buffer,prompt,max_rows,&rows_printed,0))

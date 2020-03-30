@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 //
 //  UltraDefrag - a powerful defragmentation tool for Windows NT.
-//  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+//  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
 //  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -26,73 +26,6 @@
 // =======================================================================
 //                               Headers
 // =======================================================================
-
-#include <wx/wxprec.h>
-
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-
-#include <wx/artprov.h>
-#include <wx/cmdline.h>
-#include <wx/confbase.h>
-#include <wx/dir.h>
-#include <wx/display.h>
-#include <wx/dynlib.h>
-#include <wx/fileconf.h>
-#include <wx/filename.h>
-#include <wx/gbsizer.h>
-#include <wx/hyperlink.h>
-#include <wx/intl.h>
-#include <wx/listctrl.h>
-#include <wx/mstream.h>
-#include <wx/settings.h>
-#include <wx/splitter.h>
-#include <wx/sysopt.h>
-#include <wx/taskbar.h>
-#include <wx/textfile.h>
-#include <wx/thread.h>
-#include <wx/toolbar.h>
-#include <wx/uri.h>
-
-/*
-* Next definition is very important for mingw:
-* _WIN32_IE must be no less than 0x0400
-* to include some important constant definitions.
-*/
-#ifndef _WIN32_IE
-#define _WIN32_IE 0x0400
-#endif
-#include <commctrl.h>
-
-typedef enum {
-    TBPF_NOPROGRESS	= 0,
-    TBPF_INDETERMINATE	= 0x1,
-    TBPF_NORMAL	= 0x2,
-    TBPF_ERROR	= 0x4,
-    TBPF_PAUSED	= 0x8
-} TBPFLAG;
-
-#if defined(__GNUC__)
-extern "C" {
-HRESULT WINAPI URLDownloadToFileW(
-    /* LPUNKNOWN */ void *lpUnkcaller,
-    LPCWSTR szURL,
-    LPCWSTR szFileName,
-    DWORD dwReserved,
-    /*IBindStatusCallback*/ void *pBSC
-);
-
-HRESULT WINAPI URLDownloadToCacheFileW(
-    /* LPUNKNOWN */ void *lpUnkcaller,
-    LPCWSTR szURL,
-    LPWSTR szFileName,
-    DWORD cchFileName,
-    DWORD dwReserved,
-    /*IBindStatusCallback*/ void *pBSC
-);
-}
-#endif
 
 #include "../include/dbg.h"
 #include "../include/version.h"
@@ -142,8 +75,6 @@ enum {
 
     ID_ShowReport,
 
-    ID_Repeat,
-
     ID_SkipRem,
     ID_Rescan,
 
@@ -160,10 +91,6 @@ enum {
     ID_Exit,
 
     // settings menu identifiers
-    ID_LangTranslateOnline,
-    ID_LangTranslateOffline,
-    ID_LangOpenFolder,
-
     ID_GuiOptions,
 
     ID_BootEnable,
@@ -196,8 +123,10 @@ enum {
     ID_HelpAbout,
 
     // event identifiers
+    ID_AdjustFrameSize,
     ID_AdjustListColumns,
     ID_AdjustListHeight,
+    ID_AdjustMinFrameSize,
     ID_AdjustSystemTrayIcon,
     ID_AdjustTaskbarIconOverlay,
     ID_BootChange,
@@ -208,6 +137,8 @@ enum {
     ID_PopulateList,
     ID_ReadUserPreferences,
     ID_RedrawMap,
+    ID_RefreshDrivesInfo,
+    ID_RefreshFrame,
     ID_SelectAll,
     ID_SetWindowTitle,
     ID_ShowUpgradeDialog,
@@ -235,6 +166,10 @@ enum {
 // dialog layout constants
 #define SMALL_SPACING  DPI(5)
 #define LARGE_SPACING  DPI(11)
+
+// frame size adjustment flags
+#define FRAME_WIDTH_INCREASED  0x1
+#define FRAME_HEIGHT_INCREASED 0x2
 
 #define DEFAULT_DRY_RUN          0
 #define DEFAULT_FREE_COLOR_R   255
@@ -277,6 +212,11 @@ enum {
 */
 #define ansi(s) ((const char *)s.mb_str())
 #define ws(s) ((const wchar_t *)s.wc_str())
+#if wxUSE_UNICODE
+    #define ts(s) ws(s)
+#else
+    #define ts(s) ansi(s)
+#endif
 
 /* converts pixels from 96 DPI to the current one */
 #define DPI(x) ((int)((double)x * g_scaleFactor))
@@ -337,12 +277,17 @@ public:
 
     static void AttachDebugger();
 
+    wxString *m_logPath;
+
 private:
     void Cleanup();
 
     Log *m_log;
     StatThread *m_statThread;
+    HANDLE m_mutex;
 };
+
+wxDECLARE_APP(App);
 
 class BtdThread: public wxThread {
 public:
@@ -392,6 +337,19 @@ public:
     virtual void *Entry();
 
     bool m_rescan;
+};
+
+class RefreshDrivesInfoThread: public wxThread {
+public:
+    RefreshDrivesInfoThread() : wxThread(wxTHREAD_JOINABLE) { Create(); Run(); }
+    ~RefreshDrivesInfoThread() { Wait(); }
+
+    virtual void *Entry();
+};
+
+class RecoveryConsole: public wxProcess {
+public:
+    virtual void OnTerminate(int pid, int status);
 };
 
 class UpgradeThread: public wxThread {
@@ -485,8 +443,6 @@ public:
 
     void OnShowReport(wxCommandEvent& event);
 
-    void OnRepeat(wxCommandEvent& event);
-
     void OnSkipRem(wxCommandEvent& event);
     void OnRescan(wxCommandEvent& event);
 
@@ -495,10 +451,6 @@ public:
     void OnExit(wxCommandEvent& event);
 
     // settings menu handlers
-    void OnLangTranslateOnline(wxCommandEvent& event);
-    void OnLangTranslateOffline(wxCommandEvent& event);
-    void OnLangOpenFolder(wxCommandEvent& event);
-
     void OnGuiOptions(wxCommandEvent& event);
 
     void OnBootEnable(wxCommandEvent& event);
@@ -521,8 +473,10 @@ public:
     void OnMove(wxMoveEvent& event);
     void OnSize(wxSizeEvent& event);
 
+    void AdjustFrameSize(wxCommandEvent& event);
     void AdjustListColumns(wxCommandEvent& event);
     void AdjustListHeight(wxCommandEvent& event);
+    void AdjustMinFrameSize(wxCommandEvent& event);
     void AdjustSystemTrayIcon(wxCommandEvent& event);
     void AdjustTaskbarIconOverlay(wxCommandEvent& event);
     void CacheJob(wxCommandEvent& event);
@@ -536,6 +490,8 @@ public:
     void PopulateList(wxCommandEvent& event);
     void ReadUserPreferences(wxCommandEvent& event);
     void RedrawMap(wxCommandEvent& event);
+    void RefreshDrivesInfo(wxCommandEvent& event);
+    void RefreshFrame(wxCommandEvent& event);
     void SelectAll(wxCommandEvent& event);
     void SetWindowTitle(wxCommandEvent& event);
     void ShowUpgradeDialog(wxCommandEvent& event);
@@ -549,7 +505,6 @@ public:
     void SetTaskbarProgressState(TBPFLAG flag);
     void SetTaskbarProgressValue(ULONGLONG completed, ULONGLONG total);
 
-    bool m_repeat;
     bool m_skipRem;
     bool m_busy;
     bool m_paused;
@@ -588,19 +543,12 @@ private:
     bool m_saved;
     bool m_maximized;
     int  m_separatorPosition;
+    bool m_sizeAdjustmentEnabled;
 
-    // list column widths ratios:
-    // 0.5 means that a column acquires
-    // a half of the entire list width
-    double m_r[LIST_COLUMNS];
-
-    // list column widths:
-    // used to check whether the user
-    // has changed them or not
-    int m_w[LIST_COLUMNS];
-
-    // list height
+    // list dimensions
     int m_vListHeight;
+    int m_origColumnWidths[LIST_COLUMNS];
+    int m_columnWidths[LIST_COLUMNS];
 
     wxFont *m_vListFont;
 
@@ -619,14 +567,14 @@ private:
     DrivesList       *m_vList;
     ClusterMap       *m_cMap;
 
-    wxBitmap m_repeatButtonBitmap;
-
     bool m_btdEnabled;
     BtdThread *m_btdThread;
 
     ConfigThread    *m_configThread;
     ListThread      *m_listThread;
     UpgradeThread   *m_upgradeThread;
+
+    RefreshDrivesInfoThread *m_rdiThread;
 
     DECLARE_EVENT_TABLE()
 };
@@ -640,7 +588,7 @@ public:
     static int MessageDialog(wxFrame *parent,
         const wxString& caption, const wxArtID& icon,
         const wxString& text1, const wxString& text2,
-        const wxString& format, ...);
+        const wxChar *format, ...);
     static void OpenHandbook(const wxString& page,
         const wxString& anchor = wxEmptyString);
     static bool SetProcessPriority(int priority);
@@ -648,7 +596,7 @@ public:
         const wxString& action = wxT("open"),
         const wxString& parameters = wxEmptyString,
         int show = SW_SHOW, int flags = 0);
-    static void ShowError(const wxString& format, ...);
+    static void ShowError(const wxChar *format, ...);
 };
 
 /* flags for Utils::ShellExec */
@@ -664,5 +612,6 @@ extern wxLocale *g_locale;
 extern double g_scaleFactor;
 extern int g_iconSize;
 extern HANDLE g_synchEvent;
+extern bool g_refreshDrivesInfo;
 
 #endif /* _UDEFRAG_GUI_MAIN_H_ */

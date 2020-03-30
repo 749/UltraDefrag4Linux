@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,16 +24,17 @@
  * @{
  */
 
-#include "ntndk.h"
+#include "prec.h"
 #include "zenwinx.h"
 
 /**
- * @brief Creates a named event.
- * @param[in] name the event name.
- * @param[in] type the event type:
+ * @brief Creates an event.
+ * @param[in] name the name of the event.
+ * @param[in] type the type: either
  * SynchronizationEvent or NotificationEvent.
- * @param[out] phandle pointer to the event handle.
- * @return Zero for success, negative value otherwise.
+ * @param[out] phandle pointer to variable
+ * to store the event's handle into.
+ * @return Zero for success, a negative value otherwise.
  * @note
  * - The initial state of the successfully created
  *   event is signaled.
@@ -56,7 +57,6 @@ int winx_create_event(wchar_t *name,int type,HANDLE *phandle)
     if(status == STATUS_OBJECT_NAME_COLLISION){
         *phandle = NULL;
         dtrace("%ws already exists",name);
-        /* useful for allowing a single instance of the program */
         return (int)STATUS_OBJECT_NAME_COLLISION;
     }
     if(!NT_SUCCESS(status)){
@@ -68,12 +68,13 @@ int winx_create_event(wchar_t *name,int type,HANDLE *phandle)
 }
 
 /**
- * @brief Opens a named event.
- * @param[in] name the event name.
+ * @brief Opens an event.
+ * @param[in] name the name of the event.
  * @param[in] flags the same flags as in Win32
  * OpenEvent() call's dwDesiredAccess parameter.
- * @param[out] phandle pointer to the event handle.
- * @return Zero for success, negative value otherwise.
+ * @param[out] phandle pointer to variable
+ * to store the event's handle into.
+ * @return Zero for success, a negative value otherwise.
  */
 int winx_open_event(wchar_t *name,int flags,HANDLE *phandle)
 {
@@ -97,9 +98,7 @@ int winx_open_event(wchar_t *name,int flags,HANDLE *phandle)
 
 /**
  * @brief Destroys an event.
- * @details Destroys named event
- * created by winx_create_event().
- * @param[in] h the event handle.
+ * @param[in] h the event's handle.
  */
 void winx_destroy_event(HANDLE h)
 {

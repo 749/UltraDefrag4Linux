@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 //
 //  UltraDefrag - a powerful defragmentation tool for Windows NT.
-//  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+//  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
 //  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -34,20 +34,17 @@
 //                            Declarations
 // =======================================================================
 
+#include "prec.h"
 #include "main.h"
 
 #define UD_EnableTool(id) { \
-    wxMenuItem *item = m_menuBar->FindItem(id); \
-    if(item) item->Enable(true); \
-    if(m_toolBar->FindById(id)) \
-        m_toolBar->EnableTool(id,true); \
+    m_menuBar->Enable(id,true); \
+    m_toolBar->EnableTool(id,true); \
 }
 
 #define UD_DisableTool(id) { \
-    wxMenuItem *item = m_menuBar->FindItem(id); \
-    if(item) item->Enable(false); \
-    if(m_toolBar->FindById(id)) \
-        m_toolBar->EnableTool(id,false); \
+    m_menuBar->Enable(id,false); \
+    m_toolBar->EnableTool(id,false); \
 }
 
 // =======================================================================
@@ -162,8 +159,7 @@ void JobThread::ProcessVolume(int index)
     // process volume
     int result = udefrag_validate_volume(m_letter,FALSE);
     if(result == 0){
-        result = udefrag_start_job(m_letter,m_jobType,
-            g_mainFrame->m_repeat ? UD_JOB_REPEAT : 0,m_mapSize,
+        result = udefrag_start_job(m_letter,m_jobType,0,m_mapSize,
             reinterpret_cast<udefrag_progress_callback>(ProgressCallback),
             reinterpret_cast<udefrag_terminator>(Terminator),NULL
         );
@@ -242,24 +238,11 @@ void MainFrame::OnStartJob(wxCommandEvent& event)
     UD_DisableTool(ID_QuickOpt);
     UD_DisableTool(ID_FullOpt);
     UD_DisableTool(ID_MftOpt);
-    UD_DisableTool(ID_Repeat);
     UD_DisableTool(ID_SkipRem);
     UD_DisableTool(ID_Rescan);
     UD_DisableTool(ID_Repair);
     UD_DisableTool(ID_ShowReport);
     m_subMenuSortingConfig->Enable(false);
-
-    // XXX: force the repeat button to be
-    // grayed out even when it's checked
-    wxToolBarToolBase *btn = m_toolBar->FindById(ID_Repeat);
-    if(btn){
-        if(!m_repeatButtonBitmap.IsOk()){
-            // save normal bitmap to restore it further
-            m_repeatButtonBitmap = btn->GetNormalBitmap();
-        }
-        m_toolBar->SetToolNormalBitmap(
-           ID_Repeat,btn->GetDisabledBitmap());
-    }
 
     ReleasePause();
 
@@ -272,18 +255,18 @@ void MainFrame::OnStartJob(wxCommandEvent& event)
     }
 
     // set sorting parameters
-    if(m_menuBar->FindItem(ID_SortByPath)->IsChecked()){
+    if(m_menuBar->IsChecked(ID_SortByPath)){
         wxSetEnv(wxT("UD_SORTING"),wxT("path"));
-    } else if(m_menuBar->FindItem(ID_SortBySize)->IsChecked()){
+    } else if(m_menuBar->IsChecked(ID_SortBySize)){
         wxSetEnv(wxT("UD_SORTING"),wxT("size"));
-    } else if(m_menuBar->FindItem(ID_SortByCreationDate)->IsChecked()){
+    } else if(m_menuBar->IsChecked(ID_SortByCreationDate)){
         wxSetEnv(wxT("UD_SORTING"),wxT("c_time"));
-    } else if(m_menuBar->FindItem(ID_SortByModificationDate)->IsChecked()){
+    } else if(m_menuBar->IsChecked(ID_SortByModificationDate)){
         wxSetEnv(wxT("UD_SORTING"),wxT("m_time"));
-    } else if(m_menuBar->FindItem(ID_SortByLastAccessDate)->IsChecked()){
+    } else if(m_menuBar->IsChecked(ID_SortByLastAccessDate)){
         wxSetEnv(wxT("UD_SORTING"),wxT("a_time"));
     }
-    if(m_menuBar->FindItem(ID_SortAscending)->IsChecked()){
+    if(m_menuBar->IsChecked(ID_SortAscending)){
         wxSetEnv(wxT("UD_SORTING_ORDER"),wxT("asc"));
     } else {
         wxSetEnv(wxT("UD_SORTING_ORDER"),wxT("desc"));
@@ -325,7 +308,6 @@ void MainFrame::OnJobCompletion(wxCommandEvent& WXUNUSED(event))
     UD_EnableTool(ID_QuickOpt);
     UD_EnableTool(ID_FullOpt);
     UD_EnableTool(ID_MftOpt);
-    UD_EnableTool(ID_Repeat);
     UD_EnableTool(ID_SkipRem);
     UD_EnableTool(ID_Rescan);
     UD_EnableTool(ID_Repair);
@@ -333,11 +315,10 @@ void MainFrame::OnJobCompletion(wxCommandEvent& WXUNUSED(event))
     m_subMenuSortingConfig->Enable(true);
     m_busy = false;
 
-    // XXX: restore the repeat button bitmap
-    if(m_repeatButtonBitmap.IsOk()){
-        m_toolBar->SetToolNormalBitmap(
-           ID_Repeat,m_repeatButtonBitmap);
-    }
+    // XXX: sometimes reenabled buttons remain gray
+    // on Windows 7, at least on a virtual machine,
+    // so we have to refresh the toolbar ourselves
+    m_toolBar->Refresh(); m_toolBar->Update();
 
     ReleasePause();
 
@@ -352,7 +333,7 @@ void MainFrame::OnJobCompletion(wxCommandEvent& WXUNUSED(event))
 
 void MainFrame::SetPause()
 {
-    m_menuBar->FindItem(ID_Pause)->Check(true);
+    m_menuBar->Check(ID_Pause,true);
     m_toolBar->ToggleTool(ID_Pause,true);
 
     Utils::SetProcessPriority(IDLE_PRIORITY_CLASS);
@@ -363,7 +344,7 @@ void MainFrame::SetPause()
 
 void MainFrame::ReleasePause()
 {
-    m_menuBar->FindItem(ID_Pause)->Check(false);
+    m_menuBar->Check(ID_Pause,false);
     m_toolBar->ToggleTool(ID_Pause,false);
 
     Utils::SetProcessPriority(NORMAL_PRIORITY_CLASS);
@@ -385,13 +366,9 @@ void MainFrame::OnStop(wxCommandEvent& WXUNUSED(event))
     m_stopped = true;
 }
 
-void MainFrame::OnRepeat(wxCommandEvent& WXUNUSED(event))
+void RecoveryConsole::OnTerminate(int pid, int status)
 {
-    if(!m_busy){
-        m_repeat = m_repeat ? false : true;
-        m_menuBar->FindItem(ID_Repeat)->Check(m_repeat);
-        m_toolBar->ToggleTool(ID_Repeat,m_repeat);
-    }
+    g_refreshDrivesInfo = true;
 }
 
 void MainFrame::OnRepair(wxCommandEvent& WXUNUSED(event))
@@ -411,7 +388,7 @@ void MainFrame::OnRepair(wxCommandEvent& WXUNUSED(event))
     /*
     create command line to check disk for corruption:
     CHKDSK {drive} /F ................. check the drive and correct problems
-    PING -n {seconds + 1} localhost ... pause for the specified seconds
+    PING -n {seconds + 1} localhost ... pause for the specified number of seconds
     */
     wxFileName path(wxT("%windir%\\system32\\cmd.exe"));
     path.Normalize(); wxString cmd(path.GetFullPath());
@@ -428,8 +405,13 @@ void MainFrame::OnRepair(wxCommandEvent& WXUNUSED(event))
     cmd << wxT("& echo. ");
     cmd << wxT("& pause");
 
-    itrace("Command Line: %ls", ws(cmd));
-    if(!wxExecute(cmd)) Utils::ShowError(wxT("Cannot execute cmd.exe program!"));
+    itrace("command line: %ls", ws(cmd));
+
+    RecoveryConsole *rc = new RecoveryConsole();
+    if(!wxExecute(cmd,wxEXEC_ASYNC,rc)){
+        Utils::ShowError(wxT("Cannot execute cmd.exe program!"));
+        delete rc;
+    }
 }
 
 void MainFrame::OnDefaultAction(wxCommandEvent& WXUNUSED(event))

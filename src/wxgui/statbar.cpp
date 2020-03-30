@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 //
 //  UltraDefrag - a powerful defragmentation tool for Windows NT.
-//  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+//  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
 //  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -34,16 +34,18 @@
 //                            Declarations
 // =======================================================================
 
+#include "prec.h"
 #include "main.h"
 
 #define SB_PARTS 5
 
+// FIXME: find a way to center icons and text vertically on
+// all the supported operating systems and screen DPI settings
 #define UD_SetStatusIcon(index,name) { \
     wxIcon *icon = new wxIcon(wxT(#name), wxBITMAP_TYPE_ICO_RESOURCE, g_iconSize, g_iconSize); \
     ::SendMessage((HWND)GetStatusBar()->GetHandle(),SB_SETICON,index,(LPARAM)icon->GetHICON()); \
 }
 
-// FIXME: in wxWidgets 3.0.2 the status text isn't centered vertically
 #define UD_SetStatusText(index,text,counter) { \
     wxString t = text; \
     SetStatusText(wxString::Format(wxT("%lu %ls"),counter,ws(t)), index); \

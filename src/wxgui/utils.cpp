@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 //
 //  UltraDefrag - a powerful defragmentation tool for Windows NT.
-//  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+//  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
 //  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -34,6 +34,7 @@
 //                            Declarations
 // =======================================================================
 
+#include "prec.h"
 #include "main.h"
 
 // =======================================================================
@@ -206,10 +207,10 @@ void Utils::OpenHandbook(const wxString& page, const wxString& anchor)
             }
             path << wxT("/") << redirector;
         } else {
-            path << wxT("/handbook/") << page;
+            path << wxT("/handbook/v7/") << page;
         }
     } else {
-        path = wxT("http://ultradefrag.sourceforge.net");
+        path = wxT("https://ultradefrag.net");
         path << wxT("/handbook/") << page;
         if(!anchor.IsEmpty())
             path << wxT("#") << anchor;
@@ -304,12 +305,26 @@ void Utils::ShellExec(
 int Utils::MessageDialog(wxFrame *parent,
     const wxString& caption, const wxArtID& icon,
     const wxString& text1, const wxString& text2,
-    const wxString& format, ...)
+    const wxChar *format, ...)
 {
+    wxChar *cmessage;
     wxString message;
+
     va_list args;
     va_start(args,format);
-    message.PrintfV(format,args);
+
+#if wxUSE_UNICODE
+    cmessage = winx_vswprintf(format,args);
+    if(cmessage) message << wxString::Format(wxT("%ls"),cmessage);
+    else message << wxT("Not enough memory!");
+#else
+    cmessage = winx_vsprintf(format,args);
+    if(cmessage) message << wxString::Format(wxT("%hs"),cmessage);
+    else message << wxT("Not enough memory!");
+#endif
+
+    winx_free(cmessage);
+
     va_end(args);
 
     wxDialog dlg(parent,wxID_ANY,caption);
@@ -399,12 +414,19 @@ int Utils::MessageDialog(wxFrame *parent,
  * @brief Shows an error and
  * invites to open log file.
  */
-void Utils::ShowError(const wxString& format, ...)
+void Utils::ShowError(const wxChar *format, ...)
 {
-    wxString message;
+    wxChar *message;
+    
     va_list args;
     va_start(args,format);
-    message.PrintfV(format,args);
+
+#if wxUSE_UNICODE
+    message = winx_vswprintf(format,args);
+#else
+    message = winx_vsprintf(format,args);
+#endif
+
     va_end(args);
 
     wxString log = _("Open &log");
@@ -415,6 +437,8 @@ void Utils::ShowError(const wxString& format, ...)
     {
         QueueCommandEvent(g_mainFrame,ID_DebugLog);
     }
+    
+    winx_free(message);
 }
 
 /** @} */

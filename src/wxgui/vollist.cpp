@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 //
 //  UltraDefrag - a powerful defragmentation tool for Windows NT.
-//  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+//  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
 //  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -34,12 +34,15 @@
 //                            Declarations
 // =======================================================================
 
+#include "prec.h"
 #include "main.h"
 
 int g_fixedIcon;
 int g_fixedDirtyIcon;
 int g_removableIcon;
 int g_removableDirtyIcon;
+
+bool g_refreshDrivesInfo = false;
 
 // =======================================================================
 //                           List of volumes
@@ -60,10 +63,13 @@ void MainFrame::InitVolList()
     }
 
     // adjust widths so all the columns will fit to the window
-    int width = m_vList->GetClientSize().GetWidth();
-    int lastColumnWidth = width;
+    int oldListWidth = 0;
+    for(int i = 0; i < LIST_COLUMNS; i++)
+        oldListWidth += m_origColumnWidths[i];
+    int newListWidth = m_vList->GetClientSize().GetWidth();
+    int lastColumnWidth = newListWidth;
 
-    // dtrace("client width ......... %d", width);
+    // dtrace("client width ......... %d", newListWidth);
 
     int format[] = {
         wxLIST_FORMAT_LEFT, wxLIST_FORMAT_LEFT,
@@ -71,20 +77,19 @@ void MainFrame::InitVolList()
         wxLIST_FORMAT_RIGHT, wxLIST_FORMAT_RIGHT
     };
 
-    for(int i = 0; i < LIST_COLUMNS - 1; i++) {
-        int w = m_w[i] = (int)floor(m_r[i] * width);
-        m_vList->InsertColumn(i, wxEmptyString, format[i], w);
-        // dtrace("column %d width ....... %d", i, w);
-        lastColumnWidth -= w;
+    for(int i = 0; i < LIST_COLUMNS; i++) {
+        if(newListWidth != oldListWidth && oldListWidth){
+            double r = (double)m_origColumnWidths[i] / (double)oldListWidth;
+            m_columnWidths[i] = (int)floor(r * newListWidth);
+        } else {
+            m_columnWidths[i] = m_origColumnWidths[i];
+        }
+        if(i == LIST_COLUMNS - 1 && m_columnWidths[i])
+            m_columnWidths[i] = lastColumnWidth;
+        m_vList->InsertColumn(i, wxEmptyString, format[i], m_columnWidths[i]);
+        // dtrace("column %d width ....... %d", i, m_columnWidths[i]);
+        lastColumnWidth -= m_columnWidths[i];
     }
-
-    int w = (int)floor(m_r[LIST_COLUMNS - 1] * width);
-    if(w > 0) w = lastColumnWidth;
-    m_w[LIST_COLUMNS - 1] = w;
-    m_vList->InsertColumn(LIST_COLUMNS - 1,
-        wxEmptyString, format[LIST_COLUMNS - 1], w
-    );
-    // dtrace("column %d width ....... %d", LIST_COLUMNS - 1, w);
 
     // attach drive icons
     int size = g_iconSize;
@@ -177,44 +182,45 @@ void MainFrame::SelectAll(wxCommandEvent& WXUNUSED(event))
 
 void MainFrame::AdjustListColumns(wxCommandEvent& event)
 {
-    int width = event.GetInt();
-    if(width == 0) width = m_vList->GetClientSize().GetWidth();
+    int newListWidth = event.GetInt() ? event.GetInt() : \
+        m_vList->GetClientSize().GetWidth();
 
     // get current column widths, since user could have changed them
-    int cwidth = 0; bool changed = false;
+    int currentListWidth = 0; bool columnsAdjusted = false;
     for(int i = 0; i < LIST_COLUMNS; i++){
         int w = m_vList->GetColumnWidth(i);
-        cwidth += w;
-        if(w != m_w[i])
-            changed = true;
+        if(w != m_columnWidths[i])
+            columnsAdjusted = true;
+        m_columnWidths[i] = w;
+        currentListWidth += w;
     }
 
-    if(changed){
+    // dtrace("client width ... %d", newListWidth);
+
+    if(newListWidth != currentListWidth || columnsAdjusted){
+        int origListWidth = 0;
         for(int i = 0; i < LIST_COLUMNS; i++)
-            m_r[i] = (double)m_vList->GetColumnWidth(i) / (double)cwidth;
+            origListWidth += m_origColumnWidths[i];
+        int lastColumnWidth = newListWidth;
+        for(int i = 0; i < LIST_COLUMNS; i++){
+            if(currentListWidth){
+                double r = columnsAdjusted ? \
+                    (double)m_columnWidths[i] / (double)currentListWidth : \
+                    (double)m_origColumnWidths[i] / (double)origListWidth;
+                m_columnWidths[i] = (int)floor(r * newListWidth);
+            }
+            if(i == LIST_COLUMNS - 1 && m_columnWidths[i])
+                m_columnWidths[i] = lastColumnWidth;
+            m_vList->SetColumnWidth(i, m_columnWidths[i]);
+            // dtrace("column %d width ....... %d", i, m_columnWidths[i]);
+            lastColumnWidth -= m_columnWidths[i];
+            if(columnsAdjusted){
+                // the original column width cannot be
+                // used anymore, so let's update it
+                m_origColumnWidths[i] = m_columnWidths[i];
+            }
+        }
     }
-
-    int lastColumnWidth = width;
-
-    // int border = wxSystemSettings::GetMetric(wxSYS_BORDER_X);
-
-    // dtrace("border width ......... %d", border);
-    // dtrace("client width ......... %d", width);
-    // dtrace("total column width ... %d", cwidth);
-
-    for(int i = 0; i < (LIST_COLUMNS - 1); i++) {
-        int w = m_w[i] = (int)floor(m_r[i] * width);
-        m_vList->SetColumnWidth(i, w);
-        // dtrace("column %d width ....... %d", i, w);
-        lastColumnWidth -= w;
-    }
-
-    int w = (int)floor(m_r[LIST_COLUMNS - 1] * width);
-    if(w > 0) w = lastColumnWidth;
-    m_w[LIST_COLUMNS - 1] = w;
-
-    m_vList->SetColumnWidth(LIST_COLUMNS - 1, w);
-    // dtrace("column %d width ....... %d", LIST_COLUMNS - 1, w);
 }
 
 void MainFrame::AdjustListHeight(wxCommandEvent& WXUNUSED(event))
@@ -256,6 +262,24 @@ void MainFrame::AdjustListHeight(wxCommandEvent& WXUNUSED(event))
     // adjust client height of the list
     new_height += 2 * wxSystemSettings::GetMetric(wxSYS_BORDER_Y);
     m_splitter->SetSashPosition(new_height);
+
+    // force cluster map perfectly fit into the main frame
+    if(m_sizeAdjustmentEnabled){
+        wxCommandEvent *event = new wxCommandEvent(
+            wxEVT_COMMAND_MENU_SELECTED,ID_AdjustFrameSize
+        );
+        int flags = 0;
+        if(expand) flags |= FRAME_HEIGHT_INCREASED;
+        event->SetInt(flags);
+        GetEventHandler()->QueueEvent(event);
+        m_sizeAdjustmentEnabled = false;
+    }
+}
+
+void MainFrame::RefreshFrame(wxCommandEvent& WXUNUSED(event))
+{
+    Refresh();
+    Update();
 }
 
 void MainFrame::OnSplitChanged(wxSplitterEvent& event)
@@ -263,6 +287,7 @@ void MainFrame::OnSplitChanged(wxSplitterEvent& event)
     QueueCommandEvent(this,ID_AdjustListHeight);
     QueueCommandEvent(this,ID_AdjustListColumns);
     QueueCommandEvent(this,ID_RedrawMap);
+    QueueCommandEvent(this,ID_RefreshFrame);
 
     event.Skip();
 }
@@ -302,6 +327,18 @@ void *ListThread::Entry()
     return NULL;
 }
 
+void *RefreshDrivesInfoThread::Entry()
+{
+    while(!g_mainFrame->CheckForTermination(200)){
+        if(g_refreshDrivesInfo){
+            QueueCommandEvent(g_mainFrame,ID_RefreshDrivesInfo);
+            g_refreshDrivesInfo = false;
+        }
+    }
+
+    return NULL;
+}
+
 void MainFrame::UpdateVolumeInformation(wxCommandEvent& event)
 {
     int index = event.GetInt();
@@ -322,13 +359,16 @@ void MainFrame::UpdateVolumeInformation(wxCommandEvent& event)
         }
     }
 
+    wxString msg(_("Disk needs to be repaired"));
     if(v->is_dirty){
         if(v->is_removable) m_vList->SetItemImage(index,g_removableDirtyIcon);
         else m_vList->SetItemImage(index,g_fixedDirtyIcon);
-        m_vList->SetItem(index,1,_("Disk needs to be repaired"));
+        m_vList->SetItem(index,1,msg);
     } else {
         if(v->is_removable) m_vList->SetItemImage(index,g_removableIcon);
         else m_vList->SetItemImage(index,g_fixedIcon);
+        if(m_vList->GetItemText(index,1) == msg)
+            m_vList->SetItem(index,1,wxT(""));
     }
 
     char s[32]; wxString string;
@@ -453,10 +493,19 @@ void MainFrame::PopulateList(wxCommandEvent& event)
     ::udefrag_release_vollist(v);
 }
 
+void MainFrame::RefreshDrivesInfo(wxCommandEvent& WXUNUSED(event))
+{
+    for(int i = 0; i < m_vList->GetItemCount(); i++){
+        char letter = (char)m_vList->GetItemText(i)[0];
+        wxCommandEvent e(wxEVT_COMMAND_MENU_SELECTED,ID_UpdateVolumeInformation);
+        e.SetInt((int)letter); GetEventHandler()->ProcessEvent(e);
+    }
+}
+
 void MainFrame::OnSkipRem(wxCommandEvent& WXUNUSED(event))
 {
     if(!m_busy){
-        m_skipRem = m_menuBar->FindItem(ID_SkipRem)->IsChecked();
+        m_skipRem = m_menuBar->IsChecked(ID_SkipRem);
         m_listThread->m_rescan = true;
     }
 }

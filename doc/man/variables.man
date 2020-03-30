@@ -1,13 +1,10 @@
 VARIABLES(1)       UltraDefrag Boot Time Variables       VARIABLES(1)
 
-NAME
-        variables - manual page for variables v7.0.0
-
 SYNOPSIS
         [VARIABLE]
 
 DESCRIPTION
-        Listing of all variables known by UltraDefrag.
+        Listing of environment variables accepted by UltraDefrag.
 
 VARIABLES
         UD_IN_FILTER
@@ -90,23 +87,23 @@ EXAMPLES
                 process only files smaller than 50MB
 
         set UD_FRAGMENTS_THRESHOLD=6
-                process only files with more than 6 fragments
+                process only files having more than 6 fragments
 
         set UD_TIME_LIMIT=6h 30m
                 terminate processing after 6 hours and 30 minutes
 
-        set UD_LOG_FILE_PATH=C:\Windows\Temp\defrag_native.log
+        set UD_LOG_FILE_PATH=C:\Windows\Temp\ud-boot-time.log
                 save debugging information to the specified file
 
 AUTHOR
         Written by UltraDefrag Development Team.
 
 COPYRIGHT
-        Copyright (C) 2010-2015 UltraDefrag Development Team
+        Copyright (C) 2010-2018 UltraDefrag Development Team
         This is free software. You may redistribute copies of
         it under the terms of the GNU General Public License
         <http://www.gnu.org/licenses/gpl.html>. There is NO
         warranty; not even for MERCHANTABILITY or FITNESS
         FOR A PARTICULAR PURPOSE.
 
-variables                     April 2015                            1
+variables                     March 2018                            1

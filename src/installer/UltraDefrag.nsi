@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2016 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -19,30 +19,36 @@
  */
 
 /*
-* UltraDefrag regular installer.
-*/
+ * UltraDefrag installer.
+ */
 
 /*
-*  NOTE: The following symbols must be
-*  defined through makensis command line:
-*  ULTRADFGVER=<version number in form x.y.z>
-*  ULTRADFGARCH=<i386 | amd64 | ia64>
-*  UDVERSION_SUFFIX
-*  The following symbol is accepted too,
-*  but may be undefined:
-*  RELEASE_STAGE
-*/
+ * NOTE: This script requires ULTRADFGVER, ULTRADFGARCH
+ * and UDVERSION_SUFFIX environment variables to be set.
+ * Also it accepts RELEASE_STAGE and OFFICIAL_RELEASE
+ * variables.
+ */
+ 
+!define DOLLAR $
 
-!ifndef ULTRADFGVER
-!error "ULTRADFGVER parameter must be specified on the command line!"
+!if "$%ULTRADFGVER%" == "${DOLLAR}%ULTRADFGVER%"
+!error "ULTRADFGVER environment variable must be set!"
 !endif
 
-!ifndef ULTRADFGARCH
-!error "ULTRADFGARCH parameter must be specified on the command line!"
+!if "$%ULTRADFGARCH%" == "${DOLLAR}%ULTRADFGARCH%"
+!error "ULTRADFGARCH environment variable must be set!"
 !endif
 
-!ifndef UDVERSION_SUFFIX
-!error "UDVERSION_SUFFIX parameter must be specified on the command line!"
+!if "$%UDVERSION_SUFFIX%" == "${DOLLAR}%UDVERSION_SUFFIX%"
+!error "UDVERSION_SUFFIX environment variable must be set!"
+!endif
+
+!if "$%RELEASE_STAGE%" != "${DOLLAR}%RELEASE_STAGE%"
+!define RELEASE_STAGE "$%RELEASE_STAGE%"
+!endif
+
+!if "$%OFFICIAL_RELEASE%" != "${DOLLAR}%OFFICIAL_RELEASE%"
+!define OFFICIAL_RELEASE
 !endif
 
 /*
@@ -52,48 +58,48 @@
 !define UD_UNINSTALL_REG_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\UltraDefrag"
 !define UD_LOG_FILE "$TEMP\UltraDefrag_Install.log"
 
-!if ${ULTRADFGARCH} == 'i386'
+!if "$%ULTRADFGARCH%" == "i386"
 !define ROOTDIR "..\.."
 !else
 !define ROOTDIR "..\..\.."
 !endif
 
 /*
- * Compress installer exehead with an executable compressor
+ * Compress the installer using UPX.
  */
 
 !packhdr temp.dat 'upx --best -q temp.dat'
 
 /*
- * Include additional plug-in folders
+ * Include additional plug-in folders.
  */
 
 !addplugindir "${ROOTDIR}\src\installer\plug_ins\Plugin"
 !addincludedir "${ROOTDIR}\src\installer\plug_ins\Include"
 
 /*
- * Installer Attributes
+ * Installer attributes.
  */
 
 !ifdef RELEASE_STAGE
-    !if ${ULTRADFGARCH} == 'amd64'
-    Name "Ultra Defragmenter v${ULTRADFGVER} ${RELEASE_STAGE} (AMD64)"
-    !else if ${ULTRADFGARCH} == 'ia64'
-    Name "Ultra Defragmenter v${ULTRADFGVER} ${RELEASE_STAGE} (IA64)"
+    !if "$%ULTRADFGARCH%" == "amd64"
+    Name "UltraDefrag $%ULTRADFGVER% ${RELEASE_STAGE} (AMD64)"
+    !else if "$%ULTRADFGARCH%" == "ia64"
+    Name "UltraDefrag $%ULTRADFGVER% ${RELEASE_STAGE} (IA64)"
     !else
-    Name "Ultra Defragmenter v${ULTRADFGVER} ${RELEASE_STAGE} (i386)"
+    Name "UltraDefrag $%ULTRADFGVER% ${RELEASE_STAGE} (i386)"
     !endif
 !else
-    !if ${ULTRADFGARCH} == 'amd64'
-    Name "Ultra Defragmenter v${ULTRADFGVER} (AMD64)"
-    !else if ${ULTRADFGARCH} == 'ia64'
-    Name "Ultra Defragmenter v${ULTRADFGVER} (IA64)"
+    !if "$%ULTRADFGARCH%" == "amd64"
+    Name "UltraDefrag $%ULTRADFGVER% (AMD64)"
+    !else if "$%ULTRADFGARCH%" == "ia64"
+    Name "UltraDefrag $%ULTRADFGVER% (IA64)"
     !else
-    Name "Ultra Defragmenter v${ULTRADFGVER} (i386)"
+    Name "UltraDefrag $%ULTRADFGVER% (i386)"
     !endif
 !endif
 
-!if ${ULTRADFGARCH} == 'i386'
+!if "$%ULTRADFGARCH%" == "i386"
 InstallDir "$PROGRAMFILES\UltraDefrag"
 !else
 InstallDir "$PROGRAMFILES64\UltraDefrag"
@@ -104,7 +110,7 @@ InstallDirRegKey HKLM ${UD_UNINSTALL_REG_KEY} "InstallLocation"
 Var OldInstallDir
 Var ValidDestDir
 
-OutFile "ultradefrag-${UDVERSION_SUFFIX}.bin.${ULTRADFGARCH}.exe"
+OutFile "ultradefrag-$%UDVERSION_SUFFIX%.bin.$%ULTRADFGARCH%.exe"
 LicenseData "${ROOTDIR}\src\LICENSE.TXT"
 ShowInstDetails show
 ShowUninstDetails show
@@ -119,22 +125,27 @@ InstType "Full"
 InstType "Micro Edition"
 
 /*
- * Compiler Flags
+ * Compiler flags.
  */
 
 AllowSkipFiles off
+
+!ifdef OFFICIAL_RELEASE
 SetCompressor /SOLID lzma
+!else
+SetCompress off
+!endif
 
 /*
- * Version Information
+ * Version information.
  */
 
-VIProductVersion "${ULTRADFGVER}.0"
-VIAddVersionKey  "ProductName"     "Ultra Defragmenter"
+VIProductVersion "$%ULTRADFGVER%.0"
+VIAddVersionKey  "ProductName"     "UltraDefrag"
 VIAddVersionKey  "CompanyName"     "UltraDefrag Development Team"
-VIAddVersionKey  "LegalCopyright"  "Copyright © 2007-2013 UltraDefrag Development Team"
-VIAddVersionKey  "FileDescription" "Ultra Defragmenter Setup"
-VIAddVersionKey  "FileVersion"     "${ULTRADFGVER}"
+VIAddVersionKey  "LegalCopyright"  "Copyright © 2007-2018 UltraDefrag Development Team"
+VIAddVersionKey  "FileDescription" "UltraDefrag Setup"
+VIAddVersionKey  "FileVersion"     "$%ULTRADFGVER%"
 
 /*
  * Headers
@@ -148,7 +159,7 @@ VIAddVersionKey  "FileVersion"     "${ULTRADFGVER}"
 !include "${ROOTDIR}\src\installer\PresetSections.nsh"
 
 /*
- * Modern User Interface Pages
+ * Modern user interface pages.
  */
 
 !define MUI_ICON   "${ROOTDIR}\src\installer\udefrag-install.ico"
@@ -176,7 +187,7 @@ VIAddVersionKey  "FileVersion"     "${ULTRADFGVER}"
 !insertmacro MUI_LANGUAGE "English"
 
 /*
- * Component Sections
+ * Component sections.
  */
 
 Section "!UltraDefrag core files (required)" SecCore
@@ -205,7 +216,7 @@ Section "Console" SecConsole
 
 SectionEnd
 
-Section "GUI (Default)" SecGUI
+Section "GUI (default)" SecGUI
 
     SectionIn 1
 
@@ -265,7 +276,7 @@ Section "Turn off usage tracking" SecUsageTracking
 
 SectionEnd
 
-; this must always be the last install section
+; this must be the last section of the installer
 Section "-Finalize" SecFinalize
 
     SectionIn 1 2 RO
@@ -284,7 +295,7 @@ Section "Uninstall"
 
     ${DisableX64FSRedirection}
 
-    DetailPrint "Deregister boot time defragmenter..."
+    DetailPrint "Deregistering boot time defragmenter..."
     ExecWait '"$SYSDIR\bootexctrl.exe" /u /s defrag_native'
     Delete "$WINDIR\pending-boot-off"
 
@@ -370,10 +381,10 @@ FunctionEnd
 Function un.onUninstSuccess
 
     DetailPrint "Removing installation directory..."
-    ; safe, because installation directory is predefined
+    ; safe, because it has been verified on installation
     RMDir /r $INSTDIR
 
-    DetailPrint "Cleanup registry..."
+    DetailPrint "Registry cleanup..."
     DeleteRegKey HKLM ${UD_UNINSTALL_REG_KEY}
 
     ${UnRegisterInstallationFolder}

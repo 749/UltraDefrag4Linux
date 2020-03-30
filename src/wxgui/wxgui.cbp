@@ -7,7 +7,7 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Debug">
+			<Target title="Debug (GCC)">
 				<Option platforms="Windows;" />
 				<Option output="../bin/ultradefrag" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../bin" />
@@ -16,10 +16,42 @@
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
+					<Add option="-mwindows" />
 					<Add option="-g" />
+					<Add directory="$(WXWIDGETSDIR)/lib/gcc_libmingw-X86/mswu" />
 				</Compiler>
+				<Linker>
+					<Add option="-mwindows" />
+					<Add library="libzenwinx.dll.a" />
+					<Add library="libudefrag.dll.a" />
+					<Add library="liblua5.1a.dll.a" />
+					<Add library="libwxmsw31u_adv.a" />
+					<Add library="libwxmsw31u_core.a" />
+					<Add library="libwxpng.a" />
+					<Add library="libwxzlib.a" />
+					<Add library="libwxbase31u.a" />
+					<Add library="libkernel32.a" />
+					<Add library="libuser32.a" />
+					<Add library="libgdi32.a" />
+					<Add library="libwinspool.a" />
+					<Add library="libcomdlg32.a" />
+					<Add library="libadvapi32.a" />
+					<Add library="libshell32.a" />
+					<Add library="libole32.a" />
+					<Add library="liboleaut32.a" />
+					<Add library="libuuid.a" />
+					<Add library="libpowrprof.a" />
+					<Add library="libcomctl32.a" />
+					<Add library="libwsock32.a" />
+					<Add library="libodbc32.a" />
+					<Add library="liburlmon.a" />
+					<Add library="librpcrt4.a" />
+					<Add library="libshlwapi.a" />
+					<Add library="libversion.a" />
+					<Add directory="$(WXWIDGETSDIR)/lib/gcc_libmingw-X86" />
+				</Linker>
 			</Target>
-			<Target title="Release">
+			<Target title="Release (GCC)">
 				<Option platforms="Windows;" />
 				<Option output="../bin/ultradefrag" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../bin" />
@@ -27,49 +59,105 @@
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-mwindows" />
+					<Add directory="$(WXWIDGETSDIR)/lib/gcc_libmingw-X86/mswu" />
+				</Compiler>
 				<Linker>
+					<Add option="-mwindows" />
 					<Add option="-s" />
+					<Add library="libzenwinx.dll.a" />
+					<Add library="libudefrag.dll.a" />
+					<Add library="liblua5.1a.dll.a" />
+					<Add library="libwxmsw31u_adv.a" />
+					<Add library="libwxmsw31u_core.a" />
+					<Add library="libwxpng.a" />
+					<Add library="libwxzlib.a" />
+					<Add library="libwxbase31u.a" />
+					<Add library="libkernel32.a" />
+					<Add library="libuser32.a" />
+					<Add library="libgdi32.a" />
+					<Add library="libwinspool.a" />
+					<Add library="libcomdlg32.a" />
+					<Add library="libadvapi32.a" />
+					<Add library="libshell32.a" />
+					<Add library="libole32.a" />
+					<Add library="liboleaut32.a" />
+					<Add library="libuuid.a" />
+					<Add library="libpowrprof.a" />
+					<Add library="libcomctl32.a" />
+					<Add library="libwsock32.a" />
+					<Add library="libodbc32.a" />
+					<Add library="liburlmon.a" />
+					<Add library="librpcrt4.a" />
+					<Add library="libshlwapi.a" />
+					<Add library="libversion.a" />
+					<Add directory="$(WXWIDGETSDIR)/lib/gcc_libmingw-X86" />
+				</Linker>
+			</Target>
+            <!-- debugging of MSVC targets is not supported, so let's define Release target only -->
+			<Target title="Release (MSVC)">
+				<Option platforms="Windows;" />
+				<Option output="../bin/ultradefrag" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../bin" />
+				<Option object_output="../obj/wxgui/" />
+				<Option type="0" />
+				<Option compiler="msvc10" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="/arch:SSE2" />
+					<Add option="/D &quot;_CRT_SECURE_NO_WARNINGS&quot;" />
+					<Add option="/D &quot;_MBCS&quot;" />
+					<Add option="/D &quot;_WINDOWS&quot;" />
+					<Add option="/D &quot;NDEBUG&quot;" />
+					<Add option="/D &quot;USE_WINSDK&quot;" />
+					<Add option="/D &quot;WIN32&quot;" />
+					<Add option="/EHsc" />
+					<Add option="/Gd" />
+					<Add option="/GS-" />
+					<Add option="/MT" />
+					<Add option="/Yuprec.h" />
+					<Add directory="$(WXWIDGETSDIR)/lib/vc_libwinsdk-X86/mswu" />
+				</Compiler>
+				<Linker>
+					<Add library="zenwinx.lib" />
+					<Add library="udefrag.lib" />
+					<Add library="lua5.1a.lib" />
+					<Add library="wxmsw31u_adv.lib" />
+					<Add library="wxmsw31u_core.lib" />
+					<Add library="wxpng.lib" />
+					<Add library="wxzlib.lib" />
+					<Add library="wxbase31u.lib" />
+					<Add library="kernel32.lib" />
+					<Add library="user32.lib" />
+					<Add library="gdi32.lib" />
+					<Add library="winspool.lib" />
+					<Add library="comdlg32.lib" />
+					<Add library="advapi32.lib" />
+					<Add library="shell32.lib" />
+					<Add library="ole32.lib" />
+					<Add library="oleaut32.lib" />
+					<Add library="uuid.lib" />
+					<Add library="powrprof.lib" />
+					<Add library="comctl32.lib" />
+					<Add library="wsock32.lib" />
+					<Add library="odbc32.lib" />
+					<Add library="urlmon.lib" />
+					<Add library="rpcrt4.lib" />
+					<Add library="shlwapi.lib" />
+					<Add library="version.lib" />
+					<Add directory="$(WXWIDGETSDIR)/lib/vc_libwinsdk-X86" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-mwindows" />
 			<Add directory="$(WXWIDGETSDIR)/include" />
-			<Add directory="$(WXWIDGETSDIR)/lib/gcc_libmingw-X86/mswu" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(WXWIDGETSDIR)/include" />
 		</ResourceCompiler>
 		<Linker>
-			<Add option="-mwindows" />
-			<Add library="libzenwinx.dll.a" />
-			<Add library="libudefrag.dll.a" />
-			<Add library="liblua5.1a.dll.a" />
-			<Add library="libwxmsw31u_adv.a" />
-			<Add library="libwxmsw31u_core.a" />
-			<Add library="libwxpng.a" />
-			<Add library="libwxzlib.a" />
-			<Add library="libwxbase31u.a" />
-			<Add library="libkernel32.a" />
-			<Add library="libuser32.a" />
-			<Add library="libgdi32.a" />
-			<Add library="libwinspool.a" />
-			<Add library="libcomdlg32.a" />
-			<Add library="libadvapi32.a" />
-			<Add library="libshell32.a" />
-			<Add library="libole32.a" />
-			<Add library="liboleaut32.a" />
-			<Add library="libuuid.a" />
-			<Add library="libpowrprof.a" />
-			<Add library="libcomctl32.a" />
-			<Add library="libwsock32.a" />
-			<Add library="libodbc32.a" />
-			<Add library="liburlmon.a" />
-			<Add library="librpcrt4.a" />
-			<Add library="libshlwapi.a" />
-			<Add library="libversion.a" />
 			<Add directory="../lib" />
-			<Add directory="$(WXWIDGETSDIR)/lib/gcc_libmingw-X86" />
 		</Linker>
 		<Unit filename="about.cpp" />
 		<Unit filename="btd.cpp" />
@@ -82,6 +170,16 @@
 		<Unit filename="main.h" />
 		<Unit filename="map.cpp" />
 		<Unit filename="menu.cpp" />
+		<Unit filename="prec.cpp">
+			<Option target="Release (MSVC)" />
+			<Option compiler="msvc10" use="1" buildCommand="$compiler /nologo $options $includes /Ycprec.h /c $file /Fo$object" />
+			<Option weight="10" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="prec.h">
+			<Option compile="1" />
+			<Option weight="0" />
+		</Unit>
 		<Unit filename="report.cpp" />
 		<Unit filename="shutdown.cpp" />
 		<Unit filename="statbar.cpp" />

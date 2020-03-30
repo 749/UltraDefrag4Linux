@@ -18,8 +18,7 @@
  */
 
 /*
-* There is an opinion that SetSuspendState call
-* is more reliable than SetSystemPowerState:
+* Some people believe SetSuspendState is more reliable than SetSystemPowerState:
 * http://msdn.microsoft.com/en-us/library/aa373206%28VS.85%29.aspx
 */
 
@@ -55,8 +54,8 @@ static void show_help(void)
         "===============================================================================\n"
         "\n"
         "Usage: \n"
-        "  hibernate now - hibernates PC\n"
-        "  hibernate /?  - displays this help\n"
+        "  hibernate now - hibernate the computer\n"
+        "  hibernate /?  - display this help\n"
         );
 }
 

@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 //
 //  UltraDefrag - a powerful defragmentation tool for Windows NT.
-//  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+//  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
 //  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -26,32 +26,6 @@
 // =======================================================================
 //                               Headers
 // =======================================================================
-
-#include <wx/wxprec.h>
-
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-
-#include <wx/cmdline.h>
-#include <wx/dynlib.h>
-#include <wx/filename.h>
-#include <wx/thread.h>
-
-#include <conio.h>
-
-#if defined(__GNUC__)
-extern "C" {
-HRESULT WINAPI URLDownloadToCacheFileW(
-    /* LPUNKNOWN */ void *lpUnkcaller,
-    LPCWSTR szURL,
-    LPWSTR szFileName,
-    DWORD cchFileName,
-    DWORD dwReserved,
-    /*IBindStatusCallback*/ void *pBSC
-);
-}
-#endif
 
 #include "../include/dbg.h"
 #include "../include/version.h"
@@ -144,7 +118,6 @@ extern bool g_all;
 extern bool g_all_fixed;
 extern bool g_list_volumes;
 extern bool g_list_all;
-extern bool g_repeat;
 extern bool g_no_progress;
 extern bool g_show_vol_info;
 extern bool g_show_map;

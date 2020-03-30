@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 //
 //  UltraDefrag - a powerful defragmentation tool for Windows NT.
-//  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+//  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
 //  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -34,6 +34,7 @@
 //                            Declarations
 // =======================================================================
 
+#include "prec.h"
 #include "main.h"
 
 // =======================================================================
@@ -44,8 +45,8 @@ void show_help(void)
 {
     printf(
         "===============================================================================\n"
-        VERSIONINTITLE " - a powerful disk defragmentation tool for Windows NT\n"
-        "Copyright (c) UltraDefrag Development Team, 2007-2016.\n"
+        VERSIONINTITLE " - a powerful disk defragmenter.\n"
+        "Copyright (c) UltraDefrag Development Team, 2007-2018.\n"
         "\n"
         "===============================================================================\n"
         "This program is free software; you can redistribute it and/or\n"
@@ -70,7 +71,7 @@ void show_help(void)
         "Commands:\n"
         "  -a,  --analyze                      analyze specified objects\n"
         "  -o,  --optimize                     perform full optimization\n"
-        "  -q,  --quick-optimize               perform quick optimization\n"
+        "  -q,  --quick-optimization           perform quick optimization\n"
         "       --optimize-mft                 optimize master file tables only\n"
         "  -l,  --list-available-volumes       list all fixed disks available\n"
         "                                      for defragmentation\n"
@@ -83,8 +84,6 @@ void show_help(void)
         "  If none is specified the program will defragment selected objects.\n"
         "\n"
         "Options:\n"
-        "  -r,  --repeat                       repeat the disk processing multiple\n"
-        "                                      times whenever it makes sense\n"
         "  -b,  --use-system-color-scheme      disable colorization of output\n"
         "  -p,  --suppress-progress-indicator  hide progress indicator and cluster map\n"
         "  -v,  --show-volume-information      show disk information after the job\n"
@@ -194,7 +193,7 @@ void show_help(void)
         "Note:\n"
         "  All the environment variables are ignored when the --shellex switch is\n"
         "  on the command line. Instead of taking environment variables into account\n"
-        "  the program interpretes the %%UD_INSTALL_DIR%%\\options.lua file.\n"
+        "  the program interpretes the %%UD_INSTALL_DIR%%\\conf\\options.lua file.\n"
         "\n"
         "Samples:\n"
         "\n"
@@ -207,7 +206,7 @@ void show_help(void)
         "More information and samples can be found in UltraDefrag Handbook.\n"
         "If you have not received it along with this program go to:\n"
         "\n"
-        "http://ultradefrag.sourceforge.net/handbook/\n"
+        "https://ultradefrag.net/handbook/\n"
         "\n"
         );
 }

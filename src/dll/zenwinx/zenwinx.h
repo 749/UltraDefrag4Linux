@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,8 +29,7 @@ extern "C" {
 #endif
 
 #define DEFAULT_TAB_WIDTH 2
-#define DEFAULT_PAGING_PROMPT_TO_HIT_ANY_KEY "      Hit any key to display next page,\n" \
-                                             "          ESC or Break to abort..."
+#define DEFAULT_PAGING_PROMPT_TO_HIT_ANY_KEY "Hit any key to display next page, Esc or Break to abort..."
 
 #define NtCloseSafe(h) { if(h) { NtClose(h); h = NULL; } }
 
@@ -61,11 +60,7 @@ extern "C" {
 #define TraceExit   { trace(D"Leaving function '%s'...",__FUNCTION__); }
 #define TraceSource { trace(D"Source file '%s' at line %d ...",__FILE__,__LINE__); }
 
-/*
-* DbgCheckN macro definitions are used
-* to simplify debugging of a situation 
-* when something is mistyped in sources.
-*/
+/* DbgCheckN macros simplify validation of function parameters */
 #define DbgCheck1(c,r) { \
     if(!(c)) {           \
         etrace("the first parameter is incorrect"); \
@@ -122,10 +117,10 @@ typedef struct _WINX_FILE {
     HANDLE hFile;             /* file handle */
     LARGE_INTEGER roffset;    /* offset for read requests */
     LARGE_INTEGER woffset;    /* offset for write requests */
-    void *io_buffer;          /* for buffered i/o */
+    void *io_buffer;          /* for the buffered i/o */
     size_t io_buffer_size;    /* size of the buffer, in bytes */
-    size_t io_buffer_offset;  /* current offset inside io_buffer */
-    LARGE_INTEGER wboffset;   /* offset for write requests in buffered mode */
+    size_t io_buffer_offset;  /* the current offset inside io_buffer */
+    LARGE_INTEGER wboffset;   /* offset for write requests in the buffered mode */
 } WINX_FILE, *PWINX_FILE;
 
 #define winx_fileno(f) ((f)->hFile)
@@ -149,10 +144,10 @@ void winx_release_file_contents(void *contents);
 
 /* ftw.c */
 /* winx_ftw flags */
-#define WINX_FTW_RECURSIVE              0x1 /* forces to recursively scan all subdirectories */
-#define WINX_FTW_DUMP_FILES             0x2 /* forces to fill winx_file_disposition structure */
-#define WINX_FTW_ALLOW_PARTIAL_SCAN     0x4 /* allows information to be gathered partially */
-#define WINX_FTW_SKIP_RESIDENT_STREAMS  0x8 /* forces to skip files of zero length and files located inside MFT */
+#define WINX_FTW_RECURSIVE              0x1 /* scan all subdirectories recursively */
+#define WINX_FTW_DUMP_FILES             0x2 /* fill winx_file_disposition structures */
+#define WINX_FTW_ALLOW_PARTIAL_SCAN     0x4 /* admit partially gathered information */
+#define WINX_FTW_SKIP_RESIDENT_STREAMS  0x8 /* skip files of zero length and files located inside MFT */
 
 #define is_readonly(f)            ((f)->flags & FILE_ATTRIBUTE_READONLY)
 #define is_hidden(f)              ((f)->flags & FILE_ATTRIBUTE_HIDDEN)
@@ -176,15 +171,15 @@ void winx_release_file_contents(void *contents);
 typedef struct _winx_blockmap {
     struct _winx_blockmap *next; /* pointer to the next fragment */
     struct _winx_blockmap *prev; /* pointer to the previous fragment */
-    ULONGLONG vcn;               /* virtual cluster number */
-    ULONGLONG lcn;               /* logical cluster number */
+    ULONGLONG vcn;               /* the virtual cluster number */
+    ULONGLONG lcn;               /* the logical cluster number */
     ULONGLONG length;            /* size of the fragment, in clusters */
 } winx_blockmap;
 
 typedef struct _winx_file_disposition {
     ULONGLONG clusters;                /* total number of clusters belonging to the file */
     ULONGLONG fragments;               /* total number of file fragments, not blocks */
-    winx_blockmap *blockmap;           /* map of blocks */
+    winx_blockmap *blockmap;           /* map of the blocks */
 } winx_file_disposition;
 
 typedef struct _winx_file_internal_info {
@@ -199,11 +194,11 @@ typedef struct _winx_file_internal_info {
 typedef struct _winx_file_info {
     struct _winx_file_info *next;      /* pointer to the next item */
     struct _winx_file_info *prev;      /* pointer to the previous item */
-    wchar_t *name;                     /* name of the file */
-    wchar_t *path;                     /* full native path */
-    unsigned long flags;               /* combination of FILE_ATTRIBUTE_xxx flags defined in winnt.h */
+    wchar_t *name;                     /* the name of the file */
+    wchar_t *path;                     /* the full native path */
+    unsigned long flags;               /* a combination of FILE_ATTRIBUTE_xxx flags defined in winnt.h */
     winx_file_disposition disp;        /* information about file fragments and their disposition */
-    unsigned long user_defined_flags;  /* combination of flags defined by the caller */
+    unsigned long user_defined_flags;  /* a combination of flags defined by the caller */
     winx_file_internal_info internal;  /* internal information used by ftw_scan_disk support routines */
     ULONGLONG creation_time;           /* the file creation time */
     ULONGLONG last_modification_time;  /* the time of the last file modification */
@@ -245,11 +240,11 @@ void *winx_get_proc_address(wchar_t *libname,char *funcname);
 
 /* list.c */
 /**
- * @brief Generic structure describing double linked list entry.
+ * @brief Generic structure describing a double linked list entry.
  */
 typedef struct _list_entry {
-    struct _list_entry *next; /* pointer to next entry */
-    struct _list_entry *prev; /* pointer to previous entry */
+    struct _list_entry *next; /* pointer to the next entry */
+    struct _list_entry *prev; /* pointer to the previous entry */
 } list_entry;
 
 list_entry *winx_list_insert(list_entry **phead,list_entry *prev,long size);
@@ -257,14 +252,10 @@ void winx_list_remove(list_entry **phead,list_entry *item);
 void winx_list_destroy(list_entry **phead);
 
 /* lock.c */
-typedef struct _winx_spin_lock {
-    HANDLE hEvent;
-} winx_spin_lock;
-
-winx_spin_lock *winx_init_spin_lock(char *name);
-int winx_acquire_spin_lock(winx_spin_lock *sl,int msec);
-int winx_release_spin_lock(winx_spin_lock *sl);
-void winx_destroy_spin_lock(winx_spin_lock *sl);
+int winx_create_lock(wchar_t *name,HANDLE *phandle);
+int winx_acquire_lock(HANDLE h,int msec);
+int winx_release_lock(HANDLE h);
+void winx_destroy_lock(HANDLE h);
 
 /* mem.c */
 void *winx_heap_alloc(size_t size,int flags);
@@ -274,10 +265,10 @@ void winx_heap_free(void *addr);
 #define MALLOC_ABORT_ON_FAILURE 0x1
 
 /*
-* If a small amount of memory is needed,
+* If small amount of memory is needed,
 * call winx_malloc and don't care on the 
 * returned value correctness. In case of
-* allocation failure it'll simply abort
+* allocation failure it will simply abort
 * the application.
 * On the other hand, if some big amount
 * of memory needs to be allocated,
@@ -307,6 +298,8 @@ void winx_sleep(int msec);
 #define WINDOWS_VISTA  60 /* and Server 2008 */
 #define WINDOWS_7      61 /* and Server 2008 R2 */
 #define WINDOWS_8      62 /* and Server 2012 */
+#define WINDOWS_8_1    63 /* and Server 2012 R2 */
+#define WINDOWS_10    100 /* and Server 2016 */
 int winx_get_os_version(void);
 
 wchar_t *winx_get_windows_directory(void);
@@ -474,9 +467,9 @@ int winx_get_local_time(winx_time *t);
 int winx_get_drive_type(char letter);
 
 /*
-* Maximal length of the file system name.
-* Specified length is more than enough
-* to hold all known names.
+* The maximum length of the file system name.
+* The specified value is more than enough
+* to cover all known names.
 */
 #define MAX_FS_NAME_LENGTH 31
 
@@ -502,8 +495,8 @@ typedef struct _NTFS_DATA {
 #endif /* !_NTNDK_H_ */
 
 typedef struct _winx_volume_information {
-    char volume_letter;                    /* must be set by caller! */
-    char fs_name[MAX_FS_NAME_LENGTH + 1];  /* the name of the file system */
+    char volume_letter;                    /* must be set by the caller! */
+    char fs_name[MAX_FS_NAME_LENGTH + 1];  /* file system name */
     wchar_t label[MAX_PATH + 1];           /* volume label */
     ULONGLONG total_bytes;                 /* total volume size, in bytes */
     ULONGLONG free_bytes;                  /* amount of free space, in bytes */
@@ -512,7 +505,7 @@ typedef struct _winx_volume_information {
     ULONG sectors_per_cluster;             /* number of sectors in each cluster */
     ULONG bytes_per_sector;                /* sector size, in bytes */
     NTFS_DATA ntfs_data;                   /* NTFS data, valid for NTFS formatted volumes only */
-    int is_dirty;                          /* nonzero value indicates that volume is dirty and needs to be checked */
+    int is_dirty;                          /* nonzero value indicates that the volume is dirty and needs to be repaired */
     ULONGLONG device_capacity;             /* total device capacity (including all partitions), in bytes */
 } winx_volume_information;
 
@@ -526,8 +519,8 @@ int winx_vflush(char volume_letter);
 typedef struct _winx_volume_region {
     struct _winx_volume_region *next;  /* pointer to the next region */
     struct _winx_volume_region *prev;  /* pointer to the previous region */
-    ULONGLONG lcn;                     /* logical cluster number */
-    ULONGLONG length;                  /* size of region, in clusters */
+    ULONGLONG lcn;                     /* the logical cluster number */
+    ULONGLONG length;                  /* size of the region, in clusters */
 } winx_volume_region;
 
 typedef int (*volume_region_callback)(winx_volume_region *reg,void *user_defined_data);
@@ -548,7 +541,7 @@ void winx_exit(int exit_code);
 void winx_reboot(void);
 void winx_shutdown(void);
 
-/* Red-black trees with parent pointers */
+/* Red-black binary trees with parent pointers */
 #include "prb.h"
 
 #if defined(__cplusplus)

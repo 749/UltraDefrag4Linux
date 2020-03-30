@@ -1,12 +1,7 @@
 -- UltraDefrag boot time interface build options
-name        = "defrag_native"
-target_type = "native"
+name = "defrag_native"; target_type = "native"
 
 -- list of directories containing headers the program relies on
-includes = { "include", "native", "udefrag", "zenwinx" }
+includes = { "include", "native", "dll\\udefrag", "dll\\zenwinx" }
 
-libs = { "ntdll" }
-adlibs = { 
-    "$(UDEFRAG_LIB_PATH)\\zenwinx",
-    "$(UDEFRAG_LIB_PATH)\\udefrag"
-}
+libs = { "ntdll", "zenwinx", "udefrag" }

@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
@@ -13,11 +13,11 @@
  * @page Translation Translation
  *
  * UltraDefrag uses <a href="https://www.transifex.com/projects/p/ultradefrag/resource/main/">Transifex</a>
- * to manage translations online. Register there for free to be part of our team. You are welcome!
+ * to manage translations online. Register there for free to join our team. You are welcome!
  *
  * If you'd like to translate the program offline use the <a href="http://www.poedit.net/">PoEdit</a> software.
  * 
- * To configure PoEdit enter your name and email under <b>File > Preferences > Personalise > Identity</b>.
+ * To configure PoEdit enter your name and email address under <b>File > Preferences > Personalise > Identity</b>.
  *
  * To edit an existing translation find your language in the 
  * <a href="http://www.loc.gov/standards/iso639-2/php/code_list.php">ISO 639-2</a> list

@@ -1,7 +1,5 @@
 -- Lua 5.1 library build options
-name        = "lua5.1a"
-target_type = "dll"
-nativedll   = 0
+name = "lua5.1a"; target_type = "dll"; nativedll = 0
 
 -- list of directories containing headers the library relies on
 includes = { "include", "lua5.1" }

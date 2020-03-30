@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,13 +31,13 @@
 #define _NTNDK_H_
 
 /*
-* Extremely important notes for the 64-bit compilation.
+* Extremely important notes for 64-bit compilation.
 *
 * 1. Always use SIZE_T type for all the unknown parameters of the native calls,
 *    since it represents a whole processor register on all the platforms,
 *    therefore is safe for system calls prototyping.
 *
-* 2. Always fill output buffer with zeros before the following system calls:
+* 2. Always fill the output buffer with zeros before the following system calls:
 *    NtDeviceIoControlFile        (?)
 *    NtFsControlFile              (!)
 *    NtQueryInformationProcess    (?)
@@ -48,9 +48,9 @@
 *
 *    Otherwise Windows might trash stack during these calls.
 *
-* 3. If you are waiting on a file handle for NtWriteFile request completion,
+* 3. If you are waiting on a file handle for the NtWriteFile request completion,
 *    don't check for STATUS_PENDING code. Instead of that wait immediately.
-*    ReactOS has wrong implementation of WriteFile() function, the following
+*    ReactOS has wrong implementation of the WriteFile() function, the following
 *    works much better:
 *
 *    Status = NtWriteFile(...);

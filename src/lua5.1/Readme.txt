@@ -19,17 +19,17 @@ math.rshift(m, n)
 os.setenv(name [, value])
     Sets an environment variable for the current process.
     Values in UTF-8 encoding are accepted as well as ASCII
-    strings. If value is not specified or is an empty string
-    the environment variable will be deleted.
+    strings. If no value is specified or an empty string is
+    passed the environment variable will be deleted.
     If this function fails it raises an error.
 
 os.shellexec(path, action)
-    Performs an operation of a specified file. If this function
-    fails it returns an error code, which is always less than
-    or equal to 32, and a string describing the error. 
-    Read MSDN article on ShellExecute for details.
+    Performs an operation on a file. If this function fails
+    it returns an error code, which is always less than or
+    equal to 32, and a string describing the error. Read MSDN
+    article on ShellExecute for details.
 
-In addition, os.getenv call has been reimplemented for higher
+In addition, the os.getenv call has been reimplemented for higher
 reliability and for proper handling of Unicode values.
 
 The lua.build file is included to produce Lua modules for three processor
@@ -38,7 +38,7 @@ build process.
 
 Note: Lua compiled for UltraDefrag has the 'a' suffix in names of its binaries.
 We believe that it will prevent overwrite of standard Lua binaries if they are
-present on a target system.
+present on the target system.
 
 Lua 5.1 is licensed under the terms of the MIT license reproduced below.
 

@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,10 +24,11 @@
  * @{
  */
 
-#include "ntndk.h"
+#include "prec.h"
 #include "zenwinx.h"
 
 /**
+ * @internal
  * @brief Size of the buffer dedicated
  * to list directory entries into.
  * @note Must be a multiple of sizeof(void *).
@@ -35,10 +36,11 @@
 #define FILE_LISTING_SIZE (16*1024)
 
 /**
+ * @internal
  * @brief Size of the buffer dedicated
  * to list file fragments into.
  * @details It is large enough to hold
- * GET_RETRIEVAL_DESCRIPTOR structure 
+ * a single GET_RETRIEVAL_DESCRIPTOR structure
  * as well as 512 MAPPING_PAIR structures.
  */
 #define FILE_MAP_SIZE (sizeof(GET_RETRIEVAL_DESCRIPTOR) - sizeof(MAPPING_PAIR) + 512 * sizeof(MAPPING_PAIR))
@@ -58,8 +60,8 @@ winx_file_info *ntfs_scan_disk(char volume_letter,
  * @internal
  * @brief Checks whether the file
  * tree walk must be terminated or not.
- * @return Nonzero value indicates that
- * termination is requested.
+ * @return A nonzero value if termination
+ * is requested.
  */
 static int ftw_check_for_termination(ftw_terminator t,void *user_defined_data)
 {
@@ -83,7 +85,7 @@ void validate_blockmap(winx_file_info *f)
     for(b1 = f->disp.blockmap; b1; b1 = b1->next){
         if(b1->next == f->disp.blockmap) break;
         for(b2 = b1->next; b2; b2 = b2->next){
-            /* does two blocks overlap? */
+            /* do blocks overlap? */
             //if(yes){
             //    destroy_blockmap();
             //    return;
@@ -110,20 +112,18 @@ void validate_blockmap(winx_file_info *f)
 }
 
 /**
- * @brief Retrieves the information
- * on the file disposition.
- * @param[out] f pointer to
- * structure receiving the information.
+ * @brief Retrieves disposition of a file.
+ * @param[out] f pointer to structure
+ * receiving the information.
  * @param[in] t address of procedure to be called
  * each time when winx_ftw_dump_file would like
  * to know whether it must be terminated or not.
- * Nonzero value, returned by terminator,
- * forces the file dump to be terminated.
+ * If the procedure returns a nonzero value
+ * the dump terminates immediately.
  * @param[in] user_defined_data pointer to data
- * passed to the registered terminator.
- * @return Zero for success,
- * negative value otherwise.
- * @note 
+ * to be passed to the registered terminator.
+ * @return Zero for success, a negative value otherwise.
+ * @note
  * - The callback procedure should complete as quickly
  * as possible to avoid slowdown of the scan.
  * - For resident NTFS streams (small files and
@@ -136,7 +136,7 @@ int winx_ftw_dump_file(winx_file_info *f,
     GET_RETRIEVAL_DESCRIPTOR *filemap;
     HANDLE hFile;
     ULONGLONG startVcn;
-    long counter; /* counts number of attempts to get information */
+    long counter; /* counts number of attempts to receive information */
     #define MAX_COUNT 1000
     IO_STATUS_BLOCK iosb;
     NTSTATUS status;
@@ -154,7 +154,7 @@ int winx_ftw_dump_file(winx_file_info *f,
     status = winx_defrag_fopen(f,WINX_OPEN_FOR_DUMP,&hFile);
     if(status != STATUS_SUCCESS){
         strace(status,"cannot open %ws",f->path);
-        return 0; /* file is locked by system */
+        return 0; /* the file is locked by system */
     }
     
     /* allocate memory */
@@ -184,7 +184,7 @@ int winx_ftw_dump_file(winx_file_info *f,
         if(ftw_check_for_termination(t,user_defined_data)){
             if(counter > MAX_COUNT)
                 etrace("%ws: infinite main loop?",f->path);
-            /* reset incomplete map */
+            /* reset incomplete maps */
             goto cleanup;
         }
         
@@ -197,7 +197,7 @@ int winx_ftw_dump_file(winx_file_info *f,
         /* loop through the buffer of number/cluster pairs */
         startVcn = filemap->StartVcn;
         for(i = 0; i < (ULONGLONG)filemap->NumberOfPairs; startVcn = filemap->Pair[i].Vcn, i++){
-            /* compressed virtual runs (0-filled) are identified with LCN == -1    */
+            /* compressed virtual runs (0-filled) are identified with LCN == -1 */
             if(filemap->Pair[i].Lcn == LLINVALID)
                 continue;
             
@@ -256,8 +256,8 @@ dump_failed:
 
 /**
  * @internal
- * @brief Adds directory entry to the file list.
- * @return Address of inserted file list entry,
+ * @brief Adds a directory to the file list.
+ * @return Address of the inserted list entry,
  * NULL indicates failure.
  */
 static winx_file_info * ftw_add_entry_to_filelist(wchar_t *path,
@@ -293,10 +293,10 @@ static winx_file_info * ftw_add_entry_to_filelist(wchar_t *path,
     memset(f->name,0,file_entry->FileNameLength + sizeof(wchar_t));
     memcpy(f->name,file_entry->FileName,file_entry->FileNameLength);
     
-    /* detect whether we are in root directory or not */
+    /* check whether we are in the root directory or not */
     length = (int)wcslen(path);
     if(path[length - 1] == '\\')
-        is_rootdir = 1; /* only root directory contains trailing backslash */
+        is_rootdir = 1; /* only the root directory contains trailing backslash */
     
     /* build path */
     length += (int)wcslen(f->name) + 1;
@@ -348,8 +348,8 @@ static winx_file_info * ftw_add_entry_to_filelist(wchar_t *path,
 
 /**
  * @internal
- * @brief Adds information about
- * root directory to file list.
+ * @brief Adds information about the
+ * root directory to the file list.
  */
 static int ftw_add_root_directory(wchar_t *path, int flags,
     ftw_filter_callback fcb, ftw_progress_callback pcb, 
@@ -440,9 +440,9 @@ static int ftw_add_root_directory(wchar_t *path, int flags,
 
 /**
  * @internal
- * @brief Opens directory for file listing.
- * @return Handle to the directory, NULL
- * indicates failure.
+ * @brief Opens a directory for file listing.
+ * @return The handle of the opened directory,
+ * NULL indicates failure.
  */
 static HANDLE ftw_open_directory(wchar_t *path)
 {
@@ -471,11 +471,10 @@ static HANDLE ftw_open_directory(wchar_t *path)
 
 /**
  * @internal
- * @brief Scans directory and adde information
- * about files found to the passed file list.
- * @return Zero for success, -1 indicates
- * failure, -2 indicates termination requested
- * by caller.
+ * @brief Scans a directory and adds information
+ * about files found to the file list.
+ * @return Zero for success, -1 indicates failure,
+ * -2 indicates termination requested by the caller.
  */
 static int ftw_helper(wchar_t *path, int flags,
         ftw_filter_callback fcb, ftw_progress_callback pcb,
@@ -489,27 +488,27 @@ static int ftw_helper(wchar_t *path, int flags,
     winx_file_info *f;
     int skip_children, result;
     
-    /* open directory */
+    /* open the directory */
     hDir = ftw_open_directory(path);
     if(hDir == NULL)
-        return 0; /* directory is locked by system, skip it */
+        return 0; /* the directory is locked by system, skip it */
     
     /* allocate memory */
     file_listing = winx_malloc(FILE_LISTING_SIZE);
     
-    /* reset buffer */
+    /* reset the buffer */
     memset((void *)file_listing,0,FILE_LISTING_SIZE);
     file_entry = file_listing;
 
     /* list directory entries */
     while(!ftw_check_for_termination(t,user_defined_data)){
-        /* get directory entry */
+        /* get a directory entry */
         if(file_entry->NextEntryOffset){
             /* go to the next directory entry */
             file_entry = (FILE_BOTH_DIR_INFORMATION *)((char *)file_entry + \
                 file_entry->NextEntryOffset);
         } else {
-            /* read next portion of directory entries */
+            /* read the next portion of directory entries */
             memset((void *)file_listing,0,FILE_LISTING_SIZE);
             status = NtQueryDirectoryFile(hDir,NULL,NULL,NULL,
                 &iosb,(void *)file_listing,FILE_LISTING_SIZE,
@@ -539,11 +538,11 @@ static int ftw_helper(wchar_t *path, int flags,
                 continue;
         }
 
-        /* validate entry */
+        /* validate the entry */
         if(file_entry->FileNameLength == 0)
             continue;
         
-        /* add entry to the file list */
+        /* add the entry to the file list */
         f = ftw_add_entry_to_filelist(path,flags,fcb,pcb,t,
                 user_defined_data,filelist,file_entry);
         if(f == NULL){
@@ -642,53 +641,40 @@ static void ftw_remove_invalid_streams(winx_file_info **filelist)
 }
 
 /**
- * @brief Returns list of files contained
- * in a directory, and all its subdirectories
- * if WINX_FTW_RECURSIVE flag is passed.
- * @param[in] path the native path of the
- * directory to be scanned.
- * @param[in] flags the combination
- * of WINX_FTW_xxx flags, defined in zenwinx.h
- * @param[in] fcb the address of the callback routine
- * to be called for each file; if it returns
- * nonzero value, all the file's children will be
- * skipped. Zero value forces to continue the 
- * subdirectory scan. Note that the filter callback
- * is called when the complete information is gathered
- * for the file.
- * @param[in] pcb the address of the callback routine
- * to be called for each file to update progress
- * information specific for the caller. Note that the
- * progress callback may be called when all the file
- * information is gathered except of the file name and path.
- * If WINX_FTW_SKIP_RESIDENT_STREAMS flag is set, the progress
- * callback will never be called for files of zero length
- * and resident NTFS streams.
- * @param[in] t the address of the procedure to be called
- * each time when winx_ftw would like to know
- * whether it must be terminated or not.
- * Nonzero value, returned by the terminator,
- * forces the file tree walk to be terminated.
- * @param[in] user_defined_data pointer to data
- * passed to all the registered callbacks.
- * @return List of files, NULL indicates failure.
- * @note 
+ * @brief Enumerates files inside of the specified directory, and
+ * all its subdirectories when WINX_FTW_RECURSIVE flag is passed.
+ * @param[in] path the native path of the directory to be scanned.
+ * @param[in] flags a combination of WINX_FTW_xxx flags, defined in zenwinx.h
+ * @param[in] fcb the address of the callback routine to be called for each file;
+ * if it returns a nonzero value, all the file's children will be skipped. Zero
+ * value forces to enumerate them all. Note that the filter callback is called
+ * when the complete information is gathered for the file.
+ * @param[in] pcb the address of the callback routine to be called for each file
+ * to update progress information specific for the caller. Note that the progress
+ * callback may be called when all the file information is gathered except of the
+ * file name and path. If WINX_FTW_SKIP_RESIDENT_STREAMS flag is set, the progress
+ * callback will never be called for files of zero length and resident NTFS streams.
+ * @param[in] t the address of the callback routine to be called each time when
+ * winx_ftw would like to know whether it must be terminated or not. If the routine
+ * returns a nonzero value the scan terminates immediately.
+ * @param[in] user_defined_data pointer to data to be passed to all the registered
+ * callbacks.
+ * @return The list of files, NULL indicates failure.
+ * @note
  * - Optimized for little directories scan.
- * - To scan root directory, add trailing backslash
- *   to the path.
- * - fcb parameter may be equal to NULL if no
- *   filtering is needed.
- * - pcb parameter may be equal to NULL.
- * - The callback procedures should complete as quickly
- *   as possible to avoid slowdown of the scan.
- * - Does not recognize additional NTFS data streams.
- * - For resident NTFS streams (small files and
- *   directories located inside MFT) this function resets
- *   all the file disposition structure fields to zero.
+ * - Doesn't recognize additional NTFS data streams.
+ * - For resident NTFS streams (small files and directories
+ *   located inside MFT) this function resets all the file
+ *   disposition structure fields to zero.
  * - WINX_FTW_DUMP_FILES flag must be set to accept
  *   WINX_FTW_SKIP_RESIDENT_STREAMS.
- * - Files with empty paths become excluded from the list,
- *   but may pass through the filter callback.
+ * - The fcb parameter may be equal to NULL if no filtering is needed.
+ * - The pcb parameter may be equal to NULL.
+ * - Files with empty paths become excluded from the
+ *   list, but may pass through the filter callback.
+ * - All the callback procedures should complete as
+ *   quickly as possible to avoid slowdown of the scan.
+ * - To scan root directories, add trailing backslash to their paths.
  * @par Example:
  * @code
  * int filter(winx_file_info *f, void *user_defined_data)
@@ -741,7 +727,7 @@ winx_file_info *winx_ftw(wchar_t *path, int flags,
     
     if(ftw_helper(path,flags,fcb,pcb,t,user_defined_data,&filelist) == (-1) && \
       !(flags & WINX_FTW_ALLOW_PARTIAL_SCAN)){
-        /* destroy list */
+        /* destroy the list */
         winx_ftw_release(filelist);
         return NULL;
     }
@@ -756,15 +742,17 @@ winx_file_info *winx_ftw(wchar_t *path, int flags,
 
 /**
  * @brief winx_ftw analog, but optimized
- * for the entire disk scan.
- * @note NTFS is scanned directly through reading
- * MFT records, because this highly (25 times)
- * speeds up the scan. For FAT we have noticed
- * no speedup (even slowdown) while trying
- * to walk trough FAT entries. This is because
- * Windows file cache makes access even faster.
- * UDF has been never tested in direct mode
- * because of its highly complicated standard.
+ * to scan entire disks faster.
+ * @details On NTFS-formatted disks this
+ * routine analyzes MFT records directly
+ * to speed up the scan (up to 25 times).
+ * On FAT disks, however, general purpose
+ * system API work faster as they benifit
+ * from the Windows file caching. We never
+ * tried to analyze UDF-formatted disks
+ * directly because of high complexity
+ * of UDF standards, so we use general
+ * purpose API for them as well.
  */
 winx_file_info *winx_scan_disk(char volume_letter, int flags,
         ftw_filter_callback fcb, ftw_progress_callback pcb, ftw_terminator t,
@@ -797,21 +785,21 @@ winx_file_info *winx_scan_disk(char volume_letter, int flags,
         }
     }
     
-    /* collect information about root directory */
+    /* collect information about the root directory */
     rootpath[4] = (wchar_t)volume_letter;
     if(ftw_add_root_directory(rootpath,flags,fcb,pcb,t,user_defined_data,&filelist) == (-1) && \
       !(flags & WINX_FTW_ALLOW_PARTIAL_SCAN)){
-        /* destroy list */
+        /* destroy the list */
         winx_ftw_release(filelist);
         filelist = NULL;
         goto done;
     }
 
-    /* collect information about entire directory tree */
+    /* collect information about the entire directory tree */
     flags |= WINX_FTW_RECURSIVE;
     if(ftw_helper(rootpath,flags,fcb,pcb,t,user_defined_data,&filelist) == (-1) && \
       !(flags & WINX_FTW_ALLOW_PARTIAL_SCAN)){
-        /* destroy list */
+        /* destroy the list */
         winx_ftw_release(filelist);
         filelist = NULL;
         goto done;
@@ -830,17 +818,16 @@ done:
 }
 
 /**
- * @brief Releases resources
- * allocated by winx_ftw
- * or winx_scan_disk.
- * @param[in] filelist pointer
- * to list of files.
+ * @brief Releases resources allocated
+ * by winx_ftw or winx_scan_disk.
+ * @param[in] filelist the list
+ * of files to be released.
  */
 void winx_ftw_release(winx_file_info *filelist)
 {
     winx_file_info *f;
 
-    /* walk through list of files and free allocated memory */
+    /* walk through the list of files and free allocated memory */
     for(f = filelist; f != NULL; f = f->next){
         winx_free(f->name);
         winx_free(f->path);

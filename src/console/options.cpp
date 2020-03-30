@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 //
 //  UltraDefrag - a powerful defragmentation tool for Windows NT.
-//  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+//  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
 //  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -34,6 +34,7 @@
 //                            Declarations
 // =======================================================================
 
+#include "prec.h"
 #include "main.h"
 
 extern "C" {
@@ -43,10 +44,10 @@ extern "C" {
 #include "../lua5.1/lualib.h"
 }
 
-#if !defined(__GNUC__)
-#define __STDC__ 1
-#endif
-#include "getopt.h"
+struct _color {
+    const char *name;
+    short value;
+};
 
 bool set_shellex_options(void);
 
@@ -54,216 +55,187 @@ bool set_shellex_options(void);
 //                         Command line parser
 // =======================================================================
 
-static struct option long_options[] = {
-    /*
-    * Disk defragmentation options.
-    */
-    { "analyze",                     no_argument,       0, 'a' },
-    { "defragment",                  no_argument,       0,  0  },
-    { "optimize",                    no_argument,       0, 'o' },
-    { "quick-optimize",              no_argument,       0, 'q' },
-    { "optimize-mft",                no_argument,       0,  0  },
-    { "all",                         no_argument,       0,  0  },
-    { "all-fixed",                   no_argument,       0,  0  },
+static const wxCmdLineEntryDesc opts[] = {
+    // action switches
+    {wxCMD_LINE_SWITCH, "a",  "analyze"},
+    {wxCMD_LINE_SWITCH, "o",  "optimize"},
+    {wxCMD_LINE_SWITCH, "q",  "quick-optimization"},
+    {wxCMD_LINE_SWITCH, NULL, "optimize-mft"},
 
-    /*
-    * Volume listing options.
-    */
-    { "list-available-volumes",      optional_argument, 0, 'l' },
+    // drives selection switches
+    {wxCMD_LINE_SWITCH, NULL, "all"},
+    {wxCMD_LINE_SWITCH, NULL, "all-fixed"},
 
-    /*
-    * Volume processing options.
-    */
-    { "repeat",                      no_argument,       0, 'r' },
+    // drives listing switches
+    {wxCMD_LINE_SWITCH, "l",  "list-available-volumes"},
+    {wxCMD_LINE_SWITCH, "la"},
 
-    /*
-    * Progress indicators options.
-    */
-    { "suppress-progress-indicator", no_argument,       0, 'p' },
-    { "show-volume-information",     no_argument,       0, 'v' },
-    { "show-cluster-map",            no_argument,       0, 'm' },
+    // progress indication switches
+    {wxCMD_LINE_SWITCH, "p", "suppress-progress-indicator"},
+    {wxCMD_LINE_SWITCH, "v", "show-volume-information"},
+    {wxCMD_LINE_SWITCH, "m", "show-cluster-map"},
 
-    /*
-    * Colors and decoration.
-    */
-    { "use-system-color-scheme",     no_argument,       0, 'b' },
-    { "map-border-color",            required_argument, 0,  0  },
-    { "map-symbol",                  required_argument, 0,  0  },
-    { "map-rows",                    required_argument, 0,  0  },
-    { "map-symbols-per-line",        required_argument, 0,  0  },
-    { "use-entire-window",           no_argument,       0,  0  },
+    // colors and decoration
+    {wxCMD_LINE_SWITCH, "b",  "use-system-color-scheme"},
+    {
+        wxCMD_LINE_OPTION, NULL, "map-border-color", NULL,
+        wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR
+    },
+    {
+        wxCMD_LINE_OPTION, NULL, "map-symbol", NULL,
+        wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR
+    },
+    {
+        wxCMD_LINE_OPTION, NULL, "map-rows", NULL,
+        wxCMD_LINE_VAL_NUMBER, wxCMD_LINE_NEEDS_SEPARATOR
+    },
+    {
+        wxCMD_LINE_OPTION, NULL, "map-symbols-per-line", NULL,
+        wxCMD_LINE_VAL_NUMBER, wxCMD_LINE_NEEDS_SEPARATOR
+    },
+    {wxCMD_LINE_SWITCH, NULL, "use-entire-window"},
 
-    /*
-    * Help.
-    */
-    { "help",                        no_argument,       0, 'h' },
+    // miscellaneous switches
+    {wxCMD_LINE_SWITCH, NULL, "wait"},
+    {wxCMD_LINE_SWITCH, NULL, "shellex"},
+    {wxCMD_LINE_SWITCH, NULL, "folder"},
+    {wxCMD_LINE_SWITCH, NULL, "folder-itself"},
 
-    /*
-    * Miscellaneous options.
-    */
-    { "wait",                        no_argument,       0,  0  },
-    { "shellex",                     no_argument,       0,  0  },
-    { "folder",                      no_argument,       0,  0  },
-    { "folder-itself",               no_argument,       0,  0  },
+    // help switches
+    {wxCMD_LINE_SWITCH, "h", "help"},
+    {wxCMD_LINE_SWITCH, "?"},
 
-    { 0,                             0,                 0,  0  }
+    // obsolete switches
+    {wxCMD_LINE_SWITCH, NULL, "defragment"},
+    {wxCMD_LINE_SWITCH, NULL, "quick-optimize"},
+    {wxCMD_LINE_SWITCH, "r",  "repeat"},
+
+    // drive letters and paths
+    {
+        wxCMD_LINE_PARAM,
+        NULL, NULL, NULL,
+        wxCMD_LINE_VAL_STRING,
+        wxCMD_LINE_PARAM_OPTIONAL | \
+        wxCMD_LINE_PARAM_MULTIPLE
+    },
+
+    // the end of the list
+    {wxCMD_LINE_NONE}
 };
 
-char short_options[] = "aoql::rpvmbh?";
+static const struct _color colors[] = {
+    {"black",       0                                                                         },
+    {"darkred",     FOREGROUND_RED                                                            },
+    {"darkgreen",   FOREGROUND_GREEN                                                          },
+    {"darkblue",    FOREGROUND_BLUE                                                           },
+    {"darkyellow",  FOREGROUND_RED | FOREGROUND_GREEN                                         },
+    {"darkmagenta", FOREGROUND_RED | FOREGROUND_BLUE                                          },
+    {"darkcyan",    FOREGROUND_GREEN | FOREGROUND_BLUE                                        },
+    {"gray",        FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE                       },
+    {"red",         FOREGROUND_RED | FOREGROUND_INTENSITY                                     },
+    {"green",       FOREGROUND_GREEN | FOREGROUND_INTENSITY                                   },
+    {"blue",        FOREGROUND_BLUE | FOREGROUND_INTENSITY                                    },
+    {"yellow",      FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY                  },
+    {"magenta",     FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY                   },
+    {"cyan",        FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY                 },
+    {"white",       FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY}
+};
 
 /**
  * @brief Parses the command line.
  */
 bool parse_cmdline(int argc, char **argv)
 {
-    /*
-    * wxCmdLineParser doesn't accept
-    * long options in wxCMD_LINE_OPTION
-    * without corresponding short options,
-    * so let's use GNU getopt.
-    */
     if(argc < 2){
         g_help = true;
         return true;
     }
 
-    const char *long_option_name;
-    while(1){
-        int option_index = 0;
-        int c = getopt_long(argc,argv,short_options,
-            long_options,&option_index);
-        if(c == -1) break;
-        switch(c){
-        case 0:
-            //printf("option %s", long_options[option_index].name);
-            //if(optarg) printf(" with arg %s", optarg);
-            //printf("\n");
-            long_option_name = long_options[option_index].name;
-            if(!strcmp(long_option_name,"defragment")){
-                /* do nothing */
-            } else if(!strcmp(long_option_name,"optimize-mft")){
-                g_optimize_mft = true;
-            } else if(!strcmp(long_option_name,"map-border-color")){
-                if(!optarg) break;
-                if(!strcmp(optarg,"black")){
-                    g_map_border_color = 0x0; break;
-                }
-                if(!strcmp(optarg,"white")){
-                    g_map_border_color = FOREGROUND_RED | FOREGROUND_GREEN | \
-                        FOREGROUND_BLUE | FOREGROUND_INTENSITY; break;
-                }
-                if(!strcmp(optarg,"gray")){
-                    g_map_border_color = FOREGROUND_RED | FOREGROUND_GREEN | \
-                        FOREGROUND_BLUE; break;
-                }
+    /*
+    * If --list-available-volumes is defined as a switch
+    * it cannot take a value, if it's defined as an option
+    * it requires a value, so we need a little trick here.
+    */
+    wxString cmdline(GetCommandLine());
+    cmdline.Replace(wxT("--list-available-volumes=all"),wxT("-la"));
 
-                bool dark_color_flag = (strstr(optarg,"dark") != NULL);
+    wxCmdLineParser parser(opts,cmdline);
+    if(parser.Parse(false) > 0) return false;
 
-                if(strstr(optarg,"red")){
-                    g_map_border_color = FOREGROUND_RED;
-                } else if(strstr(optarg,"green")){
-                    g_map_border_color = FOREGROUND_GREEN;
-                } else if(strstr(optarg,"blue")){
-                    g_map_border_color = FOREGROUND_BLUE;
-                } else if(strstr(optarg,"yellow")){
-                    g_map_border_color = FOREGROUND_RED | FOREGROUND_GREEN;
-                } else if(strstr(optarg,"magenta")){
-                    g_map_border_color = FOREGROUND_RED | FOREGROUND_BLUE;
-                } else if(strstr(optarg,"cyan")){
-                    g_map_border_color = FOREGROUND_GREEN | FOREGROUND_BLUE;
-                }
+    g_analyze = parser.Found(wxT("a"));
+    g_optimize = parser.Found(wxT("o"));
+    g_quick_optimization = parser.Found(wxT("q"));
+    g_optimize_mft = parser.Found(wxT("optimize-mft"));
 
-                if(!dark_color_flag) g_map_border_color |= FOREGROUND_INTENSITY;
-            } else if(!strcmp(long_option_name,"map-symbol")){
-                if(!optarg) break;
-                if(strstr(optarg,"0x") == optarg){
-                    /* decode hexadecimal number */
-                    int map_symbol_number = 0;
-                    (void)sscanf(optarg,"%x",&map_symbol_number);
-                    if(map_symbol_number > 0 && map_symbol_number < 256)
-                        g_map_symbol = (char)map_symbol_number;
-                } else {
-                    if(optarg[0]) g_map_symbol = optarg[0];
-                }
-            } else if(!strcmp(long_option_name,"wait")){
-                g_wait = true;
-            } else if(!strcmp(long_option_name,"shellex")){
-                g_shellex = true;
-            } else if(!strcmp(long_option_name,"folder")){
-                g_folder = true;
-            } else if(!strcmp(long_option_name,"folder_itself")){
-                g_folder_itself = true;
-            } else if(!strcmp(long_option_name,"use-entire-window")){
-                g_use_entire_window = true;
-            } else if(!strcmp(long_option_name,"map-rows")){
-                if(!optarg) break;
-                int rows = atoi(optarg);
-                if(rows > 0) g_map_rows = rows;
-            } else if(!strcmp(long_option_name,"map-symbols-per-line")){
-                if(!optarg) break;
-                int symbols_per_line = atoi(optarg);
-                if(symbols_per_line > 0) g_map_symbols_per_line = symbols_per_line;
-            } else if(!strcmp(long_option_name,"all")){
-                g_all = true;
-            } else if(!strcmp(long_option_name,"all-fixed")){
-                g_all_fixed = true;
+    // support obsolete --quick-optimize option
+    if(parser.Found(wxT("quick-optimize")))
+        g_quick_optimization = true;
+
+    g_all = parser.Found(wxT("all"));
+    g_all_fixed = parser.Found(wxT("all-fixed"));
+
+    g_list_volumes = parser.Found(wxT("l"));
+    g_list_all = parser.Found(wxT("la"));
+    if(g_list_all) g_list_volumes = true;
+
+    g_no_progress = parser.Found(wxT("p"));
+    g_show_vol_info = parser.Found(wxT("v"));
+    g_show_map = parser.Found(wxT("m"));
+
+    g_use_default_colors = parser.Found(wxT("b"));
+
+    wxString color;
+    if(parser.Found(wxT("map-border-color"),&color)){
+        for(int i = 0; i < sizeof(colors) / sizeof(colors[0]); i++){
+            if(color == colors[i].name){
+                g_map_border_color = colors[i].value;
+                break;
             }
-            break;
-        case 'a':
-            g_analyze = true;
-            break;
-        case 'o':
-            g_optimize = true;
-            break;
-        case 'q':
-            g_quick_optimization = true;
-            break;
-        case 'l':
-            g_list_volumes = true;
-            if(optarg){
-                if(!strcmp(optarg,"a")) g_list_all = true;
-                if(!strcmp(optarg,"all")) g_list_all = true;
-            }
-            break;
-        case 'r':
-            g_repeat = true;
-            break;
-        case 'p':
-            g_no_progress = true;
-            break;
-        case 'v':
-            g_show_vol_info = true;
-            break;
-        case 'm':
-            g_show_map = true;
-            break;
-        case 'b':
-            g_use_default_colors = true;
-            break;
-        case 'h':
-            g_help = true;
-            break;
-        case '?': /* invalid option or -? option */
-            if(optopt == '?') g_help = true;
-            break;
-        default:
-            fprintf(stderr,"?? getopt returned character code 0%o ??\n", c);
         }
     }
+
+    wxString map_symbol;
+    if(parser.Found(wxT("map-symbol"),&map_symbol)){
+        long value = 0;
+        if(map_symbol.Find(wxT("0x")) == 0){
+            if(!map_symbol.ToLong(&value,16)) value = 0;
+        } else {
+            value = (long)map_symbol[0].GetValue();
+        }
+        if(value > 0 && value < 256)
+            g_map_symbol = (char)value;
+    }
+
+    long rows = 0, columns = 0;
+    if(parser.Found(wxT("map-rows"),&rows)){
+        if(rows > 0) g_map_rows = rows;
+    }
+    if(parser.Found(wxT("map-symbols-per-line"),&columns)){
+        if(columns > 0) g_map_symbols_per_line = columns;
+    }
+
+    g_use_entire_window = parser.Found(wxT("use-entire-window"));
+
+    g_wait = parser.Found(wxT("wait"));
+    g_shellex = parser.Found(wxT("shellex"));
+    g_folder = parser.Found(wxT("folder"));
+    g_folder_itself = parser.Found(wxT("folder-itself"));
+
+    g_help = parser.Found(wxT("h")) || parser.Found(wxT("?"));
 
     if(g_help) return true;
 
     /* --all-fixed flag has more precedence */
     if(g_all_fixed) g_all = false;
 
-    /* --quick-optimize flag has more precedence */
+    /* --quick-optimization flag has more precedence */
     if(g_quick_optimization) g_optimize = false;
 
     /* -p flag disables cluster map as well */
     if(g_no_progress) g_show_map = false;
 
     /* search for drive letters and paths */
-    wxString cmdline(GetCommandLine());
+    cmdline = GetCommandLine();
     cmdline.Replace(wxT("\\\""),wxT("\\\\\""));
     wxArrayString opts = wxCmdLineParser::ConvertStringToArgs(cmdline);
     g_volumes = new wxArrayString(); g_paths = new wxArrayString();
@@ -310,9 +282,17 @@ bool parse_cmdline(int argc, char **argv)
         CONSOLE_SCREEN_BUFFER_INFO csbi;
         HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
         if(GetConsoleScreenBufferInfo(h,&csbi)){
-            g_map_symbols_per_line = csbi.srWindow.Right - csbi.srWindow.Left - 2;
-            g_map_rows = csbi.srWindow.Bottom - csbi.srWindow.Top - 10;
-            if(g_show_vol_info) g_map_rows -= g_extra_lines;
+            g_map_symbols_per_line = csbi.srWindow.Right - csbi.srWindow.Left;
+            if(g_map_symbols_per_line > 2) g_map_symbols_per_line -= 2;
+            else g_map_symbols_per_line = 1;
+
+            g_map_rows = csbi.srWindow.Bottom - csbi.srWindow.Top;
+            if(g_map_rows > 10) g_map_rows -= 10; else g_map_rows = 1;
+            if(g_show_vol_info){
+                if(g_map_rows > g_extra_lines) g_map_rows -= g_extra_lines;
+                else g_map_rows = 1;
+            }
+
             /* scroll buffer one line up */
             if(csbi.srWindow.Top > 0){
                 SMALL_RECT sr;
@@ -369,7 +349,7 @@ bool set_shellex_options(void)
     wxUnsetEnv(wxT("UD_SORTING_ORDER"));
 
     /* interprete options.lua file */
-    wxFileName path(wxT("%UD_INSTALL_DIR%\\options.lua"));
+    wxFileName path(wxT("%UD_INSTALL_DIR%\\conf\\options.lua"));
     path.Normalize();
     if(!path.FileExists()){
         etrace("%ls file not found",

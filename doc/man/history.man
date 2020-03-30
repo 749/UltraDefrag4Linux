@@ -1,8 +1,5 @@
 HISTORY(1)         UltraDefrag Boot Time Commands          HISTORY(1)
 
-NAME
-        history - manual page for history v7.0.0
-
 SYNOPSIS
         history
 
@@ -17,11 +14,11 @@ AUTHOR
         Written by UltraDefrag Development Team.
 
 COPYRIGHT
-        Copyright (C) 2010-2015 UltraDefrag Development Team
+        Copyright (C) 2010-2018 UltraDefrag Development Team
         This is free software. You may redistribute copies of
         it under the terms of the GNU General Public License
         <http://www.gnu.org/licenses/gpl.html>. There is NO
         warranty; not even for MERCHANTABILITY or FITNESS
         FOR A PARTICULAR PURPOSE.
 
-history                       April 2015                            1
+history                       March 2018                            1

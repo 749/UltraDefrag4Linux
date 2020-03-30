@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
@@ -22,13 +22,17 @@
  *     - If it shows <b>IA64</b> download the <b>ia64</b> installer.
  *
  * <h3>Can I up- or downgrade over an existing installation?</h3>
- * Yes. Neither removal of old files nor reboot is necessary.
+ * Yes. There's no need to remove old files, the installer will take care about everything automatically.
  *
- * <h3>My anti-virus software says UltraDefrag is infected by a virus. Is it true?</h3>
- * UltraDefrag is open source software, so its code base cannot contain malicious stuff
- * by definition. For extra safety, to ensure that the compiled binaries haven't been
- * infected, we test them all carefully on <a href="http://www.virustotal.com/">virustotal.com</a>.
+ * <h3>My antivirus software says UltraDefrag is infected by a virus. Is it true?</h3>
+ * UltraDefrag is open source software, so it cannot contain malicious stuff
+ * by definition. For extra safety, to ensure that the compiled binaries haven't been accidentally
+ * infected, we test them all carefully on <a href="https://www.virustotal.com/">virustotal.com</a>.
  * Only when all files pass most of the virus scanners we make an official release.
+ * So, if you see a message saying UltraDefrag is infected by a virus, actually that's nothing
+ * but a <a href="https://en.wikipedia.org/wiki/False_positives_and_false_negatives">false positive</a>.
+ * We do recommend you to report the case to your antivirus software vendor. As a result your antivirus
+ * software will get fixed and you won't see the false positives anymore.
  *
  * <h1>General usage</h1>
  * <h3>I need to defragment a large file but have no sufficient free space gap on the disk, what should I do?</h3>
@@ -38,7 +42,7 @@
  * - Move all files to another disk, reformat the original disk and move files back.
  * Everything will be perfectly settled in the beginning of the disk.
  * - Use <a href="http://gparted.sourceforge.net/">GParted</a>
- * or <a href="http://en.wikipedia.org/wiki/PartitionMagic">Partition Magic</a>
+ * or <a href="https://en.wikipedia.org/wiki/PartitionMagic">Partition Magic</a>
  * software to shrink the disk. Then expand it back to the original size to get
  * a continuous free space gap at the end.
  *
@@ -46,24 +50,32 @@
  * The system restore service sometimes tracks file movements. When it exhausts all
  * the disk space reserved for restore points it eliminates elder stuff to release
  * some space for further tracking. Due to this reason we recommend to use
- * <a href="http://en.wikipedia.org/wiki/Backup_and_Restore">backup</a>
- * software instead for serious purposes.
+ * <a href="https://en.wikipedia.org/wiki/Backup_and_Restore">backup</a>
+ * software instead to keep valuable data backed up.
  *
  * <h3>How to move everything to the beginning of the disk?</h3>
- * Optimization of big files and fragments is pretty useless, but
- * if you like it (or need for partition shrinking) you can easily do it.
- * Just unset all filters, set the <b>fragment_size_threshold</b> parameter
- * to <b>0</b> and the <b>optimizer_file_size_threshold</b> parameter to 
- * <b>15 EB</b>. This way UltraDefrag will move all files and fragments,
- * regardless of their size, to the beginning of the disk.
+ * Usually it doesn't make sense to move big fragments, but if you'd like
+ * to get all files perfectly sorted or just want to pack everything as tight
+ * as possible before partition shrinking you can easily do it. Just set the <b>fragment_size_threshold</b> parameter to <b>0</b>,
+ * the <b>optimizer_file_size_threshold</b> parameter to <b>15 EB</b> and unset all filters.
+ * This way UltraDefrag will move all files, regardless of their fragments
+ * size, to the beginning of the disk.
+ *
+ * <h3>I have a volume with no drive letter assigned, how can I defragment it?</h3>
+ * Go to <b>Start > Control Panel > Administrative Tools > Computer Management > Storage >
+ * Disk Management</b> and assign a drive letter to the volume. Then defragment it and,
+ * if you wish, remove the assigned letter afterwards. To automate the process
+ * the <a href="https://www.howtogeek.com/197296/how-to-use-the-diskpart-utility-to-assign-and-remove-drive-letters/">diskpart</a>
+ * utility can be used as shown in the @ref Console chapter of this handbook. The only drawback is that in some cases a reboot may
+ * be required to release the assigned drive letter, especially on older systems like Windows XP.
  *
  * <h1>Graphical interface</h1>
  * <h3>When will the cluster map become interactive, so I'll be able to know where
  * individual files are located on disk?</h3>
  * When defragmentation algorithms are quite efficient, it's definitely not necessary
  * to know locations of individual files - anyway you'll get your drive optimized
- * quite well. Maybe we'll implement the discussed feature later, but now we prefer
- * to spend more time for the disk optimization algorithm improvements.
+ * quite well. Maybe we'll implement the discussed feature later, but now it's time
+ * for more significant improvements.
  *
  * <h3>Why configuration files are better than one settings window with tabs?</h3>
  * Configuration files are easy to edit, even in Windows Notepad.
@@ -90,12 +102,17 @@
  * If your browser supports tabbed browsing open one instance of it before you display the
  * reports. This will open each report in a new tab depending on your browser configuration.
  *
+ * <h3>When I click Settings > Options the program fails to open the options.lua file, what's going on?</h3>
+ * Usually it happens on 64-bit systems when a 32-bit text editior is associated with the .lua file extension.
+ * To fix the problem just install a 64-bit edition of the editor or associate the .lua extension with the built-in
+ * Windows Notepad.
+ *
  * <h1>Boot time interface</h1>
  * <h3>Why some files are still fragmented?</h3>
  * Inspect the @ref Reports "file fragmentation reports" to find out the reason.
  * Some system configurations are locking files even at boot, which can't be prevented. 
  * In some cases free space regions aren't big enough to hold the entire file. You might
- * fix it using the quick optimization which consolidates free space a bit.
+ * fix that using the quick optimization which consolidates free space a bit.
  *
  * <h3>How can I disable the boot time defragmenter manually?</h3>
  * Remove the <b>defrag_native</b> entry from the following system registry parameter:
@@ -105,12 +122,9 @@ HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\BootExecute
 @endverbatim
  *
  * <h1>Miscellaneous</h1>
- * <h3>How many differences are between UltraDefrag and well known MyDefrag (previously JkDefrag)?</h3>
- * Both programs have similar disk analysis algorithms, but defragmentation is done
- * in different ways. While MyDefrag gives more control over files placement,
- * UltraDefrag uses much simpler algorithms which are faster and easier to use.
- * Additionally UltraDefrag can defragment locked files being launched inside
- * of the Windows boot process.
+ * <h3>How many differences are between the disk processing algorithms of UltraDefrag and well known MyDefrag (previously JkDefrag)?</h3>
+ * Both programs have similar disk analysis algorithms, but defragmentation is done in different ways. While MyDefrag gives more control
+ * over files placement, UltraDefrag uses much simpler algorithms which are faster and easier to use.
  *
  * @htmlonly
  * <HR>

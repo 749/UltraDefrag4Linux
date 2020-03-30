@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
@@ -46,7 +46,7 @@
  *
  * To select multiple disks use the same rules as in Windows Explorer. For instance, hit <b>Ctrl+A</b> to select them all.
  *
- * Double-click a drive or select it and hit <b>Enter</b> to start its analysis (repair if it's dirty one).
+ * Double-click a drive or select it and hit <b>Enter</b> to start its analysis (repair if it's a dirty one).
  *
  * @anchor cluster_map_legend
  * <h1>Cluster map</h1>
@@ -286,24 +286,6 @@
  * @latexonly
  * \\ \hline
  * @endlatexonly
- * @image html "repeat.png"
- * @htmlonly
- * </td><td style="width: 90%;">
- * @endhtmlonly
- * @latexonly
- * \raisebox{-2.1\height}{\includeicon{repeat.png}} &
- * @endlatexonly
- * @par Repeat action (Shift+R)
- * Allow to repeat the disk processing multiple times
- * whenever it makes sense. Usually it increases processing
- * time, but leads to better results.
- *
- * @htmlonly
- * </td></tr><tr><td>
- * @endhtmlonly
- * @latexonly
- * \\ \hline
- * @endlatexonly
  * @image html "Blank.png"
  * @htmlonly
  * </td><td style="width: 90%;">
@@ -345,7 +327,6 @@
  * @endlatexonly
  * @par Repair drives
  * Repair the selected disk(s) using the <b>chkdsk</b> command line tool.
- * Note that you need to rescan the drives manually afterwards to update their status.
  *
  * @htmlonly
  * </td></tr><tr><td>
@@ -413,11 +394,7 @@
  * \raisebox{-1.5\height}{\includeicon{Blank.png}} &
  * @endlatexonly
  * @par Language
- * Select language or follow additional links to translate the program:
- * - <b>Translate online</b> opens the project page at 
-     <a href="https://www.transifex.com/projects/p/ultradefrag/resource/main/">transifex</a>.
- * - <b>Translate offline</b> opens the @ref Translation chapter of this handbook.
- * - <b>Translations folder</b> opens the folder containing all the translations.
+ * Select display language for the graphical interface.
  *
  * @htmlonly
  * </td></tr><tr><td>
@@ -466,7 +443,7 @@
  * @endlatexonly
  * @par Boot time scan &gt; Enable (F11)
  * Enable or disable the boot time processing
- * <i>(disabled for portable editions)</i>.
+ * <i>(disabled in portable editions)</i>.
  *
  * @htmlonly
  * </td></tr><tr><td>
@@ -483,7 +460,7 @@
  * @endlatexonly
  * @par Boot time scan &gt; Script (F12)
  * Open the boot time script
- * <i>(disabled for portable editions)</i>.
+ * <i>(disabled in portable editions)</i>.
  *
  * @htmlonly
  * </td></tr></table>

@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,18 +20,20 @@
 /**
  * @file string.c
  * @brief Strings.
- * @addtogroup String
+ * @addtogroup Strings
  * @{
  */
 
-#include "ntndk.h"
+#include "prec.h"
 #include "zenwinx.h"
 #include <math.h> /* for pow function */
 
 /**
- * @brief Size of the buffer used by winx_vsprintf
- * initially. Larger sizes tend to reduce time needed
- * to format long strings.
+ * @internal
+ * @brief The initial buffer size for the 
+ * winx_vsprintf and winx_vswprintf routines.
+ * Increase this value to format long strings
+ * faster.
  */
 #define WINX_VSPRINTF_BUFFER_SIZE 128
 
@@ -62,9 +64,9 @@ void winx_init_case_tables(void)
  * @brief Reliable _toupper analog.
  * @details MSDN states: "In order for toupper to give
  * the expected results, __isascii and islower must both
- * return nonzero". winx_toupper has no such limitation.
- * @note Converts ASCII characters only (as well
- * as _toupper function included in ntdll library).
+ * return nonzero". winx_toupper has no such limitations.
+ * @note Converts ASCII characters only (as well as the
+ * _toupper function included in ntdll library).
  */
 char winx_toupper(char c)
 {
@@ -75,9 +77,9 @@ char winx_toupper(char c)
  * @brief Reliable _tolower analog.
  * @details MSDN states: "In order for tolower to give
  * the expected results, __isascii and isupper must both
- * return nonzero". winx_tolower has no such limitation.
- * @note Converts ASCII characters only (as well
- * as _tolower function included in ntdll library).
+ * return nonzero". winx_tolower has no such limitations.
+ * @note Converts ASCII characters only (as well as the
+ * _tolower function included in ntdll library).
  */
 char winx_tolower(char c)
 {
@@ -254,8 +256,8 @@ char *winx_stristr(const char *s1, const char *s2)
 }
 
 /**
- * @brief winx_wcsmatch helper.
  * @internal
+ * @brief winx_wcsmatch helper.
  */
 static int wcsmatch_helper(wchar_t *string, wchar_t *mask)
 {
@@ -269,7 +271,7 @@ static int wcsmatch_helper(wchar_t *string, wchar_t *mask)
             /* skip asterisks */
             while(*mask == '*') mask ++;
             if(*mask == 0) return 1;
-            /* compare rest of the string with rest of the mask */
+            /* compare the rest of the string with the rest of the mask */
             cm = *mask;
             if(cm == '?'){
                 /* the question mark matches any single character */
@@ -288,7 +290,7 @@ static int wcsmatch_helper(wchar_t *string, wchar_t *mask)
             }
             return 0;
         }
-        /* let's compare next pair of characters */
+        /* let's compare the next pair of characters */
         string ++;
         mask ++;
     }
@@ -298,8 +300,8 @@ static int wcsmatch_helper(wchar_t *string, wchar_t *mask)
 }
 
 /**
- * @brief winx_wcsmatch helper.
  * @internal
+ * @brief winx_wcsmatch helper.
  */
 static int wcsmatch_icase_helper(wchar_t *string, wchar_t *mask)
 {
@@ -314,7 +316,7 @@ static int wcsmatch_icase_helper(wchar_t *string, wchar_t *mask)
             /* skip asterisks */
             while(*mask == '*') mask ++;
             if(*mask == 0) return 1;
-            /* compare rest of the string with rest of the mask */
+            /* compare the rest of the string with the rest of the mask */
             cm = fast_towlower(*mask);
             if(cm == '?'){
                 /* the question mark matches any single character */
@@ -333,7 +335,7 @@ static int wcsmatch_icase_helper(wchar_t *string, wchar_t *mask)
             }
             return 0;
         }
-        /* let's compare next pair of characters */
+        /* let's compare the next pair of characters */
         string ++;
         mask ++;
     }
@@ -344,11 +346,11 @@ static int wcsmatch_icase_helper(wchar_t *string, wchar_t *mask)
 
 /**
  * @brief Compares a string with a mask.
- * @details Supports <b>?</b> and <b>*</b> wildcards.
+ * @details Supports both <b>?</b> and <b>*</b> wildcards.
  * @param[in] string the string to be compared with the mask.
  * @param[in] mask the mask to be compared with the string.
- * @param[in] flags the combination of WINX_PAT_xxx flags.
- * @return Nonzero value indicates that the string matches the mask.
+ * @param[in] flags a combination of WINX_PAT_xxx flags.
+ * @return A nonzero value if the string matches the mask.
  * @note Optimized for speed.
  */
 int winx_wcsmatch(wchar_t *string, wchar_t *mask, int flags)
@@ -369,7 +371,7 @@ int winx_wcsmatch(wchar_t *string, wchar_t *mask, int flags)
  * @param[in] format the format specification.
  * @param[in] arg pointer to the list of arguments.
  * @return Pointer to the formatted string, NULL
- * indicates failure. The string must be deallocated
+ * indicates failure. The string should be deallocated
  * by winx_free after its use.
  * @note Optimized for speed, can allocate more memory than needed.
  */
@@ -396,7 +398,7 @@ char *winx_vsprintf(const char *format,va_list arg)
         result = _vsnprintf(buffer,size,format,arg);
         if(result != -1 && result != size)
             return buffer;
-        /* buffer is too small; try to allocate two times larger */
+        /* the buffer is too small; try to allocate two times larger */
         winx_free(buffer);
         size <<= 1;
     } while(size > 0);
@@ -409,7 +411,7 @@ char *winx_vsprintf(const char *format,va_list arg)
  * @param[in] format the format specification.
  * @param[in] ... the arguments.
  * @return Pointer to the formatted string, NULL
- * indicates failure. The string must be deallocated
+ * indicates failure. The string should be deallocated
  * by winx_free after its use.
  * @note Optimized for speed, can allocate more memory than needed.
  */
@@ -430,7 +432,7 @@ char *winx_sprintf(const char *format, ...)
  * @param[in] format the format specification.
  * @param[in] arg pointer to the list of arguments.
  * @return Pointer to the formatted string, NULL
- * indicates failure. The string must be deallocated
+ * indicates failure. The string should be deallocated
  * by winx_free after its use.
  * @note Optimized for speed, can allocate more memory than needed.
  */
@@ -452,7 +454,7 @@ wchar_t *winx_vswprintf(const wchar_t *format,va_list arg)
         result = _vsnwprintf(buffer,size,format,arg);
         if(result != -1 && result != size)
             return buffer;
-        /* buffer is too small; try to allocate two times larger */
+        /* the buffer is too small; try to allocate two times larger */
         winx_free(buffer);
         size <<= 1;
     } while(size > 0);
@@ -465,7 +467,7 @@ wchar_t *winx_vswprintf(const wchar_t *format,va_list arg)
  * @param[in] format the format specification.
  * @param[in] ... the arguments.
  * @return Pointer to the formatted string, NULL
- * indicates failure. The string must be deallocated
+ * indicates failure. The string should be deallocated
  * by winx_free after its use.
  * @note Optimized for speed, can allocate more memory than needed.
  */
@@ -487,14 +489,14 @@ wchar_t *winx_swprintf(const wchar_t *format, ...)
 
 /**
  * @brief Compiles a string of patterns
- * to an internal representation.
- * @param[out] patterns pointer to the storage
- * for a single winx_patlist structure.
+ * to a single winx_patlist structure.
+ * @param[out] patterns pointer to a single
+ * winx_patlist structure receiving the result.
  * @param[in] string the string of patterns.
- * @param[in] delim the list of delimiters
- * to be used to split string to individual patterns.
- * @param[in] flags the combination of WINX_PAT_xxx flags.
- * @return Zero for success, negative value otherwise.
+ * @param[in] delim the list of delimiters to be
+ * used to split the string to individual patterns.
+ * @param[in] flags a combination of WINX_PAT_xxx flags.
+ * @return Zero for success, a negative value otherwise.
  */
 int winx_patcomp(winx_patlist *patterns,wchar_t *string,wchar_t *delim,int flags)
 {
@@ -561,12 +563,12 @@ int winx_patcomp(winx_patlist *patterns,wchar_t *string,wchar_t *delim,int flags
 }
 
 /**
- * @brief Searches for a patterns in a string.
+ * @brief Searches for patterns in a string.
  * @param[in] string the string to search in.
  * @param[in] patterns the list of patterns
  * to be searched for.
- * @return Nonzero value indicates
- * that at least one pattern has been found.
+ * @return A nonzero value if at least one
+ * pattern has been found.
  */
 int winx_patfind(wchar_t *string,winx_patlist *patterns)
 {
@@ -589,13 +591,13 @@ int winx_patfind(wchar_t *string,winx_patlist *patterns)
 }
 
 /**
- * @brief Compares a string with a patterns.
- * @details Supports <b>?</b> and <b>*</b> wildcards.
+ * @brief Compares a string with patterns.
+ * @details Supports both <b>?</b> and <b>*</b> wildcards.
  * @param[in] string the string to compare patterns with.
  * @param[in] patterns the list of patterns
  * to be compared with the string.
- * @return Nonzero value indicates that
- * at least one pattern matches the string.
+ * @return A nonzero value if at least
+ * one pattern matches the string.
  */
 int winx_patcmp(wchar_t *string,winx_patlist *patterns)
 {
@@ -613,7 +615,7 @@ int winx_patcmp(wchar_t *string,winx_patlist *patterns)
 }
 
 /**
- * @brief Frees resources allocated by winx_patcomp.
+ * @brief Releases resources allocated by winx_patcomp.
  * @param[in] patterns the list of patterns.
  */
 void winx_patfree(winx_patlist *patterns)
@@ -633,21 +635,20 @@ void winx_patfree(winx_patlist *patterns)
 }
 
 /*
-* End of a lightweight alternative for regular expressions.
+* End of the lightweight alternative for regular expressions.
 */
 
 /**
  * @brief Converts number of bytes
  * to a human readable string.
  * @param[in] bytes number of bytes.
- * @param[in] digits number of digits after a dot.
- * @param[out] buffer pointer to string receiving
- * the converted number of bytes.
- * @param[in] length the length of the buffer, in characters.
- * @return The number of characters stored, not counting the 
- * terminating null character. If the number of characters
- * required to store the data exceeds length, then length 
- * characters are stored in the buffer and a negative value is returned.
+ * @param[in] digits number of digits after the dot.
+ * @param[out] buffer the output buffer.
+ * @param[in] length length of the buffer, in characters.
+ * @return Number of characters stored, not counting the 
+ * terminal zero. If number of characters required to store
+ * the data exceeds length, then length characters are stored
+ * in the buffer and a negative value is returned.
  */
 int winx_bytes_to_hr(ULONGLONG bytes, int digits, char *buffer, int length)
 {
@@ -685,10 +686,10 @@ int winx_bytes_to_hr(ULONGLONG bytes, int digits, char *buffer, int length)
  * string to number of bytes.
  * @details Supported suffixes:
  * B, KB, MB, GB, TB, PB, EB, ZB, YB.
- * @param[in] string string to be converted.
+ * @param[in] string the string to be converted.
  * @return Number of bytes.
  * @note Accepted values are below 16.0 Eb,
- * all values above will be converted improperly.
+ * all values above will get converted improperly.
  */
 ULONGLONG winx_hr_to_bytes(char *string)
 {
@@ -720,7 +721,7 @@ ULONGLONG winx_hr_to_bytes(char *string)
     if(dp != NULL){
         for(z = 0; dp[z + 1] == '0'; z++) {}
         for(rd = (double)_atoi64(dp + 1); rd > 1; rd /= 10){}
-        /* convertion to LONGLONG is needed for MinGW */
+        /* conversion to LONGLONG is needed for MinGW */
         r = (ULONGLONG)(LONGLONG)((double)(LONGLONG)m * rd * pow(10, -z));
     }
     
@@ -730,10 +731,10 @@ ULONGLONG winx_hr_to_bytes(char *string)
 /**
  * @brief Converts a string to UTF-8 encoding.
  * @param[out] dst the destination buffer.
- * @param[in] size the size of the destination buffer.
+ * @param[in] size size of the destination buffer.
  * @param[in] src the source string.
- * @note Each converted character needs maximum
- * three bytes to be stored. So destination buffer
+ * @note Each converted character requires maximum
+ * three bytes to be stored. So, the destination buffer
  * should be at least (1.5 * src_bytes) long.
  */
 void winx_to_utf8(char *dst,int size,wchar_t *src)

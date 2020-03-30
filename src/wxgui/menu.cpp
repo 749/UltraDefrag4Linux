@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 //
 //  UltraDefrag - a powerful defragmentation tool for Windows NT.
-//  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+//  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
 //  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -23,6 +23,9 @@
 /**
  * @file menu.cpp
  * @brief Menu.
+ * @note On Windows 7 menu icons and check marks ain't centered,
+ * but it looks like it's by design as they ain't centered in
+ * Windows Explorer as well.
  * @addtogroup Menu
  * @{
  */
@@ -34,6 +37,7 @@
 //                            Declarations
 // =======================================================================
 
+#include "prec.h"
 #include "main.h"
 
 /*
@@ -57,7 +61,6 @@
 #define UD_AppendRadioItem(menu,id) menu->AppendRadioItem(id,EmptyLabel)
 #define UD_AppendSeparator(menu)    menu->AppendSeparator();
 
-// FIXME: on Windows 7 check marks ain't centered at 150% DPI
 #define UD_SetMarginWidth(menu) { \
     wxMenuItemList list = menu->GetMenuItems(); \
     size_t count = list.GetCount(); \
@@ -95,9 +98,6 @@ void MainFrame::InitMenu()
     UD_AppendItem(m_menuAction,      ID_Stop,       wxT("stop")  );
     UD_AppendSeparator(m_menuAction);
 
-    UD_AppendCheckItem(m_menuAction, ID_Repeat                   );
-    UD_AppendSeparator(m_menuAction);
-
     UD_AppendItem(m_menuAction,      ID_ShowReport, wxT("report"));
     UD_AppendSeparator(m_menuAction);
 
@@ -115,10 +115,6 @@ void MainFrame::InitMenu()
 
     // create language menu
     m_menuLanguage = new wxMenu;
-    UD_AppendItem(m_menuLanguage, ID_LangTranslateOnline,  wxEmptyString);
-    UD_AppendItem(m_menuLanguage, ID_LangTranslateOffline, wxEmptyString);
-    UD_AppendItem(m_menuLanguage, ID_LangOpenFolder,       wxEmptyString);
-    UD_AppendSeparator(m_menuLanguage);
 
     wxString AppLocaleDir(wxGetCwd());
     AppLocaleDir.Append(wxT("/locale"));
@@ -152,7 +148,7 @@ void MainFrame::InitMenu()
                     langArray.Add(wxT("Chinese (Traditional)"));
                 } else {
                     if(info->Description == wxT("English")){
-                        langArray.Add(wxT("English (U.K.)"));
+                        langArray.Add(wxT("English (UK)"));
                     } else {
                         langArray.Add(info->Description);
                     }
@@ -167,10 +163,10 @@ void MainFrame::InitMenu()
 
         // divide list of languages to three columns
         unsigned int breakDelta = (unsigned int)ceil((double) \
-            (langArray.Count() + langArray.Count() % 2 + 4) / 3);
-        unsigned int breakCnt = breakDelta - 4;
-        itrace("languages: %d, break count: %d, delta: %d",
-            langArray.Count(), breakCnt, breakDelta);
+            (langArray.Count() + langArray.Count() % 2) / 3);
+        unsigned int breakCnt = breakDelta;
+        itrace("languages: %d, break count: %d",
+            langArray.Count(), breakCnt);
         for(unsigned int i = 0;i < langArray.Count();i++){
             info = g_locale->FindLanguageInfo(langArray[i]);
             m_menuLanguage->AppendRadioItem(ID_LocaleChange \
@@ -258,8 +254,7 @@ void MainFrame::InitMenu()
     }
 
     // initial settings
-    m_menuBar->FindItem(ID_Repeat)->Check(m_repeat);
-    m_menuBar->FindItem(ID_SkipRem)->Check(m_skipRem);
+    m_menuBar->Check(ID_SkipRem,m_skipRem);
 
     int id = g_locale->GetLanguage();
     wxMenuItem *item = m_menuBar->FindItem(ID_LocaleChange + id);
@@ -268,21 +263,21 @@ void MainFrame::InitMenu()
     wxConfigBase *cfg = wxConfigBase::Get();
     wxString sorting = cfg->Read(wxT("/Algorithm/Sorting"),wxT("path"));
     if(sorting == wxT("path")){
-        m_menuBar->FindItem(ID_SortByPath)->Check();
+        m_menuBar->Check(ID_SortByPath,true);
     } else if(sorting == wxT("size")){
-        m_menuBar->FindItem(ID_SortBySize)->Check();
+        m_menuBar->Check(ID_SortBySize,true);
     } else if(sorting == wxT("c_time")){
-        m_menuBar->FindItem(ID_SortByCreationDate)->Check();
+        m_menuBar->Check(ID_SortByCreationDate,true);
     } else if(sorting == wxT("m_time")){
-        m_menuBar->FindItem(ID_SortByModificationDate)->Check();
+        m_menuBar->Check(ID_SortByModificationDate,true);
     } else if(sorting == wxT("a_time")){
-        m_menuBar->FindItem(ID_SortByLastAccessDate)->Check();
+        m_menuBar->Check(ID_SortByLastAccessDate,true);
     }
     wxString order = cfg->Read(wxT("/Algorithm/SortingOrder"),wxT("asc"));
     if(order == wxT("asc")){
-        m_menuBar->FindItem(ID_SortAscending)->Check();
+        m_menuBar->Check(ID_SortAscending,true);
     } else {
-        m_menuBar->FindItem(ID_SortDescending)->Check();
+        m_menuBar->Check(ID_SortDescending,true);
     }
 }
 

@@ -1,10 +1,9 @@
 -- Lua 5.1 interpreter build options
-name        = "lua5.1a"
-target_type = "console"
+name = "lua5.1a"; target_type = "console"
 
 -- list of directories containing headers the program relies on
 includes = { "include", "lua5.1" }
 
-libs = { "msvcrt" }
-adlibs = { "$(UDEFRAG_LIB_PATH)\\lua5.1a" }
+libs = { "msvcrt", "lua5.1a" }
+
 umentry = "main"
