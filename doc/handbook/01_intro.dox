@@ -157,21 +157,21 @@
  * will be deleted soon, therefore they will not decrease the system performance.
  *
  * <h1>Web resources</h1>
- * The Ultra Defragmenter's
- * <a href="http://ultradefrag.sourceforge.net/">home page at Sourceforge.net</a>.
- *
- * Please be sure to visit this site for information,
- * documentation, tutorials, news, etc. All UltraDefrag
- * related things are available there.
+ * Visit <a href="http://ultradefrag.sourceforge.net/">UltraDefrag website</a>
+ * for more information and news.
  *
  * For help requests visit our
- * <a href="http://sourceforge.net/p/ultradefrag/discussion/709673/">forum at Sourceforge.net</a>.
+ * <a href="http://sourceforge.net/p/ultradefrag/discussion/709673/">forum</a>.
  *
  * Please report all problems and bugs via our
- * <a href="http://sourceforge.net/p/ultradefrag/bugs/">bug tracker at Sourceforge.net</a>.
+ * <a href="http://sourceforge.net/p/ultradefrag/bugs/">bug tracker</a>.
  *
- * To participate in UltraDefrag translation
- * please visit <a href="http://ultradefrag.wikispaces.com/">WikiSpaces.com</a>.
+ * To participate in translation of the recent UltraDefrag version
+ * please visit <a href="http://www.transifex.com/projects/p/ultradefrag/">UltraDefrag project at Transifex</a>.
+ * To submit your own translation for UltraDefrag v6 use our forum mentioned above.
+ *
+ * <a href="http://sourceforge.net/p/ultradefrag/wiki/Home/">UltraDefrag Wiki</a>
+ * is a good place to share some stuff like tutorials and scripts.
  *
  * @htmlonly
  * <HR>

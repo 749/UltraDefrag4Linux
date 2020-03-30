@@ -1,6 +1,7 @@
 ﻿;------------------------------------------------------------------------------
 ; UltraDefrag GUI Thai Language Pack
 ; Copyright (C) 2009 Pat Taweewat.
+; Copyright (C) 2013 Thanapon Namjittrong
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
@@ -19,34 +20,34 @@
 
 ACTION                    = การกระทำ
 REPORT                    = รายงาน
-SETTINGS                  = การตั้งค่า
+SETTINGS                  = ตั้งค่า
 HELP                      = ช่วยเหลือ
 
 ; --- Action Menu
 
 ANALYSE                   = วิเคราะห์
-DEFRAGMENT                = จัดระเบียบ
-QUICK_OPTIMIZE            = การเพิ่มประสิทธิภาพรวดเร็ว
-FULL_OPTIMIZE             = เพิ่มประสิทธิภาพเต็ม
-OPTIMIZE_MFT              = MFT เพิ่มประสิทธิภาพ
-PAUSE                     = &Pause
-STOP                      = หยุดทำงาน
-REPEAT_ACTION             = ทำซ้ำการกระทำ
-SKIP_REMOVABLE_MEDIA      = ยกเว้นไดรฟ์ไม่ถาวร
-RESCAN_DRIVES             = ตรวจหาไดรฟ์อีกครั้ง
-REPAIR_DRIVES             = ไดรฟ์ซ่อมแซม
-WHEN_DONE                 = เมื่อเสร็จแล้ว
-EXIT                      = ทางออก
+DEFRAGMENT                = จัดเรียงข้อมูล
+QUICK_OPTIMIZE            = เพิ่มประสิทธิภาพแบบรวดเร็ว
+FULL_OPTIMIZE             = เพิ่มประสิทธิภาพแบบเต็ม
+OPTIMIZE_MFT              = เพิ่มประสิทธิภาพ MFT
+PAUSE                     = หยุดชั่วคราว
+STOP                      = หยุด
+REPEAT_ACTION             = ทำการกระทำซ้ำ
+SKIP_REMOVABLE_MEDIA      = ข้ามสื่อแบบถอดได้
+RESCAN_DRIVES             = สแกนไดรฟ์อีกครั้ง
+REPAIR_DRIVES             = ซ่อมแซมไดรฟ์
+WHEN_DONE                 = เมื่อเสร็จสมบูรณ์
+EXIT                      = ออก
 
 ; --- --- When done submenu
 
 WHEN_DONE_NONE            = ไม่
-WHEN_DONE_EXIT            = ทางออก
+WHEN_DONE_EXIT            = ออก
 WHEN_DONE_STANDBY         = สแตนด์บาย
-WHEN_DONE_HIBERNATE       = จำศีล
+WHEN_DONE_HIBERNATE       = ไฮเบอร์เนต
 WHEN_DONE_LOGOFF          = ออกจากระบบ
-WHEN_DONE_REBOOT          = รีบูตเครื่อง
-WHEN_DONE_SHUTDOWN        = การปิด
+WHEN_DONE_REBOOT          = เริ่มต้นระบบใหม่
+WHEN_DONE_SHUTDOWN        = ปิดเครื่อง
 
 ; --- Report Menu
 
@@ -55,17 +56,17 @@ SHOW_REPORT               = แสดงรายงาน
 ; --- Settings Menu
 
 LANGUAGE                  = ภาษา
-GRAPHICAL_INTERFACE       = ส่วนติดต่อกราฟฟิก
-BOOT_TIME_SCAN            = ทำงานขณะบูต Windows
+GRAPHICAL_INTERFACE       = ส่วนติดต่อกราฟิก
+BOOT_TIME_SCAN            = สแกนเมื่อเริ่มต้นระบบ
 REPORTS                   = รายงาน
-SORTING                   = &Sorting
+SORTING                   = การเรียงลำดับ
 
 ; --- --- Language submenu
 
-TRANSLATIONS_CHANGE_LOG   = ดูการเปลี่ยนแปลงเข้าสู่ระบบ
+TRANSLATIONS_CHANGE_LOG   = ดูบันทึกการเปลี่ยนแปลง
 TRANSLATIONS_REPORT       = ดูรายงานการแปล
-TRANSLATIONS_FOLDER       = โฟลเดอร์ที่แปล
-TRANSLATIONS_SUBMIT       = ส่งคำแปลในปัจจุบัน
+TRANSLATIONS_FOLDER       = โฟลเดอร์แปลภาษา
+TRANSLATIONS_SUBMIT       = ส่งไฟล์แปลปัจจุบัน
 
 ; --- --- Graphical interface submenu
 
@@ -79,85 +80,85 @@ SCRIPT                    = สคริปต์
 
 ; --- --- Sorting submenu
 
-SORT_BY_PATH              = Sort by &path
-SORT_BY_SIZE              = Sort by &size
-SORT_BY_C_TIME            = Sort by &creation time
-SORT_BY_M_TIME            = Sort by last &modification time
-SORT_BY_A_TIME            = Sort by &last access time
-SORT_ASCENDING            = Sort in &ascending order
-SORT_DESCENDING           = Sort in &descending order
+SORT_BY_PATH              = เรียงลำดับตามเส้นทาง
+SORT_BY_SIZE              = เรียงลำดับตามขนาด
+SORT_BY_C_TIME            = เรียงลำดับตามเวลาที่สร้าง
+SORT_BY_M_TIME            = เรียงลำดับตามเวลาที่แก้ไขล่าสุด
+SORT_BY_A_TIME            = เรียงลำดับตามเวลาการเข้าถึงล่าสุด
+SORT_ASCENDING            = เรียงลำดับจากน้อยไปหามาก
+SORT_DESCENDING           = เรียงลำดับจากมากไปหาน้อย
 
 ; --- Help Menu
 
-CONTENTS                  = สารบัญ
-BEST_PRACTICE             = ปฏิบัติที่ดีที่สุด
+CONTENTS                  = เนื้อหา
+BEST_PRACTICE             = แนวทางปฏิบัติ
 FAQ                       = คำถามที่พบบ่อย
-CM_LEGEND                 = ตำนานคลัสเตอร์แผนที่
-DEBUG                     = การแก้ปัญหา
-CHECK_UPDATE              = ตรวจสอบสำหรับการปรับปรุง
-ABOUT                     = เี่กี่ยวกับ
+CM_LEGEND                 = คำอธิบายของแผนภูมิคลัสเตอร์
+DEBUG                     = แก้จุดบกพร่อง
+CHECK_UPDATE              = ตรวจหาการอัพเดท
+ABOUT                     = เกี่ยวกับ
 
 ; --- --- Debug submenu
 
-OPEN_LOG                  = เปิดบันทึก
-REPORT_BUG                = ส่งรายงานข้อผิดพลาด
+OPEN_LOG                  = เปิดไฟล์บันทึก
+REPORT_BUG                = ส่งรายงานจุดบกพร่อง
 
 ; --- Toolbar Tooltips
 
-BOOT_TIME_SCRIPT          = สคริปต์เวลาบูต
+BOOT_TIME_SCRIPT          = สคริปต์เริ่มต้นระบบ
 
 ; Drives list items.
 
-VOLUME                    = ปริมาณ
+VOLUME                    = ไดรฟ์
 STATUS                    = สถานะ
-FRAGMENTATION             = การกระจายตัวของ
+FRAGMENTATION             = การกระจายตัว
 TOTAL                     = เนื้อที่ทั้งหมด
 FREE                      = เนื้อที่ว่าง
-PERCENT                   = ร้อยละ
+PERCENT                   = ว่าง %
 
 ; Status messages
 
-STATUS_RUNNING            = เรียกใช้
-STATUS_ANALYSED           = วิเคราะห์
-STATUS_DEFRAGMENTED       = จัดระเบียบ
-STATUS_OPTIMIZED          = เหมาะ
-STATUS_DIRTY              = ดิสก์จะต้องมีการซ่อมแซม
+STATUS_RUNNING            = กำลังดำเนินการ
+STATUS_ANALYSED           = วิเคราะห์แล้ว
+STATUS_DEFRAGMENTED       = จัดเรียงข้อมูลแล้ว
+STATUS_OPTIMIZED          = เพิ่มประสิทธิภาพแล้ว
+STATUS_DIRTY              = ดิสก์จำเป็นต้องได้รับการซ่อมแซม
 
 ; Status bar messages.
 
 DIRS                      = โฟลเดอร์
 FILES                     = ไฟล์
-FRAGMENTED                = กระจาย
-COMPRESSED                = บีบอัด
+FRAGMENTED                = การแยกส่วน
+COMPRESSED                = การบีบอัด
 
 ; About window.
 
 ABOUT_WIN_TITLE           = เกี่ยวกับ Ultra Defragmenter
 CREDITS                   = เครดิต
-LICENSE                   = ใบอนุญาตได้
+LICENSE                   = ใบอนุญาต
 
 ; Shutdown confirmation
 
 PLEASE_CONFIRM            = กรุณายืนยัน
-REALLY_SHUTDOWN_WHEN_DONE = คุณอยากที่จะปิดเมื่อทำเสร็จ?
-REALLY_HIBERNATE_WHEN_DONE= จริงๆคุณต้องการที่จะจำศีลเมื่อดำเนินการเสร็จ?
-REALLY_LOGOFF_WHEN_DONE   = คุณอยากออกจากระบบเมื่อเสร็จสิ้น?
-REALLY_REBOOT_WHEN_DONE   = คุณอยากที่จะรีบูตเมื่อดำเนินการเสร็จ?
-SECONDS_TILL_SHUTDOWN     = วินาทีจนถึงปิด
-SECONDS_TILL_HIBERNATION  = จนถึงวินาทีไฮเบอร์เนต
-SECONDS_TILL_LOGOFF       = จนถึงวินาทีที่ออกจากระบบ
-SECONDS_TILL_REBOOT       = จนถึงวินาทีรีบูต
+REALLY_SHUTDOWN_WHEN_DONE = คุณต้องการที่จะปิดเครื่องเมื่อเสร็จสมบูรณ์หรือไม่?
+REALLY_HIBERNATE_WHEN_DONE= คุณต้องการที่จะไฮเบอร์เนตเมื่อเสร็จสมบูรณ์หรือไม่?
+REALLY_LOGOFF_WHEN_DONE   = คุณต้องการที่จะออกจากระบบเมื่อเสร็จสมบูรณ์หรือไม่?
+REALLY_REBOOT_WHEN_DONE   = คุณต้องการที่จะเริ่มต้นระบบใหม่เมื่อเสร็จสมบูรณ์หรือไม่?
+SECONDS_TILL_SHUTDOWN     = วินาทีจนกว่าปิดเครื่อง
+SECONDS_TILL_HIBERNATION  = วินาทีจนกว่าไฮเบอร์เนต
+SECONDS_TILL_LOGOFF       = วินาทีจนกว่าออกจากระบบ
+SECONDS_TILL_REBOOT       = วินาทีจนกว่าเริ่มต้นระบบใหม่
 YES                       = ใช่
-NO                        = ไม่มี
+NO                        = ไม่ใช่
 
 ; Upgrade dialog
 
-UPGRADE_CAPTION           = คุณสามารถปรับรุ่นผม ^-^
-UPGRADE_MESSAGE           = ปล่อยพร้อมสำหรับการดาวน์โหลด!
+UPGRADE_CAPTION           = คุณสามารถอัพเกรดฉัน ^-^
+UPGRADE_MESSAGE           = ดาวน์โหลดเวอร์ชั่นใหม่พร้อมใช้งาน!
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 
-JOB_IS_RUNNING            = งานกำลังทำงานอยู่
+JOB_IS_RUNNING            = กำลังทำงาน
 
 ; Strings for system tray icon context menu.
 
@@ -166,19 +167,19 @@ HIDE                      = ซ่อน
 
 ; Strings for the file fragmentation reports.
 
-FRAGMENTED_FILES_ON       = ไฟล์กระจัดกระจายบน
+FRAGMENTED_FILES_ON       = ไฟล์ที่มีการแยกส่วนบน
 
-VISIT_HOMEPAGE            = ไปที่หน้าแรกของเรา
+VISIT_HOMEPAGE            = เยี่ยมชมโฮมเพจของเรา
 VIEW_REPORT_OPTIONS       = ดูตัวเลือกรายงาน
-POWERED_BY_LUA            = ขับเคลื่อนด้วย Lua
+POWERED_BY_LUA            = ให้บริการโดย Lua
 
-FRAGMENTS                 = เศษ
+FRAGMENTS                 = การกระจายตัว
 SIZE                      = ขนาด
 FILENAME                  = ชื่อไฟล์
-COMMENT                   = ความเห็น
+COMMENT                   = ความคิดเห็น
 
-LOCKED                    = ล็อค
-MOVE_FAILED               = ย้ายล้มเหลว
-INVALID                   = ที่ไม่ถูกต้อง
+LOCKED                    = ถูกล็อก
+MOVE_FAILED               = ย้ายไม่สำเร็จ
+INVALID                   = ไม่ถูกต้อง
 
 ; END OF FILE

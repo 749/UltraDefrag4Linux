@@ -1,10 +1,10 @@
 ﻿;------------------------------------------------------------------------------
 ; UltraDefrag GUI Galician Language Pack.
-; Copyright (C) 2010 Julio Mojón Fuentes.
+; Copyright (C) 2010, 2014 Julio Mojón Fuentes.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
+; Revised {May 12, 2014} by {Julio Mojón Fuentes}
 ;------------------------------------------------------------------------------
 
 ; Please keep the header and comments in English and use Latin letters,
@@ -26,27 +26,27 @@ HELP                      = A&xuda
 
 ANALYSE                   = &Analizar
 DEFRAGMENT                = &Desfragmentar
-QUICK_OPTIMIZE            = Optimización rápida
-FULL_OPTIMIZE             = Optimización completa
-OPTIMIZE_MFT              = Optimizar MFT
-PAUSE                     = &Pause
+QUICK_OPTIMIZE            = Optimización ráp&ida
+FULL_OPTIMIZE             = Optimización &completa
+OPTIMIZE_MFT              = Optimizar &MFT
+PAUSE                     = &Pausar
 STOP                      = De&ter
-REPEAT_ACTION             = Repita a acción
+REPEAT_ACTION             = Repetir a acción
 SKIP_REMOVABLE_MEDIA      = &Ignorar discos extraíbeis
 RESCAN_DRIVES             = &Escanear discos de novo
-REPAIR_DRIVES             = Unidades de reparación
+REPAIR_DRIVES             = Reparar &unidades
 WHEN_DONE                 = Ao &rematar
 EXIT                      = &Saír
 
 ; --- --- When done submenu
 
-WHEN_DONE_NONE            = Nada
-WHEN_DONE_EXIT            = Saír
-WHEN_DONE_STANDBY         = Permanecer
-WHEN_DONE_HIBERNATE       = Hibernar
-WHEN_DONE_LOGOFF          = Pechar sesión
-WHEN_DONE_REBOOT          = Reiniciar
-WHEN_DONE_SHUTDOWN        = Apagar
+WHEN_DONE_NONE            = &Nada
+WHEN_DONE_EXIT            = &Saír
+WHEN_DONE_STANDBY         = &En espera
+WHEN_DONE_HIBERNATE       = &Hibernar
+WHEN_DONE_LOGOFF          = &Pechar sesión
+WHEN_DONE_REBOOT          = &Reiniciar
+WHEN_DONE_SHUTDOWN        = &Apagar
 
 ; --- Report Menu
 
@@ -58,14 +58,14 @@ LANGUAGE                  = &Lingua
 GRAPHICAL_INTERFACE       = Interface &gráfica
 BOOT_TIME_SCAN            = &Escanear no inicio
 REPORTS                   = &Informes
-SORTING                   = &Sorting
+SORTING                   = &Ordenación
 
 ; --- --- Language submenu
 
-TRANSLATIONS_CHANGE_LOG   = &Ver cambiar rexistro
-TRANSLATIONS_REPORT       = Ver informe &tradución
+TRANSLATIONS_CHANGE_LOG   = &Ver rexistro de cambios
+TRANSLATIONS_REPORT       = Ver informe da &tradución
 TRANSLATIONS_FOLDER       = &Cartafol de traducións
-TRANSLATIONS_SUBMIT       = &Enviar tradución corrente
+TRANSLATIONS_SUBMIT       = &Enviar tradución actual
 
 ; --- --- Graphical interface submenu
 
@@ -79,28 +79,28 @@ SCRIPT                    = &Comandos
 
 ; --- --- Sorting submenu
 
-SORT_BY_PATH              = Sort by &path
-SORT_BY_SIZE              = Sort by &size
-SORT_BY_C_TIME            = Sort by &creation time
-SORT_BY_M_TIME            = Sort by last &modification time
-SORT_BY_A_TIME            = Sort by &last access time
-SORT_ASCENDING            = Sort in &ascending order
-SORT_DESCENDING           = Sort in &descending order
+SORT_BY_PATH              = Ordenar por &ruta
+SORT_BY_SIZE              = Ordenar por &tamaño
+SORT_BY_C_TIME            = Ordenar por hora de &creación
+SORT_BY_M_TIME            = Ordenar por hora de última &modificación
+SORT_BY_A_TIME            = Ordenar por hora de último acc&eso
+SORT_ASCENDING            = Ordenar &ascendentemente
+SORT_DESCENDING           = Ordenar &descendentemente
 
 ; --- Help Menu
 
 CONTENTS                  = &Contidos
-BEST_PRACTICE             = Óptimos &resultados
+BEST_PRACTICE             = Práctica &máis axeitada
 FAQ                       = &Preguntas máis frecuentes
-CM_LEGEND                 = Cluster mapa &lenda
+CM_LEGEND                 = &Lenda do mapa de clústeres
 DEBUG                     = &Depurar
-CHECK_UPDATE              = Asegúrese de que hai actuali&zación
+CHECK_UPDATE              = Comprobar se hai actuali&zacións
 ABOUT                     = &Acerca de
 
 ; --- --- Debug submenu
 
-OPEN_LOG                  = &Abre rexistro
-REPORT_BUG                = &Enviar informe de erro
+OPEN_LOG                  = &Abrir rexistro
+REPORT_BUG                = &Enviar informe de erros
 
 ; --- Toolbar Tooltips
 
@@ -108,7 +108,7 @@ BOOT_TIME_SCRIPT          = Comandos do inicio
 
 ; Drives list items.
 
-VOLUME                    = Conducir
+VOLUME                    = Volume
 STATUS                    = Estado
 FRAGMENTATION             = Fragmentación
 TOTAL                     = Espazo total
@@ -121,14 +121,14 @@ STATUS_RUNNING            = A executar
 STATUS_ANALYSED           = Analizado
 STATUS_DEFRAGMENTED       = Desfragmentado
 STATUS_OPTIMIZED          = Optimizado
-STATUS_DIRTY              = Disco que ser reparada
+STATUS_DIRTY              = Disco precisa ser reparado
 
 ; Status bar messages.
 
 DIRS                      = cartafoles
 FILES                     = arquivos
-FRAGMENTED                = fragmentado
-COMPRESSED                = comprimido
+FRAGMENTED                = fragmentados
+COMPRESSED                = comprimidos
 
 ; About window.
 
@@ -152,8 +152,8 @@ NO                        = &Non
 
 ; Upgrade dialog
 
-UPGRADE_CAPTION           = Pode actualizar me ^-^
-UPGRADE_MESSAGE           = versión está dispoñible para descargar!
+UPGRADE_CAPTION           = Pode actualizarme ^-^
+UPGRADE_MESSAGE           = actualización dispoñible para descargar!
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 
@@ -166,19 +166,19 @@ HIDE                      = Agochar
 
 ; Strings for the file fragmentation reports.
 
-FRAGMENTED_FILES_ON       = Arquivos fragmentados no
+FRAGMENTED_FILES_ON       = Arquivos fragmentados en
 
-VISIT_HOMEPAGE            = Visita a nosa páxina de inicio
+VISIT_HOMEPAGE            = Visite a nosa páxina de inicio
 VIEW_REPORT_OPTIONS       = Ver opcións de informe
 POWERED_BY_LUA            = Desenvolvido por Lua
 
-FRAGMENTS                 = fragmentos
-SIZE                      = tamaño
-FILENAME                  = nome do arquivo
-COMMENT                   = comentar
+FRAGMENTS                 = Fragmentos
+SIZE                      = Tamaño
+FILENAME                  = Nome do arquivo
+COMMENT                   = Comentario
 
-LOCKED                    = pechado
-MOVE_FAILED               = mover fallou
-INVALID                   = válido
+LOCKED                    = bloqueado
+MOVE_FAILED               = movemento fallou
+INVALID                   = non válido
 
 ; END OF FILE

@@ -124,10 +124,10 @@
 
 #define IDM_SETTINGS                    1400
 
-#define IDM_TRANSLATIONS_CHANGE_LOG     1405
-#define IDM_TRANSLATIONS_REPORT         1406
+//#define IDM_TRANSLATIONS_CHANGE_LOG     1405
+//#define IDM_TRANSLATIONS_REPORT         1406
 #define IDM_TRANSLATIONS_FOLDER         1407
-#define IDM_TRANSLATIONS_SUBMIT         1408
+//#define IDM_TRANSLATIONS_SUBMIT         1408
 #define IDM_LANGUAGE                    1410
 /* IDM_CFG_GUI must follow IDM_LANGUAGE */
 #define IDM_CFG_GUI                     2680

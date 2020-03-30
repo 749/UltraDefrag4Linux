@@ -80,6 +80,12 @@ DWORD WINAPI CrashInfoCheckingProc(LPVOID lpParameter)
                 "           by submitting this information to the bug tracker:\r\n"
                 "        http://sourceforge.net/tracker/?group_id=199532&atid=969870\r\n"
                 "\r\n"
+                "         However, ensure that your computer is virus free: malware\r\n"
+                "        might easily break something inside of your operating system\r\n"
+                "        and cause application crashes thereafter. Send us your report\r\n"
+                "        if you suspect the crash is caused by UltraDefrag itself and\r\n"
+                "                   not by a broken operating system.\r\n"
+                "\r\n"
                 "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n"
                 "\r\n";
     DWORD bytes_written;

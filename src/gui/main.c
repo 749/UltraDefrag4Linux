@@ -653,7 +653,7 @@ void OpenWebPage(char *page, char *anchor)
  * @param[in] page name of the page
  * @param[in] islang 1 indicates a language page, 0 not
  */
-void OpenTranslationWebPage(wchar_t *page, int islang)
+/*void OpenTranslationWebPage(wchar_t *page, int islang)
 {
     wchar_t path[MAX_PATH] = {0};
 
@@ -665,6 +665,7 @@ void OpenTranslationWebPage(wchar_t *page, int islang)
     (void)WgxShellExecute(hWindow,L"open",path,
         NULL,NULL,SW_SHOW,WSH_ALLOW_DEFAULT_ACTION);
 }
+*/
 
 /**
  * @brief Opens the log file.
@@ -1048,20 +1049,22 @@ LRESULT CALLBACK MainWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
             ShowReports();
             return 0;
         /* Settings menu handlers */
-        case IDM_TRANSLATIONS_CHANGE_LOG:
+        /*case IDM_TRANSLATIONS_CHANGE_LOG:
             OpenTranslationWebPage(L"Change+Log", 0);
             return 0;
         case IDM_TRANSLATIONS_REPORT:
             OpenTranslationWebPage(L"Translation+Report", 0);
             return 0;
+        */
         case IDM_TRANSLATIONS_FOLDER:
             (void)WgxShellExecute(hWindow,L"open",L"explorer.exe",
                 L"/select, \".\\i18n\\translation.template\"",NULL,SW_SHOW,0);
             return 0;
-        case IDM_TRANSLATIONS_SUBMIT:
+        /*case IDM_TRANSLATIONS_SUBMIT:
             if(GetPrivateProfileStringW(L"Language",L"Selected",NULL,lang_name,MAX_PATH,L".\\lang.ini")>0)
                 OpenTranslationWebPage(lang_name, 1);
             return 0;
+        */
         case IDM_CFG_GUI_FONT:
             memset(&cf,0,sizeof(cf));
             cf.lStructSize = sizeof(CHOOSEFONT);
@@ -1111,11 +1114,11 @@ LRESULT CALLBACK MainWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
             }
             return 0;
         case IDM_CFG_BOOT_SCRIPT:
-            if(!GetWindowsDirectoryW(path,MAX_PATH)){
+            if(!GetSystemDirectoryW(path,MAX_PATH)){
                 WgxDisplayLastError(hWindow,MB_OK | MB_ICONHAND,
-                    L"Cannot retrieve the Windows directory path");
+                    L"Cannot retrieve the System32 directory path");
             } else {
-                (void)wcscat(path,L"\\System32\\ud-boot-time.cmd");
+                (void)wcscat(path,L"\\ud-boot-time.cmd");
                 (void)WgxShellExecute(hWindow,L"edit",path,NULL,NULL,SW_SHOW,0);
             }
             return 0;

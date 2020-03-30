@@ -40,7 +40,9 @@
  * - <a href="http://www.miktex.org/">Basic MiKTeX Installer</a> to create the optional PDF documentation
  * - <a href="http://www.etree.org/md5com.html">md5sum tool</a> to create the checksums
  * - <a href="http://upx.sf.net/">UPX</a> to reduce the size of the installers
- * 
+ *
+ * So,
+ *
  * - Install NSIS, 7-zip, Doxygen and optionally "Lua for Windows" and MiKTeX.
  * - If you did not install "Lua for Windows",
  * extract Lua, IUP and CD to some directory on your <b>\%PATH\%</b>, e.g. to <b>C:\\Windows</b>.
@@ -54,7 +56,7 @@
  * To build UltraDefrag using defaults type:
  * @code build @endcode
  *
- * To list all of the supported options type:
+ * To list all the supported options type:
  * @code build --help @endcode
  *
  * To select one of the predefined build actions type:

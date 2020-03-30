@@ -26,16 +26,16 @@ HELP                      = &Tulong
 
 ; --- Action Menu
 
-ANALYSE                   = &Magsuri
+ANALYSE                   = &Analisahin
 DEFRAGMENT                = &I-Defragment
 QUICK_OPTIMIZE            = &Mabilis na pag-optimize
 FULL_OPTIMIZE             = &Masusing pag-optimize
 OPTIMIZE_MFT              = &I-Optimize ang MFT
-PAUSE                     = &Pansamantalang Itigil
-STOP                      = &Ihinto
-REPEAT_ACTION             = &Ulitin ang aksyon
-SKIP_REMOVABLE_MEDIA      = I-Skip ang natatanggal na Storage
-RESCAN_DRIVES             = &Mag-Rescan ng mga drive
+PAUSE                     = &Sandaling Tumigil
+STOP                      = &Itigil
+REPEAT_ACTION             = &Ulitin ang Aksyon
+SKIP_REMOVABLE_MEDIA      = Laktawan ang Natatanggal na Storage
+RESCAN_DRIVES             = &Mag-Rescan ng mga Drive
 REPAIR_DRIVES             = &Kumpunihin ang Drive
 WHEN_DONE                 = &Pagnatapos
 EXIT                      = Mag-E&xit
@@ -46,7 +46,7 @@ WHEN_DONE_NONE            = &Wala na
 WHEN_DONE_EXIT            = Mag-E&xit
 WHEN_DONE_STANDBY         = Mag-Stan&dby
 WHEN_DONE_HIBERNATE       = &Mag-Hibernate
-WHEN_DONE_LOGOFF          = &Mag-Logoff
+WHEN_DONE_LOGOFF          = &Mag-Log-off
 WHEN_DONE_REBOOT          = &Mag-Reboot
 WHEN_DONE_SHUTDOWN        = &Mag-Shutdown
 
@@ -57,22 +57,22 @@ SHOW_REPORT               = &Ipakita ang Ulat
 ; --- Settings Menu
 
 LANGUAGE                  = &Wika
-GRAPHICAL_INTERFACE       = &Grapikal na interface
+GRAPHICAL_INTERFACE       = &Grapikal na Interface
 BOOT_TIME_SCAN            = &Pag-Scan sa Boot time
 REPORTS                   = &Mga Ulat
-SORTING                   = &PagkaSunod-sunod
+SORTING                   = &Paghiwa-hiwalay
 
 ; --- --- Language submenu
 
-TRANSLATIONS_CHANGE_LOG   = &Tignan ang talaan ng pagbabago sa Translation
-TRANSLATIONS_REPORT       = Tignan ang &Ulat ng mga Translations
+TRANSLATIONS_CHANGE_LOG   = &Tignan ang talaan ng pagbabago sa pagsasalin ng mga wika
+TRANSLATIONS_REPORT       = Tignan ang &ulat ng mga pagsasalin ng mga wika
 TRANSLATIONS_FOLDER       = &Folder ng mga Translations
-TRANSLATIONS_SUBMIT       = &Isubmit ang kasalukuyang Translation
+TRANSLATIONS_SUBMIT       = &Ibigay ang kasalukuyang pagsasalin ng mga wika
 
 ; --- --- Graphical interface submenu
 
 FONT                      = &Font
-OPTIONS                   = &Mga Options
+OPTIONS                   = &Mga Pagpipilian
 
 ; --- --- Boot time scan submenu
 
@@ -81,41 +81,41 @@ SCRIPT                    = &Iskrip
 
 ; --- --- Sorting submenu
 
-SORT_BY_PATH              = Ayusin ang files base sa &path
-SORT_BY_SIZE              = Ayusin ang files base sa &kalakihan
-SORT_BY_C_TIME            = Ayusin ang files base sa &kung kaylan nilikha
-SORT_BY_M_TIME            = Ayusin ang files base sa huling &modification time
-SORT_BY_A_TIME            = Ayusin ang files base sa &huling access time
-SORT_ASCENDING            = Ayusin ang files ng &Ascending
-SORT_DESCENDING           = Ayusin ang files ng &Descending
+SORT_BY_PATH              = Pagbukud-bukurin ayon sa &path
+SORT_BY_SIZE              = Pagbukud-bukurin ayon sa &kalakihan
+SORT_BY_C_TIME            = Pagbukud-bukurin ayon sa &kung kaylan nilikha
+SORT_BY_M_TIME            = Pagbukud-bukurin ayon sa huling &oras ng pagbabago
+SORT_BY_A_TIME            = Pagbukud-bukurin ayon sa &huling oras ng access
+SORT_ASCENDING            = Pagbukud-bukurin ng &Pataas
+SORT_DESCENDING           = Pagbukud-bukurin ng &Pababa
 
 ; --- Help Menu
 
 CONTENTS                  = &Mga Nilalaman (Handbook)
-BEST_PRACTICE             = Mga Best &practice
+BEST_PRACTICE             = Mga Pinakamahusay na Magagawa
 FAQ                       = &Mga Madalas Itanong
 CM_LEGEND                 = Mapa ng &Cluster
 DEBUG                     = &Mag-Debug
-CHECK_UPDATE              = Mag-Check para sa &update
+CHECK_UPDATE              = Mag-Check para sa &Update
 ABOUT                     = &About
 
 ; --- --- Debug submenu
 
 OPEN_LOG                  = Buksan ang &Talaan
-REPORT_BUG                = I-Send ang bug &report
+REPORT_BUG                = I-Send ang Bug &Report
 
 ; --- Toolbar Tooltips
 
-BOOT_TIME_SCRIPT          = Skrip para sa Boot time
+BOOT_TIME_SCRIPT          = Skrip Para sa Boot Time
 
 ; Drives list items.
 
-VOLUME                    = Imbakan
+VOLUME                    = Dami
 STATUS                    = Katayuan
-FRAGMENTATION             = Pagka-pragment
+FRAGMENTATION             = Pagkapira-piraso
 TOTAL                     = Kabuuan
-FREE                      = Natitirang Espasyo
-PERCENT                   = % ng Natitirang Espasyo
+FREE                      = Libreng Espasyo
+PERCENT                   = % ng Libreng Espasyo
 
 ; Status messages
 
@@ -127,10 +127,10 @@ STATUS_DIRTY              = Ang Disk ay kailangang kumpunihin
 
 ; Status bar messages.
 
-DIRS                      = Ang mga Polders
+DIRS                      = Ang mga Folders
 FILES                     = Ang mga Files
-FRAGMENTED                = Ang mga pragmented
-COMPRESSED                = Ang mga nakasiksik
+FRAGMENTED                = Ang mga Pira-piraso
+COMPRESSED                = Ang mga Nakasiksik
 
 ; About window.
 
@@ -177,10 +177,10 @@ POWERED_BY_LUA            = Powered by Lua
 FRAGMENTS                 = Mga Kapiraso
 SIZE                      = Kalakihan
 FILENAME                  = Pangalan ng File
-COMMENT                   = Puna
+COMMENT                   = Komentaryo
 
 LOCKED                    = Nakakandado
-MOVE_FAILED               = Hindi mai-lipat
+MOVE_FAILED               = Nabigo sa Paglipat
 INVALID                   = Hindi Valid
 
 ; END OF FILE

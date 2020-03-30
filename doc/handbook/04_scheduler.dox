@@ -33,7 +33,7 @@
  * cmd.exe /C "set UD_SIZELIMIT=100M && udefrag --wait --all-fixed"
  * @endcode
  *
- * Visit <a href="http://ultradefrag.wikispaces.com/">ultradefrag.wikispaces.com</a> 
+ * Visit <a href="http://sourceforge.net/p/ultradefrag/wiki/Home/">UltraDefrag Wiki</a> 
  * for tutorials and more examples.
  *
  * @htmlonly

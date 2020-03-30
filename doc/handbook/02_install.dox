@@ -57,9 +57,7 @@
  * The following additional command line switches are supported:
  * @par /LANG
  * Select the language to be installed. For example, 
- * use <b>/LANG="German"</b> to install the German language pack.<br/>
- * Valid language names can be found at the 
- * <a href="http://ultradefrag.wikispaces.com/Translation+Report">Translation Wiki</a>
+ * use <b>/LANG="German"</b> to install the German language pack.
  *
  * @par /FULL=1
  * Install the full edition, which includes all components and icons.

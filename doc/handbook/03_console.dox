@@ -156,7 +156,7 @@
  * size suffixes are accepted: KB, MB, GB, TB, PB, EB.
  *
  * @par UD_OPTIMIZER_FILE_SIZE_THRESHOLD
- * In optimization sort out files smaller than specified only.<br/>The following 
+ * For optimization only, exclude all files larger than the specified size.<br/>The following 
  * size suffixes are accepted: KB, MB, GB, TB, PB, EB.<br/>The default value is 20MB.
  *
  * @par UD_FRAGMENTS_THRESHOLD

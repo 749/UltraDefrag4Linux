@@ -28,7 +28,7 @@ HELP                      = &Hilfe
 
 ANALYSE                   = &Analysieren
 DEFRAGMENT                = &Defragmentieren
-QUICK_OPTIMIZE            = &Schnell Optimieren
+QUICK_OPTIMIZE            = &Schnelles Optimieren
 FULL_OPTIMIZE             = &Komplett Optimieren
 OPTIMIZE_MFT              = &MFT optimieren
 PAUSE                     = &Pause
@@ -154,7 +154,7 @@ NO                        = &Nein
 
 ; Upgrade dialog
 
-UPGRADE_CAPTION           = Du kannst mich aktualisieren ^-^
+UPGRADE_CAPTION           = Aktualisierung vorhanden
 UPGRADE_MESSAGE           = Neue Version zum Herunterladen vorhanden!
 
 ; A string for the taskbar icon overlay, needed for accessibility.

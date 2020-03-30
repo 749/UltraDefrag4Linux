@@ -74,10 +74,10 @@ WGX_MENU report_menu[] = {
 };
 
 WGX_MENU language_menu[] = {
-    {MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_CHANGE_LOG,     NULL, L"&View change log",            -1 },
-    {MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_REPORT,         NULL, L"View translation &report",    -1 },
+//    {MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_CHANGE_LOG,     NULL, L"&View change log",            -1 },
+//    {MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_REPORT,         NULL, L"View translation &report",    -1 },
     {MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_FOLDER,         NULL, L"&Translations folder",        -1 },
-    {MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_SUBMIT,         NULL, L"&Submit current translation", -1 },
+//    {MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_SUBMIT,         NULL, L"&Submit current translation", -1 },
     {MF_SEPARATOR,0,NULL,NULL,0},
     {MF_STRING | MF_ENABLED | MF_CHECKED,IDM_LANGUAGE + 0x1, NULL, L"English (US)", -1 },
     {0,0,NULL,NULL,0}

@@ -286,7 +286,7 @@ void winx_heap_free(void *addr);
 * returned value correctness. In case of
 * allocation failure it'll simply abort
 * the application.
-* On the other hand, it some big amount
+* On the other hand, if some big amount
 * of memory needs to be allocated,
 * winx_tmalloc needs to be called and then
 * its returned value needs to be checked for

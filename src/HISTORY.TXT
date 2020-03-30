@@ -1,5 +1,15 @@
 ﻿HISTORY
 
+  Version 6.0.3 2014-10-19
+  ------------------------------------------------------------------------------
+    - corrected a problem where the Windows folder was not detected properly
+      if the terminal services were activated
+    - online translation support discontinued due to migration to transifex
+    - the following translations were updated:
+
+      Filipino (Tagalog), Galician, German, Thai, Ukrainian
+
+
   Version 6.0.2 2013-05-17
   ------------------------------------------------------------------------------
     - the FAQ section of the handbook now contains information about how to
