@@ -20,146 +20,146 @@
 ; Main Menu
 
 ACTION                    = &Aksyon
-REPORT                    = &Ulat
-SETTINGS                  = &Pagkontrol
+REPORT                    = &Mga Ulat
+SETTINGS                  = &Mga Setting
 HELP                      = &Tulong
 
 ; --- Action Menu
 
-ANALYSE                   = Mag&suri
-DEFRAGMENT                = &Muling Ibuo
-QUICK_OPTIMIZE            = Ma&bilis na pagpapahusay
-FULL_OPTIMIZE             = Mas&using pagpapahusay
-OPTIMIZE_MFT              = Paghusayan sa M&FT
+ANALYSE                   = &Magsuri
+DEFRAGMENT                = &I-Defragment
+QUICK_OPTIMIZE            = &Mabilis na pag-optimize
+FULL_OPTIMIZE             = &Masusing pag-optimize
+OPTIMIZE_MFT              = &I-Optimize ang MFT
 PAUSE                     = &Pansamantalang Itigil
 STOP                      = &Ihinto
-REPEAT_ACTION             = &Ulitin
-SKIP_REMOVABLE_MEDIA      = Laktawan ang Matatanggal na &Media
-RESCAN_DRIVES             = Tignan ang mga &Drive para sa sira
-REPAIR_DRIVES             = Pag&kumpuni Drive
-WHEN_DONE                 = &Pagkatapos...
-EXIT                      = &Lumabas
+REPEAT_ACTION             = &Ulitin ang aksyon
+SKIP_REMOVABLE_MEDIA      = I-Skip ang natatanggal na Storage
+RESCAN_DRIVES             = &Mag-Rescan ng mga drive
+REPAIR_DRIVES             = &Kumpunihin ang Drive
+WHEN_DONE                 = &Pagnatapos
+EXIT                      = Mag-E&xit
 
 ; --- --- When done submenu
 
-WHEN_DONE_NONE            = &Wala
-WHEN_DONE_EXIT            = &Lumabas
-WHEN_DONE_STANDBY         = &Maghintay
-WHEN_DONE_HIBERNATE       = Mat&ulog
-WHEN_DONE_LOGOFF          = M&ag-logoff
-WHEN_DONE_REBOOT          = Magmuling-&simula
-WHEN_DONE_SHUTDOWN        = Magsa&ra
+WHEN_DONE_NONE            = &Wala na
+WHEN_DONE_EXIT            = Mag-E&xit
+WHEN_DONE_STANDBY         = Mag-Stan&dby
+WHEN_DONE_HIBERNATE       = &Mag-Hibernate
+WHEN_DONE_LOGOFF          = &Mag-Logoff
+WHEN_DONE_REBOOT          = &Mag-Reboot
+WHEN_DONE_SHUTDOWN        = &Mag-Shutdown
 
 ; --- Report Menu
 
-SHOW_REPORT               = Ipakita ang &Ulat
+SHOW_REPORT               = &Ipakita ang Ulat
 
 ; --- Settings Menu
 
 LANGUAGE                  = &Wika
-GRAPHICAL_INTERFACE       = &Interface
-BOOT_TIME_SCAN            = &Pagiiskan sa Simula
-REPORTS                   = &Ulat
-SORTING                   = &Pagka-ayos ayos
+GRAPHICAL_INTERFACE       = &Grapikal na interface
+BOOT_TIME_SCAN            = &Pag-Scan sa Boot time
+REPORTS                   = &Mga Ulat
+SORTING                   = &PagkaSunod-sunod
 
 ; --- --- Language submenu
 
-TRANSLATIONS_CHANGE_LOG   = &Tignan ang pagbabago sa log
-TRANSLATIONS_REPORT       = Tignan ang  &ulat ng pagsasalin
-TRANSLATIONS_FOLDER       = &Mga Pagsasalin
-TRANSLATIONS_SUBMIT       = &Isumite ang kasalukuyang pagsasalin
+TRANSLATIONS_CHANGE_LOG   = &Tignan ang talaan ng pagbabago sa Translation
+TRANSLATIONS_REPORT       = Tignan ang &Ulat ng mga Translations
+TRANSLATIONS_FOLDER       = &Folder ng mga Translations
+TRANSLATIONS_SUBMIT       = &Isubmit ang kasalukuyang Translation
 
 ; --- --- Graphical interface submenu
 
 FONT                      = &Font
-OPTIONS                   = &Mga Opsyon
+OPTIONS                   = &Mga Options
 
 ; --- --- Boot time scan submenu
 
-ENABLE                    = I&tulot
-SCRIPT                    = I&skrip
+ENABLE                    = &I-Enable
+SCRIPT                    = &Iskrip
 
 ; --- --- Sorting submenu
 
-SORT_BY_PATH              = &I-Ayos base sa kung saan nakalagay
-SORT_BY_SIZE              = &I-ayos base sa kalakihan
-SORT_BY_C_TIME            = &I-ayos base sa kung kylan ginawa
-SORT_BY_M_TIME            = &I-ayos base sa kung kylan pinalitan
-SORT_BY_A_TIME            = &I-ayos base sa kung kylan tiningnan
-SORT_ASCENDING            = &I-ayos base sa una hanggang huli
-SORT_DESCENDING           = &I-ayos base sa huli hanggang una
+SORT_BY_PATH              = Ayusin ang files base sa &path
+SORT_BY_SIZE              = Ayusin ang files base sa &kalakihan
+SORT_BY_C_TIME            = Ayusin ang files base sa &kung kaylan nilikha
+SORT_BY_M_TIME            = Ayusin ang files base sa huling &modification time
+SORT_BY_A_TIME            = Ayusin ang files base sa &huling access time
+SORT_ASCENDING            = Ayusin ang files ng &Ascending
+SORT_DESCENDING           = Ayusin ang files ng &Descending
 
 ; --- Help Menu
 
-CONTENTS                  = &Nilalaman
-BEST_PRACTICE             = &Pagpapatakbo ng maayos
-FAQ                       = Ma&dalas na Tanong
-CM_LEGEND                 = &Mapa ng Cluster
-DEBUG                     = &Debug
-CHECK_UPDATE              = Tignan para sa mga &update
-ABOUT                     = &Tungkol sa
+CONTENTS                  = &Mga Nilalaman (Handbook)
+BEST_PRACTICE             = Mga Best &practice
+FAQ                       = &Mga Madalas Itanong
+CM_LEGEND                 = Mapa ng &Cluster
+DEBUG                     = &Mag-Debug
+CHECK_UPDATE              = Mag-Check para sa &update
+ABOUT                     = &About
 
 ; --- --- Debug submenu
 
 OPEN_LOG                  = Buksan ang &Talaan
-REPORT_BUG                = Ipadala ang &Ulat ng Bug
+REPORT_BUG                = I-Send ang bug &report
 
 ; --- Toolbar Tooltips
 
-BOOT_TIME_SCRIPT          = Iskrip sa Pagsisimula
+BOOT_TIME_SCRIPT          = Skrip para sa Boot time
 
 ; Drives list items.
 
-VOLUME                    = Mga Drives
+VOLUME                    = Imbakan
 STATUS                    = Katayuan
-FRAGMENTATION             = Mga Kapiraso
-TOTAL                     = Kapasidad
-FREE                      = Lamang Natitira
-PERCENT                   = % ng Lamang Natitira
+FRAGMENTATION             = Pagka-pragment
+TOTAL                     = Kabuuan
+FREE                      = Natitirang Espasyo
+PERCENT                   = % ng Natitirang Espasyo
 
 ; Status messages
 
-STATUS_RUNNING            = Tumatakbo
-STATUS_ANALYSED           = Nasuri
-STATUS_DEFRAGMENTED       = Muling Binuo
-STATUS_OPTIMIZED          = Pinahusay
-STATUS_DIRTY              = Dapat makumpuni ang disk
+STATUS_RUNNING            = Nag-Eexecute
+STATUS_ANALYSED           = Na-analyzed
+STATUS_DEFRAGMENTED       = Na-defragmented
+STATUS_OPTIMIZED          = Na-optimized
+STATUS_DIRTY              = Ang Disk ay kailangang kumpunihin
 
 ; Status bar messages.
 
-DIRS                      = Lalagyan
-FILES                     = Mga Laman
-FRAGMENTED                = Kapiraso
-COMPRESSED                = Nakasiksik na laman
+DIRS                      = Ang mga Polders
+FILES                     = Ang mga Files
+FRAGMENTED                = Ang mga pragmented
+COMPRESSED                = Ang mga nakasiksik
 
 ; About window.
 
-ABOUT_WIN_TITLE           = Tungkol sa Ultra Defragmenter
-CREDITS                   = &Pinagkakautangan
-LICENSE                   = &Lisensiya
+ABOUT_WIN_TITLE           = About sa Ultra Defragmenter
+CREDITS                   = &Mga Credits
+LICENSE                   = &License
 
 ; Shutdown confirmation
 
-PLEASE_CONFIRM            = Patunayan
-REALLY_SHUTDOWN_WHEN_DONE = Gusto mo bang magsara kapagtapos na?
-REALLY_HIBERNATE_WHEN_DONE= Gusto mo bang patulugin kapagtapos na?
-REALLY_LOGOFF_WHEN_DONE   = Gusto mo bang mag-logoff kapagtapos na?
-REALLY_REBOOT_WHEN_DONE   = Gusto mo bang magmuling-simula kapagtapos na?
-SECONDS_TILL_SHUTDOWN     = Segundo bago magsara
-SECONDS_TILL_HIBERNATION  = Segundo bago patulugin
-SECONDS_TILL_LOGOFF       = Segundo bago mag-logoff
-SECONDS_TILL_REBOOT       = Segundo bago magsimula-muli
+PLEASE_CONFIRM            = Pakipatunayan
+REALLY_SHUTDOWN_WHEN_DONE = Gusto mo ba talagang mag-shutdown pagnatapos na?
+REALLY_HIBERNATE_WHEN_DONE= Gusto mo ba talagang mag-hibernate pagnatapos na?
+REALLY_LOGOFF_WHEN_DONE   = Gusto mo ba talagang maglog-off pagnatapos na?
+REALLY_REBOOT_WHEN_DONE   = Gusto mo ba talagang magreboot pagnatapos na?
+SECONDS_TILL_SHUTDOWN     = segundo bago magshutdown
+SECONDS_TILL_HIBERNATION  = segundo bago maghibernate
+SECONDS_TILL_LOGOFF       = segundo bago maglogoff
+SECONDS_TILL_REBOOT       = segundo bago magreboot
 YES                       = &Oo
 NO                        = &Hindi
 
 ; Upgrade dialog
 
-UPGRADE_CAPTION           = Maipaasenso ang bersiyong ito ^-^
-UPGRADE_MESSAGE           = Na bersiyon ay mai-download na!
+UPGRADE_CAPTION           = Pwede mo akong i-upgrade^-^
+UPGRADE_MESSAGE           = Ang bagong release ay pwede nang i-download!
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 
-JOB_IS_RUNNING            = May tungkuling isinasagawa
+JOB_IS_RUNNING            = Ang trabaho ay isinasagawa
 
 ; Strings for system tray icon context menu.
 
@@ -168,19 +168,19 @@ HIDE                      = Itago
 
 ; Strings for the file fragmentation reports.
 
-FRAGMENTED_FILES_ON       = Nakapirisong file sa
+FRAGMENTED_FILES_ON       = Mga may kapirasong file sa
 
-VISIT_HOMEPAGE            = Bisitahin ang Homepage
-VIEW_REPORT_OPTIONS       = tignan ang mga Opsiyon ng Ulat
-POWERED_BY_LUA            = Pinagana ng Lua
+VISIT_HOMEPAGE            = Bisitahain ang aming Homepage
+VIEW_REPORT_OPTIONS       = Tignan ang options ng ulat
+POWERED_BY_LUA            = Powered by Lua
 
-FRAGMENTS                 = Kapiraso
+FRAGMENTS                 = Mga Kapiraso
 SIZE                      = Kalakihan
-FILENAME                  = Filename
+FILENAME                  = Pangalan ng File
 COMMENT                   = Puna
 
-LOCKED                    = Kakakandado
-MOVE_FAILED               = Hindi nalipat
-INVALID                   = Hindi naangkop
+LOCKED                    = Nakakandado
+MOVE_FAILED               = Hindi mai-lipat
+INVALID                   = Hindi Valid
 
 ; END OF FILE

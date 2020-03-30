@@ -708,77 +708,121 @@ SkipMove:
 
     Push $0
     Push $1
-    Push $2
-    Push $3
-    Push $4
-    Push $5
-    Push $6
-    Push $7
-    Push $8
-    Push $9
     Push $R0
     Push $R1
-    Push $R2
-    Push $R3
 
-    StrCpy $0 "$\"$SYSDIR\udefrag.exe$\" --shellex $\"%1$\""
-    StrCpy $1 "$INSTDIR\icons\shellex.ico"
-    StrCpy $2 "[--- &Ultra Defragmenter ---]"
-    StrCpy $3 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder $\"%1$\""
-    StrCpy $4 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder-itself $\"%1$\""
-    StrCpy $5 "$INSTDIR\icons\shellex-folder.ico"
-    StrCpy $6 "[--- &Defragment folder itself ---]"
-    StrCpy $7 "[--- &Defragment root folder itself ---]"
-    StrCpy $8 "[--- &Analyze drive with UltraDefrag ---]"
-    StrCpy $9 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -a -v $\"%1$\""
-    StrCpy $R0 "[--- &Optimize drive with UltraDefrag ---]"
-    StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -o -v $\"%1$\""
-    StrCpy $R2 "[--- &Quickly optimize drive with UltraDefrag ---]"
-    StrCpy $R3 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -q -v $\"%1$\""
+    StrCpy $0 "$INSTDIR\icons\shellex.ico"
+    StrCpy $1 "$INSTDIR\icons\shellex-folder.ico"
 
-    ${If} ${AtLeastWinXP}
-        WriteRegStr HKCR "Drive\shell\udefrag"                         ""     $2
-        WriteRegStr HKCR "Drive\shell\udefrag"                         "Icon" $1
-        WriteRegStr HKCR "Drive\shell\udefrag\command"                 ""     $3
-        WriteRegStr HKCR "Drive\shell\udefrag-folder"                  ""     $7
-        WriteRegStr HKCR "Drive\shell\udefrag-folder"                  "Icon" $5
-        WriteRegStr HKCR "Drive\shell\udefrag-folder\command"          ""     $4
-        WriteRegStr HKCR "Drive\shell\udefrag-drive-analyze"           ""     $8
-        WriteRegStr HKCR "Drive\shell\udefrag-drive-analyze"           "Icon" $1
-        WriteRegStr HKCR "Drive\shell\udefrag-drive-analyze\command"   ""     $9
-        WriteRegStr HKCR "Drive\shell\udefrag-drive-optimize"          ""     $R0
-        WriteRegStr HKCR "Drive\shell\udefrag-drive-optimize"          "Icon" $1
-        WriteRegStr HKCR "Drive\shell\udefrag-drive-optimize\command"  ""     $R1
-        WriteRegStr HKCR "Drive\shell\udefrag-drive-qoptimize"         ""     $R2
-        WriteRegStr HKCR "Drive\shell\udefrag-drive-qoptimize"         "Icon" $1
-        WriteRegStr HKCR "Drive\shell\udefrag-drive-qoptimize\command" ""     $R3
+    DeleteRegKey HKCR "Drive\shell\udefrag"
+    DeleteRegKey HKCR "Drive\shell\udefrag-folder"
+    DeleteRegKey HKCR "Drive\shell\udefrag-drive-analyze"
+    DeleteRegKey HKCR "Drive\shell\udefrag-drive-optimize"
+    DeleteRegKey HKCR "Drive\shell\udefrag-drive-qoptimize"
+    DeleteRegKey HKCR "Folder\shell\udefrag"
+    DeleteRegKey HKCR "Folder\shell\udefrag-folder"
+    DeleteRegKey HKCR "*\shell\udefrag"
+
+    ${If} ${AtLeastWin7}
+        WriteRegStr HKCR "Drive\shell\udefrag.W7menu" "MUIVerb"                "&UltraDefrag"
+        WriteRegStr HKCR "Drive\shell\udefrag.W7menu" "ExtendedSubCommandsKey" "Drive\udefragW7menu"
+        WriteRegStr HKCR "Drive\shell\udefrag.W7menu" "Icon" $0
+
+        StrCpy $R0 "&Analyze"
+        StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -a -v $\"%1$\""
+        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag-drive-analyze"           ""     $R0
+        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag-drive-analyze\command"   ""     $R1
+
+        StrCpy $R0 "&Defragment"
+        StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder $\"%1$\""
+        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag"                         ""     $R0
+        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag\command"                 ""     $R1
+
+        StrCpy $R0 "&Defragment root folder itself"
+        StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder-itself $\"%1$\""
+        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag-folder"                  ""     $R0
+        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag-folder"                  "Icon" $1
+        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag-folder\command"          ""     $R1
+
+        StrCpy $R0 "&Fully optimize"
+        StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -o -v $\"%1$\""
+        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag-drive-optimize"          ""     $R0
+        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag-drive-optimize\command"  ""     $R1
+
+        StrCpy $R0 "&Quickly optimize"
+        StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -q -v $\"%1$\""
+        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag-drive-qoptimize"         ""     $R0
+        WriteRegStr HKCR "Drive\udefragW7menu\shell\udefrag-drive-qoptimize\command" ""     $R1
+
+        WriteRegStr HKCR "Folder\shell\udefrag.W7menu" "MUIVerb"                "&UltraDefrag"
+        WriteRegStr HKCR "Folder\shell\udefrag.W7menu" "ExtendedSubCommandsKey" "Folder\udefragW7menu"
+        WriteRegStr HKCR "Folder\shell\udefrag.W7menu" "Icon" $0
+
+        StrCpy $R0 "&Defragment"
+        StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder $\"%1$\""
+        WriteRegStr HKCR "Folder\udefragW7menu\shell\udefrag"                ""     $R0
+        WriteRegStr HKCR "Folder\udefragW7menu\shell\udefrag\command"        ""     $R1
+
+        StrCpy $R0 "&Defragment folder itself"
+        StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder-itself $\"%1$\""
+        WriteRegStr HKCR "Folder\udefragW7menu\shell\udefrag-folder"         ""     $R0
+        WriteRegStr HKCR "Folder\udefragW7menu\shell\udefrag-folder"         "Icon" $1
+        WriteRegStr HKCR "Folder\udefragW7menu\shell\udefrag-folder\command" ""     $R1
+
+        WriteRegStr HKCR "*\shell\udefrag.W7menu" "MUIVerb"                "&UltraDefrag"
+        WriteRegStr HKCR "*\shell\udefrag.W7menu" "ExtendedSubCommandsKey" "*\udefragW7menu"
+        WriteRegStr HKCR "*\shell\udefrag.W7menu" "Icon" $0
+
+        StrCpy $R0 "&Defragment"
+        StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex $\"%1$\""
+        WriteRegStr HKCR "*\udefragW7menu\shell\udefrag"         ""     $R0
+        WriteRegStr HKCR "*\udefragW7menu\shell\udefrag\command" ""     $R1
     ${Else}
-        DeleteRegKey HKCR "Drive\shell\udefrag"
+        ${If} ${AtLeastWinXP}
+            StrCpy $R0 "&Analyze with UltraDefrag"
+            StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -a -v $\"%1$\""
+            WriteRegStr HKCR "Drive\shell\udefrag-drive-analyze"           ""     $R0
+            WriteRegStr HKCR "Drive\shell\udefrag-drive-analyze\command"   ""     $R1
+
+            StrCpy $R0 "&Defragment with UltraDefrag"
+            StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder $\"%1$\""
+            WriteRegStr HKCR "Drive\shell\udefrag"                         ""     $R0
+            WriteRegStr HKCR "Drive\shell\udefrag\command"                 ""     $R1
+
+            StrCpy $R0 "&Defragment root folder itself with UltraDefrag"
+            StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder-itself $\"%1$\""
+            WriteRegStr HKCR "Drive\shell\udefrag-folder"                  ""     $R0
+            WriteRegStr HKCR "Drive\shell\udefrag-folder\command"          ""     $R1
+
+            StrCpy $R0 "&Fully optimize with UltraDefrag"
+            StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -o -v $\"%1$\""
+            WriteRegStr HKCR "Drive\shell\udefrag-drive-optimize"          ""     $R0
+            WriteRegStr HKCR "Drive\shell\udefrag-drive-optimize\command"  ""     $R1
+
+            StrCpy $R0 "&Quickly optimize with UltraDefrag"
+            StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -q -v $\"%1$\""
+            WriteRegStr HKCR "Drive\shell\udefrag-drive-qoptimize"         ""     $R0
+            WriteRegStr HKCR "Drive\shell\udefrag-drive-qoptimize\command" ""     $R1
+        ${EndIf}
+
+        StrCpy $R0 "&Defragment with UltraDefrag"
+        StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder $\"%1$\""
+        WriteRegStr HKCR "Folder\shell\udefrag"                ""     $R0
+        WriteRegStr HKCR "Folder\shell\udefrag\command"        ""     $R1
+
+        StrCpy $R0 "&Defragment folder itself with UltraDefrag"
+        StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder-itself $\"%1$\""
+        WriteRegStr HKCR "Folder\shell\udefrag-folder"         ""     $R0
+        WriteRegStr HKCR "Folder\shell\udefrag-folder\command" ""     $R1
+
+        StrCpy $R0 "&Defragment with UltraDefrag"
+        StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex $\"%1$\""
+        WriteRegStr HKCR "*\shell\udefrag"         ""     $R0
+        WriteRegStr HKCR "*\shell\udefrag\command" ""     $R1
     ${EndIf}
 
-    WriteRegStr HKCR "Folder\shell\udefrag"                ""     $2
-    WriteRegStr HKCR "Folder\shell\udefrag"                "Icon" $1
-    WriteRegStr HKCR "Folder\shell\udefrag\command"        ""     $3
-    WriteRegStr HKCR "Folder\shell\udefrag-folder"         ""     $6
-    WriteRegStr HKCR "Folder\shell\udefrag-folder"         "Icon" $5
-    WriteRegStr HKCR "Folder\shell\udefrag-folder\command" ""     $4
-
-    WriteRegStr HKCR "*\shell\udefrag"         ""     $2
-    WriteRegStr HKCR "*\shell\udefrag"         "Icon" $1
-    WriteRegStr HKCR "*\shell\udefrag\command" ""     $0
-
-    Pop $R3
-    Pop $R2
     Pop $R1
     Pop $R0
-    Pop $9
-    Pop $8
-    Pop $7
-    Pop $6
-    Pop $5
-    Pop $4
-    Pop $3
-    Pop $2
     Pop $1
     Pop $0
 
@@ -798,6 +842,13 @@ SkipMove:
     Delete "$INSTDIR\icons\shellex.ico"
     Delete "$INSTDIR\icons\shellex-folder.ico"
     RmDir "$INSTDIR\icons"
+
+    DeleteRegKey HKCR "Drive\shell\udefrag.W7menu"
+    DeleteRegKey HKCR "Drive\udefragW7menu"
+    DeleteRegKey HKCR "Folder\shell\udefrag.W7menu"
+    DeleteRegKey HKCR "Folder\udefragW7menu"
+    DeleteRegKey HKCR "*\shell\udefrag.W7menu"
+    DeleteRegKey HKCR "*\udefragW7menu"
 
     DeleteRegKey HKCR "Drive\shell\udefrag"
     DeleteRegKey HKCR "Drive\shell\udefrag-folder"

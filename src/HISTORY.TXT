@@ -1,5 +1,17 @@
 ﻿HISTORY
 
+  Version 6.0.2 2013-05-17
+  ------------------------------------------------------------------------------
+    - the FAQ section of the handbook now contains information about how to
+      set up v6 to optimize similarly to v5
+    - the Explorer context menu is now reduced to a single entry with sub-menu
+      on Windows 7 and above
+    - the following translations were updated:
+
+      Albanian, Danish, Filipino (Tagalog), Indonesian (Bahasa Indonesia),
+      Javanese, Polish, Portuguese (BR)
+
+
   Version 6.0.1 2013-04-01
   ------------------------------------------------------------------------------
     - Installer no longer warns about Windows 8 being untested

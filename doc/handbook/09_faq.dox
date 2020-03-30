@@ -58,6 +58,16 @@
  * <b>-v</b> command line parameter.<br/>
  * You can run an analysis of a drive from the Explorer context menu too.
  *
+ * <h3>How can I optimize similar to v5.x.x in v6.x.x?</h3>
+ * Starting with version 6.0.0 the optimization no longer ignores filters.
+ * In addition there is a new filter added that skips files of a specified
+ * size when running optimization.<br/>
+ * To get a similar behavior of v5 in v6, you need to disable/unset all filters
+ * and set the variable <b>UD_OPTIMIZER_FILE_SIZE_THRESHOLD</b> for the boot time
+ * and console interfaces
+ * respectively the setting <b>optimizer_file_size_threshold</b> for the GUI
+ * to <b>15 EB</b>.
+ *
  * <h1>Graphical Interface</h1>
  * <h3>Where can I find a legend of the cluster map colors?</h3>
  * The colors are described in the <b>Cluster Map</b> section of the @ref GUI page. 

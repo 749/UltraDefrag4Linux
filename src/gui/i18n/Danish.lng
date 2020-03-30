@@ -1,6 +1,7 @@
 ﻿;------------------------------------------------------------------------------
 ; UltraDefrag GUI Danish Language Pack.
 ; Copyright (C) 2009, 2011 Patrick Paludan-Müller.
+; Copyright (C) 2013 Jens Erik Graversgaard.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
@@ -24,29 +25,29 @@ HELP                      = Hjælp
 
 ; --- Action Menu
 
-ANALYSE                   = Analyser
-DEFRAGMENT                = Defragmenter
+ANALYSE                   = Analysér
+DEFRAGMENT                = Defragmentér
 QUICK_OPTIMIZE            = Hurtig optimering
 FULL_OPTIMIZE             = Fuld optimering
-OPTIMIZE_MFT              = Optimer MFT
+OPTIMIZE_MFT              = Optimér MFT
 PAUSE                     = &Pause
-STOP                      = Stands
-REPEAT_ACTION             = Gentag handling
-SKIP_REMOVABLE_MEDIA      = Kun faste drev
-RESCAN_DRIVES             = Opdater drevlisten
-REPAIR_DRIVES             = Reparation drev
-WHEN_DONE                 = Efter udførsel
-EXIT                      = Luk programmet
+STOP                      = Afbryd
+REPEAT_ACTION             = Gentagne kørsler
+SKIP_REMOVABLE_MEDIA      = Skjul flytbare drev
+RESCAN_DRIVES             = Opdatér drevlisten
+REPAIR_DRIVES             = Reparér drev (CHKDSK)
+WHEN_DONE                 = Når opgaven er fuldført
+EXIT                      = Afslut UltraDefrag
 
 ; --- --- When done submenu
 
 WHEN_DONE_NONE            = Gør ingenting
-WHEN_DONE_EXIT            = Luk programmet
+WHEN_DONE_EXIT            = Afslut UltraDefrag
 WHEN_DONE_STANDBY         = Standby
 WHEN_DONE_HIBERNATE       = Dvale
 WHEN_DONE_LOGOFF          = Log af
-WHEN_DONE_REBOOT          = Genstart
-WHEN_DONE_SHUTDOWN        = Luk ned
+WHEN_DONE_REBOOT          = Genstart Windows
+WHEN_DONE_SHUTDOWN        = Nedluk Windows
 
 ; --- Report Menu
 
@@ -56,16 +57,16 @@ SHOW_REPORT               = Vis rapport
 
 LANGUAGE                  = Sprog
 GRAPHICAL_INTERFACE       = Brugergrænseflade
-BOOT_TIME_SCAN            = Skan ved opstart af Windows
-REPORTS                   = Rapporter
+BOOT_TIME_SCAN            = Boot-time defrag
+REPORTS                   = Rapport-udseende
 SORTING                   = &Sorting
 
 ; --- --- Language submenu
 
-TRANSLATIONS_CHANGE_LOG   = Se ændre log
-TRANSLATIONS_REPORT       = Vis oversættelse &rapport
-TRANSLATIONS_FOLDER       = Oversættelsesmappe
-TRANSLATIONS_SUBMIT       = Indsend nuværende oversættelse
+TRANSLATIONS_CHANGE_LOG   = Se ændrings-log
+TRANSLATIONS_REPORT       = Vis oversættelses-rapport
+TRANSLATIONS_FOLDER       = Oversættelses-mappen
+TRANSLATIONS_SUBMIT       = Redigér/indsend denne oversættelse
 
 ; --- --- Graphical interface submenu
 
@@ -74,27 +75,27 @@ OPTIONS                   = Indstillinger
 
 ; --- --- Boot time scan submenu
 
-ENABLE                    = Aktiver
+ENABLE                    = Aktivér
 SCRIPT                    = Script
 
 ; --- --- Sorting submenu
 
-SORT_BY_PATH              = Sort by &path
-SORT_BY_SIZE              = Sort by &size
-SORT_BY_C_TIME            = Sort by &creation time
-SORT_BY_M_TIME            = Sort by last &modification time
-SORT_BY_A_TIME            = Sort by &last access time
-SORT_ASCENDING            = Sort in &ascending order
-SORT_DESCENDING           = Sort in &descending order
+SORT_BY_PATH              = Sortér efter sti
+SORT_BY_SIZE              = Sortér efter størrelse
+SORT_BY_C_TIME            = Sortér efter oprettelse
+SORT_BY_M_TIME            = Sortér efter seneste ændring
+SORT_BY_A_TIME            = Sortér efter seneste åbning
+SORT_ASCENDING            = Sortér i stigende orden
+SORT_DESCENDING           = Sortér i faldende orden
 
 ; --- Help Menu
 
 CONTENTS                  = Indhold
 BEST_PRACTICE             = Bedste praksis
 FAQ                       = Ofte stillede spørgsmål
-CM_LEGEND                 = Cluster kort legende
+CM_LEGEND                 = Klynge-signaturer mv.
 DEBUG                     = Fejlsøg
-CHECK_UPDATE              = Kontroller for opdatering
+CHECK_UPDATE              = Se, om der er en opdatering
 ABOUT                     = Om
 
 ; --- --- Debug submenu
@@ -104,16 +105,16 @@ REPORT_BUG                = Send fejl&rapport
 
 ; --- Toolbar Tooltips
 
-BOOT_TIME_SCRIPT          = Boot tid script
+BOOT_TIME_SCRIPT          = Boot-time script
 
 ; Drives list items.
 
-VOLUME                    = Logisk drev
-STATUS                    = Tilstand
+VOLUME                    = Drev
+STATUS                    = Status
 FRAGMENTATION             = Fragmentering
 TOTAL                     = Kapacitet
-FREE                      = Ledig plads
-PERCENT                   = % Ledig
+FREE                      = Ubenyttet
+PERCENT                   = Ledig %
 
 ; Status messages
 
@@ -133,16 +134,16 @@ COMPRESSED                = komprimerede
 ; About window.
 
 ABOUT_WIN_TITLE           = Om Ultra Defragmenter
-CREDITS                   = Kreditter
+CREDITS                   = Anerkendelser
 LICENSE                   = Licens
 
 ; Shutdown confirmation
 
-PLEASE_CONFIRM            = Acceptér
-REALLY_SHUTDOWN_WHEN_DONE = Acceptér nedlukning når opgaven er udført?
-REALLY_HIBERNATE_WHEN_DONE= Acceptér dvaletilstand når opgaven er udført?
-REALLY_LOGOFF_WHEN_DONE   = Acceptér log af når opgaven er udført?
-REALLY_REBOOT_WHEN_DONE   = Acceptér genstart når opgaven er udført?
+PLEASE_CONFIRM            = Bekræft
+REALLY_SHUTDOWN_WHEN_DONE = Bekræft nedlukning, når opgaven er fuldført ?
+REALLY_HIBERNATE_WHEN_DONE= Bekræft dvaletilstand, når opgaven er fuldført ?
+REALLY_LOGOFF_WHEN_DONE   = Bekræft log af, når opgaven er fuldført ?
+REALLY_REBOOT_WHEN_DONE   = Bekræft genstart, når opgaven er fuldført ?
 SECONDS_TILL_SHUTDOWN     = sekunder til nedlukning
 SECONDS_TILL_HIBERNATION  = sekunder til dvaletilstand
 SECONDS_TILL_LOGOFF       = sekunder til log af
@@ -169,16 +170,16 @@ HIDE                      = Skjul
 FRAGMENTED_FILES_ON       = Fragmenterede filer på
 
 VISIT_HOMEPAGE            = Besøg vores hjemmeside
-VIEW_REPORT_OPTIONS       = Se rapport muligheder
-POWERED_BY_LUA            = Understøttet af Lua
+VIEW_REPORT_OPTIONS       = Se rapport-muligheder
+POWERED_BY_LUA            = Udviklet i Lua
 
 FRAGMENTS                 = fragmenter
 SIZE                      = størrelse
 FILENAME                  = filnavn
-COMMENT                   = kommentere
+COMMENT                   = bemærkning
 
 LOCKED                    = låst
-MOVE_FAILED               = flytte mislykkedes
+MOVE_FAILED               = flytning mislykkedes
 INVALID                   = ugyldig
 
 ; END OF FILE

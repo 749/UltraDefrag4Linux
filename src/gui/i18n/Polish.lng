@@ -3,7 +3,7 @@
 ; Copyright (C) 2008 Andrzej Rudnik.
 ; Copyright (C) 2010 Krzysztof Świderski.
 ; Copyright (C) 2011 Ireneusz Chorosz.
-; Copyright (C) 2012 Mateusz Kacprzak.
+; Copyright (C) 2012, 2013 Mateusz Kacprzak.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
@@ -23,9 +23,9 @@
 ; Main Menu
 
 ACTION                    = Działania
-REPORT                    = Raport
-SETTINGS                  = Ustawienia
-HELP                      = Pomoc
+REPORT                    = &Raport
+SETTINGS                  = U&stawienia
+HELP                      = &Pomoc
 
 ; --- Action Menu
 
@@ -34,12 +34,12 @@ DEFRAGMENT                = &Defragmentacja
 QUICK_OPTIMIZE            = Szybka optymalizacja
 FULL_OPTIMIZE             = Pełna optymalizacja
 OPTIMIZE_MFT              = &Optymalizacja MFT
-PAUSE                     = &Pause
+PAUSE                     = &Wstrzymaj
 STOP                      = Zatrzymaj
 REPEAT_ACTION             = Powtó&rzenie działania
 SKIP_REMOVABLE_MEDIA      = Po&minięcie dysków przenośnych
-RESCAN_DRIVES             = Ponowne skanowanie listy dysków
-REPAIR_DRIVES             = Naprawienie dysków
+RESCAN_DRIVES             = Ponowny skan listy dysków
+REPAIR_DRIVES             = Naprawa dysków
 WHEN_DONE                 = Po ukończeniu działań
 EXIT                      = Zakończ
 
@@ -55,7 +55,7 @@ WHEN_DONE_SHUTDOWN        = Wyłącz komputer
 
 ; --- Report Menu
 
-SHOW_REPORT               = Pokaż raport
+SHOW_REPORT               = Pokaż &raport
 
 ; --- Settings Menu
 
@@ -63,14 +63,14 @@ LANGUAGE                  = Język
 GRAPHICAL_INTERFACE       = Interfejs &graficzny
 BOOT_TIME_SCAN            = Skanowanie przy uruchomieniu
 REPORTS                   = &Raporty
-SORTING                   = &Sorting
+SORTING                   = &Sortowanie
 
 ; --- --- Language submenu
 
 TRANSLATIONS_CHANGE_LOG   = Pokaż listę zmian
 TRANSLATIONS_REPORT       = Pokaż &raport tłumaczeń
 TRANSLATIONS_FOLDER       = Katalog z &tłumaczeniami
-TRANSLATIONS_SUBMIT       = Wy&ślij aktualne tłumaczenie
+TRANSLATIONS_SUBMIT       = Wyślij aktualne tłumaczenie
 
 ; --- --- Graphical interface submenu
 
@@ -84,13 +84,13 @@ SCRIPT                    = &Skrypt
 
 ; --- --- Sorting submenu
 
-SORT_BY_PATH              = Sort by &path
-SORT_BY_SIZE              = Sort by &size
-SORT_BY_C_TIME            = Sort by &creation time
-SORT_BY_M_TIME            = Sort by last &modification time
-SORT_BY_A_TIME            = Sort by &last access time
-SORT_ASCENDING            = Sort in &ascending order
-SORT_DESCENDING           = Sort in &descending order
+SORT_BY_PATH              = Sortuj wg ścieżki
+SORT_BY_SIZE              = Sortuj wg rozmiaru
+SORT_BY_C_TIME            = Sortuj wg daty utworzenia
+SORT_BY_M_TIME            = Sortuj wg daty modyfikacji
+SORT_BY_A_TIME            = Sortuj wg daty otwarcia
+SORT_ASCENDING            = Sortuj rosnąco
+SORT_DESCENDING           = Sortuj malejąco
 
 ; --- Help Menu
 
@@ -104,7 +104,7 @@ ABOUT                     = O UltraDefrag
 
 ; --- --- Debug submenu
 
-OPEN_LOG                  = Otwórz raport
+OPEN_LOG                  = &Otwórz raport
 REPORT_BUG                = Wyślij &raport o błędach
 
 ; --- Toolbar Tooltips

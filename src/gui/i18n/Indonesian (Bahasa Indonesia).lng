@@ -59,7 +59,7 @@ LANGUAGE                  = &Bahasa
 GRAPHICAL_INTERFACE       = &Tampilan Grafis
 BOOT_TIME_SCAN            = &Waktu scan boot
 REPORTS                   = &Laporan
-SORTING                   = &Sorting
+SORTING                   = &Urutkan
 
 ; --- --- Language submenu
 
@@ -80,13 +80,13 @@ SCRIPT                    = &Naskah
 
 ; --- --- Sorting submenu
 
-SORT_BY_PATH              = Sort by &path
-SORT_BY_SIZE              = Sort by &size
-SORT_BY_C_TIME            = Sort by &creation time
-SORT_BY_M_TIME            = Sort by last &modification time
-SORT_BY_A_TIME            = Sort by &last access time
-SORT_ASCENDING            = Sort in &ascending order
-SORT_DESCENDING           = Sort in &descending order
+SORT_BY_PATH              = Urutkan berdasarkan &lokasi
+SORT_BY_SIZE              = Urutkan berdasarkan &ukuran
+SORT_BY_C_TIME            = Urutkan berdasarkan &waktu pembuatan
+SORT_BY_M_TIME            = Urutkan berdasarkan &terakhir kali modifikasi
+SORT_BY_A_TIME            = Urutkan berdasarkan akses terak&hir
+SORT_ASCENDING            = Urutkan secara &asending
+SORT_DESCENDING           = Urutkan secara &desending
 
 ; --- Help Menu
 

@@ -158,7 +158,7 @@ NO                        = &Não
 ; Upgrade dialog
 
 UPGRADE_CAPTION           = Você pode atualizar-me
-UPGRADE_MESSAGE           = versão está disponível para download!
+UPGRADE_MESSAGE           = Versão está disponível para download!
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 
