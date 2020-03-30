@@ -49,9 +49,9 @@ static void print_usage (void) {
   "Available options are:\n"
   "  -e stat  execute string " LUA_QL("stat") "\n"
   "  -l name  require library " LUA_QL("name") "\n"
-  "  -v       show version information\n"
-  "  -s       silent mode (errors not displayed on the screen\n"
-  "  --       stop handling options\n"
+  "  -v  show version information\n"
+  "  -s  silent mode (errors not displayed on the screen\n"
+  "  --  stop handling options\n"
   ,
   "Lua GUI",MB_OK);
 }

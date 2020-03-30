@@ -1,5 +1,10 @@
 ﻿HISTORY
 
+  Version 6.0.4 2014-10-25
+  ------------------------------------------------------------------------------
+    - fixed a bug preventing configuration files creation on Windows 7
+
+
   Version 6.0.3 2014-10-19
   ------------------------------------------------------------------------------
     - corrected a problem where the Windows folder was not detected properly
