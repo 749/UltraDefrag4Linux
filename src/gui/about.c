@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,213 +35,106 @@ BOOL CALLBACK AboutDlgProc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam);
  */
 static void ResizeAboutDialog(HWND hwnd)
 {
-    wchar_t buffer[256];
     int text1_width, text1_height;
     int text2_width, text2_height;
     int text3_width, text3_height;
-    int text_block_width;
-    int text_block_height;
-    int button1_width = MIN_BTN_WIDTH;
-    int button1_height = MIN_BTN_HEIGHT;
-    int button2_width = MIN_BTN_WIDTH;
-    int button2_height = MIN_BTN_HEIGHT;
-    int buttons_block_width;
-    int buttons_block_height;
+    int btn1_width, btn1_height;
+    int btn2_width, btn2_height;
+    int btn3_width, btn3_height;
     int buttons_spacing = SMALL_SPACING;
-    int client_width, client_height;
     int width, height;
-    signed int delta;
+    int block_height, delta;
+    int client_width, client_height;
     int ship_x, ship_y;
-    int text_block_x;
-    int text_block_y;
-    int buttons_block_x;
-    int buttons_block_y;
-    BOOL result;
+    int block_x, block_y;
+    HFONT hFont;
     RECT rc;
     
-    /* get dimensions of labels */
-    if(!GetWindowTextW(GetDlgItem(hwnd,IDC_TEXT1),buffer,sizeof(buffer)/sizeof(wchar_t))){
-        WgxDbgPrint("ResizeAboutDialog: cannot get top label text");
-        return;
-    }
-    buffer[sizeof(buffer)/sizeof(wchar_t) - 1] = 0;
-    result = WgxGetTextDimensions(buffer,
-        use_custom_font_in_dialogs ? wgxFont.hFont : NULL,
-        GetDlgItem(hwnd,IDC_TEXT1), &text1_width, &text1_height);
-    if(result == FALSE) return;
-
-    if(!GetWindowTextW(GetDlgItem(hwnd,IDC_TEXT2),buffer,sizeof(buffer)/sizeof(wchar_t))){
-        WgxDbgPrint("ResizeAboutDialog: cannot get middle label text");
-        return;
-    }
-    buffer[sizeof(buffer)/sizeof(wchar_t) - 1] = 0;
-    result = WgxGetTextDimensions(buffer,
-        use_custom_font_in_dialogs ? wgxFont.hFont : NULL,
-        GetDlgItem(hwnd,IDC_TEXT2), &text2_width, &text2_height);
-    if(result == FALSE) return;
-
-    if(!GetWindowTextW(GetDlgItem(hwnd,IDC_TEXT3),buffer,sizeof(buffer)/sizeof(wchar_t))){
-        WgxDbgPrint("ResizeAboutDialog: cannot get bottom label text");
-        return;
-    }
-    buffer[sizeof(buffer)/sizeof(wchar_t) - 1] = 0;
-    result = WgxGetTextDimensions(buffer,
-        use_custom_font_in_dialogs ? wgxFont.hFont : NULL,
-        GetDlgItem(hwnd,IDC_TEXT3), &text3_width, &text3_height);
-    if(result == FALSE) return;
-
-    /* calculate dimensions of the entire text block */
-    text_block_width = max(text1_width,text2_width);
-    text_block_width = max(text_block_width,text3_width);
-    text1_width = text2_width = text3_width = text_block_width;
-    text_block_height = text1_height + SMALL_SPACING + text2_height + \
-        SMALL_SPACING + text3_height;
-
-    /* calculate dimensions of buttons */
-    if(!GetWindowTextW(GetDlgItem(hwnd,IDC_CREDITS),buffer,sizeof(buffer)/sizeof(wchar_t))){
-        WgxDbgPrint("ResizeAboutDialog: cannot get Credits button text");
-        return;
-    }
-    buffer[sizeof(buffer)/sizeof(wchar_t) - 1] = 0;
-    result = WgxGetTextDimensions(buffer,
-        use_custom_font_in_dialogs ? wgxFont.hFont : NULL,
-        GetDlgItem(hwnd,IDC_CREDITS), &width, &height);
-    if(result == FALSE) return;
-    if(width + 2 * BTN_H_SPACING > button1_width)
-        button1_width = width + 2 * BTN_H_SPACING;
-    if(height + 2 * BTN_V_SPACING > button1_height)
-        button1_height = height + 2 * BTN_V_SPACING;
-
-    if(!GetWindowTextW(GetDlgItem(hwnd,IDC_LICENSE),buffer,sizeof(buffer)/sizeof(wchar_t))){
-        WgxDbgPrint("ResizeAboutDialog: cannot get License button text");
-        return;
-    }
-    buffer[sizeof(buffer)/sizeof(wchar_t) - 1] = 0;
-    result = WgxGetTextDimensions(buffer,
-        use_custom_font_in_dialogs ? wgxFont.hFont : NULL,
-        GetDlgItem(hwnd,IDC_LICENSE), &width, &height);
-    if(result == FALSE) return;
-    if(width + 2 * BTN_H_SPACING > button1_width)
-        button1_width = width + 2 * BTN_H_SPACING;
-    if(height + 2 * BTN_V_SPACING > button1_height)
-        button1_height = height + 2 * BTN_V_SPACING;
-
-    if(!GetWindowTextW(GetDlgItem(hwnd,IDC_HOMEPAGE),buffer,sizeof(buffer)/sizeof(wchar_t))){
-        WgxDbgPrint("ResizeAboutDialog: cannot get Homepage button text");
-        return;
-    }
-    buffer[sizeof(buffer)/sizeof(wchar_t) - 1] = 0;
-    result = WgxGetTextDimensions(buffer,
-        use_custom_font_in_dialogs ? wgxFont.hFont : NULL,
-        GetDlgItem(hwnd,IDC_HOMEPAGE), &width, &height);
-    if(result == FALSE) return;
-    if(width + 2 * BTN_H_SPACING > button2_width)
-        button2_width = width + 2 * BTN_H_SPACING;
-    if(height + 2 * BTN_V_SPACING > button2_height)
-        button2_height = height + 2 * BTN_V_SPACING;
+    /* get dimensions of controls */
+    hFont = use_custom_font_in_dialogs ? wgxFont.hFont : NULL;
+    if(!WgxGetControlDimensions(GetDlgItem(hwnd,IDC_TEXT1),
+        hFont,&text1_width, &text1_height)) return;
+    if(!WgxGetControlDimensions(GetDlgItem(hwnd,IDC_TEXT2),
+        hFont,&text2_width, &text2_height)) return;
+    if(!WgxGetControlDimensions(GetDlgItem(hwnd,IDC_TEXT3),
+        hFont,&text3_width, &text3_height)) return;
+    if(!WgxGetControlDimensions(GetDlgItem(hwnd,IDC_CREDITS),
+        hFont,&btn1_width, &btn1_height)) return;
+    if(!WgxGetControlDimensions(GetDlgItem(hwnd,IDC_LICENSE),
+        hFont,&btn2_width, &btn2_height)) return;
+    if(!WgxGetControlDimensions(GetDlgItem(hwnd,IDC_HOMEPAGE),
+        hFont,&btn3_width, &btn3_height)) return;
     
-    height = max(button1_height,button2_height);
-    button1_height = button2_height = height;
-    delta = button2_width - (button1_width * 2 + SMALL_SPACING);
-    if(delta > 0){
-        /* make top buttons wider */
-        button1_width += delta / 2;
-        if(delta % 2)
-            buttons_spacing ++;
-    } else {
-        /* make bottom button wider */
-        button2_width -= delta;
-    }
+    /* adjust dimensions of buttons */
+    width = max(btn1_width,btn2_width);
+    btn1_width = btn2_width = max(width,MIN_BTN_WIDTH);
+    height = max(btn1_height,btn2_height);
+    height = max(height,btn3_height);
+    height = max(height,MIN_BTN_HEIGHT);
+    btn1_height = btn2_height = btn3_height = height;
     
-    /* calculate dimensions of the entire block of buttons */
-    buttons_block_width = button2_width;
-    buttons_block_height = button1_height + SMALL_SPACING + button2_height;
-    
-    if(buttons_block_width > text_block_width){
-        text_block_width = buttons_block_width;
-        text1_width = text2_width = text3_width = text_block_width;
-    } else {
-        delta = text_block_width - buttons_block_width;
-        /* make top buttons wider */
-        button1_width += delta / 2;
-        if(delta % 2)
-            buttons_spacing ++;
-        /* make bottom button wider */
-        button2_width += delta;
-        buttons_block_width = text_block_width;
-    }
+    /* adjust controls */
+    width = max(text1_width,text2_width);
+    width = max(width,text3_width);
+    width = max(width,btn1_width * 2 + buttons_spacing);
+    width = max(width,btn3_width);
+    text1_width = text2_width = width;
+    text3_width = btn3_width = width;
+    btn1_width = btn2_width = (width - SMALL_SPACING) / 2;
+    if((width - SMALL_SPACING) % 2) buttons_spacing ++;
     
     /* calculate dimensions of the entire client area */
-    client_width = SHIP_WIDTH + LARGE_SPACING + text_block_width + MARGIN * 2;
-    client_height = max(SHIP_HEIGHT,text_block_height + LARGE_SPACING + buttons_block_height) + MARGIN * 2;
-    
-    rc.left = 0;
-    rc.right = client_width;
-    rc.top = 0;
-    rc.bottom = client_height;
+    height = text1_height + text2_height + text3_height + 2 * SMALL_SPACING;
+    block_height = height + LARGE_SPACING + btn1_height * 2 + SMALL_SPACING;
+    client_width = SHIP_WIDTH + LARGE_SPACING + text1_width + MARGIN * 2;
+    client_height = max(SHIP_HEIGHT,block_height) + MARGIN * 2;
+
+    /* resize main window */
+    rc.left = 0, rc.right = client_width;
+    rc.top = 0, rc.bottom = client_height;
     if(!AdjustWindowRect(&rc,WS_CAPTION | WS_DLGFRAME,FALSE)){
-        WgxDbgPrintLastError("ResizeAboutDialog: cannot calculate window dimensions");
+        letrace("cannot calculate window dimensions");
         return;
     }
-            
-    /* resize main window */
     MoveWindow(hwnd,0,0,rc.right - rc.left,rc.bottom - rc.top,FALSE);
-            
+
     /* reposition controls */
     ship_x = MARGIN;
-    text_block_x = ship_x + SHIP_WIDTH + LARGE_SPACING;
-    buttons_block_x = text_block_x;
-    delta = SHIP_HEIGHT - (text_block_height + LARGE_SPACING + buttons_block_height);
+    block_x = ship_x + SHIP_WIDTH + LARGE_SPACING;
+    delta = SHIP_HEIGHT - block_height;
     if(delta > 0){
         ship_y = MARGIN;
-        text_block_y = MARGIN + delta / 2;
+        block_y = MARGIN + delta / 2;
     } else {
         ship_y = MARGIN - delta / 2;
-        text_block_y = MARGIN;
+        block_y = MARGIN;
     }
-    buttons_block_y = text_block_y + text_block_height + LARGE_SPACING;
     
     SetWindowPos(GetDlgItem(hwnd,IDC_SHIP),NULL,
-        ship_x,
-        ship_y,
-        SHIP_WIDTH,
-        SHIP_HEIGHT,
+        ship_x,ship_y,SHIP_WIDTH,SHIP_HEIGHT,
         SWP_NOZORDER);
     SetWindowPos(GetDlgItem(hwnd,IDC_TEXT1),NULL,
-        text_block_x,
-        text_block_y,
-        text1_width,
-        text1_height,
+        block_x,block_y,text1_width,text1_height,
         SWP_NOZORDER);
+    block_y += text1_height + SMALL_SPACING;
     SetWindowPos(GetDlgItem(hwnd,IDC_TEXT2),NULL,
-        text_block_x,
-        text_block_y + text1_height + SMALL_SPACING,
-        text2_width,
-        text2_height,
+        block_x,block_y,text2_width,text2_height,
         SWP_NOZORDER);
+    block_y += text2_height + SMALL_SPACING;
     SetWindowPos(GetDlgItem(hwnd,IDC_TEXT3),NULL,
-        text_block_x,
-        text_block_y + text1_height + text2_height + SMALL_SPACING * 2,
-        text3_width,
-        text3_height,
+        block_x,block_y,text3_width,text3_height,
         SWP_NOZORDER);
+    block_y += text3_height + LARGE_SPACING;
     SetWindowPos(GetDlgItem(hwnd,IDC_CREDITS),NULL,
-        buttons_block_x,
-        buttons_block_y,
-        button1_width,
-        button1_height,
+        block_x,block_y,btn1_width,btn1_height,
         SWP_NOZORDER);
     SetWindowPos(GetDlgItem(hwnd,IDC_LICENSE),NULL,
-        buttons_block_x + button1_width + buttons_spacing,
-        buttons_block_y,
-        button1_width,
-        button1_height,
+        block_x + btn1_width + buttons_spacing,
+        block_y,btn2_width,btn2_height,
         SWP_NOZORDER);
+    block_y += btn1_height + SMALL_SPACING;
     SetWindowPos(GetDlgItem(hwnd,IDC_HOMEPAGE),NULL,
-        buttons_block_x,
-        buttons_block_y + button1_height + SMALL_SPACING,
-        button2_width,
-        button2_height,
+        block_x,block_y,btn3_width,btn3_height,
         SWP_NOZORDER);
     
     /* center window over its parent */
@@ -268,7 +161,7 @@ void AboutBox(void)
         id = IDD_ABOUT;
 
     if(DialogBoxW(hInstance,MAKEINTRESOURCEW(id),hWindow,(DLGPROC)AboutDlgProc) == (-1))
-        WgxDisplayLastError(hWindow,MB_OK | MB_ICONHAND,"Cannot create the About window!");
+        WgxDisplayLastError(hWindow,MB_OK | MB_ICONHAND,L"Cannot create the About window!");
 }
 
 BOOL CALLBACK AboutDlgProc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
@@ -292,11 +185,14 @@ BOOL CALLBACK AboutDlgProc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
                     OpenWebPage("Credits.html", NULL);
                     break;
                 case IDC_LICENSE:
-                    (void)WgxShellExecuteW(hWindow,L"open",L".\\LICENSE.TXT",NULL,NULL,SW_SHOW);
+                    (void)WgxShellExecute(hWindow,L"open",L".\\LICENSE.TXT",
+                        NULL,NULL,SW_SHOW,WSH_ALLOW_DEFAULT_ACTION);
                     break;
                 case IDC_HOMEPAGE:
                     (void)SetFocus(GetDlgItem(hWnd,IDC_CREDITS));
-                    (void)WgxShellExecuteW(hWindow,L"open",L"http://ultradefrag.sourceforge.net",NULL,NULL,SW_SHOW);
+                    (void)WgxShellExecute(hWindow,L"open",
+                        L"http://ultradefrag.sourceforge.net",
+                        NULL,NULL,SW_SHOW,WSH_ALLOW_DEFAULT_ACTION);
             }
             if(LOWORD(wParam) == IDCANCEL){
                 (void)EndDialog(hWnd,1);

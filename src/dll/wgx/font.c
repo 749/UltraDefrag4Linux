@@ -1,6 +1,6 @@
 /*
  *  WGX - Windows GUI Extended Library.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,15 +24,7 @@
  * @{
  */
 
-#include <windows.h>
-
-#include "wgx.h"
-
-/* Uses Lua */
-#define lua_c
-#include "../../lua5.1/lua.h"
-#include "../../lua5.1/lauxlib.h"
-#include "../../lua5.1/lualib.h"
+#include "wgx-internals.h"
 
 /* returns 0 if variable is not defined */
 static int getint(lua_State *L, char *variable)
@@ -74,6 +66,7 @@ BOOL WgxCreateFont(char *wgx_font_path,PWGX_FONT pFont)
 {
     lua_State *L;
     int status;
+    const char *msg;
     char *string;
     LOGFONT lf;
     
@@ -88,7 +81,7 @@ BOOL WgxCreateFont(char *wgx_font_path,PWGX_FONT pFont)
 
     L = lua_open();  /* create state */
     if(L == NULL){
-        WgxDbgPrint("WgxCreateFont: cannot initialize Lua library\n");
+        etrace("cannot initialize Lua library");
         goto use_default_font;
     }
     
@@ -122,19 +115,25 @@ BOOL WgxCreateFont(char *wgx_font_path,PWGX_FONT pFont)
         lua_pop(L, 1);
         lua_close(L);
     } else {
-        WgxDbgPrint("WgxCreateFont: cannot interprete %s\n",wgx_font_path);
+        etrace("cannot interprete %s",wgx_font_path);
+        if(!lua_isnil(L, -1)){
+            msg = lua_tostring(L, -1);
+            if(msg == NULL) msg = "(error object is not a string)";
+            etrace("%s",msg);
+            lua_pop(L, 1);
+        }
         lua_close(L);
         goto use_default_font;
     }
     
     pFont->hFont = CreateFontIndirect(&lf);
     if(pFont->hFont == NULL){
-        WgxDbgPrintLastError("WgxCreateFont: CreateFontIndirect for custom font failed");
+        letrace("CreateFontIndirect for custom font failed");
 use_default_font:
         /* try to use default font passed through pFont */
         pFont->hFont = CreateFontIndirect(&pFont->lf);
         if(pFont->hFont == NULL){
-            WgxDbgPrintLastError("WgxCreateFont: CreateFontIndirect for default font failed");
+            letrace("CreateFontIndirect for default font failed");
             return FALSE;
         }
         return TRUE;
@@ -196,8 +195,8 @@ BOOL WgxSaveFont(char *wgx_font_path,PWGX_FONT pFont)
 {
     LOGFONT *lf;
     FILE *pf;
+    char *msg;
     int result;
-    char err_msg[1024];
     
     if(wgx_font_path == NULL || pFont == NULL)
         return FALSE;
@@ -206,11 +205,11 @@ BOOL WgxSaveFont(char *wgx_font_path,PWGX_FONT pFont)
 
     pf = fopen(wgx_font_path,"wt");
     if(!pf){
-        (void)_snprintf(err_msg,sizeof(err_msg) - 1,
-            "Cannot save font preferences to %s!\n%s",
-            wgx_font_path,_strerror(NULL));
-        err_msg[sizeof(err_msg) - 1] = 0;
-        MessageBox(0,err_msg,"Warning!",MB_OK | MB_ICONWARNING);
+        msg = wgx_sprintf("Cannot save font preferences "
+            "to %s!\n%s",wgx_font_path,_strerror(NULL));
+        MessageBox(0,msg ? msg : "Cannot save font preferences:\n"
+            "not enough memory!","Warning!",MB_OK | MB_ICONWARNING);
+        free(msg);
         return FALSE;
     }
 
@@ -246,11 +245,11 @@ BOOL WgxSaveFont(char *wgx_font_path,PWGX_FONT pFont)
         );
     fclose(pf);
     if(result < 0){
-        (void)_snprintf(err_msg,sizeof(err_msg) - 1,
-            "Cannot write font preferences to %s!\n%s",
-            wgx_font_path,_strerror(NULL));
-        err_msg[sizeof(err_msg) - 1] = 0;
-        MessageBox(0,err_msg,"Warning!",MB_OK | MB_ICONWARNING);
+        msg = wgx_sprintf("Cannot write font preferences "
+            "to %s!\n%s",wgx_font_path,_strerror(NULL));
+        MessageBox(0,msg ? msg : "Cannot write font preferences:\n"
+            "not enough memory!","Warning!",MB_OK | MB_ICONWARNING);
+        free(msg);
         return FALSE;
     }
     return TRUE;

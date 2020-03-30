@@ -1,6 +1,6 @@
 ﻿;------------------------------------------------------------------------------
 ; UltraDefrag GUI Iloko Language Pack.
-; Copyright (C) 2011-2012 Joseph S. Maza.
+; Copyright (C) 2011-2013 Joseph S. Maza.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
@@ -29,6 +29,7 @@ DEFRAGMENT                = &Dagupen
 QUICK_OPTIMIZE            = Ikanatad a &Napartak
 FULL_OPTIMIZE             = Ikanatad a &Sibubukel
 OPTIMIZE_MFT              = Ikanatad ti M&FT
+PAUSE                     = &Pause
 STOP                      = &Isardeng
 REPEAT_ACTION             = Ulit&en
 SKIP_REMOVABLE_MEDIA      = Ikulasay ti &Media a Maikkat
@@ -57,6 +58,7 @@ LANGUAGE                  = Pagsa&sao
 GRAPHICAL_INTERFACE       = &Bista
 BOOT_TIME_SCAN            = &Usigen iti Apagrugi
 REPORTS                   = Pa&damag
+SORTING                   = &Panagidalimanek
 
 ; --- --- Language submenu
 
@@ -74,6 +76,16 @@ OPTIONS                   = &Opsion
 
 ENABLE                    = &Paandaren
 SCRIPT                    = Pa&mayaan
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Idalimanek iti &danas
+SORT_BY_SIZE              = Idalimanek iti &kadakkel
+SORT_BY_C_TIME            = Idalimanek iti i&paparsua
+SORT_BY_M_TIME            = Idalimanek iti i&babaliw
+SORT_BY_A_TIME            = Idalimanek iti &naudi a pannakaaramat
+SORT_ASCENDING            = Idalimanek nga agpangat&o
+SORT_DESCENDING           = Idali&manek nga agpababa
 
 ; --- Help Menu
 
@@ -158,7 +170,7 @@ FRAGMENTED_FILES_ON       = Napisi nga intar iti
 
 VISIT_HOMEPAGE            = Basaen ti Kangrunaan a Panid
 VIEW_REPORT_OPTIONS       = Imatangan ti opsion ti padamag
-POWERED_BY_LUA            = Babaen ti teknolohia ti Lua
+POWERED_BY_LUA            = Umandar babaen ti Lua
 
 FRAGMENTS                 = pisi
 SIZE                      = kadakkel

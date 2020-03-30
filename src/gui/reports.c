@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,15 +31,15 @@
  */
 static void ShowSingleReport(volume_processing_job *job)
 {
-    wchar_t l_path[] = L"C:\\fraglist.luar";
-    char path[] = "C:\\fraglist.luar";
-    char args[MAX_PATH];
+    char path[MAX_PATH + 1];
+    char args[MAX_PATH + 1];
     FILE *f;
 
     if(job == NULL) return;
 
-    l_path[0] = (wchar_t)job->volume_letter;
-    path[0] = job->volume_letter;
+    _snprintf(path,MAX_PATH + 1,".\\reports\\fraglist_%c.luar",
+        udefrag_tolower(job->volume_letter));
+    path[MAX_PATH] = 0;
 
     if(job->job_type == NEVER_EXECUTED_JOB){
         /* show report if it already exists */
@@ -48,16 +48,11 @@ static void ShowSingleReport(volume_processing_job *job)
         else return;
     }
 
-    if(portable_mode == 0){
-        (void)WgxShellExecuteW(hWindow,L"view",l_path,NULL,NULL,SW_SHOW);
-        return;
-    }
-
-    _snprintf(args,MAX_PATH,".\\scripts\\udreportcnv.lua \"%s\" . -v",path);
-    args[MAX_PATH - 1] = 0;
+    _snprintf(args,MAX_PATH + 1,".\\scripts\\udreportcnv.lua \"%s\" . -v",path);
+    args[MAX_PATH] = 0;
     if(!WgxCreateProcess(".\\lua5.1a_gui.exe",args)){
         WgxDisplayLastError(hWindow,MB_OK | MB_ICONHAND,
-            "Cannot execute lua5.1a_gui.exe program!");
+            L"Cannot execute lua5.1a_gui.exe program!");
     }
 }
 

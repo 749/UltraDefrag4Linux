@@ -29,6 +29,7 @@ DEFRAGMENT                = &சீரமை
 QUICK_OPTIMIZE            = &விரைவு உகப்பாக்கல்
 FULL_OPTIMIZE             = &முழு உகப்பாக்கல்
 OPTIMIZE_MFT              = &MFT-ஐ உகப்பாக்கவும்
+PAUSE                     = &Pause
 STOP                      = &நிறுத்து
 REPEAT_ACTION             = &மீண்டும் செய்யவும்
 SKIP_REMOVABLE_MEDIA      = &நீக்கக்கூடிய ஊடகத்தைத் தவிர்க்கவும்
@@ -57,6 +58,7 @@ LANGUAGE                  = &மொழி
 GRAPHICAL_INTERFACE       = &வரைகலை இடைமுகம்
 BOOT_TIME_SCAN            = &துவக்க நேரத்தில் ஸ்கேன்
 REPORTS                   = &அறிக்கைகள்
+SORTING                   = &Sorting
 
 ; --- --- Language submenu
 
@@ -74,6 +76,16 @@ OPTIONS                   = &விருப்பங்கள்
 
 ENABLE                    = &இயக்கு
 SCRIPT                    = &லிபி
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Sort by &path
+SORT_BY_SIZE              = Sort by &size
+SORT_BY_C_TIME            = Sort by &creation time
+SORT_BY_M_TIME            = Sort by last &modification time
+SORT_BY_A_TIME            = Sort by &last access time
+SORT_ASCENDING            = Sort in &ascending order
+SORT_DESCENDING           = Sort in &descending order
 
 ; --- Help Menu
 

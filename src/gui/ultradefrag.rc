@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,29 +30,30 @@ IDI_UNFRAGM             ICON    DISCARDABLE     "res/unfragm.ico"
 IDI_FRAGM               ICON    DISCARDABLE     "res/fragm.ico"
 IDI_CMP                 ICON    DISCARDABLE     "res/cmp.ico"
 IDI_MFT                 ICON    DISCARDABLE     "res/mft.ico"
-
 IDI_FIXED               ICON    DISCARDABLE     "res/fixed.ico"
 IDI_REMOVABLE           ICON    DISCARDABLE     "res/removable.ico"
 IDI_FIXED_DIRTY         ICON    DISCARDABLE     "res/fixed-dirty.ico"
 IDI_REMOVABLE_DIRTY     ICON    DISCARDABLE     "res/removable-dirty.ico"
-
 IDI_SHUTDOWN            ICON    DISCARDABLE     "res/shutdown.ico"
 
 IDB_ABOUTBOX_PICTURE          BITMAP  DISCARDABLE     "res/ship.bmp"
 IDB_ABOUTBOX_PICTURE_8_BIT    BITMAP  DISCARDABLE     "res/ship_8bit.bmp"
 
 /*
-* This icon is based on Fugue icon set:
+* These icons are based on Fugue icon set:
 * http://p.yusukekamiyamane.com/
 * It is licensed under a Creative Commons Attribution 3.0 License.
 */
 IDI_BUSY                ICON    DISCARDABLE     "res/overlay.ico"
+IDI_PAUSED              ICON    DISCARDABLE     "res/overlay_paused.ico"
+IDI_TRAY_ICON           ICON    DISCARDABLE     "res/tray.ico"
+IDI_TRAY_ICON_BUSY      ICON    DISCARDABLE     "res/tray_busy.ico"
+IDI_TRAY_ICON_PAUSED    ICON    DISCARDABLE     "res/tray_paused.ico"
 
 /*
-* All toolbar pictures must be in 24bpp format,
-* but 8bpp versions should use less colors
-* to be nicely rendered on screens with
-* low color depth.
+* All toolbar pictures must be in 24bpp format.
+* To be nicely rendered on 16bpp screens they
+* should use less colors though.
 */
 
 /*
@@ -61,17 +62,30 @@ IDI_BUSY                ICON    DISCARDABLE     "res/overlay.ico"
 * stop, config, terminal, mft optimization icons - from Silk icon set 1.3 http://www.famfamfam.com/lab/icons/silk/
 * report, script icons - from http://brandspankingnew.net/download.php?file=doc_types_v2.zip
 * repeat icon - by Interactivemania http://www.iconfinder.com/icondetails/49846/16/alt_media_repeat_icon
+* large repeat, pause, stop, terminal, script, help; light bulb,
+* star icons - from Fugue icon set http://p.yusukekamiyamane.com/
 * All icons are licensed under terms permitting the use for non commercial purposes.
 */
-IDB_TOOLBAR                    BITMAP  DISCARDABLE     "res/toolbar24.bmp"
-IDB_TOOLBAR_DISABLED           BITMAP  DISCARDABLE     "res/toolbar24d.bmp"
-IDB_TOOLBAR_HIGHLIGHTED        BITMAP  DISCARDABLE     "res/toolbar24h.bmp"
-IDB_TOOLBAR_8_BIT              BITMAP  DISCARDABLE     "res/toolbar8.bmp"
-IDB_TOOLBAR_DISABLED_8_BIT     BITMAP  DISCARDABLE     "res/toolbar8d.bmp"
-IDB_TOOLBAR_HIGHLIGHTED_8_BIT  BITMAP  DISCARDABLE     "res/toolbar8h.bmp"
-IDB_TOOLBAR_16_BIT             BITMAP  DISCARDABLE     "res/toolbar16.bmp"
-IDB_TOOLBAR_DISABLED_16_BIT    BITMAP  DISCARDABLE     "res/toolbar16d.bmp"
-IDB_TOOLBAR_HIGHLIGHTED_16_BIT BITMAP  DISCARDABLE     "res/toolbar16h.bmp"
+IDB_TOOLBAR_16                    BITMAP  DISCARDABLE     "res/toolbar16.bmp"
+IDB_TOOLBAR_DISABLED_16           BITMAP  DISCARDABLE     "res/toolbar16_d.bmp"
+IDB_TOOLBAR_HIGHLIGHTED_16        BITMAP  DISCARDABLE     "res/toolbar16_h.bmp"
+IDB_TOOLBAR_20                    BITMAP  DISCARDABLE     "res/toolbar20.bmp"
+IDB_TOOLBAR_DISABLED_20           BITMAP  DISCARDABLE     "res/toolbar20_d.bmp"
+IDB_TOOLBAR_HIGHLIGHTED_20        BITMAP  DISCARDABLE     "res/toolbar20_h.bmp"
+IDB_TOOLBAR_24                    BITMAP  DISCARDABLE     "res/toolbar24.bmp"
+IDB_TOOLBAR_DISABLED_24           BITMAP  DISCARDABLE     "res/toolbar24_d.bmp"
+IDB_TOOLBAR_HIGHLIGHTED_24        BITMAP  DISCARDABLE     "res/toolbar24_h.bmp"
+IDB_TOOLBAR_32                    BITMAP  DISCARDABLE     "res/toolbar32.bmp"
+IDB_TOOLBAR_DISABLED_32           BITMAP  DISCARDABLE     "res/toolbar32_d.bmp"
+IDB_TOOLBAR_HIGHLIGHTED_32        BITMAP  DISCARDABLE     "res/toolbar32_h.bmp"
+
+/*
+* These toolbar pictures are intended
+* for use on 8 bit per pixel screens.
+*/
+IDB_TOOLBAR_16_LOW_BPP             BITMAP  DISCARDABLE     "res/toolbar16_low_bpp.bmp"
+IDB_TOOLBAR_DISABLED_16_LOW_BPP    BITMAP  DISCARDABLE     "res/toolbar16_d_low_bpp.bmp"
+IDB_TOOLBAR_HIGHLIGHTED_16_LOW_BPP BITMAP  DISCARDABLE     "res/toolbar16_h_low_bpp.bmp"
 
 /*
 * All menu icons must be in 24bpp format.
@@ -95,7 +109,7 @@ FONT 9, "Courier New"
 BEGIN
     CONTROL         IDB_ABOUTBOX_PICTURE,IDC_SHIP,"Static",SS_BITMAP | SS_CENTERIMAGE,5,4,62,78
     CTEXT           ABOUT_VERSION,IDC_TEXT1,72,6,161,12
-    CTEXT           "Copyright (C) 2007-2012",IDC_TEXT2,72,22,161,12
+    CTEXT           "Copyright (C) 2007-2013",IDC_TEXT2,72,22,161,12
     CTEXT           "UltraDefrag Development Team",IDC_TEXT3,72,38,161,12
     PUSHBUTTON      "&Credits",IDC_CREDITS,72,53,76,10
     PUSHBUTTON      "&License",IDC_LICENSE,153,53,80,10
@@ -110,7 +124,7 @@ FONT 9, "Courier New"
 BEGIN
     CONTROL         IDB_ABOUTBOX_PICTURE_8_BIT,IDC_SHIP,"Static",SS_BITMAP | SS_CENTERIMAGE,5,4,62,78
     CTEXT           ABOUT_VERSION,IDC_TEXT1,72,6,161,12
-    CTEXT           "Copyright (C) 2007-2012",IDC_TEXT2,72,22,161,12
+    CTEXT           "Copyright (C) 2007-2013",IDC_TEXT2,72,22,161,12
     CTEXT           "UltraDefrag Development Team",IDC_TEXT3,72,38,161,12
     PUSHBUTTON      "&Credits",IDC_CREDITS,72,53,76,10
     PUSHBUTTON      "&License",IDC_LICENSE,153,53,80,10
@@ -132,20 +146,8 @@ BEGIN
     PUSHBUTTON      "&No",IDC_NO_BUTTON,126,37,50,15,BS_DEFPUSHBUTTON
 END
 
-IDD_CHECK_CONFIRM DIALOG DISCARDABLE  0, 0, 248, 58
-STYLE DS_CENTER | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Please Confirm"
-FONT 8, "MS Shell Dlg"
-BEGIN
-    CONTROL         IDI_SHUTDOWN,IDC_SHUTDOWN_ICON,"Static",SS_ICON | SS_CENTERIMAGE,0,0,32,32
-    CTEXT           "Do you really want to shutdown when done?",IDC_MESSAGE,32,12,200,12
-    PUSHBUTTON      "&Yes",IDC_YES_BUTTON,72,37,50,15,BS_DEFPUSHBUTTON
-    PUSHBUTTON      "&No",IDC_NO_BUTTON,126,37,50,15
-END
-
 IDR_ACCELERATOR2 ACCELERATORS DISCARDABLE 
 BEGIN
-/*    VK_ESCAPE,     IDOK,                    VIRTKEY, NOINVERT*/
     VK_F1,         IDC_CREDITS,             VIRTKEY, NOINVERT
     VK_F2,         IDC_LICENSE,             VIRTKEY, NOINVERT
     VK_F3,         IDC_HOMEPAGE,            VIRTKEY, NOINVERT
@@ -158,6 +160,7 @@ BEGIN
     VK_F7,         IDM_QUICK_OPTIMIZE,          VIRTKEY, NOINVERT
     VK_F7,         IDM_FULL_OPTIMIZE,           VIRTKEY, CONTROL, NOINVERT
     VK_F7,         IDM_OPTIMIZE_MFT,            VIRTKEY, SHIFT,   NOINVERT
+    VK_SPACE,      IDM_PAUSE,                   VIRTKEY, NOINVERT
     "C",           IDM_STOP,                    VIRTKEY, CONTROL, NOINVERT
     "R",           IDM_REPEAT_ACTION,           VIRTKEY, SHIFT,   NOINVERT
     "M",           IDM_IGNORE_REMOVABLE_MEDIA,  VIRTKEY, CONTROL, NOINVERT
@@ -201,7 +204,7 @@ BEGIN
             VALUE "FileDescription", "UltraDefrag GUI interface\0"
             VALUE "FileVersion", VERSION2
             VALUE "InternalName", "ultradefrag\0"
-            VALUE "LegalCopyright", "Copyright © 2007-2012 UltraDefrag Development Team\0"
+            VALUE "LegalCopyright", "Copyright © 2007-2013 UltraDefrag Development Team\0"
             VALUE "OriginalFilename", "ultradefrag.exe\0"
             VALUE "ProductName", "UltraDefrag\0"
             VALUE "ProductVersion", VERSION2

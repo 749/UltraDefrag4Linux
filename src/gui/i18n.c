@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -47,6 +47,7 @@ WGX_I18N_RESOURCE_ENTRY i18n_table[] = {
     {0, "QUICK_OPTIMIZE",           L"&Quick optimization",      NULL},
     {0, "FULL_OPTIMIZE",            L"&Full optimization",       NULL},
     {0, "OPTIMIZE_MFT",             L"&Optimize MFT",            NULL},
+    {0, "PAUSE",                    L"&Pause",                   NULL},
     {0, "STOP",                     L"&Stop",                    NULL},
     {0, "REPEAT_ACTION",            L"Re&peat action",           NULL},
     {0, "SKIP_REMOVABLE_MEDIA",     L"Skip removable &media",    NULL},
@@ -80,6 +81,14 @@ WGX_I18N_RESOURCE_ENTRY i18n_table[] = {
     {0, "ENABLE",                   L"&Enable",                  NULL},
     {0, "SCRIPT",                   L"&Script",                  NULL},
     {0, "REPORTS",                  L"&Reports",                 NULL},
+    {0, "SORTING",                  L"&Sorting",                 NULL},
+    {0, "SORT_BY_PATH",             L"Sort by &path",            NULL},
+    {0, "SORT_BY_SIZE",             L"Sort by &size",            NULL},
+    {0, "SORT_BY_C_TIME",           L"Sort by &creation time",   NULL},
+    {0, "SORT_BY_M_TIME",           L"Sort by last &modification time", NULL},
+    {0, "SORT_BY_A_TIME",           L"Sort by &last access time", NULL},
+    {0, "SORT_ASCENDING",           L"Sort in &ascending order", NULL},
+    {0, "SORT_DESCENDING",          L"Sort in &descending order", NULL},
 
     /* help menu */
     {0, "HELP",                     L"&Help",                    NULL},
@@ -135,13 +144,19 @@ WGX_I18N_RESOURCE_ENTRY i18n_table[] = {
     {IDC_YES_BUTTON,    "YES",                        L"&Yes",                       NULL},
     {IDC_NO_BUTTON,     "NO",                         L"&No",                        NULL},
 
+    
+    /* tray icon context menu */
+    {0,                 "SHOW",                       L"Show",                       NULL},
+    {0,                 "HIDE",                       L"Hide",                       NULL},
+    
     /* upgrade dialog */
     {0,                 "UPGRADE_CAPTION",            L"You can upgrade me ^-^",     NULL},
     {0,                 "UPGRADE_MESSAGE",            L"release is available for download!", NULL},
 
     /* taskbar icon overlay message */
     {0,                 "JOB_IS_RUNNING",             L"A job is running",           NULL},
-
+    {0,                 "JOB_IS_PAUSED",              L"A job is paused",            NULL},
+    
     /* end of the table */
     {0,                 NULL,                         NULL,                          NULL}
 };
@@ -162,6 +177,7 @@ struct menu_item menu_items[] = {
     {IDM_QUICK_OPTIMIZE,          "QUICK_OPTIMIZE",           "F7"    },
     {IDM_FULL_OPTIMIZE,           "FULL_OPTIMIZE",            "Ctrl+F7"},
     {IDM_OPTIMIZE_MFT,            "OPTIMIZE_MFT",             "Shift+F7"},
+    {IDM_PAUSE,                   "PAUSE",                    "Space"},
     {IDM_STOP,                    "STOP",                     "Ctrl+C"},
     {IDM_REPEAT_ACTION,           "REPEAT_ACTION",            "Shift+R"},
     {IDM_IGNORE_REMOVABLE_MEDIA,  "SKIP_REMOVABLE_MEDIA",     "Ctrl+M"},
@@ -187,6 +203,14 @@ struct menu_item menu_items[] = {
     {IDM_CFG_BOOT_ENABLE,         "ENABLE",                   "F11"   },
     {IDM_CFG_BOOT_SCRIPT,         "SCRIPT",                   "F12"   },
     {IDM_CFG_REPORTS,             "REPORTS",                  "Ctrl+R"},
+    {IDM_CFG_SORTING,             "SORTING",                  NULL    },
+    {IDM_CFG_SORTING_SORT_BY_PATH,              "SORT_BY_PATH",    NULL },
+    {IDM_CFG_SORTING_SORT_BY_SIZE,              "SORT_BY_SIZE",    NULL },
+    {IDM_CFG_SORTING_SORT_BY_CREATION_TIME,     "SORT_BY_C_TIME",  NULL },
+    {IDM_CFG_SORTING_SORT_BY_MODIFICATION_TIME, "SORT_BY_M_TIME",  NULL },
+    {IDM_CFG_SORTING_SORT_BY_ACCESS_TIME,       "SORT_BY_A_TIME",  NULL },
+    {IDM_CFG_SORTING_SORT_ASCENDING,            "SORT_ASCENDING",  NULL },
+    {IDM_CFG_SORTING_SORT_DESCENDING,           "SORT_DESCENDING", NULL },
     {IDM_CONTENTS,                "CONTENTS",                 "F1"    },
     {IDM_BEST_PRACTICE,           "BEST_PRACTICE",            "F2"    },
     {IDM_FAQ,                     "FAQ",                      "F3"    },
@@ -235,7 +259,7 @@ void ApplyLanguagePack(void)
     /* read lang.ini file */
     GetPrivateProfileString("Language","Selected","",lang_name,MAX_PATH,".\\lang.ini");
     if(lang_name[0] == 0){
-        WgxDbgPrint("Selected language name not found in lang.ini file\n");
+        etrace("selected language name not found in lang.ini file");
         /* assign default strings to the toolbar tooltips */
         UpdateToolbarTooltips();
         return;
@@ -306,7 +330,7 @@ void ApplyLanguagePack(void)
     
     /* redraw main menu */
     if(!DrawMenuBar(hWindow))
-        WgxDbgPrintLastError("Cannot redraw main menu");
+        letrace("cannot redraw main menu");
     
     /* refresh volume status fields */
     update_status_of_all_jobs();
@@ -322,11 +346,15 @@ void ApplyLanguagePack(void)
     /* update taskbar icon overlay */
     if(show_taskbar_icon_overlay){
         if(WaitForSingleObject(hTaskbarIconEvent,INFINITE) != WAIT_OBJECT_0){
-            WgxDbgPrintLastError("ApplyLanguagePack: wait on hTaskbarIconEvent failed");
+            letrace("wait on hTaskbarIconEvent failed");
         } else {
             RemoveTaskbarIconOverlay();
-            if(job_is_running)
-                SetTaskbarIconOverlay(IDI_BUSY,"JOB_IS_RUNNING");
+            if(job_is_running){
+                if(pause_flag)
+                    SetTaskbarIconOverlay(IDI_PAUSED,"JOB_IS_PAUSED");
+                else
+                    SetTaskbarIconOverlay(IDI_BUSY,"JOB_IS_RUNNING");
+            }
             SetEvent(hTaskbarIconEvent);
         }
     }
@@ -379,7 +407,7 @@ void BuildLanguageMenu(void)
 
     /* synchronize with other threads */
     if(WaitForSingleObject(hLangMenuEvent,INFINITE) != WAIT_OBJECT_0){
-        WgxDbgPrintLastError("BuildLanguageMenu: wait on hLangMenuEvent failed");
+        letrace("wait on hLangMenuEvent failed");
         return;
     }
     
@@ -393,7 +421,7 @@ void BuildLanguageMenu(void)
     mi.cbSize = MENUITEMINFO_SIZE;
     mi.fMask = MIIM_SUBMENU;
     if(!GetMenuItemInfo(hMainMenu,IDM_LANGUAGE,FALSE,&mi)){
-        WgxDbgPrintLastError("BuildLanguageMenu: cannot get submenu handle");
+        letrace("cannot get submenu handle");
         SetEvent(hLangMenuEvent);
         return;
     }
@@ -405,7 +433,7 @@ void BuildLanguageMenu(void)
     mi.fMask = MIIM_SUBMENU;
     mi.hSubMenu = NULL;
     if(!SetMenuItemInfo(hMainMenu,IDM_LANGUAGE,FALSE,&mi)){
-        WgxDbgPrintLastError("BuildLanguageMenu: cannot detach submenu");
+        letrace("cannot detach submenu");
         SetEvent(hLangMenuEvent);
         return;
     }
@@ -416,7 +444,7 @@ void BuildLanguageMenu(void)
     /* build new menu from the list of installed files */
     hLangMenu = CreatePopupMenu();
     if(hLangMenu == NULL){
-        WgxDbgPrintLastError("BuildLanguageMenu: cannot create submenu");
+        letrace("cannot create submenu");
         SetEvent(hLangMenuEvent);
         return;
     }
@@ -425,48 +453,48 @@ void BuildLanguageMenu(void)
     text = WgxGetResourceString(i18n_table,"TRANSLATIONS_CHANGE_LOG");
     if(text){
         if(!AppendMenuW(hLangMenu,MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_CHANGE_LOG,text))
-            WgxDbgPrintLastError("BuildLanguageMenu: cannot append change log");
+            letrace("cannot append change log");
         free(text);
     } else {
         if(!AppendMenuW(hLangMenu,MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_CHANGE_LOG,L"&View change log"))
-            WgxDbgPrintLastError("BuildLanguageMenu: cannot append change log");
+            letrace("cannot append change log");
     }
     text = WgxGetResourceString(i18n_table,"TRANSLATIONS_REPORT");
     if(text){
         if(!AppendMenuW(hLangMenu,MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_REPORT,text))
-            WgxDbgPrintLastError("BuildLanguageMenu: cannot append report");
+            letrace("cannot append report");
         free(text);
     } else {
         if(!AppendMenuW(hLangMenu,MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_REPORT,L"View translation &report"))
-            WgxDbgPrintLastError("BuildLanguageMenu: cannot append report");
+            letrace("cannot append report");
     }
     text = WgxGetResourceString(i18n_table,"TRANSLATIONS_FOLDER");
     if(text){
         if(!AppendMenuW(hLangMenu,MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_FOLDER,text))
-            WgxDbgPrintLastError("BuildLanguageMenu: cannot append folder");
+            letrace("cannot append folder");
         free(text);
     } else {
         if(!AppendMenuW(hLangMenu,MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_FOLDER,L"&Translations folder"))
-            WgxDbgPrintLastError("BuildLanguageMenu: cannot append folder");
+            letrace("cannot append folder");
     }
     text = WgxGetResourceString(i18n_table,"TRANSLATIONS_SUBMIT");
     if(text){
         if(!AppendMenuW(hLangMenu,MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_SUBMIT,text))
-            WgxDbgPrintLastError("BuildLanguageMenu: cannot append submit");
+            letrace("cannot append submit");
         free(text);
     } else {
         if(!AppendMenuW(hLangMenu,MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_SUBMIT,L"&Submit current translation"))
-            WgxDbgPrintLastError("BuildLanguageMenu: cannot append submit");
+            letrace("cannot append submit");
     }
     AppendMenu(hLangMenu,MF_SEPARATOR,0,NULL);
     
     h = _wfindfirst(L".\\i18n\\*.lng",&lng_file);
     if(h == -1){
-        WgxDbgPrint("BuildLanguageMenu: no language packs found\n");
+        etrace("no language packs found");
 no_files_found:
         /* add default US English */
         if(!AppendMenu(hLangMenu,MF_STRING | MF_ENABLED | MF_CHECKED,IDM_LANGUAGE + 0x1,"English (US)")){
-            WgxDbgPrintLastError("BuildLanguageMenu: cannot append menu item");
+            letrace("cannot append menu item");
             DestroyMenu(hLangMenu);
             SetEvent(hLangMenuEvent);
             return;
@@ -476,7 +504,7 @@ no_files_found:
         pt = prb_create(names_compare,NULL,NULL);
         if(pt == NULL){
             /* this case is extraordinary */
-            WgxDbgPrint("BuildLanguageMenu: prb_create failed!");
+            letrace("prb_create failed");
             _findclose(h);
             goto no_files_found;
         }
@@ -487,10 +515,10 @@ no_files_found:
             filename[length - 4] = 0;
         f = _wcsdup(filename);
         if(f == NULL){
-            WgxDbgPrint("BuildLanguageMenu: not enough memory!");
+            mtrace();
         } else {
             if(prb_probe(pt,(void *)f) == NULL){
-                WgxDbgPrint("BuildLanguageMenu: prb_probe failed for %ws!",f);
+                etrace("prb_probe failed for %ws",f);
                 free(f);
             }
         }
@@ -502,10 +530,10 @@ no_files_found:
                 filename[length - 4] = 0;
             f = _wcsdup(filename);
             if(f == NULL){
-                WgxDbgPrint("BuildLanguageMenu: not enough memory!");
+                mtrace();
             } else {
                 if(prb_probe(pt,(void *)f) == NULL){
-                    WgxDbgPrint("BuildLanguageMenu: prb_probe failed for %ws!",f);
+                    etrace("prb_probe failed for %ws",f);
                     free(f);
                 }
             }
@@ -521,7 +549,7 @@ no_files_found:
             if(wcscmp(selected_lang_name,f) == 0)
                 flags |= MF_CHECKED;
             if(!AppendMenuW(hLangMenu,flags,IDM_LANGUAGE + i,f)){
-                WgxDbgPrintLastError("BuildLanguageMenu: cannot append menu item");
+                letrace("cannot append menu item");
             } else {
                 i++;
             }
@@ -538,7 +566,7 @@ no_files_found:
     mi.fMask = MIIM_SUBMENU;
     mi.hSubMenu = hLangMenu;
     if(!SetMenuItemInfo(hMainMenu,IDM_LANGUAGE,FALSE,&mi)){
-        WgxDbgPrintLastError("BuildLanguageMenu: cannot attach submenu");
+        letrace("cannot attach submenu");
         DestroyMenu(hLangMenu);
         SetEvent(hLangMenuEvent);
         return;
@@ -564,7 +592,7 @@ DWORD WINAPI LangIniChangesTrackingProc(LPVOID lpParameter)
     h = FindFirstChangeNotification(".",
             FALSE,FILE_NOTIFY_CHANGE_LAST_WRITE);
     if(h == INVALID_HANDLE_VALUE){
-        WgxDbgPrintLastError("LangIniChangesTrackingProc: FindFirstChangeNotification failed");
+        letrace("FindFirstChangeNotification failed");
         lang_ini_tracking_stopped = 1;
         return 0;
     }
@@ -588,7 +616,7 @@ DWORD WINAPI LangIniChangesTrackingProc(LPVOID lpParameter)
                 mi.dwTypeData = text;
                 mi.cch = MAX_PATH;
                 if(!GetMenuItemInfoW(hMainMenu,i,FALSE,&mi)){
-                    WgxDbgPrintLastError("LangIniChangesTrackingProc: cannot get menu item info");
+                    letrace("cannot get menu item info");
                 } else {
                     if(wcscmp(selected_lang_name,text) == 0)
                         CheckMenuItem(hMainMenu,i,MF_BYCOMMAND | MF_CHECKED);
@@ -596,7 +624,7 @@ DWORD WINAPI LangIniChangesTrackingProc(LPVOID lpParameter)
             }
             /* wait for the next notification */
             if(!FindNextChangeNotification(h)){
-                WgxDbgPrintLastError("LangIniChangesTrackingProc: FindNextChangeNotification failed");
+                letrace("FindNextChangeNotification failed");
                 break;
             }
         }
@@ -614,7 +642,7 @@ DWORD WINAPI LangIniChangesTrackingProc(LPVOID lpParameter)
 void StartLangIniChangesTracking()
 {
     if(!WgxCreateThread(LangIniChangesTrackingProc,NULL)){
-        WgxDbgPrintLastError("Cannot create thread for lang.ini changes tracking");
+        letrace("cannot create thread for lang.ini changes tracking");
         lang_ini_tracking_stopped = 1;
     }
 }
@@ -645,7 +673,7 @@ DWORD WINAPI I18nFolderChangesTrackingProc(LPVOID lpParameter)
             | FILE_NOTIFY_CHANGE_DIR_NAME \
             | FILE_NOTIFY_CHANGE_SIZE);
     if(h == INVALID_HANDLE_VALUE){
-        WgxDbgPrintLastError("I18nFolderChangesTrackingProc: FindFirstChangeNotification failed");
+        letrace("FindFirstChangeNotification failed");
         i18n_folder_tracking_stopped = 1;
         return 0;
     }
@@ -666,7 +694,7 @@ DWORD WINAPI I18nFolderChangesTrackingProc(LPVOID lpParameter)
             counter ++;
             /* wait for the next notification */
             if(!FindNextChangeNotification(h)){
-                WgxDbgPrintLastError("I18nFolderChangesTrackingProc: FindNextChangeNotification failed");
+                letrace("FindNextChangeNotification failed");
                 break;
             }
         }
@@ -684,7 +712,7 @@ DWORD WINAPI I18nFolderChangesTrackingProc(LPVOID lpParameter)
 void StartI18nFolderChangesTracking()
 {
     if(!WgxCreateThread(I18nFolderChangesTrackingProc,NULL)){
-        WgxDbgPrintLastError("Cannot create thread for i18n folder changes tracking");
+        letrace("cannot create thread for i18n folder changes tracking");
         i18n_folder_tracking_stopped = 1;
     }
 }

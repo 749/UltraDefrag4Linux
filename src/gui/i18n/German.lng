@@ -1,7 +1,7 @@
 ﻿;------------------------------------------------------------------------------
 ; UltraDefrag GUI German Language Pack.
 ; Copyright (C) 2008 Stefan Geuken.
-; Copyright (C) 2010, 2011 Stefan Pendl.
+; Copyright (C) 2010-2013 Stefan Pendl.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
@@ -31,6 +31,7 @@ DEFRAGMENT                = &Defragmentieren
 QUICK_OPTIMIZE            = &Schnell Optimieren
 FULL_OPTIMIZE             = &Komplett Optimieren
 OPTIMIZE_MFT              = &MFT optimieren
+PAUSE                     = &Pause
 STOP                      = &Abbrechen
 REPEAT_ACTION             = &Vorgang wiederholen
 SKIP_REMOVABLE_MEDIA      = &Wechselmedien ignorieren
@@ -59,6 +60,7 @@ LANGUAGE                  = &Sprache
 GRAPHICAL_INTERFACE       = &Grafische Benutzeroberfläche
 BOOT_TIME_SCAN            = &Überprüfung beim Windows-Start
 REPORTS                   = &Berichte
+SORTING                   = &Sortierung
 
 ; --- --- Language submenu
 
@@ -76,6 +78,16 @@ OPTIONS                   = &Einstellungen
 
 ENABLE                    = &Aktivieren
 SCRIPT                    = &Skript
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Nach &Pfad sortieren
+SORT_BY_SIZE              = Nach &Größe sortieren
+SORT_BY_C_TIME            = Nach &Erstellzeit sortieren
+SORT_BY_M_TIME            = Nach Än&derungszeit sortieren
+SORT_BY_A_TIME            = Nach letzter &Zugriffszeit sortieren
+SORT_ASCENDING            = &Aufsteigend sortieren
+SORT_DESCENDING           = A&bsteigend sortieren
 
 ; --- Help Menu
 

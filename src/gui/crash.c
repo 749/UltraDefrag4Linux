@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ static void ShowCrashInfo(void);
 void StartCrashInfoCheck(void)
 {
     if(!WgxCreateThread(CrashInfoCheckingProc,NULL)){
-        WgxDbgPrintLastError("Cannot create thread for the crash info checking");
+        letrace("cannot create thread for the crash info checking");
         crash_info_check_stopped = 1;
     }
 }
@@ -89,13 +89,13 @@ DWORD WINAPI CrashInfoCheckingProc(LPVOID lpParameter)
     hLogFile = CreateFile("crash-info.log",GENERIC_WRITE,
         FILE_SHARE_READ,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
     if(hLogFile == NULL){
-        WgxDbgPrintLastError("CrashInfoCheckingProc: cannot create crash-info.log file");
+        letrace("cannot create crash-info.log file");
         goto done;
     }
     
     /* write header to the file */
     if(!WriteFile(hLogFile,msg,strlen(msg),&bytes_written,NULL)){
-        WgxDbgPrintLastError("CrashInfoCheckingProc: cannot write to crash-info.log file");
+        letrace("cannot write to crash-info.log file");
     }
 
     /* get time stamp of the last processed event */
@@ -143,13 +143,13 @@ static void CollectCrashInfo(void)
     bytes_to_read = EVENT_BUFFER_SIZE;
     buffer = malloc(bytes_to_read);
     if(buffer == NULL){
-        WgxDbgPrint("CollectCrashInfo: cannot allocate memory");
+        mtrace();
         goto done;
     }
     
     hLog = OpenEventLog(NULL,"Application");
     if(hLog == NULL){
-        WgxDbgPrintLastError("CollectCrashInfo: cannot open the Application event log");
+        letrace("cannot open the Application event log");
         goto done;
     }
     
@@ -162,19 +162,19 @@ static void CollectCrashInfo(void)
             error = GetLastError();
             switch(error){
             case ERROR_INSUFFICIENT_BUFFER:
-                WgxDbgPrint("CollectCrashInfo: larger buffer of %u bytes is needed",bytes_needed);
+                itrace("larger buffer of %u bytes is needed",bytes_needed);
                 bytes_to_read = bytes_needed;
                 free(buffer);
                 buffer = malloc(bytes_to_read);
                 if(buffer == NULL){
-                    WgxDbgPrint("CollectCrashInfo: cannot allocate memory");
+                    mtrace();
                     goto done;
                 }
                 break;
             case ERROR_HANDLE_EOF:
                 goto done;
             default:
-                WgxDbgPrintLastError("CollectCrashInfo: ReadEventLog failed");
+                letrace("ReadEventLog failed");
                 goto done;
             }
         } else {
@@ -189,15 +189,15 @@ static void CollectCrashInfo(void)
                     if(rec->DataLength > 0){
                         data = malloc(rec->DataLength + 1);
                         if(data == NULL){
-                            WgxDbgPrint("CollectCrashInfo: cannot allocate memory for event data");
+                            etrace("not enough memory for event data");
                         } else {
                             memcpy(data,(char *)rec + rec->DataOffset,rec->DataLength);
                             data[rec->DataLength] = 0;
                             /* handle UltraDefrag GUI and command line tool crashes only */
                             if(strstr(data,"ultradefrag.exe") || strstr(data,"udefrag.exe")){
-                                WgxDbgPrint("Crashed in the past: %s",data);
+                                trace(I"Crashed in the past: %s",data);
                                 if(!WriteFile(hLogFile,data,rec->DataLength,&bytes_written,NULL)){
-                                    WgxDbgPrintLastError("CollectCrashInfo: cannot write to crash-info.log file");
+                                    letrace("cannot write to crash-info.log file");
                                 } else {
                                     crash_info_collected = 1;
                                     if(rec->TimeGenerated > new_time_stamp)
@@ -225,7 +225,8 @@ done:
 static void ShowCrashInfo(void)
 {
     if(crash_info_collected){
-        (void)WgxShellExecuteW(hWindow,L"open",L".\\crash-info.log",NULL,NULL,SW_SHOW);
+        (void)WgxShellExecute(hWindow,L"open",L".\\crash-info.log",
+            NULL,NULL,SW_SHOW,WSH_ALLOW_DEFAULT_ACTION);
     }
 }
 

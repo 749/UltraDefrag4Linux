@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,125 +26,37 @@
 
 #include "zenwinx.h"
 
-void kb_close(void);
+void winx_init_case_tables(void);
 int winx_create_global_heap(void);
 void winx_destroy_global_heap(void);
 int winx_dbg_init(void);
 void winx_dbg_close(void);
 void MarkWindowsBootAsSuccessful(void);
 char *winx_get_status_description(unsigned long status);
-void winx_init_case_tables(void);
-
-/**
- * @internal
- * @brief Internal variable indicating
- * whether library initialization failed
- * or not. Intended to be checked by
- * winx_init_failed routine.
- */
-int initialization_failed = 1;
-
-#ifndef STATIC_LIB
-BOOL WINAPI DllMain(HANDLE hinstDLL,DWORD dwReason,LPVOID lpvReserved)
-{
-    if(dwReason == DLL_PROCESS_ATTACH){
-        winx_init_library(NULL);
-    } else if(dwReason == DLL_PROCESS_DETACH){
-        winx_unload_library();
-    }
-    return 1;
-}
-#endif
+void kb_close(void);
 
 /**
  * @brief Initializes zenwinx library.
- * @details If the library is linked statically
- * this routine needs to be called explicitly
- * before any use of other routines (except a few
- * ones like winx_print).
- * @param[in] peb pointer to the Process Environment Block.
- * May be NULL.
+ * @details This routine needs to be called
+ * before any use of other routines (except
+ * a few ones like winx_print).
  * @return Zero for success, negative value otherwise.
- * @par Example 1 - a native application:
- * @code
- * void __stdcall NtProcessStartup(PPEB Peb)
- * {
- *     winx_init_library(Peb);
- *     winx_kb_init();
- *
- *     // do something
- *     winx_printf("Hello!");
- *     winx_sleep(1000);
- *
- *     winx_exit(0);
- * }
- * @endcode
- * @par Example 2 - a command line tool (zenwinx is linked statically):
- * @code
- * int main(void)
- * {
- *     winx_init_library(NULL);
- *
- *     // do something
- *     printf("Hello!");
- *     winx_sleep(1000);
- *
- *     winx_unload_library();
- *     return 0;
- * }
- * @endcode
- * @par Example 3 - a command line tool (zenwinx is linked dynamically):
- * @code
- * int main(void)
- * {
- *     // do something
- *     printf("Hello!");
- *     winx_sleep(1000);
- *
- *     return 0;
- * }
- * @endcode
  */
-int winx_init_library(void *peb)
+int winx_init_library(void)
 {
-    PRTL_USER_PROCESS_PARAMETERS pp;
-
-    /*  normalize and get the process parameters */
-    if(peb){
-        pp = RtlNormalizeProcessParams(((PPEB)peb)->ProcessParameters);
-        /* breakpoint if we were requested to do so */
-        if(pp){
-            if(pp->DebugFlags)
-                DbgBreakPoint();
-        }
-    }
-
     winx_init_case_tables();
     if(winx_create_global_heap() < 0)
         return (-1);
     if(winx_dbg_init() < 0)
         return (-1);
-    initialization_failed = 0;
     return 0;
 }
 
 /**
- * @brief Defines whether zenwinx library has 
- * been initialized successfully or not.
- * @details Useful for non-native applications
- * making no direct call to winx_init_library.
- * @return Boolean value.
- */
-int winx_init_failed(void)
-{
-    return initialization_failed;
-}
-
-/**
- * @brief Frees resources allocated by zenwinx library.
- * @details If the library is linked statically
- * to the non-native application this routine 
- * needs to be called explicitly.
+ * @brief Releases resources 
+ * acquired by zenwinx library.
+ * @note Call it ONLY if you know
+ * what you're doing.
  */
 void winx_unload_library(void)
 {
@@ -184,8 +96,7 @@ void winx_exit(int exit_code)
     NTSTATUS Status;
     
     kb_close();
-    winx_flush_dbg_log();
-    winx_unload_library();
+    winx_flush_dbg_log(0);
     Status = NtTerminateProcess(NtCurrentProcess(),exit_code);
     if(!NT_SUCCESS(Status)){
         print_post_scriptum("winx_exit: cannot terminate process",Status);
@@ -205,7 +116,7 @@ void winx_reboot(void)
     kb_close();
     MarkWindowsBootAsSuccessful();
     (void)winx_enable_privilege(SE_SHUTDOWN_PRIVILEGE);
-    winx_flush_dbg_log();
+    winx_flush_dbg_log(0);
     Status = NtShutdownSystem(ShutdownReboot);
     if(!NT_SUCCESS(Status)){
         print_post_scriptum("winx_reboot: cannot reboot the computer",Status);
@@ -225,7 +136,7 @@ void winx_shutdown(void)
     kb_close();
     MarkWindowsBootAsSuccessful();
     (void)winx_enable_privilege(SE_SHUTDOWN_PRIVILEGE);
-    winx_flush_dbg_log();
+    winx_flush_dbg_log(0);
     Status = NtShutdownSystem(ShutdownPowerOff);
     if(!NT_SUCCESS(Status)){
         print_post_scriptum("winx_shutdown: cannot shut down the computer",Status);

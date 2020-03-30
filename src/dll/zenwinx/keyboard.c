@@ -1,7 +1,7 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
- *  Copyright (c) 2010-2012 Stefan Pendl (stefanpe@users.sourceforge.net).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -199,7 +199,7 @@ static int kb_light_up_indicators(HANDLE hKbDevice,USHORT LedFlags)
         if(NT_SUCCESS(status)) status = iosb.Status;
     }
     if(!NT_SUCCESS(status) || status == STATUS_PENDING){
-        DebugPrintEx(status,"cannot light up the keyboard"
+        strace(status,"cannot light up the keyboard"
             " indicators 0x%x",(UINT)LedFlags);
         return (-1);
     }
@@ -231,7 +231,7 @@ static int kb_check(HANDLE hKbDevice)
         if(NT_SUCCESS(status)) status = iosb.Status;
     }
     if(!NT_SUCCESS(status) || status == STATUS_PENDING){
-        DebugPrintEx(status,"cannot get keyboard indicators state");
+        strace(status,"cannot get keyboard indicators state");
         return (-1);
     }
 
@@ -259,8 +259,8 @@ static int kb_check(HANDLE hKbDevice)
  */
 static int kb_open_device(int device_number)
 {
-    short device_name[32];
-    short event_name[32];
+    wchar_t device_name[32];
+    wchar_t event_name[32];
     UNICODE_STRING us;
     OBJECT_ATTRIBUTES oa;
     IO_STATUS_BLOCK iosb;
@@ -280,7 +280,7 @@ static int kb_open_device(int device_number)
     if(!NT_SUCCESS(status)){
         /* don't litter logs */
         if(status != STATUS_OBJECT_NAME_NOT_FOUND){
-            DebugPrintEx(status,"cannot open %ws",device_name);
+            strace(status,"cannot open %ws",device_name);
             winx_printf("\nCannot open the keyboard %ws: %x!\n",
                 device_name,(UINT)status);
             winx_printf("%s\n",winx_get_status_description((ULONG)status));
@@ -290,7 +290,7 @@ static int kb_open_device(int device_number)
     
     /* ensure that we have opened a really connected keyboard */
     if(kb_check(hKbDevice) < 0){
-        DebugPrint("invalid keyboard device %ws",device_name);
+        etrace("invalid keyboard device %ws",device_name);
         winx_printf("\nInvalid keyboard device %ws!\n",device_name);
         NtCloseSafe(hKbDevice);
         return (-1);
@@ -332,7 +332,7 @@ static int kb_open_device(int device_number)
  */
 static int kb_open(void)
 {
-    short event_name[64];
+    wchar_t event_name[64];
     int i;
 
     /* initialize kb array */
@@ -357,7 +357,7 @@ static int kb_open(void)
     kb_wait_for_input_threads = 0;
     for(i = 0; i < MAX_NUM_OF_KEYBOARDS; i++){
         if(kb[i].hKbDevice == NULL) break;
-        if(winx_create_thread(kb_wait_for_input,(LPVOID)&kb[i],NULL) < 0){
+        if(winx_create_thread(kb_wait_for_input,(LPVOID)&kb[i]) < 0){
             winx_printf("\nCannot create thread gathering "
                 "input from \\Device\\KeyboardClass%u\n\n",
                 kb[i].device_number);
@@ -468,7 +468,7 @@ int kb_read(PKEYBOARD_INPUT_DATA pKID,int msec_timeout)
     LARGE_INTEGER synch_interval;
     NTSTATUS Status;
     
-    DbgCheck1(pKID,"kb_read",-1);
+    DbgCheck1(pKID,-1);
     
     if(msec_timeout != INFINITE){
         attempts = msec_timeout / MAX_TYPING_DELAY + 1;

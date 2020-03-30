@@ -29,6 +29,7 @@ DEFRAGMENT                = &Defragment
 QUICK_OPTIMIZE            = &Optimalkan &Cepat
 FULL_OPTIMIZE             = &Optimalkan &Penuh
 OPTIMIZE_MFT              = &Optimalkan MFT
+PAUSE                     = &Pause
 STOP                      = &Berhenti
 REPEAT_ACTION             = &Ulangi tindakan
 SKIP_REMOVABLE_MEDIA      = &Langkau media alih
@@ -57,6 +58,7 @@ LANGUAGE                  = &Bahasa
 GRAPHICAL_INTERFACE       = &Antaramuka grafik
 BOOT_TIME_SCAN            = &Boot imbasan masa
 REPORTS                   = &Laporan
+SORTING                   = &Sorting
 
 ; --- --- Language submenu
 
@@ -74,6 +76,16 @@ OPTIONS                   = &Pilihan
 
 ENABLE                    = &Dayakan
 SCRIPT                    = &Skrip
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Sort by &path
+SORT_BY_SIZE              = Sort by &size
+SORT_BY_C_TIME            = Sort by &creation time
+SORT_BY_M_TIME            = Sort by last &modification time
+SORT_BY_A_TIME            = Sort by &last access time
+SORT_ASCENDING            = Sort in &ascending order
+SORT_DESCENDING           = Sort in &descending order
 
 ; --- Help Menu
 

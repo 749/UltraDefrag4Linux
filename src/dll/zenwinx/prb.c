@@ -38,8 +38,8 @@
 /*#include <stdlib.h>*/
 #include "prb.h"
 #include "zenwinx.h"
-#define malloc winx_heap_alloc
-#define free winx_heap_free
+#define malloc winx_malloc
+#define free winx_free
 
 /* Creates and returns a new table
    with comparison function |compare| using parameter |param|

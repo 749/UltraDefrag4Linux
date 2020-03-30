@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -64,43 +64,48 @@ void winx_sleep(int msec)
  */
 int winx_get_os_version(void)
 {
-    /*NTSTATUS (__stdcall *func_RtlGetVersion)(PRTL_OSVERSIONINFOW lpVersionInformation);*/
-    NTSTATUS (__stdcall *func_RtlGetVersion)(OSVERSIONINFOW *version_info);
+    typedef NTSTATUS (__stdcall *RTLGETVERSION_PROC)(OSVERSIONINFOW *version_info);
+    RTLGETVERSION_PROC pRtlGetVersion;
     OSVERSIONINFOW ver;
     
     ver.dwOSVersionInfoSize = sizeof(OSVERSIONINFOW);
 
-    if(winx_get_proc_address(L"ntdll.dll","RtlGetVersion",
-      (void *)&func_RtlGetVersion) < 0) return 40;
+    pRtlGetVersion = (RTLGETVERSION_PROC)winx_get_proc_address(L"ntdll.dll","RtlGetVersion");
+    if(pRtlGetVersion == NULL) return 40;
     /* it seems to be impossible for it to fail */
-    (void)func_RtlGetVersion(&ver);
+    (void)pRtlGetVersion(&ver);
     return (ver.dwMajorVersion * 10 + ver.dwMinorVersion);
 }
 
 /**
  * @brief Retrieves the path of the Windows directory.
- * @param[out] buffer pointer to the buffer
- * receiving the null-terminated path.
- * @param[in] length the length of the buffer, in characters.
- * @return Zero for success, negative value otherwise.
- * @note This function retrieves a native path, like this 
+ * @return The native path of the Windows directory.
+ * NULL indicates failure.
+ * @note 
+ * - This function retrieves the native path, like this 
  *       \\??\\C:\\WINDOWS
+ * - The returned string should be freed by the winx_free
+ * call after its use.
  */
-int winx_get_windows_directory(char *buffer, int length)
+wchar_t *winx_get_windows_directory(void)
 {
-    short buf[MAX_PATH + 1];
+    wchar_t *windir;
+    wchar_t *path = NULL;
+    int size, result;
 
-    DbgCheck2(buffer,(length > 0),"winx_get_windows_directory",-1);
-    
-    if(winx_query_env_variable(L"SystemRoot",buf,MAX_PATH) < 0) return (-1);
-    (void)_snprintf(buffer,length - 1,"\\??\\%ws",buf);
-    buffer[length - 1] = 0;
-    return 0;
+    windir = winx_getenv(L"SystemRoot");
+    if(windir){
+        winx_swprintf(path,size,result,L"\\??\\%ws",windir);
+        if(path == NULL)
+            mtrace();
+        winx_free(windir);
+    }
+    return path;
 }
 
 /**
  * @brief Queries a symbolic link.
- * @param[in] name the name of symbolic link.
+ * @param[in] name the symbolic link name.
  * @param[out] buffer pointer to the buffer
  * receiving the null-terminated target.
  * @param[in] length of the buffer, in characters.
@@ -111,31 +116,31 @@ int winx_get_windows_directory(char *buffer, int length)
  * // now the buffer may contain \Device\HarddiskVolume1 or something like that
  * @endcode
  */
-int winx_query_symbolic_link(short *name, short *buffer, int length)
+int winx_query_symbolic_link(wchar_t *name, wchar_t *buffer, int length)
 {
     OBJECT_ATTRIBUTES oa;
-    UNICODE_STRING uStr;
-    NTSTATUS Status;
+    UNICODE_STRING us;
+    NTSTATUS status;
     HANDLE hLink;
     ULONG size;
 
-    DbgCheck3(name,buffer,(length > 0),"winx_query_symbolic_link",-1);
+    DbgCheck3(name,buffer,(length > 0),-1);
     
-    RtlInitUnicodeString(&uStr,name);
-    InitializeObjectAttributes(&oa,&uStr,OBJ_CASE_INSENSITIVE,NULL,NULL);
-    Status = NtOpenSymbolicLinkObject(&hLink,SYMBOLIC_LINK_QUERY,&oa);
-    if(!NT_SUCCESS(Status)){
-        DebugPrintEx(Status,"winx_query_symbolic_link: cannot open %ls",name);
+    RtlInitUnicodeString(&us,name);
+    InitializeObjectAttributes(&oa,&us,OBJ_CASE_INSENSITIVE,NULL,NULL);
+    status = NtOpenSymbolicLinkObject(&hLink,SYMBOLIC_LINK_QUERY,&oa);
+    if(!NT_SUCCESS(status)){
+        strace(status,"cannot open %ls",name);
         return (-1);
     }
-    uStr.Buffer = buffer;
-    uStr.Length = 0;
-    uStr.MaximumLength = length * sizeof(short);
+    us.Buffer = buffer;
+    us.Length = 0;
+    us.MaximumLength = length * sizeof(wchar_t);
     size = 0;
-    Status = NtQuerySymbolicLinkObject(hLink,&uStr,&size);
+    status = NtQuerySymbolicLinkObject(hLink,&us,&size);
     (void)NtClose(hLink);
-    if(!NT_SUCCESS(Status)){
-        DebugPrintEx(Status,"winx_query_symbolic_link: cannot query %ls",name);
+    if(!NT_SUCCESS(status)){
+        strace(status,"cannot query %ls",name);
         return (-1);
     }
     buffer[length - 1] = 0;
@@ -147,7 +152,7 @@ int winx_query_symbolic_link(short *name, short *buffer, int length)
  * @param[in] mode the process error mode.
  * @return Zero for success, negative value otherwise.
  * @note 
- * - Mode constants aren't the same as in Win32 SetErrorMode() call.
+ * - The mode constants aren't the same as in Win32 SetErrorMode() call.
  * - Use INTERNAL_SEM_FAILCRITICALERRORS constant to 
  *   disable the critical-error-handler message box. After that
  *   you can for example try to read a missing floppy disk without 
@@ -163,69 +168,14 @@ int winx_query_symbolic_link(short *name, short *buffer, int length)
  */
 int winx_set_system_error_mode(unsigned int mode)
 {
-    NTSTATUS Status;
+    NTSTATUS status;
 
-    Status = NtSetInformationProcess(NtCurrentProcess(),
+    status = NtSetInformationProcess(NtCurrentProcess(),
                     ProcessDefaultHardErrorMode,
                     (PVOID)&mode,
                     sizeof(int));
-    if(!NT_SUCCESS(Status)){
-        DebugPrintEx(Status,"winx_set_system_error_mode: "
-                "cannot set system error mode %u",mode);
-        return (-1);
-    }
-    return 0;
-}
-
-/**
- * @brief Loads a driver.
- * @param[in] driver_name the name of the driver,
- * exactly as written in system registry.
- * @return Zero for success, negative value otherwise.
- * @note When the driver is already loaded this function
- * completes successfully.
- */
-int winx_load_driver(short *driver_name)
-{
-    UNICODE_STRING us;
-    short driver_key[MAX_PATH];
-    NTSTATUS Status;
-
-    DbgCheck1(driver_name,"winx_load_driver",-1);
-
-    (void)_snwprintf(driver_key,MAX_PATH,L"%ls%ls",
-            L"\\Registry\\Machine\\System\\CurrentControlSet\\Services\\",driver_name);
-    driver_key[MAX_PATH - 1] = 0;
-    RtlInitUnicodeString(&us,driver_key);
-    Status = NtLoadDriver(&us);
-    if(!NT_SUCCESS(Status) && Status != STATUS_IMAGE_ALREADY_LOADED){
-        DebugPrintEx(Status,"winx_load_driver: cannot load %ws",driver_name);
-        return (-1);
-    }
-    return 0;
-}
-
-/**
- * @brief Unloads a driver.
- * @param[in] driver_name the name of the driver,
- * exactly as written in system registry.
- * @return Zero for success, negative value otherwise.
- */
-int winx_unload_driver(short *driver_name)
-{
-    UNICODE_STRING us;
-    short driver_key[MAX_PATH];
-    NTSTATUS Status;
-
-    DbgCheck1(driver_name,"winx_unload_driver",-1);
-
-    (void)_snwprintf(driver_key,MAX_PATH,L"%ls%ls",
-            L"\\Registry\\Machine\\System\\CurrentControlSet\\Services\\",driver_name);
-    driver_key[MAX_PATH - 1] = 0;
-    RtlInitUnicodeString(&us,driver_key);
-    Status = NtUnloadDriver(&us);
-    if(!NT_SUCCESS(Status)){
-        DebugPrintEx(Status,"winx_unload_driver: cannot unload %ws",driver_name);
+    if(!NT_SUCCESS(status)){
+        strace(status,"cannot set system error mode %u",mode);
         return (-1);
     }
     return 0;
@@ -235,22 +185,22 @@ int winx_unload_driver(short *driver_name)
  * @brief Retrieves the Windows boot options.
  * @return Pointer to Unicode string containing all Windows
  * boot options. NULL indicates failure.
- * @note After a use of returned string it should be freed
- * by winx_heap_free() call.
+ * @note After a use of the returned string it should be freed
+ * by winx_free() call.
  */
-short *winx_get_windows_boot_options(void)
+wchar_t *winx_get_windows_boot_options(void)
 {
     UNICODE_STRING us;
     OBJECT_ATTRIBUTES oa;
     NTSTATUS status;
     HANDLE hKey;
     KEY_VALUE_PARTIAL_INFORMATION *data;
-    short *data_buffer = NULL;
+    wchar_t *data_buffer = NULL;
     DWORD data_size = 0;
     DWORD data_size2 = 0;
     DWORD data_length;
     BOOLEAN empty_value = FALSE;
-    short *boot_options;
+    wchar_t *boot_options;
     int buffer_size;
     
     /* 1. open HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control registry key */
@@ -259,8 +209,8 @@ short *winx_get_windows_boot_options(void)
     InitializeObjectAttributes(&oa,&us,OBJ_CASE_INSENSITIVE,NULL,NULL);
     status = NtOpenKey(&hKey,KEY_QUERY_VALUE,&oa);
     if(status != STATUS_SUCCESS){
-        DebugPrintEx(status,"winx_get_windows_boot_options: cannot open %ws",us.Buffer);
-        winx_printf("winx_get_windows_boot_options: cannot open %ls: %x\n\n",us.Buffer,(UINT)status);
+        strace(status,"cannot open %ws",us.Buffer);
+        winx_printf("%s: cannot open %ls: %x\n\n",__FUNCTION__,us.Buffer,(UINT)status);
         return NULL;
     }
     
@@ -269,15 +219,15 @@ short *winx_get_windows_boot_options(void)
     status = NtQueryValueKey(hKey,&us,KeyValuePartialInformation,
             NULL,0,&data_size);
     if(status != STATUS_BUFFER_TOO_SMALL){
-        DebugPrintEx(status,"winx_get_windows_boot_options: cannot query SystemStartOptions value size");
-        winx_printf("winx_get_windows_boot_options: cannot query SystemStartOptions value size: %x\n\n",(UINT)status);
+        strace(status,"cannot query SystemStartOptions value size");
+        winx_printf("%s: cannot query SystemStartOptions value size: %x\n\n",__FUNCTION__,(UINT)status);
         return NULL;
     }
-    data_size += sizeof(short);
-    data = winx_heap_alloc(data_size);
+    data_size += sizeof(wchar_t);
+    data = winx_tmalloc(data_size);
     if(data == NULL){
-        DebugPrint("winx_get_windows_boot_options: cannot allocate %u bytes of memory",data_size);
-        winx_printf("winx_get_windows_boot_options: cannot allocate %u bytes of memory\n\n",data_size);
+        etrace("cannot allocate %u bytes of memory",data_size);
+        winx_printf("%s: cannot allocate %u bytes of memory\n\n",__FUNCTION__,data_size);
         return NULL;
     }
     
@@ -285,39 +235,39 @@ short *winx_get_windows_boot_options(void)
     status = NtQueryValueKey(hKey,&us,KeyValuePartialInformation,
             data,data_size,&data_size2);
     if(status != STATUS_SUCCESS){
-        DebugPrintEx(status,"winx_get_windows_boot_options: cannot query SystemStartOptions value");
-        winx_printf("winx_get_windows_boot_options: cannot query SystemStartOptions value: %x\n\n",(UINT)status);
-        winx_heap_free(data);
+        strace(status,"cannot query SystemStartOptions value");
+        winx_printf("%s: cannot query SystemStartOptions value: %x\n\n",__FUNCTION__,(UINT)status);
+        winx_free(data);
         return NULL;
     }
-    data_buffer = (short *)(data->Data);
+    data_buffer = (wchar_t *)(data->Data);
     data_length = data->DataLength >> 1;
     if(data_length == 0) empty_value = TRUE;
     
     if(!empty_value){
         data_buffer[data_length - 1] = 0;
-        buffer_size = data_length * sizeof(short);
+        buffer_size = data_length * sizeof(wchar_t);
     } else {
-        buffer_size = 1 * sizeof(short);
+        buffer_size = 1 * sizeof(wchar_t);
     }
 
-    boot_options = winx_heap_alloc(buffer_size);
+    boot_options = winx_tmalloc(buffer_size);
     if(!boot_options){
-        DebugPrint("winx_get_windows_boot_options: cannot allocate %u bytes of memory",buffer_size);
-        winx_printf("winx_get_windows_boot_options: cannot allocate %u bytes of memory\n\n",buffer_size);
-        winx_heap_free(data);
+        etrace("cannot allocate %u bytes of memory",buffer_size);
+        winx_printf("%s: cannot allocate %u bytes of memory\n\n",__FUNCTION__,buffer_size);
+        winx_free(data);
         return NULL;
     }
 
     if(!empty_value){
         memcpy((void *)boot_options,(void *)data_buffer,buffer_size);
-        DebugPrint("winx_get_windows_boot_options: %ls - %u",data_buffer,data_size);
-        //winx_printf("winx_get_windows_boot_options: %ls - %u\n\n",data_buffer,data_size);
+        itrace("%ls - %u",data_buffer,data_size);
+        //winx_printf("%s: %ls - %u\n\n",__FUNCTION__,data_buffer,data_size);
     } else {
         boot_options[0] = 0;
     }
     
-    winx_heap_free(data);
+    winx_free(data);
     return boot_options;
 }
 
@@ -325,11 +275,11 @@ short *winx_get_windows_boot_options(void)
  * @brief Determines whether Windows is in Safe Mode or not.
  * @return Positive value indicates the presence of the Safe Mode.
  * Zero value indicates a normal boot. Negative value indicates
- * indeterminism caused by impossibility of an appropriate check.
+ * indeterminism caused by impossibility of the appropriate check.
  */
 int winx_windows_in_safe_mode(void)
 {
-    short *boot_options;
+    wchar_t *boot_options;
     int safe_boot = 0;
     
     boot_options = winx_get_windows_boot_options();
@@ -338,7 +288,7 @@ int winx_windows_in_safe_mode(void)
     /* search for SAFEBOOT */
     _wcsupr(boot_options);
     if(wcsstr(boot_options,L"SAFEBOOT")) safe_boot = 1;
-    winx_heap_free(boot_options);
+    winx_free(boot_options);
 
     return safe_boot;
 }
@@ -352,37 +302,40 @@ int winx_windows_in_safe_mode(void)
  */
 void MarkWindowsBootAsSuccessful(void)
 {
-    char bootstat_file_path[MAX_PATH];
-    WINX_FILE *f_bootstat;
+    wchar_t *windir;
+    wchar_t path[MAX_PATH + 1];
+    WINX_FILE *f;
     char boot_success_flag = 1;
     
     /*
-    * We have decided to avoid the use of related RtlXxx calls,
+    * We have decided to avoid the use of the related RtlXxx calls,
     * since they're undocumented (as usually), therefore may
     * bring us a lot of surprises.
     */
-    if(winx_get_windows_directory(bootstat_file_path,MAX_PATH) < 0){
-        DebugPrint("MarkWindowsBootAsSuccessful(): cannot retrieve the Windows directory path");
-        winx_printf("\nMarkWindowsBootAsSuccessful(): cannot retrieve the Windows directory path\n\n");
+    windir = winx_get_windows_directory();
+    if(windir == NULL){
+        etrace("cannot retrieve the Windows directory path");
+        winx_printf("\n%s: cannot retrieve the Windows directory path\n\n",__FUNCTION__);
         winx_sleep(3000);
         return;
     }
-    (void)strncat(bootstat_file_path,"\\bootstat.dat",
-            MAX_PATH - strlen(bootstat_file_path) - 1);
+    _snwprintf(path,MAX_PATH,L"%ws\\bootstat.dat",windir);
+    path[MAX_PATH] = 0;
+    winx_free(windir);
 
-    /* open the bootstat.dat file */
-    f_bootstat = winx_fopen(bootstat_file_path,"r+");
-    if(f_bootstat == NULL){
-        /* it seems that we have system prior to XP */
-        return;
+    /*
+    * Set BootSuccessFlag to 0x1 (look at 
+    * BOOT_STATUS_DATA definition in ntndk.h
+    * file for details).
+    */
+    f = winx_fopen(path,"r+");
+    if(f != NULL){
+        f->woffset.QuadPart = 0xa;
+        (void)winx_fwrite(&boot_success_flag,sizeof(char),1,f);
+        winx_fclose(f);
+    } else {
+        /* It seems that we have system prior to XP. */
     }
-
-    /* set BootSuccessFlag to 0x1 (look at BOOT_STATUS_DATA definition in ntndk.h for details) */
-    f_bootstat->woffset.QuadPart = 0xa;
-    (void)winx_fwrite(&boot_success_flag,sizeof(char),1,f_bootstat);
-    
-    /* close the file */
-    winx_fclose(f_bootstat);
 }
 
 /** @} */

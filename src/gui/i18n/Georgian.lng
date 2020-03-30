@@ -29,6 +29,7 @@ DEFRAGMENT                = &დეფრაგმენტაცია
 QUICK_OPTIMIZE            = ს&წრაფი ოპტიმიზაცია
 FULL_OPTIMIZE             = &სრული ოპტიმიზაცია
 OPTIMIZE_MFT              = &MFT-ს ოპტიმიზაცია
+PAUSE                     = &შეჩერება
 STOP                      = &გაჩერება
 REPEAT_ACTION             = &მოქმედების გამეორება
 SKIP_REMOVABLE_MEDIA      = მ&ოხსნადი დისკების გამოტოვება
@@ -57,6 +58,7 @@ LANGUAGE                  = &ენა
 GRAPHICAL_INTERFACE       = &იერსახე
 BOOT_TIME_SCAN            = &ჩატვირთვის დროს სკანირება
 REPORTS                   = &ანგარიშები
+SORTING                   = &ხარისხდება
 
 ; --- --- Language submenu
 
@@ -74,6 +76,16 @@ OPTIONS                   = &პარამეტრები
 
 ENABLE                    = &ჩართვა
 SCRIPT                    = &სცენარი
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = დახარისხება &მისამართით
+SORT_BY_SIZE              = დახარისხება &ზომით
+SORT_BY_C_TIME            = დახარისხება &შექმნის დროით
+SORT_BY_M_TIME            = დახარისხება &შ&ეცვლის დროით
+SORT_BY_A_TIME            = დახარისხება &ბოლო წვდომის დროით
+SORT_ASCENDING            = დახარისხება ზრდადობით
+SORT_DESCENDING           = დახარისხება კლებადობით
 
 ; --- Help Menu
 

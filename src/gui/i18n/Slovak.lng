@@ -30,6 +30,7 @@ DEFRAGMENT                = Defragmentovať
 QUICK_OPTIMIZE            = Rýchla optimalizácia
 FULL_OPTIMIZE             = Plná optimalizácia
 OPTIMIZE_MFT              = Optimalizovať MFT
+PAUSE                     = &Pause
 STOP                      = Zastaviť
 REPEAT_ACTION             = O&pakovať akciu
 SKIP_REMOVABLE_MEDIA      = Preskočiť vymeniteľné média
@@ -58,6 +59,7 @@ LANGUAGE                  = Jazyk
 GRAPHICAL_INTERFACE       = Grafické rozhranie
 BOOT_TIME_SCAN            = Defragmentovať pri štarte OS
 REPORTS                   = Reporty
+SORTING                   = &Sorting
 
 ; --- --- Language submenu
 
@@ -75,6 +77,16 @@ OPTIONS                   = Možnosti
 
 ENABLE                    = Povoliť
 SCRIPT                    = Skript
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Sort by &path
+SORT_BY_SIZE              = Sort by &size
+SORT_BY_C_TIME            = Sort by &creation time
+SORT_BY_M_TIME            = Sort by last &modification time
+SORT_BY_A_TIME            = Sort by &last access time
+SORT_ASCENDING            = Sort in &ascending order
+SORT_DESCENDING           = Sort in &descending order
 
 ; --- Help Menu
 

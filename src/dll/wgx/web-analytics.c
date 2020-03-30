@@ -1,6 +1,6 @@
 /*
  *  WGX - Windows GUI Extended Library.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,12 +24,7 @@
  * @{
  */
 
-#include <windows.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-
-#include "wgx.h"
+#include "wgx-internals.h"
 
 #define MAX_GA_REQUEST_LENGTH 1024
 
@@ -55,23 +50,23 @@ static BOOL SendWebAnalyticsRequest(char *url)
     char path[MAX_PATH + 1] = {0};
     
     if(url == NULL){
-        WgxDbgPrint("SendWebAnalyticsRequest: URL = NULL\n");
-        goto fail;
+        etrace("URL = NULL");
+        return FALSE;
     }
     
-    WgxDbgPrint("SendWebAnalyticsRequest: URL = %s\n",url);
+    itrace("URL = %s",url);
     
     /* load urlmon.dll library */
     hUrlmonDLL = LoadLibrary("urlmon.dll");
     if(hUrlmonDLL == NULL){
-        WgxDbgPrintLastError("SendWebAnalyticsRequest: LoadLibrary(urlmon.dll) failed");
+        letrace("cannot load urlmon.dll library");
         goto fail;
     }
     
     /* get an address of procedure downloading a file */
     pURLDownloadToCacheFile = (URLMON_PROCEDURE)GetProcAddress(hUrlmonDLL,"URLDownloadToCacheFileA");
     if(pURLDownloadToCacheFile == NULL){
-        WgxDbgPrintLastError("SendWebAnalyticsRequest: URLDownloadToCacheFile not found in urlmon.dll");
+        letrace("URLDownloadToCacheFile not found in urlmon.dll");
         goto fail;
     }
     
@@ -79,10 +74,11 @@ static BOOL SendWebAnalyticsRequest(char *url)
     result = pURLDownloadToCacheFile(NULL,url,path,MAX_PATH,0,NULL);
     path[MAX_PATH] = 0;
     if(result != S_OK){
-        if(result == E_OUTOFMEMORY)
-            WgxDbgPrint("SendWebAnalyticsRequest: not enough memory\n");
-        else
-            WgxDbgPrint("SendWebAnalyticsRequest: URLDownloadToCacheFile failed\n");
+        if(result == E_OUTOFMEMORY) {
+            mtrace();
+        } else {
+            etrace("URLDownloadToCacheFile failed");
+        }
         goto fail;
     }
     
@@ -111,7 +107,7 @@ static char *build_ga_request(char *hostname,char *path,char *account)
     
     ga_request = malloc(MAX_GA_REQUEST_LENGTH);
     if(ga_request == NULL){
-        WgxDbgPrint("build_ga_request: cannot allocate memory");
+        mtrace();
         return NULL;
     }
     
@@ -130,7 +126,7 @@ static char *build_ga_request(char *hostname,char *path,char *account)
         "&utmr=-"
         "&utmp=%s"
         "&utmac=%s"
-        "&utmcc=__utma%%3D%u.%u.%I64u.%I64u.%I64u.50%%3B%%2B__utmz%%3D%u.%I64u.27.2.utmcsr%%3Dgoogle.com%%7Cutmccn%%3D(referral)%%7Cutmcmd%%3Dreferral%%7Cutmcct%%3D%%2F%3B",
+        "&utmcc=__utma%%3D%u.%u.%I64u.%I64u.%I64u.50%%3B%%2B__utmz%%3D%u.%I64u.27.2.utmcsr%%3Dgoogle.com%%7Cutmccn%%3D(referral)%%7Cutmcmd%%3Dreferral%%7Cutmcct%%3D%%2F%%3B",
         utmn,hostname,utmhid,path,account,
         cookie,random,today,today,today,cookie,today
         );

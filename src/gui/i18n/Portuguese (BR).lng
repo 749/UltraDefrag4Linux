@@ -34,6 +34,7 @@ DEFRAGMENT                = &Desfragmentar
 QUICK_OPTIMIZE            = &Otimização rápida
 FULL_OPTIMIZE             = Otimização &completa
 OPTIMIZE_MFT              = Otimizar &MFT
+PAUSE                     = &Pause
 STOP                      = &Parar
 REPEAT_ACTION             = &Repetir ação
 SKIP_REMOVABLE_MEDIA      = &Ignorar mídia removível
@@ -62,6 +63,7 @@ LANGUAGE                  = &Idioma
 GRAPHICAL_INTERFACE       = Interface &Gráfica
 BOOT_TIME_SCAN            = &Varredura durante o boot
 REPORTS                   = &Relatórios
+SORTING                   = &Sorting
 
 ; --- --- Language submenu
 
@@ -79,6 +81,16 @@ OPTIONS                   = &Opções
 
 ENABLE                    = &Ativar
 SCRIPT                    = &Script
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Sort by &path
+SORT_BY_SIZE              = Sort by &size
+SORT_BY_C_TIME            = Sort by &creation time
+SORT_BY_M_TIME            = Sort by last &modification time
+SORT_BY_A_TIME            = Sort by &last access time
+SORT_ASCENDING            = Sort in &ascending order
+SORT_DESCENDING           = Sort in &descending order
 
 ; --- Help Menu
 

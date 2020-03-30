@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -53,6 +53,12 @@ int exit_pressed = 0;
 
 /* this flag is used for taskbar icon redraw synchonization */
 int job_is_running = 0;
+
+int pause_flag = 0;
+
+/* overall progress counters */
+int selected_volumes;
+int processed_volumes;
 
 extern int map_blocks_per_line;
 extern int map_lines;
@@ -107,7 +113,7 @@ void update_status_of_all_jobs(void)
 static void update_progress(udefrag_progress_info *pi, void *p)
 {
     volume_processing_job *job;
-    char WindowCaption[256];
+    wchar_t WindowCaption[256];
     char current_operation;
 
     job = current_job;
@@ -134,16 +140,20 @@ static void update_progress(udefrag_progress_info *pi, void *p)
     }
     
     if(dry_run){
-        (void)sprintf(WindowCaption, "%c:  %c %6.2lf %% (dry run)", 
+        (void)swprintf(WindowCaption, L"%c:  %c %6.2lf %% (dry run)", 
             udefrag_toupper(job->volume_letter), current_operation, pi->percentage);
     } else {
-        (void)sprintf(WindowCaption, "%c:  %c %6.2lf %%",
+        (void)swprintf(WindowCaption, L"%c:  %c %6.2lf %%",
             udefrag_toupper(job->volume_letter), current_operation, pi->percentage);
     }
-    (void)SetWindowText(hWindow, WindowCaption);
+    (void)SetWindowTextW(hWindow, WindowCaption);
+    
+    /* update tray icon tooltip */
+    if(minimize_to_system_tray)
+        SetSystemTrayIconTooltip(WindowCaption);
 
     if(WaitForSingleObject(hMapEvent,INFINITE) != WAIT_OBJECT_0){
-        WgxDbgPrintLastError("update_progress: wait on hMapEvent failed");
+        letrace("wait on hMapEvent failed");
         return;
     }
     if(pi->cluster_map){
@@ -152,7 +162,7 @@ static void update_progress(udefrag_progress_info *pi, void *p)
             job->map.buffer = malloc(pi->cluster_map_size);
         }
         if(job->map.buffer == NULL){
-            WgxDbgPrint("update_progress: cannot allocate %u bytes of memory\n",
+            etrace("cannot allocate %u bytes of memory",
                 pi->cluster_map_size);
             job->map.size = 0;
         } else {
@@ -164,6 +174,29 @@ static void update_progress(udefrag_progress_info *pi, void *p)
 
     if(pi->cluster_map && job->map.buffer)
         RedrawMap(job,1);
+    
+    /* set overall progress */
+    if(current_job->job_type == ANALYSIS_JOB \
+      || pi->current_operation != VOLUME_ANALYSIS){
+        if(WaitForSingleObject(hTaskbarIconEvent,INFINITE) != WAIT_OBJECT_0){
+            letrace("wait on hTaskbarIconEvent failed");
+        } else {
+            if(show_progress_in_taskbar){
+                WgxSetTaskbarProgressState(hWindow,TBPF_NORMAL);
+                if(pi->clusters_to_process){
+                    WgxSetTaskbarProgressValue(hWindow,
+                        (pi->clusters_to_process / selected_volumes) * processed_volumes + \
+                        pi->processed_clusters / selected_volumes,
+                        pi->clusters_to_process);
+                } else {
+                    WgxSetTaskbarProgressValue(hWindow,0,1);
+                }
+            } else {
+                WgxSetTaskbarProgressState(hWindow,TBPF_NOPROGRESS);
+            }
+            SetEvent(hTaskbarIconEvent);
+        }
+    }
     
     if(pi->completion_status != 0/* && !stop_pressed*/){
         if(dry_run == 0){
@@ -177,11 +210,58 @@ static void update_progress(udefrag_progress_info *pi, void *p)
 }
 
 /**
+ * @brief Puts the job into sleep.
+ */
+void SetPause(void)
+{
+    pause_flag = 1;
+    CheckMenuItem(hMainMenu,IDM_PAUSE,
+        MF_BYCOMMAND | MF_CHECKED);
+    SendMessage(hToolbar,TB_CHECKBUTTON,IDM_PAUSE,MAKELONG(TRUE,0));
+    WgxSetProcessPriority(IDLE_PRIORITY_CLASS);
+
+    /* set taskbar icon overlay and notification area icon */
+    if(WaitForSingleObject(hTaskbarIconEvent,INFINITE) != WAIT_OBJECT_0){
+        letrace("wait on hTaskbarIconEvent failed");
+    } else {
+        SetTaskbarIconOverlay(IDI_PAUSED,"JOB_IS_PAUSED");
+        ShowSystemTrayIcon(NIM_MODIFY);
+        SetEvent(hTaskbarIconEvent);
+    }
+}
+
+/**
+ * @brief Wakes the job from sleep.
+ */
+void ReleasePause(void)
+{
+    pause_flag = 0;
+    CheckMenuItem(hMainMenu,IDM_PAUSE,
+        MF_BYCOMMAND | MF_UNCHECKED);
+    SendMessage(hToolbar,TB_CHECKBUTTON,IDM_PAUSE,MAKELONG(FALSE,0));
+    WgxSetProcessPriority(NORMAL_PRIORITY_CLASS);
+
+    /* set taskbar icon overlay and notification area icon */
+    if(WaitForSingleObject(hTaskbarIconEvent,INFINITE) != WAIT_OBJECT_0){
+        letrace("wait on hTaskbarIconEvent failed");
+    } else {
+        if(job_is_running){
+            SetTaskbarIconOverlay(IDI_BUSY,"JOB_IS_RUNNING");
+        } else {
+            RemoveTaskbarIconOverlay();
+        }
+        ShowSystemTrayIcon(NIM_MODIFY);
+        SetEvent(hTaskbarIconEvent);
+    }
+}
+
+/**
  * @internal
  * @brief Terminates currently running job.
  */
 static int terminator(void *p)
 {
+    while(pause_flag) Sleep(300);
     return stop_pressed;
 }
 
@@ -341,19 +421,35 @@ DWORD WINAPI StartJobsThreadProc(LPVOID lpParameter)
     }
     if(id) CheckMenuItem(hMainMenu,id,MF_BYCOMMAND | MF_CHECKED);
     
-    /* set taskbar icon overlay */
-    if(show_taskbar_icon_overlay){
-        if(WaitForSingleObject(hTaskbarIconEvent,INFINITE) != WAIT_OBJECT_0){
-            WgxDbgPrintLastError("StartJobsThreadProc: wait on hTaskbarIconEvent failed");
-        } else {
-            SetTaskbarIconOverlay(IDI_BUSY,"JOB_IS_RUNNING");
-            job_is_running = 1;
-            SetEvent(hTaskbarIconEvent);
+    /* set taskbar icon overlay and notification area icon */
+    if(WaitForSingleObject(hTaskbarIconEvent,INFINITE) != WAIT_OBJECT_0){
+        letrace("wait on hTaskbarIconEvent failed");
+    } else {
+        SetTaskbarIconOverlay(IDI_BUSY,"JOB_IS_RUNNING");
+        /* set overall progress: normal 0% */
+        if(show_progress_in_taskbar){
+            WgxSetTaskbarProgressValue(hWindow,0,1);
+            WgxSetTaskbarProgressState(hWindow,TBPF_NORMAL);
         }
+        job_is_running = 1;
+        ShowSystemTrayIcon(NIM_MODIFY);
+        SetEvent(hTaskbarIconEvent);
     }
 
+    /* count selected volumes */
+    index = -1; selected_volumes = 0;
+    while(1){
+        SelectedItem = SendMessage(hList,LVM_GETNEXTITEM,(WPARAM)index,LVNI_SELECTED);
+        if(SelectedItem == -1 || SelectedItem == index) break;
+        selected_volumes ++;
+        index = (int)SelectedItem;
+    }
+    /* avoid division by zero error in update_progress */
+    if(selected_volumes == 0)
+        selected_volumes ++;
+
     /* process all selected volumes */
-    index = -1;
+    index = -1; processed_volumes = 0;
     while(1){
         SelectedItem = SendMessage(hList,LVM_GETNEXTITEM,(WPARAM)index,LVNI_SELECTED);
         if(SelectedItem == -1 || SelectedItem == index) break;
@@ -370,11 +466,24 @@ DWORD WINAPI StartJobsThreadProc(LPVOID lpParameter)
                 ProcessSingleVolume(job);
             }
         }
+        processed_volumes ++;
+        /* advance overall progress to processed/selected */
+        if(WaitForSingleObject(hTaskbarIconEvent,INFINITE) != WAIT_OBJECT_0){
+            letrace("wait on hTaskbarIconEvent failed");
+        } else {
+            if(show_progress_in_taskbar){
+                WgxSetTaskbarProgressState(hWindow,TBPF_NORMAL);
+                WgxSetTaskbarProgressValue(hWindow,processed_volumes,selected_volumes);
+            } else {
+                WgxSetTaskbarProgressState(hWindow,TBPF_NOPROGRESS);
+            }
+            SetEvent(hTaskbarIconEvent);
+        }
         index = (int)SelectedItem;
     }
 
     busy_flag = 0;
-
+    
     /* remove check mark set in front of the selected optimization method */
     if(id) CheckMenuItem(hMainMenu,id,MF_BYCOMMAND | MF_UNCHECKED);
 
@@ -404,12 +513,15 @@ DWORD WINAPI StartJobsThreadProc(LPVOID lpParameter)
     SendMessage(hToolbar,TB_SETBUTTONINFO,IDM_REPEAT_ACTION,(LRESULT)&tbi);
     SendMessage(hToolbar,TB_ENABLEBUTTON,IDM_SHOW_REPORT,MAKELONG(TRUE,0));
     
-    /* remove taskbar icon overlay */
+    /* remove taskbar icon overlay; change notification area icon */
     if(WaitForSingleObject(hTaskbarIconEvent,INFINITE) != WAIT_OBJECT_0){
-        WgxDbgPrintLastError("StartJobsThreadProc: wait on hTaskbarIconEvent failed");
+        letrace("wait on hTaskbarIconEvent failed");
     } else {
         job_is_running = 0;
         RemoveTaskbarIconOverlay();
+        /* remove the taskbar progress indicator */
+        WgxSetTaskbarProgressState(hWindow,TBPF_NOPROGRESS);
+        ShowSystemTrayIcon(NIM_MODIFY);
         SetEvent(hTaskbarIconEvent);
     }
 
@@ -430,6 +542,8 @@ void start_selected_jobs(udefrag_job_type job_type)
 {
     char *action = "disk analysis";
 
+    ReleasePause();
+    
     if(!WgxCreateThread(StartJobsThreadProc,(LPVOID)(DWORD_PTR)job_type)){
         if(job_type == DEFRAGMENTATION_JOB)
             action = "disk defragmentation";
@@ -440,8 +554,7 @@ void start_selected_jobs(udefrag_job_type job_type)
         else if(job_type == MFT_OPTIMIZATION_JOB)
             action = "MFT optimization";
         WgxDisplayLastError(hWindow,MB_OK | MB_ICONHAND,
-            "Cannot create thread starting %s!",
-            action);
+            L"Cannot create thread starting %s!",action);
     }
 }
 
@@ -450,6 +563,7 @@ void start_selected_jobs(udefrag_job_type job_type)
  */
 void stop_all_jobs(void)
 {
+    ReleasePause();
     stop_pressed = 1;
 }
 
@@ -525,11 +639,11 @@ void RepairSelectedVolumes(void)
     buffer[MAX_CMD_LENGTH - 1] = 0;
     strcpy(args,buffer);
     
-    WgxDbgPrint("Command Line: %s", args);
+    itrace("Command Line: %s", args);
 
     if(!WgxCreateProcess("%windir%\\system32\\cmd.exe",args)){
         WgxDisplayLastError(hWindow,MB_OK | MB_ICONHAND,
-            "Cannot execute cmd.exe program!");
+            L"Cannot execute cmd.exe program!");
     }
 }
 

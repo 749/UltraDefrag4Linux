@@ -29,6 +29,7 @@ DEFRAGMENT                = &Дефрагментація
 QUICK_OPTIMIZE            = Швидка &оптимізація
 FULL_OPTIMIZE             = Повна оптимізація
 OPTIMIZE_MFT              = Оптимізація MFT
+PAUSE                     = &Pause
 STOP                      = &Стоп
 REPEAT_ACTION             = Дозволити повтор
 SKIP_REMOVABLE_MEDIA      = Перейти &знімних носіїв
@@ -57,6 +58,7 @@ LANGUAGE                  = &Мова
 GRAPHICAL_INTERFACE       = &Графічний інтерфейс
 BOOT_TIME_SCAN            = За&пуск при завантаженні Windows
 REPORTS                   = &Звіти
+SORTING                   = &Sorting
 
 ; --- --- Language submenu
 
@@ -74,6 +76,16 @@ OPTIONS                   = &Опциі
 
 ENABLE                    = &Включити
 SCRIPT                    = &Сценарій
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Sort by &path
+SORT_BY_SIZE              = Sort by &size
+SORT_BY_C_TIME            = Sort by &creation time
+SORT_BY_M_TIME            = Sort by last &modification time
+SORT_BY_A_TIME            = Sort by &last access time
+SORT_ASCENDING            = Sort in &ascending order
+SORT_DESCENDING           = Sort in &descending order
 
 ; --- Help Menu
 

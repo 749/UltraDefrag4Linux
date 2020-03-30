@@ -1,7 +1,7 @@
 ﻿;------------------------------------------------------------------------------
 ; UltraDefrag GUI Hindi Language Pack.
 ; Copyright (C) 2010-2012 Gaurav Chatterjee.
-; Copyright (C) 2012 Utkarsh Ray.
+; Copyright (C) 2012-2013 Utkarsh Ray.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
@@ -25,11 +25,12 @@ HELP                      = सहायता
 
 ; --- Action Menu
 
-ANALYSE                   = विश्लेषण करें
-DEFRAGMENT                = एकीकृत करें
-QUICK_OPTIMIZE            = त्वरित अनुकूलन
-FULL_OPTIMIZE             = पूर्ण अनुकूलन
+ANALYSE                   = &विश्लेषण करें
+DEFRAGMENT                = &एकीकृत करें
+QUICK_OPTIMIZE            = &त्वरित अनुकूलन
+FULL_OPTIMIZE             = पूर्ण &अनुकूलन
 OPTIMIZE_MFT              = MFT अनुकूल करें
+PAUSE                     = विश्राम
 STOP                      = रोकें
 REPEAT_ACTION             = कार्यवाही दोहराएँ
 SKIP_REMOVABLE_MEDIA      = अलग हो सकने वाली ड्राइव छोडें
@@ -58,6 +59,7 @@ LANGUAGE                  = भाषा
 GRAPHICAL_INTERFACE       = चित्रित उपयोगकर्ता अंतरापृष्ठ
 BOOT_TIME_SCAN            = विंडोज़ बूट काल जाँच
 REPORTS                   = विवरणियाँ
+SORTING                   = अनुक्रमण
 
 ; --- --- Language submenu
 
@@ -75,6 +77,16 @@ OPTIONS                   = विकल्प
 
 ENABLE                    = चालू करें
 SCRIPT                    = आलेख
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = पथ से अनुक्रमित करें
+SORT_BY_SIZE              = आकार से अनुक्रमित करें
+SORT_BY_C_TIME            = रचनाकाल से अनुक्रमित करें
+SORT_BY_M_TIME            = संशोधनकाल से अनुक्रमित करें
+SORT_BY_A_TIME            = अंतिम प्रयोगकाल से अनुक्रमित करें
+SORT_ASCENDING            = आरोेही क्रम में लगाएँ
+SORT_DESCENDING           = अवरोही क्रम में लगाएँ
 
 ; --- Help Menu
 
@@ -117,7 +129,7 @@ STATUS_DIRTY              = डिस्क की मरम्मत की ज
 DIRS                      = फोल्डर
 FILES                     = फ़ाइल
 FRAGMENTED                = खंडित
-COMPRESSED                = सम्पीड़ित
+COMPRESSED                = सम्पीड़ित
 
 ; About window.
 

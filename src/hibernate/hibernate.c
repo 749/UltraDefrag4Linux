@@ -1,6 +1,6 @@
 /*
  *  Hibernate for Windows - a command line tool for Windows hibernation.
- *  Copyright (c) 2009-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2009-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,14 +22,20 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+#define WgxTraceHandler udefrag_dbg_print
 #include "../dll/wgx/wgx.h"
+
+#include "../dll/udefrag/udefrag.h"
+
+typedef BOOLEAN (WINAPI *SET_SUSPEND_STATE_PROC)(BOOLEAN Hibernate,
+        BOOLEAN ForceCritical,BOOLEAN DisableWakeEvent);
 
 static void show_help(void)
 {
     printf(
         "===============================================================================\n"
         "Hibernate for Windows - a command line tool for Windows hibernation.\n"
-        "Copyright (c) UltraDefrag Development Team, 2009-2012.\n"
+        "Copyright (c) UltraDefrag Development Team, 2009-2013.\n"
         "\n"
         "===============================================================================\n"
         "This program is free software; you can redistribute it and/or\n"
@@ -51,35 +57,6 @@ static void show_help(void)
         "  hibernate now - hibernates PC\n"
         "  hibernate /?  - displays this help\n"
         );
-}
-
-static void dbg_print(char *format, ...)
-{
-    va_list arg;
-    char *buffer;
-    int size, result;
-    
-    if(format){
-        va_start(arg,format);
-        size = 128; /* set initial buffer size */
-        do {
-            buffer = malloc(size);
-            if(buffer == NULL) break;
-            memset(buffer,0,size); /* needed for _vsnprintf */
-            result = _vsnprintf(buffer,size,format,arg);
-            if(result != -1 && result != size){
-                OutputDebugString(buffer);
-                OutputDebugString("\n");
-                free(buffer);
-                break;
-            }
-            /* buffer is too small; try to allocate two times larger */
-            free(buffer);
-            size <<= 1;
-            if(size <= 0) break;
-        } while(1);
-        va_end(arg);
-    }
 }
 
 static void handle_error(char *msg)
@@ -128,9 +105,11 @@ static void handle_error(char *msg)
 
 int __cdecl main(int argc, char **argv)
 {
-    int i, now = 0;
+    int result, i, now = 0;
     HANDLE hToken; 
     TOKEN_PRIVILEGES tkp;
+    HMODULE hPowrProfDll;
+    SET_SUSPEND_STATE_PROC pSetSuspendState = NULL;
 
     for(i = 0; i < argc; i++){
         if(!strcmp(argv[i],"now")) now = 1;
@@ -139,19 +118,24 @@ int __cdecl main(int argc, char **argv)
 
     if(now == 0){
         show_help();
-        return 0;
+        return EXIT_SUCCESS;
     }
 
     printf("Hibernate for Windows - a command line tool for Windows hibernation.\n");
-    printf("Copyright (c) UltraDefrag Development Team, 2009-2012.\n\n");
+    printf("Copyright (c) UltraDefrag Development Team, 2009-2013.\n\n");
     
-    WgxSetDbgPrintHandler(dbg_print);
+    if(udefrag_init_library() < 0){
+        fprintf(stderr,"Initialization failed!\n");
+        return EXIT_FAILURE;
+    }
+
+    WgxSetInternalTraceHandler(udefrag_dbg_print);
 
     /* enable shutdown privilege */
     if(!OpenProcessToken(GetCurrentProcess(), 
     TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY,&hToken)){
         handle_error("Cannot open process token");
-        return 1;
+        return EXIT_FAILURE;
     }
     
     LookupPrivilegeValue(NULL,SE_SHUTDOWN_NAME,&tkp.Privileges[0].Luid);
@@ -160,14 +144,34 @@ int __cdecl main(int argc, char **argv)
     AdjustTokenPrivileges(hToken,FALSE,&tkp,0,(PTOKEN_PRIVILEGES)NULL,0);         
     if(GetLastError() != ERROR_SUCCESS){
         handle_error("Cannot set shutdown privilege");
-        return 1;
+        return EXIT_FAILURE;
     }
     
-    /* hibernate, request permission from apps and drivers */
-    /* the second parameter must be FALSE, dmitriar's windows xp hangs otherwise */
-    if(!SetSystemPowerState(FALSE,FALSE)){
-        handle_error("Cannot hibernate the computer");
-        return 1;
+    /*
+    * There is an opinion that SetSuspendState call
+    * is more reliable than SetSystemPowerState:
+    * http://msdn.microsoft.com/en-us/library/aa373206%28VS.85%29.aspx
+    * On the other hand, it is missing on NT4.
+    */
+    hPowrProfDll = LoadLibrary("powrprof.dll");
+    if(hPowrProfDll == NULL){
+        letrace("cannot load powrprof.dll");
+    } else {
+        pSetSuspendState = (SET_SUSPEND_STATE_PROC)GetProcAddress(hPowrProfDll,"SetSuspendState");
+        if(pSetSuspendState == NULL)
+            letrace("cannot get SetSuspendState address inside powrprof.dll");
     }
-    return 0;
+
+    /* hibernate, request permission from apps and drivers */
+    if(pSetSuspendState){
+        result = pSetSuspendState(TRUE,FALSE,FALSE);
+    } else {
+        /* the second parameter must be FALSE, dmitriar's windows xp hangs otherwise */
+        result = SetSystemPowerState(FALSE,FALSE);
+    }
+    if(!result){
+        handle_error("Cannot hibernate the computer");
+        return EXIT_FAILURE;
+    }
+    return EXIT_SUCCESS;
 }

@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,36 +26,51 @@
 
 #include "zenwinx.h"
 
+/*
+* MSDN states that environment variables
+* are limited by 32767 characters,
+* including terminal zero.
+*/
+#define MAX_ENV_VALUE_LENGTH 32767
+
 /**
  * @brief Queries an environment variable.
- * @param[in] name the name of environment variable.
- * @param[out] buffer pointer to the buffer to receive
- * the null-terminated value string.
- * @param[in] length the length of the buffer, in characters.
- * @return Zero for success, negative value otherwise.
+ * @param[in] name the environment variable name.
+ * @return The value of the environment variable.
+ * NULL indicates failure.
+ * @note The returned string should be freed
+ * by the winx_free call after its use.
  */
-int winx_query_env_variable(short *name, short *buffer, int length)
+wchar_t *winx_getenv(wchar_t *name)
 {
+    wchar_t *value;
     UNICODE_STRING n, v;
-    NTSTATUS Status;
+    NTSTATUS status;
     
-    DbgCheck3(name,buffer,(length > 0),"winx_query_env_variable",-1);
+    DbgCheck1(name,NULL);
+    
+    value = winx_malloc(MAX_ENV_VALUE_LENGTH * sizeof(wchar_t));
 
     RtlInitUnicodeString(&n,name);
-    v.Buffer = buffer;
+    v.Buffer = value;
     v.Length = 0;
-    v.MaximumLength = length * sizeof(short);
-    Status = RtlQueryEnvironmentVariable_U(NULL,&n,&v);
-    if(!NT_SUCCESS(Status)){
-        DebugPrintEx(Status,"cannot query %ws environment variable",name);
-        return (-1);
+    v.MaximumLength = MAX_ENV_VALUE_LENGTH * sizeof(wchar_t);
+    status = RtlQueryEnvironmentVariable_U(NULL,&n,&v);
+    if(!NT_SUCCESS(status)){
+        strace(status,"cannot query %ws",name);
+        winx_free(value);
+        return NULL;
     }
-    return 0;
+    if(value[0] == 0){
+        winx_free(value);
+        return NULL;
+    }
+    return value;
 }
 
 /**
  * @brief Sets an environment variable.
- * @param[in] name the name of the environment variable.
+ * @param[in] name the environment variable name.
  * @param[in] value the null-terminated value string.
  * NULL pointer causes a variable deletion.
  * @return Zero for success, negative value otherwise.
@@ -64,12 +79,12 @@ int winx_query_env_variable(short *name, short *buffer, int length)
  * because unsigned short data type can hold numbers
  * less than or equal to 32767.
  */
-int winx_set_env_variable(short *name, short *value)
+int winx_setenv(wchar_t *name, wchar_t *value)
 {
     UNICODE_STRING n, v;
     NTSTATUS status;
 
-    DbgCheck1(name,"winx_set_env_variable",-1);
+    DbgCheck1(name,-1);
 
     RtlInitUnicodeString(&n,name);
     if(value){
@@ -83,7 +98,7 @@ int winx_set_env_variable(short *name, short *value)
         status = RtlSetEnvironmentVariable(NULL,&n,NULL);
     }
     if(!NT_SUCCESS(status)){
-        DebugPrintEx(status,"cannot set %ws environment variable",name);
+        strace(status,"cannot set %ws",name);
         return (-1);
     }
     return 0;

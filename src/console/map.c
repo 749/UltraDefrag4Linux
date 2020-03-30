@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -52,7 +52,6 @@ WORD colors[NUM_OF_SPACE_STATES] = {
     FOREGROUND_RED | FOREGROUND_GREEN,
     FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY,
     FOREGROUND_RED | FOREGROUND_BLUE,
-    FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY
 };
 
 short map_border_color = BORDER_COLOR;
@@ -83,7 +82,7 @@ void CalculateClusterMapDimensions(void)
         }
         udefrag_release_default_formatted_results(results);
     } else {
-        WgxDbgPrint("CalculateClusterMapDimensions: not enough memory");
+        mtrace();
     }
 
     h = GetStdHandle(STD_OUTPUT_HANDLE);

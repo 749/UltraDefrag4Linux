@@ -1,12 +1,11 @@
 ﻿;------------------------------------------------------------------------------
 ; UltraDefrag GUI Greek Language Pack.
-; Copyright (C) 2008-2012 Konstantinos Kapoukranidis
+; Copyright (C) 2008-2013 Konstantinos Kapoukranidis
+; Copyright (C) 2012-2013 Dionisios Klonaris
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised May 17, 2012 by Dionisios Klonaris
-; Revised Oct  5, 2012 by Dionisios Klonaris
-; Revised Oct 20, 2012 by Konstantinos Kapoukranidis
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
 
 ; Please keep the header and comments in English and use Latin letters,
@@ -31,6 +30,7 @@ DEFRAGMENT                = Ανασυγκρότηση
 QUICK_OPTIMIZE            = Γρήγορη βελτιστοποίηση
 FULL_OPTIMIZE             = Πλήρης βελτιστοποίηση
 OPTIMIZE_MFT              = Βελτιστοποίηση MFT
+PAUSE                     = Παύση
 STOP                      = Διακοπή
 REPEAT_ACTION             = Επανάληψη ενέργειας
 SKIP_REMOVABLE_MEDIA      = Παράλειψη αφαιρούμενων συσκευών
@@ -59,6 +59,7 @@ LANGUAGE                  = Γλώσσα
 GRAPHICAL_INTERFACE       = Γραφικό περιβάλλον
 BOOT_TIME_SCAN            = Έλεγχος κατά την εκκίνηση
 REPORTS                   = Αναφορές
+SORTING                   = Ταξινόμηση
 
 ; --- --- Language submenu
 
@@ -77,11 +78,21 @@ OPTIONS                   = Επιλογές
 ENABLE                    = Ενεργοποίηση
 SCRIPT                    = Σενάριο
 
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Ταξινόμηση βάσει διαδρομής
+SORT_BY_SIZE              = Ταξινόμηση βάσει μεγέθους
+SORT_BY_C_TIME            = Ταξινόμηση βάσει χρόνου δημιουργίας
+SORT_BY_M_TIME            = Ταξινόμηση βάσει χρόνου τελευταίας τροποποίησης
+SORT_BY_A_TIME            = Ταξινόμηση βάσει χρόνου τελευταίας πρόσβασης
+SORT_ASCENDING            = Αύξουσα ταξινόμηση
+SORT_DESCENDING           = Φθίνουσα ταξινόμηση
+
 ; --- Help Menu
 
 CONTENTS                  = Περιεχόμενα
 BEST_PRACTICE             = Καλύτερη πρακτική
-FAQ                       = ΣΕΑ(FAQ)
+FAQ                       = ΣΕΑ (FAQ)
 CM_LEGEND                 = Χάρτης συστοιχιών και υπόμνημα
 DEBUG                     = &Αποσφαλμάτωση
 CHECK_UPDATE              = Έλεγχος για ενημερώσεις

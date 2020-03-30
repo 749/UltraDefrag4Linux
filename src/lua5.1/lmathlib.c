@@ -1,5 +1,5 @@
 /*
-** $Id: lmathlib.c,v 1.67 2005/08/26 17:36:32 roberto Exp $
+** $Id: lmathlib.c 3619 2013-01-02 11:37:41Z stefanpe $
 ** Standard mathematical library
 ** See Copyright Notice in lua.h
 */
@@ -23,7 +23,7 @@
 
 /*
 * The following bitwise operations were added especially for UltraDefrag.
-* Copyright (c) 2010-2012 by Dmitri Arkhangelski (dmitriar@gmail.com).
+* Copyright (c) 2010-2013 by Dmitri Arkhangelski (dmitriar@gmail.com).
 *
 * All functions are designed to be used with integer 32-bit numbers.
 */

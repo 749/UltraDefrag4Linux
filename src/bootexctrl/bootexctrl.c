@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,335 +28,56 @@
 #include <ctype.h>
 #include <commctrl.h>
 
+#define WgxTraceHandler udefrag_dbg_print
 #include "../dll/wgx/wgx.h"
+
+#include "../dll/udefrag/udefrag.h"
 #include "../include/ultradfgver.h"
+
+#define DisplayError(msg) { \
+    if(!silent) \
+        MessageBox(NULL,msg, \
+            "BootExecute Control", \
+            MB_OK | MB_ICONHAND); \
+}
 
 int h_flag = 0;
 int r_flag = 0;
 int u_flag = 0;
 int silent = 0;
-int invalid_opts = 0;
-char cmd[MAX_PATH + 1] = "";
+wchar_t cmd[MAX_PATH + 1] = L"";
 
 void show_help(void)
 {
-    if(silent)
-        return;
-    
-    MessageBox(NULL,
-        "Usage:\n"
-        "bootexctrl /r [/s] command - register command\n"
-        "bootexctrl /u [/s] command - unregister command\n"
-        "Specify /s option to run the program in silent mode."
-        ,
-        "BootExecute Control",
-        MB_OK
+    if(!silent){
+        MessageBox(NULL,
+            "Usage:\n"
+            "bootexctrl /r [/s] command - register command\n"
+            "bootexctrl /u [/s] command - unregister command\n"
+            "Specify /s option to run the program in silent mode."
+            ,
+            "BootExecute Control",
+            MB_OK
         );
-}
-
-void DisplayLastError(wchar_t *caption)
-{
-    wchar_t *msg;
-    wchar_t buffer[128];
-    DWORD error = GetLastError();
-
-    if(!FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | 
-      FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-      NULL,error,MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-      (LPWSTR)(void *)&msg,0,NULL)){
-        if(error == ERROR_COMMITMENT_LIMIT){
-            (void)_snwprintf(buffer,
-                sizeof(buffer)/sizeof(wchar_t),
-                L"Not enough memory.");
-        } else {
-            (void)_snwprintf(buffer,
-                sizeof(buffer)/sizeof(wchar_t),
-                L"Error code = 0x%x",(UINT)error);
-        }
-        buffer[sizeof(buffer)/sizeof(wchar_t) - 1] = 0;
-        MessageBoxW(NULL,buffer,caption,MB_OK | MB_ICONHAND);
-        return;
-    } else {
-        MessageBoxW(NULL,msg,caption,MB_OK | MB_ICONHAND);
-        LocalFree(msg);
     }
 }
 
-int open_smss_key(HKEY *phkey)
+int parse_cmdline(wchar_t *cmdline)
 {
-    LONG result;
-    
-    result = RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-          "SYSTEM\\CurrentControlSet\\Control\\Session Manager",
-          0,KEY_QUERY_VALUE | KEY_SET_VALUE,phkey);
-    if(result != ERROR_SUCCESS){
-        if(!silent){
-            SetLastError((DWORD)result);
-            DisplayLastError(L"Cannot open SMSS key!");
-        }
-        return 0;
-    }
-    return 1;
-}
-
-/**
- * @brief Compares two boot execute commands.
- * @details Treats 'command' and 'autocheck command' as the same.
- * @param[in] reg_cmd command read from registry.
- * @param[in] cmd command to be searched for.
- * @return Positive value indicates that commands are equal,
- * zero indicates that they're different, negative value
- * indicates failure of comparison.
- * @note Internal use only.
- */
-static int cmd_compare(char *reg_cmd,char *cmd)
-{
-    char *reg_cmd_copy = NULL;
-    char *cmd_copy = NULL;
-    char *long_cmd = NULL;
-    char autocheck[] = "autocheck ";
-    int length;
-    int result = (-1);
-    
-    /* do we have the command registered as it is? */
-    if(!strcmp(reg_cmd,cmd))
-        return 1;
-    
-    /* allocate memory */
-    reg_cmd_copy = _strdup(reg_cmd);
-    if(reg_cmd_copy == NULL){
-        if(!silent)
-            MessageBox(NULL,"Not enough memory!","Error",MB_OK | MB_ICONHAND);
-        goto done;
-    }
-    cmd_copy = _strdup(cmd);
-    if(cmd_copy == NULL){
-        if(!silent)
-            MessageBox(NULL,"Not enough memory!","Error",MB_OK | MB_ICONHAND);
-        goto done;
-    }
-    length = (strlen(cmd) + strlen(autocheck) + 1) * sizeof(char);
-    long_cmd = malloc(length);
-    if(long_cmd == NULL){
-        if(!silent)
-            MessageBox(NULL,"Not enough memory!","Error",MB_OK | MB_ICONHAND);
-        goto done;
-    }
-    strcpy(long_cmd,autocheck);
-    strcat(long_cmd,cmd);
-    
-    /* convert all strings to lowercase */
-    _strlwr(reg_cmd_copy);
-    _strlwr(cmd_copy);
-    _strlwr(long_cmd);
-
-    /* compare */
-    if(!strcmp(reg_cmd_copy,cmd_copy) || !strcmp(reg_cmd_copy,long_cmd)){
-        result = 1;
-        goto done;
-    }
-
-    result = 0;
-    
-done:
-    free(reg_cmd_copy);
-    free(cmd_copy);
-    free(long_cmd);
-    return result;
-}
-
-int register_cmd(void)
-{
-    HKEY hKey;
-    DWORD type, size;
-    char *data, *curr_pos;
-    DWORD i, length, curr_len;
-    LONG result;
-
-    if(!open_smss_key(&hKey))
-        return 3;
-
-    type = REG_MULTI_SZ;
-    result = RegQueryValueEx(hKey,"BootExecute",NULL,&type,NULL,&size);
-    if(result != ERROR_SUCCESS && result != ERROR_MORE_DATA){
-        if(!silent){
-            SetLastError((DWORD)result);
-            DisplayLastError(L"Cannot query BootExecute value size!");
-        }
-        return 4;
-    }
-    
-    data = malloc(size + strlen(cmd) + 10);
-    if(data == NULL){
-        if(!silent)
-            MessageBox(NULL,"Not enough memory!","Error",MB_OK | MB_ICONHAND);
-        (void)RegCloseKey(hKey);
-        return 5;
-    }
-
-    type = REG_MULTI_SZ;
-    result = RegQueryValueEx(hKey,"BootExecute",NULL,&type,(LPBYTE)data,&size);
-    if(result != ERROR_SUCCESS){
-        if(!silent){
-            SetLastError((DWORD)result);
-            DisplayLastError(L"Cannot query BootExecute value!");
-        }
-        (void)RegCloseKey(hKey);
-        free(data);
-        return 6;
-    }
-    
-    if(size < 2){ /* "\0\0" */
-        /* empty value detected */
-        strcpy(data,cmd);
-        data[strlen(data) + 1] = 0;
-        length = strlen(data) + 1 + 1;
-        goto save_changes;
-    }
-    
-    /* terminate value by two zeros */
-    data[size - 2] = 0;
-    data[size - 1] = 0;
-
-    length = size - 1;
-    for(i = 0; i < length;){
-        curr_pos = data + i;
-        curr_len = strlen(curr_pos) + 1;
-        /* if the command is yet registered then exit */
-        if(cmd_compare(curr_pos,cmd) > 0) goto done;
-        i += curr_len;
-    }
-    (void)strcpy(data + i,cmd);
-    data[i + strlen(cmd) + 1] = 0;
-    length += strlen(cmd) + 1 + 1;
-
-save_changes:
-    result = RegSetValueEx(hKey,"BootExecute",0,REG_MULTI_SZ,(const BYTE *)data,length);
-    if(result != ERROR_SUCCESS){
-        if(!silent){
-            SetLastError((DWORD)result);
-            DisplayLastError(L"Cannot set BootExecute value!");
-        }
-        (void)RegCloseKey(hKey);
-        free(data);
-        return 7;
-    }
-
-done:
-    (void)RegCloseKey(hKey);
-    free(data);
-    return 0;
-}
-
-int unregister_cmd(void)
-{
-    HKEY hKey;
-    DWORD type, size;
-    char *data, *new_data = NULL, *curr_pos;
-    DWORD i, length, new_length, curr_len;
-    LONG result;
-
-    if(!open_smss_key(&hKey))
-        return 3;
-
-    type = REG_MULTI_SZ;
-    result = RegQueryValueEx(hKey,"BootExecute",NULL,&type,NULL,&size);
-    if(result != ERROR_SUCCESS && result != ERROR_MORE_DATA){
-        if(!silent){
-            SetLastError((DWORD)result);
-            DisplayLastError(L"Cannot query BootExecute value size!");
-        }
-        return 4;
-    }
-    
-    data = malloc(size);
-    if(data == NULL){
-        if(!silent)
-            MessageBox(NULL,"Not enough memory!","Error",MB_OK | MB_ICONHAND);
-        (void)RegCloseKey(hKey);
-        return 5;
-    }
-
-    type = REG_MULTI_SZ;
-    result = RegQueryValueEx(hKey,"BootExecute",NULL,&type,(LPBYTE)data,&size);
-    if(result != ERROR_SUCCESS){
-        if(!silent){
-            SetLastError((DWORD)result);
-            DisplayLastError(L"Cannot query BootExecute value!");
-        }
-        (void)RegCloseKey(hKey);
-        free(data);
-        return 6;
-    }
-
-    if(size < 2){ /* "\0\0" */
-        /* empty value detected */
-        goto done;
-    }
-    
-    /* terminate value by two zeros */
-    data[size - 2] = 0;
-    data[size - 1] = 0;
-
-    new_data = malloc(size);
-    if(new_data == NULL){
-        if(!silent)
-            MessageBox(NULL,"Not enough memory!","Error",MB_OK | MB_ICONHAND);
-        (void)RegCloseKey(hKey);
-        free(data);
-        return 5;
-    }
-
-    /*
-    * Now we should copy all strings except specified command
-    * to the destination buffer.
-    */
-    memset((void *)new_data,0,size);
-    length = size - 1;
-    new_length = 0;
-    for(i = 0; i < length;){
-        curr_pos = data + i;
-        curr_len = strlen(curr_pos) + 1;
-        if(cmd_compare(curr_pos,cmd) <= 0){
-            (void)strcpy(new_data + new_length,curr_pos);
-            new_length += curr_len;
-        }
-        i += curr_len;
-    }
-    new_data[new_length] = 0;
-
-    result = RegSetValueEx(hKey,"BootExecute",0,REG_MULTI_SZ,(const BYTE *)new_data,new_length + 1);
-    if(result != ERROR_SUCCESS){
-        if(!silent){
-            SetLastError((DWORD)result);
-            DisplayLastError(L"Cannot set BootExecute value!");
-        }
-        (void)RegCloseKey(hKey);
-        free(data);
-        free(new_data);
-        return 7;
-    }
-
-done:
-    (void)RegCloseKey(hKey);
-    free(data);
-    free(new_data);
-    return 0;
-}
-
-int parse_cmdline(void)
-{
-    int argc;
     wchar_t **argv;
+    int argc;
     
-    if(wcsstr(_wcslwr(GetCommandLineW()),L"/s"))
-        silent = 1;
-
-    argv = (wchar_t **)CommandLineToArgvW(_wcslwr(GetCommandLineW()),&argc);
+    if(cmdline == NULL){
+        h_flag = 1;
+        return EXIT_SUCCESS;
+    }
+    
+    argv = (wchar_t **)CommandLineToArgvW(cmdline,&argc);
     if(argv == NULL){
         if(!silent)
-            DisplayLastError(L"CommandLineToArgvW failed!");
-        exit(1);
+            WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,
+                L"BootExecute Control: CommandLineToArgvW failed!");
+        return EXIT_FAILURE;
     }
 
     for(argc--; argc >= 1; argc--){
@@ -372,48 +93,71 @@ int parse_cmdline(void)
             silent = 1;
         } else {
             if(wcslen(argv[argc]) > MAX_PATH){
-                invalid_opts = 1;
-                if(!silent)
-                    MessageBox(NULL,"Command name is too long!","Error",MB_OK | MB_ICONHAND);
-                exit(2);
+                DisplayError("Command name is too long!");
+                return EXIT_FAILURE;
             } else {
-                _snprintf(cmd,MAX_PATH,"%ws",argv[argc]);
-                cmd[MAX_PATH] = 0;
+                wcscpy(cmd,argv[argc]);
             }
         }
     }
     
-    if(cmd[0] == 0)
-        h_flag = 1;
-    
-    if(r_flag == 0 && u_flag == 0)
+    if(!cmd[0] || (!r_flag && !u_flag))
         h_flag = 1;
     
     GlobalFree(argv);
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nShowCmd)
 {
+    wchar_t *cmdline = GetCommandLineW();
+    int result;
+
+    /* check for /s option */
+    if(cmdline){
+        _wcslwr(cmdline);
+        if(wcsstr(cmdline,L"/s"))
+            silent = 1;
+    }
+
     /* strongly required! to be compatible with manifest */
     InitCommonControls();
 
-    parse_cmdline();
+    if(udefrag_init_library() < 0){
+        DisplayError("Initialization failed!");
+        return EXIT_FAILURE;
+    }
+
+    WgxSetInternalTraceHandler(udefrag_dbg_print);
+
+    result = parse_cmdline(cmdline);
+    if(result != EXIT_SUCCESS)
+        return EXIT_FAILURE;
 
     if(h_flag){
         show_help();
-        return 0;
+        return EXIT_SUCCESS;
     }
     
     /* check for admin rights - they're strongly required */
     if(!WgxCheckAdminRights()){
-        if(!silent){
-            MessageBox(NULL,"Administrative rights are needed "
-              "to run the program!","BootExecute Control",
-              MB_OK | MB_ICONHAND);
-        }
-        return 1;
+        DisplayError("Administrative rights"
+            " are needed to run the program!");
+        return EXIT_FAILURE;
     }
 
-    return (r_flag ? register_cmd() : unregister_cmd());
+    if(r_flag){
+        result = udefrag_bootex_register(cmd);
+        if(result < 0){
+            DisplayError("Cannot register the command!\n"
+                "Use DbgView program to get more information.");
+        }
+    } else {
+        result = udefrag_bootex_unregister(cmd);
+        if(result < 0){
+            DisplayError("Cannot unregister the command!\n"
+                "Use DbgView program to get more information.");
+        }
+    }
+    return (result == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

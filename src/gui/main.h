@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -86,7 +86,9 @@
 #include "../lua5.1/lauxlib.h"
 #include "../lua5.1/lualib.h"
 
+#define WgxTraceHandler udefrag_dbg_print
 #include "../dll/wgx/wgx.h"
+
 #include "../dll/udefrag/udefrag.h"
 #include "../include/ultradfgver.h"
 
@@ -156,6 +158,9 @@ void start_selected_jobs(udefrag_job_type job_type);
 void stop_all_jobs(void);
 void release_jobs(void);
 
+void SetPause(void);
+void ReleasePause(void);
+
 void RepairSelectedVolumes(void);
 
 int CreateMainMenu(void);
@@ -224,8 +229,14 @@ extern int job_is_running;
 void SetTaskbarIconOverlay(int resource_id, char *description_key);
 void RemoveTaskbarIconOverlay(void);
 
+#define WM_TRAYMESSAGE           (WM_APP+1)
 #define WM_MAXIMIZE_MAIN_WINDOW  (WM_USER + 1)
 #define WM_RESIZE_MAP            (WM_USER + 1)
+
+BOOL ShowSystemTrayIcon(DWORD dwMessage);
+BOOL HideSystemTrayIcon(void);
+void ShowSystemTrayIconContextMenu(void);
+void SetSystemTrayIconTooltip(wchar_t *text);
 
 void StartCrashInfoCheck(void);
 void StopCrashInfoCheck(void);
@@ -254,6 +265,7 @@ extern int use_custom_font_in_dialogs;
 extern int portable_mode;
 extern int btd_installed;
 
+extern int pause_flag;
 extern int stop_pressed;
 
 /* common preferences */
@@ -268,9 +280,12 @@ extern int user_defined_column_widths[];
 extern int list_height;
 extern int dry_run;
 extern int job_flags;
+extern int sorting_flags;
 extern int repeat_action;
 extern int show_menu_icons;
 extern int show_taskbar_icon_overlay;
+extern int show_progress_in_taskbar;
+extern int minimize_to_system_tray;
 
 /*
 * NOTE: the following code causes a deadlock
@@ -315,7 +330,7 @@ extern int show_taskbar_icon_overlay;
 
 /* window layout constants, used in shutdown confirmation and about dialogs */
 /* based on layout guidelines: http://msdn.microsoft.com/en-us/library/aa511279.aspx */
-#define ICON_SIZE      32      /* size of the shutdown icon */
+#define ICON_SIZE      DPI(32) /* size of the shutdown icon */
 #define SHIP_WIDTH     109
 #define SHIP_HEIGHT    147
 #define SMALL_SPACING  DPI(7)  /* spacing between related controls */
@@ -323,8 +338,15 @@ extern int show_taskbar_icon_overlay;
 #define MARGIN         DPI(11) /* dialog box margins */
 #define MIN_BTN_WIDTH  DPI(75) /* recommended button width */
 #define MIN_BTN_HEIGHT DPI(23) /* recommended button height */
-#define BTN_H_SPACING  DPI(9)  /* minimal space between text and button right/left sides */
-#define BTN_V_SPACING  DPI(4)  /* minimal space between text and button top/bottom sides */
+
+/* flags for the preview menu */
+#define SORT_BY_PATH               0x1
+#define SORT_BY_SIZE               0x2
+#define SORT_BY_CREATION_TIME      0x4
+#define SORT_BY_MODIFICATION_TIME  0x8
+#define SORT_BY_ACCESS_TIME        0x10
+#define SORT_ASCENDING             0x20
+#define SORT_DESCENDING            0x40
 
 /* volume list characteristics */
 #define LIST_COLUMNS 6

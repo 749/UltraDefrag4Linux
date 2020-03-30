@@ -1,6 +1,6 @@
 --[[
 This is the Ultra Defragmenter build configurator.
-Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -28,13 +28,15 @@ iup.SetLanguage("ENGLISH")
 -- initialize parameters
 ULTRADFGVER   = ""
 RELEASE_STAGE = ""
+WINDDKBASE    = ""
+WINSDKBASE    = ""
 MINGWBASE     = ""
+MINGWx64BASE  = ""
 NSISDIR       = ""
 SEVENZIP_PATH = ""
-WINDDKBASE    = ""
-MINGWx64BASE  = ""
-WINSDKBASE    = ""
-apply_patch   = 0
+mingw_patch    = 0
+mingw_projects = 0
+winsdk_patch   = 0
 
 ver_mj, ver_mn, ver_fix = 0,0,0
 
@@ -59,11 +61,6 @@ function expand (s)
         return tostring(_G[n])
       end)
   return s
-end
-
-show_obsolete_options = 0
-if arg[1] == "--all" then
-    show_obsolete_options = 1
 end
 
 -- get parameters from setvars.cmd file
@@ -98,43 +95,27 @@ function param_action(dialog, param_index)
             ; colors = { "255 255 0", "255 0 0" }
         }
         dialog.icon = icon
-        if show_obsolete_options == 1 then
-            dialog.size = "400x188"
-        else
-            dialog.size = "370x158"
-        end
+        dialog.size = "400x215"
     end
     return 1
 end
 
 -- show dialog box
-if show_obsolete_options == 1 then
-    ret, ULTRADFGVER, RELEASE_STAGE, MINGWBASE, NSISDIR, SEVENZIP_PATH, WINDDKBASE, MINGWx64BASE, WINSDKBASE, apply_patch = 
-        iup.GetParam("UltraDefrag build configurator",param_action,
-            "UltraDefrag version: %s\n"..
-            "Release stage (alpha1, beta2, rc3, final): %s\n".. 
-            "MinGW path: %s\n"..
-            "NSIS path: %s\n"..
-            "7-Zip path: %s\n"..
-            "Windows Server 2003 DDK path: %s\n"..
-            "MinGW x64 base path: %s\n"..
-            "Windows SDK base path: %s\n"..
-            "Apply patch to MinGW: %b[No,Yes]\n",
-            ULTRADFGVER, RELEASE_STAGE, MINGWBASE, NSISDIR, SEVENZIP_PATH, WINDDKBASE, MINGWx64BASE, WINSDKBASE, apply_patch
-            )
-else
-    ret, ULTRADFGVER, RELEASE_STAGE, MINGWBASE, NSISDIR, SEVENZIP_PATH, WINDDKBASE, apply_patch = 
-        iup.GetParam("UltraDefrag build configurator",param_action,
-            "UltraDefrag version: %s\n"..
-            "Release stage (alpha1, beta2, rc3, final): %s\n".. 
-            "MinGW path: %s\n"..
-            "NSIS path: %s\n"..
-            "7-Zip path: %s\n"..
-            "Windows Server 2003 DDK path: %s\n"..
-            "Apply patch to MinGW: %b[No,Yes]\n",
-            ULTRADFGVER, RELEASE_STAGE, MINGWBASE, NSISDIR, SEVENZIP_PATH, WINDDKBASE, apply_patch
-            )
-end
+ret, ULTRADFGVER, RELEASE_STAGE, MINGWBASE, NSISDIR, SEVENZIP_PATH, WINDDKBASE, WINSDKBASE, MINGWx64BASE, mingw_patch, winsdk_patch, mingw_projects = 
+    iup.GetParam("UltraDefrag build configurator",param_action,
+        "UltraDefrag version: %s\n"..
+        "Release stage (alpha1, beta2, rc3, final): %s\n".. 
+        "MinGW path: %s\n"..
+        "NSIS path: %s\n"..
+        "7-Zip path: %s\n"..
+        "Windows Driver Kit v7.1.0 path: %s\n"..
+        "Windows SDK base path: %s\n"..
+        "MinGW x64 base path: %s\n"..
+        "Apply patch to MinGW: %b[No,Yes]\n"..
+        "Apply patch to Windows SDK: %b[No,Yes]\n"..
+        "Make MinGW Developer Studio projects: %b[No,Yes]\n",
+        ULTRADFGVER, RELEASE_STAGE, MINGWBASE, NSISDIR, SEVENZIP_PATH, WINDDKBASE, WINSDKBASE, MINGWx64BASE, mingw_patch, winsdk_patch, mingw_projects
+        )
 if ret == 1 then
     -- save options
     i, j, ver_mj, ver_mn, ver_fix = string.find(ULTRADFGVER,"(%d+).(%d+).(%d+)")
@@ -148,10 +129,28 @@ if ret == 1 then
     f:write(expand(script))
     f:close()
     print("setvars.cmd script was updated successfully.")
-    if apply_patch == 1 then
-        print("Apply MinGW patch option was selected.")
-        if os.execute("cmd.exe /C .\\dll\\zenwinx\\mingw_patch.cmd " .. MINGWBASE) ~= 0 then
+    if mingw_patch == 1 then
+        print("\n")
+        print("Apply patch to MinGW option was selected.")
+        print("-----------------------------------------")
+        if os.execute("cmd.exe /C .\\dll\\zenwinx\\mingw_patch.cmd \"" .. MINGWBASE .. "\"") ~= 0 then
             error("Cannot apply patch to MinGW!")
+        end
+    end
+    if winsdk_patch == 1 then
+        print("\n")
+        print("Apply patch to Windows SDK option was selected.")
+        print("-----------------------------------------------")
+        if os.execute("cmd.exe /C .\\dll\\zenwinx\\winsdk_patch.cmd \"" .. WINSDKBASE .. "\"") ~= 0 then
+            error("Cannot apply patch to Windows SDK!")
+        end
+    end
+    if mingw_projects == 1 then
+        print("\n")
+        print("Make MinGW Developer Studio projects option was selected.")
+        print("---------------------------------------------------------")
+        if os.execute("lua tools\\make-mingw-projects.lua") ~= 0 then
+            error("Cannot make MinGW Developer Studio projects!")
         end
     end
 end

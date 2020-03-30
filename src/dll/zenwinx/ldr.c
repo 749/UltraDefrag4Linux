@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,39 +29,37 @@
 /**
  * @brief Retrieves the address of an exported function
  * or variable from the specified dynamic-link library (DLL).
- * @param[in] libname the name of the library.
- * @param[in] funcname the name of the function or variable.
- * @param[out] proc_addr the address of memory
- * to store retrieved address into.
- * @return Zero for success, negative value otherwise.
+ * @param[in] libname the library name.
+ * @param[in] funcname the function or variable name.
+ * @return The address of the requested function or variable.
+ * NULL indicates failure.
  * @note The specified dynamic-link library 
  * must be loaded before this call.
  */
-int winx_get_proc_address(short *libname,char *funcname,PVOID *proc_addr)
+void *winx_get_proc_address(wchar_t *libname,char *funcname)
 {
-    UNICODE_STRING uStr;
-    ANSI_STRING aStr;
-    NTSTATUS Status;
+    UNICODE_STRING us;
+    ANSI_STRING as;
+    NTSTATUS status;
     HMODULE base_addr;
+    void *proc_addr = NULL;
 
-    DbgCheck3(libname,funcname,proc_addr,"winx_get_proc_address",-1);
-    *proc_addr = NULL;
+    DbgCheck2(libname,funcname,NULL);
     
-    RtlInitUnicodeString(&uStr,libname);
-    Status = LdrGetDllHandle(0,0,&uStr,&base_addr);
-    if(!NT_SUCCESS(Status)){
-        DebugPrint("winx_get_proc_address: cannot get %ls handle: %x",libname,(UINT)Status);
-        return (-1);
+    RtlInitUnicodeString(&us,libname);
+    status = LdrGetDllHandle(0,0,&us,&base_addr);
+    if(!NT_SUCCESS(status)){
+        etrace("cannot get %ls handle: %x",libname,(UINT)status);
+        return NULL;
     }
-    RtlInitAnsiString(&aStr,funcname);
-    Status = LdrGetProcedureAddress(base_addr,&aStr,0,proc_addr);
-    if(!NT_SUCCESS(Status)){
-        *proc_addr = NULL;
+    RtlInitAnsiString(&as,funcname);
+    status = LdrGetProcedureAddress(base_addr,&as,0,&proc_addr);
+    if(!NT_SUCCESS(status)){
         if(strcmp(funcname,"RtlGetVersion")) /* reduce amount of debugging output on NT4 */
-            DebugPrint("winx_get_proc_address: cannot get address of %s: %x",funcname,(UINT)Status);
-        return (-1);
+            etrace("cannot get address of %s: %x",funcname,(UINT)status);
+        return NULL;
     }
-    return 0;
+    return proc_addr;
 }
 
 /** @} */

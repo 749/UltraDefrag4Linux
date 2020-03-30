@@ -2,7 +2,7 @@
 --[[
   make-mingw-projects.lua - produces MinGW Developer Studio
   project files from *.build files.
-  Copyright (c) 2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+  Copyright (c) 2013 Dmitri Arkhangelski (dmitriar@gmail.com).
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -197,6 +197,7 @@ function build_project_file(path)
         out_filename = "../bin/" .. target_name
     end
     libraries = ""
+    rev_adlibs_libs = {}
     for i, v in ipairs(libs) do
         if i > 1 then libraries = libraries .. "," end
         libraries = libraries .. v
@@ -208,9 +209,27 @@ function build_project_file(path)
         i, j, file = string.find(v,"^.*\\(.-)$")
         if not file then
             libraries = libraries .. v
+            table.insert(rev_adlibs_libs,1,v)
         else
             libraries = libraries .. file
+            table.insert(rev_adlibs_libs,1,file)
         end
+    end
+    -- include libraries in reverse order
+    -- needed to link with static additional libraries
+    for i, v in ipairs(rev_adlibs_libs) do
+        if libraries ~= "" then
+            libraries = libraries .. ","
+        end
+        libraries = libraries .. v
+    end
+    -- include standard libraries again
+    -- needed to link with static additional libraries
+    for i, v in ipairs(libs) do
+        if libraries ~= "" then
+            libraries = libraries .. ","
+        end
+        libraries = libraries .. v
     end
     dbg_linker_opts = ""
     if target_type == "gui" then
@@ -257,7 +276,7 @@ function build_project_file(path)
     f:write("[Source]\n")
     index = 1
     for i, v in ipairs(files) do
-        if string.find(v,"%.c$") then
+        if string.find(v,"%.c(.-)$") then
             f:write(index, "=", v, "\n")
             index = index + 1
         end
@@ -300,7 +319,7 @@ function build_project_file(path)
     f:write("[History]\n")
     f:close()
 
-    print("Project file generation completed successfully.\n")
+    print("Project file generation completed successfully.")
 end
 
 -- the main code

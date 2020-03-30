@@ -30,6 +30,7 @@ DEFRAGMENT                = &Defragmenter
 QUICK_OPTIMIZE            = Rask optimalisering
 FULL_OPTIMIZE             = Full optimalisering
 OPTIMIZE_MFT              = Optimaliser MFT
+PAUSE                     = &Pause
 STOP                      = &Stopp
 REPEAT_ACTION             = Gjenta handling
 SKIP_REMOVABLE_MEDIA      = &Hopp over flyttbare media
@@ -58,6 +59,7 @@ LANGUAGE                  = &Språk
 GRAPHICAL_INTERFACE       = &Grafisk brukergrensesnitt
 BOOT_TIME_SCAN            = Skann ved &Windows-oppstart
 REPORTS                   = &Rapporter
+SORTING                   = &Sorting
 
 ; --- --- Language submenu
 
@@ -75,6 +77,16 @@ OPTIONS                   = &Valg
 
 ENABLE                    = &Aktivere
 SCRIPT                    = Pro&grammer
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Sort by &path
+SORT_BY_SIZE              = Sort by &size
+SORT_BY_C_TIME            = Sort by &creation time
+SORT_BY_M_TIME            = Sort by last &modification time
+SORT_BY_A_TIME            = Sort by &last access time
+SORT_ASCENDING            = Sort in &ascending order
+SORT_DESCENDING           = Sort in &descending order
 
 ; --- Help Menu
 

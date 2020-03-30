@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -39,19 +39,13 @@
 */
 
 /* extracts low 48 bits of File Reference Number */
-/* LL suffix is not supported by MSVC 6.0 ! */
-#ifndef USE_MSVC
 #define GetMftIdFromFRN(n) ((n) & 0xffffffffffffLL)
-#else
-#define GetMftIdFromFRN(n) ((n) & 0xffffffffffff)
-#endif
 
 #ifndef TAG
 #define TAG(A, B, C, D) (ULONG)(((A)<<0) + ((B)<<8) + ((C)<<16) + ((D)<<24))
 #endif
 
 #pragma pack(push, 1)
-//#if defined(__GNUC__)
 typedef struct {
     ULONGLONG FileReferenceNumber;
 } NTFS_FILE_RECORD_INPUT_BUFFER, *PNTFS_FILE_RECORD_BUFFER;
@@ -61,7 +55,6 @@ typedef struct {
     ULONG FileRecordLength;
     UCHAR FileRecordBuffer[1];
 } NTFS_FILE_RECORD_OUTPUT_BUFFER, *PNTFS_FILE_RECORD_OUTPUT_BUFFER;
-//#endif
 
 /*
  * System files mft record numbers. All these files are always marked as used

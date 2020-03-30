@@ -1,7 +1,7 @@
 ﻿;------------------------------------------------------------------------------
 ; UltraDefrag GUI Spanish (ES) Language Pack.
 ; Copyright (C) 2010 Txusti.
-; Copyright (C) 2010, 2011 Juan C. Mendez Valledor.
+; Copyright (C) 2010-2013 Juan C. Mendez Valledor.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
@@ -11,6 +11,7 @@
 ; Revised Jun 06, 2012 by Daniel Rodríguez
 ; Revised Oct 13, 2012 by El Fiera
 ; Revised Nov 17, 2012 by NetVicious
+; Revised Feb 09, 2013 by Daniel Rodríguez
 ;------------------------------------------------------------------------------
 
 ; Please keep the header and comments in English and use Latin letters,
@@ -35,6 +36,7 @@ DEFRAGMENT                = Defragmentar
 QUICK_OPTIMIZE            = Optimización Rápida
 FULL_OPTIMIZE             = Optimización Completa
 OPTIMIZE_MFT              = Optimización de MFT
+PAUSE                     = &Pausa
 STOP                      = Detener
 REPEAT_ACTION             = Repetir Acción
 SKIP_REMOVABLE_MEDIA      = Ignorar Discos Extraíbles
@@ -63,6 +65,7 @@ LANGUAGE                  = Idioma
 GRAPHICAL_INTERFACE       = Interfaz Gráfica
 BOOT_TIME_SCAN            = Escanear al Arrancar
 REPORTS                   = Informes
+SORTING                   = &Ordenar
 
 ; --- --- Language submenu
 
@@ -81,13 +84,23 @@ OPTIONS                   = Opciones
 ENABLE                    = Activar
 SCRIPT                    = Comandos
 
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Ordenar por &ruta
+SORT_BY_SIZE              = Ordenar por &tamaño
+SORT_BY_C_TIME            = Ordenar por &fecha creación
+SORT_BY_M_TIME            = Ordenar por última &modificación
+SORT_BY_A_TIME            = Ordenar por &último acceso
+SORT_ASCENDING            = Ordenar en &orden ascendente
+SORT_DESCENDING           = Ordenar en &orden descendente
+
 ; --- Help Menu
 
 CONTENTS                  = Contenidos
 BEST_PRACTICE             = Procedimientos Recomendados
 FAQ                       = Preguntas Frecuentes
 CM_LEGEND                 = &Leyenda de clusters del Mapa
-DEBUG                     = Debug
+DEBUG                     = Depuración
 CHECK_UPDATE              = Buscar Actualizaciones
 ABOUT                     = Acerca de...
 

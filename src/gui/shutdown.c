@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -41,175 +41,125 @@ typedef BOOLEAN (WINAPI *SET_SUSPEND_STATE_PROC)(BOOLEAN Hibernate,BOOLEAN Force
  */
 static void ResizeShutdownConfirmDialog(HWND hwnd,wchar_t *counter_msg)
 {
-    wchar_t *text1 = NULL, *text2 = NULL;
-    wchar_t buffer[256];
-    wchar_t text[256];
     int text1_width, text1_height;
     int text2_width, text2_height;
-    int text_block_width;
-    int text_block_height;
-    int top_width, top_height;
-    int bottom_width, bottom_height;
-    int client_width, client_height;
-    int icon_y, text1_y;
-    int button1_x;
-    int button_width = MIN_BTN_WIDTH;
-    int button_height = MIN_BTN_HEIGHT;
+    int btn1_width, btn1_height;
+    int btn2_width, btn2_height;
     int buttons_spacing = SMALL_SPACING;
-    int width, height;
-    BOOL result;
+    int width, height, delta;
+    int client_width, client_height;
+    int icon_y, block_y;
+    int btns_x, btns_y;
+    wchar_t *text;
+    HFONT hFont;
     RECT rc;
-    
-    /* get dimensions of texts */
+
+    /* set text labels */
     switch(when_done_action){
     case IDM_WHEN_DONE_HIBERNATE:
-        text1 = WgxGetResourceString(i18n_table,"REALLY_HIBERNATE_WHEN_DONE");
+        WgxSetText(GetDlgItem(hwnd,IDC_MESSAGE),
+            i18n_table,"REALLY_HIBERNATE_WHEN_DONE");
         break;
     case IDM_WHEN_DONE_LOGOFF:
-        text1 = WgxGetResourceString(i18n_table,"REALLY_LOGOFF_WHEN_DONE");
+        WgxSetText(GetDlgItem(hwnd,IDC_MESSAGE),
+            i18n_table,"REALLY_LOGOFF_WHEN_DONE");
         break;
     case IDM_WHEN_DONE_REBOOT:
-        text1 = WgxGetResourceString(i18n_table,"REALLY_REBOOT_WHEN_DONE");
+        WgxSetText(GetDlgItem(hwnd,IDC_MESSAGE),
+            i18n_table,"REALLY_REBOOT_WHEN_DONE");
         break;
     case IDM_WHEN_DONE_SHUTDOWN:
-        text1 = WgxGetResourceString(i18n_table,"REALLY_SHUTDOWN_WHEN_DONE");
+        WgxSetText(GetDlgItem(hwnd,IDC_MESSAGE),
+            i18n_table,"REALLY_SHUTDOWN_WHEN_DONE");
         break;
     default:
-        text1 = _wcsdup(L"");
+        SetWindowTextW(GetDlgItem(hwnd,IDC_MESSAGE),L"");
         break;
     }
-    if(text1 == NULL){
-        WgxDbgPrint("ResizeShutdownConfirmDialog: cannot allocate memory for text1");
+    text = wgx_swprintf(L"%u %ws",seconds_for_shutdown_rejection,counter_msg);
+    if(text == NULL){
+        mtrace();
         return;
     }
-    result = WgxGetTextDimensions(text1,
-        use_custom_font_in_dialogs ? wgxFont.hFont : NULL,
-        GetDlgItem(hwnd,IDC_MESSAGE), &text1_width, &text1_height);
-    if(result == FALSE)
-        goto done;
-
-    _snwprintf(buffer,sizeof(buffer)/sizeof(wchar_t),L"%u %ws",seconds_for_shutdown_rejection,counter_msg);
-    buffer[sizeof(buffer)/sizeof(wchar_t) - 1] = 0;
-    text2 = buffer;
-    result = WgxGetTextDimensions(text2,
-        use_custom_font_in_dialogs ? wgxFont.hFont : NULL,
-        GetDlgItem(hwnd,IDC_DELAY_MSG), &text2_width, &text2_height);
-    if(result == FALSE)
-        goto done;
+    SetWindowTextW(GetDlgItem(hwnd,IDC_DELAY_MSG),text);
+    free(text);
+    
+    /* get dimensions of controls */
+    hFont = use_custom_font_in_dialogs ? wgxFont.hFont : NULL;
+    if(!WgxGetControlDimensions(GetDlgItem(hwnd,IDC_MESSAGE),
+        hFont,&text1_width, &text1_height)) return;
+    if(!WgxGetControlDimensions(GetDlgItem(hwnd,IDC_DELAY_MSG),
+        hFont,&text2_width, &text2_height)) return;
     /* TODO: do it more accurately, without the need of extra spacing */
     text2_width += DPI(20);
+    if(!WgxGetControlDimensions(GetDlgItem(hwnd,IDC_YES_BUTTON),
+        hFont,&btn1_width, &btn1_height)) return;
+    if(!WgxGetControlDimensions(GetDlgItem(hwnd,IDC_NO_BUTTON),
+        hFont,&btn2_width, &btn2_height)) return;
     
-    /* calculate dimensions of buttons */
-    if(!GetWindowTextW(GetDlgItem(hwnd,IDC_YES_BUTTON),text,sizeof(text)/sizeof(wchar_t))){
-        WgxDbgPrint("ResizeShutdownConfirmDialog: cannot get Yes button text");
-        goto done;
-    }
-    text[sizeof(text)/sizeof(wchar_t) - 1] = 0;
-    result = WgxGetTextDimensions(text,
-        use_custom_font_in_dialogs ? wgxFont.hFont : NULL,
-        GetDlgItem(hwnd,IDC_YES_BUTTON), &width, &height);
-    if(result == FALSE)
-        goto done;
-    if(width + 2 * BTN_H_SPACING > button_width)
-        button_width = width + 2 * BTN_H_SPACING;
-    if(height + 2 * BTN_V_SPACING > button_height)
-        button_height = height + 2 * BTN_V_SPACING;
+    /* adjust dimensions of buttons */
+    width = max(btn1_width,btn2_width);
+    btn1_width = btn2_width = max(width,MIN_BTN_WIDTH);
+    height = max(btn1_height,btn2_height);
+    btn1_height = btn2_height = max(height,MIN_BTN_HEIGHT);
 
-    if(!GetWindowTextW(GetDlgItem(hwnd,IDC_NO_BUTTON),text,sizeof(text)/sizeof(wchar_t))){
-        WgxDbgPrint("ResizeShutdownConfirmDialog: cannot get No button text");
-        goto done;
-    }
-    text[sizeof(text)/sizeof(wchar_t) - 1] = 0;
-    result = WgxGetTextDimensions(text,
-        use_custom_font_in_dialogs ? wgxFont.hFont : NULL,
-        GetDlgItem(hwnd,IDC_NO_BUTTON), &width, &height);
-    if(result == FALSE)
-        goto done;
-    if(width + 2 * BTN_H_SPACING > button_width)
-        button_width = width + 2 * BTN_H_SPACING;
-    if(height + 2 * BTN_V_SPACING > button_height)
-        button_height = height + 2 * BTN_V_SPACING;
-
-    /* calculate dimensions of the entire text block */
-    text_block_width = max(text1_width,text2_width);
-    text_block_height = text1_height + SMALL_SPACING + text2_height;
-    
-    top_width = ICON_SIZE + LARGE_SPACING + text_block_width;
-    top_height = max(ICON_SIZE,text_block_height);
-    bottom_width = button_width * 2 + SMALL_SPACING;
-    bottom_height = button_height;
-    if(top_width < bottom_width){
-        text_block_width += bottom_width - top_width;
-        top_width = bottom_width;
+    /* adjust controls */
+    width = max(text1_width,text2_width);
+    text1_width = text2_width = width;
+    delta = btn1_width * 2 + buttons_spacing;
+    delta -= ICON_SIZE + LARGE_SPACING + width;
+    if(delta > 0){
+        text1_width += delta;
+        text2_width += delta;
+    } else {
+        if(delta % 2)
+            buttons_spacing ++;
     }
     
     /* calculate dimensions of the entire client area */
-    client_width = top_width + MARGIN * 2;
-    client_height = top_height + LARGE_SPACING + bottom_height + MARGIN * 2;
-    
-    rc.left = 0;
-    rc.right = client_width;
-    rc.top = 0;
-    rc.bottom = client_height;
-    if(!AdjustWindowRect(&rc,WS_CAPTION | WS_DLGFRAME,FALSE)){
-        WgxDbgPrintLastError("ResizeShutdownConfirmDialog: cannot calculate window dimensions");
-        goto done;
-    }
-            
+    client_width = ICON_SIZE + LARGE_SPACING + text1_width + MARGIN * 2;
+    client_height = max(ICON_SIZE,text1_height + SMALL_SPACING + text2_height);
+    client_height += LARGE_SPACING + btn1_height + MARGIN * 2;
+
     /* resize main window */
+    rc.left = 0, rc.right = client_width;
+    rc.top = 0, rc.bottom = client_height;
+    if(!AdjustWindowRect(&rc,WS_CAPTION | WS_DLGFRAME,FALSE)){
+        letrace("cannot calculate window dimensions");
+        return;
+    }
     MoveWindow(hwnd,0,0,rc.right - rc.left,rc.bottom - rc.top,FALSE);
-            
+
     /* reposition controls */
-    if(ICON_SIZE <= text_block_height){
-        icon_y = (text_block_height - ICON_SIZE) / 2 + MARGIN;
-        text1_y = MARGIN;
+    delta = text1_height + SMALL_SPACING + text2_height - ICON_SIZE;
+    if(delta > 0){
+        icon_y = MARGIN + delta / 2;
+        block_y = MARGIN;
     } else {
         icon_y = MARGIN;
-        text1_y = (ICON_SIZE - text_block_height) / 2 + MARGIN;
+        block_y = MARGIN - delta / 2;
     }
+    btns_x = client_width - MARGIN * 2 - btn1_width * 2 - buttons_spacing;
+    btns_x = MARGIN + btns_x / 2;
+    btns_y = MARGIN + max(ICON_SIZE,ICON_SIZE + delta) + LARGE_SPACING;
     SetWindowPos(GetDlgItem(hwnd,IDC_SHUTDOWN_ICON),NULL,
-        MARGIN,
-        icon_y,
-        ICON_SIZE,
-        ICON_SIZE,
-        SWP_NOZORDER);
+        MARGIN,icon_y,ICON_SIZE,ICON_SIZE,SWP_NOZORDER);
     SetWindowPos(GetDlgItem(hwnd,IDC_MESSAGE),NULL,
         MARGIN + ICON_SIZE + LARGE_SPACING,
-        text1_y,
-        text_block_width,
-        text1_height + SMALL_SPACING,
+        block_y,text1_width,text1_height,
         SWP_NOZORDER);
     SetWindowPos(GetDlgItem(hwnd,IDC_DELAY_MSG),NULL,
         MARGIN + ICON_SIZE + LARGE_SPACING,
-        text1_y + text1_height + SMALL_SPACING,
-        text_block_width,
-        text2_height + SMALL_SPACING,
-        SWP_NOZORDER);
-    button1_x = (client_width - button_width * 2 - SMALL_SPACING) / 2;
-    if((client_width - button_width * 2 - SMALL_SPACING) % 2)
-        buttons_spacing ++;
+        block_y + text1_height + SMALL_SPACING,
+        text2_width,text2_height,SWP_NOZORDER);
     SetWindowPos(GetDlgItem(hwnd,IDC_YES_BUTTON),NULL,
-        button1_x,
-        MARGIN + top_height + LARGE_SPACING,
-        button_width,
-        button_height,
-        SWP_NOZORDER);
+        btns_x,btns_y,btn1_width,btn1_height,SWP_NOZORDER);
     SetWindowPos(GetDlgItem(hwnd,IDC_NO_BUTTON),NULL,
-        button1_x + button_width + buttons_spacing,
-        MARGIN + top_height + LARGE_SPACING,
-        button_width,
-        button_height,
-        SWP_NOZORDER);
+        btns_x + btn1_width + buttons_spacing,
+        btns_y,btn2_width,btn2_height,SWP_NOZORDER);
 
-    /* set localized texts */
-    SetWindowTextW(GetDlgItem(hwnd,IDC_MESSAGE),text1);
-    SetWindowTextW(GetDlgItem(hwnd,IDC_DELAY_MSG),text2);
-    
     /* center window on the screen */
     WgxCenterWindow(hwnd);
-
-done:
-    free(text1);
 }
 
 /**
@@ -262,7 +212,7 @@ BOOL CALLBACK ShutdownConfirmDlgProc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lPa
         timer = (UINT_PTR)SetTimer(hWnd,TIMER_ID,1000,NULL);
         if(timer == 0){
             /* message box will prevent shutdown which is dangerous */
-            WgxDbgPrintLastError("ShutdownConfirmDlgProc: SetTimer failed");
+            letrace("SetTimer failed");
             /* force shutdown to avoid situation when pc works a long time without any control */
             (void)EndDialog(hWnd,1);
         }
@@ -309,7 +259,7 @@ BOOL CALLBACK ShutdownConfirmDlgProc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lPa
 /**
  * @brief Shuts computer down or hibernates
  * them respect to user preferences.
- * @return Error code. Zero indicates success.
+ * @return Zero for success, nonzero value otherwise.
  */
 int ShutdownOrHibernate(void)
 {
@@ -327,20 +277,21 @@ int ShutdownOrHibernate(void)
     case IDM_WHEN_DONE_SHUTDOWN:
         if(seconds_for_shutdown_rejection){
             if(DialogBoxW(hInstance,MAKEINTRESOURCEW(IDD_SHUTDOWN),NULL,(DLGPROC)ShutdownConfirmDlgProc) == 0)
-                return 0;
+                return EXIT_SUCCESS;
             /* in case of errors we'll shutdown anyway */
             /* to avoid situation when pc works a long time without any control */
         }
         break;
     case IDM_WHEN_DONE_EXIT:
-        return 0; /* nothing to do */
+        /* nothing to do */
+        return EXIT_SUCCESS;
     }
     
     /* set SE_SHUTDOWN privilege */
     if(!OpenProcessToken(GetCurrentProcess(), 
     TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY,&hToken)){
-        WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,"ShutdownOrHibernate: cannot open process token!");
-        return 4;
+        WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,L"ShutdownOrHibernate: cannot open process token!");
+        return EXIT_FAILURE;
     }
     
     LookupPrivilegeValue(NULL,SE_SHUTDOWN_NAME,&tkp.Privileges[0].Luid);
@@ -348,14 +299,14 @@ int ShutdownOrHibernate(void)
     tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED; 
     AdjustTokenPrivileges(hToken,FALSE,&tkp,0,(PTOKEN_PRIVILEGES)NULL,0);         
     if(GetLastError() != ERROR_SUCCESS){
-        WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,"ShutdownOrHibernate: cannot set shutdown privilege!");
-        return 5;
+        WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,L"ShutdownOrHibernate: cannot set shutdown privilege!");
+        return EXIT_FAILURE;
     }
     
     /*
     * Save log file before any action.
     */
-    udefrag_flush_dbg_log();
+    udefrag_flush_dbg_log(0);
     
     
     /*
@@ -373,14 +324,14 @@ int ShutdownOrHibernate(void)
     if(when_done_action == IDM_WHEN_DONE_STANDBY || when_done_action == IDM_WHEN_DONE_HIBERNATE){
         hPowrProfDll = LoadLibrary("powrprof.dll");
         if(hPowrProfDll == NULL){
-            WgxDbgPrintLastError("ShutdownOrHibernate: cannot load powrprof.dll");
+            letrace("cannot load powrprof.dll library");
         } else {
             pSetSuspendState = (SET_SUSPEND_STATE_PROC)GetProcAddress(hPowrProfDll,"SetSuspendState");
             if(pSetSuspendState == NULL)
-                WgxDbgPrintLastError("ShutdownOrHibernate: cannot get SetSuspendState address inside powrprof.dll");
+                letrace("cannot get SetSuspendState address inside powrprof.dll");
         }
         if(pSetSuspendState == NULL)
-            WgxDbgPrint("Therefore SetSystemPowerState API will be used instead of SetSuspendState.\n");
+            itrace("therefore SetSystemPowerState API will be used instead of SetSuspendState");
     }
 
     switch(when_done_action){
@@ -391,8 +342,8 @@ int ShutdownOrHibernate(void)
         else
             result = SetSystemPowerState(TRUE,FALSE);
         if(!result){
-            WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,"UltraDefrag: cannot suspend the system!");
-            return 6;
+            WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,L"UltraDefrag: cannot suspend the system!");
+            return EXIT_FAILURE;
         }
         break;
     case IDM_WHEN_DONE_HIBERNATE:
@@ -404,8 +355,8 @@ int ShutdownOrHibernate(void)
             result = SetSystemPowerState(FALSE,FALSE);
         }
         if(!result){
-            WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,"UltraDefrag: cannot hibernate the computer!");
-            return 7;
+            WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,L"UltraDefrag: cannot hibernate the computer!");
+            return EXIT_FAILURE;
         }
         break;
     case IDM_WHEN_DONE_LOGOFF:
@@ -417,8 +368,8 @@ int ShutdownOrHibernate(void)
                 SHTDN_REASON_FLAG_PLANNED);
         }
         if(!result){
-            WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,"UltraDefrag: cannot log the user off!");
-            return 8;
+            WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,L"UltraDefrag: cannot log the user off!");
+            return EXIT_FAILURE;
         }
         break;
     case IDM_WHEN_DONE_REBOOT:
@@ -430,8 +381,8 @@ int ShutdownOrHibernate(void)
                 SHTDN_REASON_FLAG_PLANNED);
         }
         if(!result){
-            WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,"UltraDefrag: cannot reboot the computer!");
-            return 9;
+            WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,L"UltraDefrag: cannot reboot the computer!");
+            return EXIT_FAILURE;
         }
         break;
     case IDM_WHEN_DONE_SHUTDOWN:
@@ -443,13 +394,13 @@ int ShutdownOrHibernate(void)
                 SHTDN_REASON_FLAG_PLANNED);
         }
         if(!result){
-            WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,"UltraDefrag: cannot shut down the computer!");
-            return 10;
+            WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,L"UltraDefrag: cannot shut down the computer!");
+            return EXIT_FAILURE;
         }
         break;
     }
     
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 /** @} */

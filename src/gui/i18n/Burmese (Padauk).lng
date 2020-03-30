@@ -1,6 +1,6 @@
 ﻿;------------------------------------------------------------------------------
 ; UltraDefrag GUI Burmese (Padauk) Language Pack.
-; Copyright (C) 2010 - 2012 Muhammed Widuya.
+; Copyright (C) 2010-2013 Muhammed Widuya.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
@@ -29,6 +29,7 @@ DEFRAGMENT                = ဖိုင်ပြန်စီ
 QUICK_OPTIMIZE            = အမြန် အဆင့်မြင့်ဆုံး လုပ်ခြင်း
 FULL_OPTIMIZE             = အပြည့် အဆင့်မြင့်ဆုံး လုပ်ခြင်း
 OPTIMIZE_MFT              = MFT  ကိုအဆင့်မြင့်ဆုံး စေခြင်း
+PAUSE                     = ခေတ္တနား
 STOP                      = ရပ်
 REPEAT_ACTION             = ပြန်လည်ပြုလုပ်မှု
 SKIP_REMOVABLE_MEDIA      = ဖယ်ရသည့် ဋ္ဌာနေကို ကျော်လွှား
@@ -58,6 +59,7 @@ LANGUAGE                  = စကား
 GRAPHICAL_INTERFACE       = သုံးသူမျက်နှာပြင်ဇယား
 BOOT_TIME_SCAN            = ဝင်ဒိုး အစတွင် စလုပ်
 REPORTS                   = သတင်းသွင်း
+SORTING                   = ရှင်းလင်းခြင်း
 
 ; --- --- Language submenu
 
@@ -75,6 +77,16 @@ OPTIONS                   = နှစ်ကြိုက်ရာရွေး
 
 ENABLE                    = စွမ်းဆောင်နိုင်စေ
 SCRIPT                    = ညွှန်စာ
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = လမ်း‌ကြောင်း နှင့်ရှင်း
+SORT_BY_SIZE              = အရွယ် ပမာဏ နှင့်ရှင်း
+SORT_BY_C_TIME            = ဖန်တိးချိန် နှင့်ရှင်း
+SORT_BY_M_TIME            = နောက်ဆုံး ပြုပြင်ချိန် နှင့်ရှင်း
+SORT_BY_A_TIME            = နောက်ဆုံး အသုံးပြုချိန် နှင့်ရှင်း
+SORT_ASCENDING            = အောက်မှအထက်သို့ အတိုင်းနှင့်ရှင်း
+SORT_DESCENDING           = အထက်မှအောက်သို့ အတိုင်းနှင့်ရှင်း
 
 ; --- Help Menu
 
@@ -164,10 +176,10 @@ POWERED_BY_LUA            = LUA နှင့် အားအင်ဖြည်�
 FRAGMENTS                 = အစအနများ
 SIZE                      = အရွယ်
 FILENAME                  = ဖိုင်အမည်
-COMMENT                 ‌  = ဝေဖန်ချက်
+COMMENT                   = ဝေဖန်ချက်
 
 LOCKED                    = ဖြည်မရပါ
 MOVE_FAILED               = ရွှေ့မရပါ
-INVALID                   = အားမရသော
+INVALID                   = သေနေသော
 
 ; END OF FILE

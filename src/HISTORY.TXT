@@ -1,5 +1,97 @@
 ﻿HISTORY
 
+  Version 6.0.0 2013-03-02
+  ------------------------------------------------------------------------------
+    - the following translations were updated:
+
+      Chinese (Traditional)
+
+    RC3:
+    - fixed bug #175 "End of stage shows completion at 0.0%"
+    - log creation in case of out of memory condition added
+    - performance of analysis for fragmented files count above 30000 was
+      improved dramatically
+    - the following translations were updated:
+
+      Chinese (Traditional), Dutch, Iloko, Italian, Russian, Spanish (ES),
+      Spanish (MEX)
+
+    RC2:
+    - upgrade check now better supports development releases
+    - out of memory condition handling added
+
+    RC1:
+    - Internals: changed definition of WGX_OPTION structure
+    - WgxGetControlDimensions routine added to wgx library
+
+    - the following translations were added:
+
+      Bengali
+
+    - the following translations were updated:
+
+      Catalan, Italian
+
+    beta2:
+    - added progress indication to the taskbar button for Windows 7
+      and more recent Windows editions; it can be turned on/off by 
+      show_progress_in_taskbar GUI option
+    - file fragmentation reports moved from the root directories of
+      the drives to the /reports sub-folder of the program's directory
+    - added ability to configure the Explorer's context menu handler;
+      an appropriate section added to guiopts.lua file
+    - bug fix: UD_IN_FILTER forced to be not ignored when individual
+      files/directories are specified on the command line
+    - bug fix: UD_SORTING and UD_SORTING_ORDER environment variables
+      forced to be set properly on GUI startup according to the Preview
+      menu selections
+    - added prefixes for all the debugging messages for easier analysis of logs
+    - Internals: many prototypes changed in zenwinx, udefrag, wgx libraries;
+      obsolete routines removed
+    - winx_bootex_check routine added to zenwinx library
+    - udefrag_init_library, udefrag_unload_library, udefrag_bootex_check,
+      udefrag_bootex_register, udefrag_bootex_unregister routines added
+    - WgxSetTaskbarProgressState, WgxSetTaskbarProgressValue, wgx_sprintf,
+      wgx_vsprintf, wgx_swprintf, wgx_vswprintf routines added to wgx library
+    - tracing macros for easier debugging added to zenwinx.h and wgx.h files
+    - Windows Server 2003 DDK support dropped because of lack of variadic macros
+      support there - use Windows Driver Kit v7.1.0 instead
+
+    - the following translations were updated:
+
+      Catalan
+
+    beta1:
+    - all the disk processing algorithms were reimplemented
+      to reach better efficiency and shorter processing times
+    - FAT optimization was implemented
+    - ability to sort files on the disk by the disk optimization was added;
+      files can be sorted by path, size, creation time, last modification time,
+      last access time - in either ascending or descending order
+    - ability to filter out files by size of their fragments was added
+      (fragment_size_threshold option in GUI; UD_FRAGMENT_SIZE_THRESHOLD
+      environment variable in command line tool and boot time interface)
+    - ability to tune the disk optimization by UD_OPTIMIZER_FILE_SIZE_THRESHOLD
+      environment variable (optimizer_file_size_threshold GUI option) was added
+    - ability to suspend/resume the running job was added to GUI
+    - ability to minimize the program to the taskbar notification
+      area (system tray) was added; it can be turned on/off by
+      minimize_to_system_tray GUI option
+    - MFT optimization was forced to do nothing silently on non-NTFS disks
+    - quite useless cyan color removed from the cluster map
+    - icons were redesigned to reach better appearance
+      on Windows Vista and above
+    - high DPI screens support was improved
+    - Internals: flags field removed from winx_file_disposition structure
+    - many zenwinx prototypes changed by replacing short keyword by wchar_t
+    - useless fat32_xxx fields removed from winx_volume_information structure
+    - device_capacity field added to winx_volume_information structure
+    - WgxShowWindow and WgxHideWindow definitions added to wgx.h file
+    - WgxSetProcessPriority routine added to wgx library
+    - Windows Server 2003 DDK needs to be patched in order to compile
+      the program; look at rsc/compilation.dox for details
+
+
   Version 5.1.2  2012-12-18
   ------------------------------------------------------------------------------
     - USB keyboards detection problem solved for the boot time interface

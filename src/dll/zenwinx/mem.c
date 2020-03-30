@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,65 +26,78 @@
 
 #include "zenwinx.h"
 
+int default_killer(size_t n);
+
 HANDLE hGlobalHeap = NULL;
+char *reserved_memory = NULL;
+winx_killer killer = default_killer;
 
 /**
- * @brief Allocates a block of virtual memory.
- * @param[in] size the size of the block to be allocated, in bytes.
- * Note that the allocated block may be bigger than the requested size.
- * @return A pointer to the allocated block. NULL indicates failure.
- * @note
- * - Allocated memory is automatically initialized to zero.
- * - Memory protection for the allocated pages is PAGE_READWRITE.
+ * @brief Aborts the application in the out of memory condition case
+ * when no custom killer is set by the winx_set_killer routine.
  */
-void *winx_virtual_alloc(SIZE_T size)
+int default_killer(size_t n)
 {
-    void *addr = NULL;
-    NTSTATUS Status;
-
-    Status = NtAllocateVirtualMemory(NtCurrentProcess(),&addr,0,
-        &size,MEM_COMMIT | MEM_RESERVE,PAGE_READWRITE);
-    return (NT_SUCCESS(Status)) ? addr : NULL;
+    /* terminate process with exit code 3 */
+    NtTerminateProcess(NtCurrentProcess(),3);
+    return 0;
 }
 
 /**
- * @brief Releases a block of virtual memory.
- * @param[in] addr address of the memory block.
- * @param[in] size the size of the block to be released, in bytes.
+ * @brief Sets custom routine to be called
+ * in the out of memory condition case.
+ * @details The killer should either abort
+ * the application and return zero or 
+ * return a nonzero value. In the latter case
+ * zenwinx library will try to allocate memory
+ * again.
  */
-void winx_virtual_free(void *addr,SIZE_T size)
+void winx_set_killer(winx_killer k)
 {
-    (void)NtFreeVirtualMemory(NtCurrentProcess(),&addr,&size,MEM_RELEASE);
+    killer = k;
 }
 
 /**
- * @brief Allocates a block of memory from the global growable heap.
+ * @brief Allocates a block of memory from a global growable heap.
  * @param size the size of the block to be allocated, in bytes.
  * Note that the allocated block may be bigger than the requested size.
- * @param flags HEAP_ZERO_MEMORY to initialize memory to zero, zero otherwise.
+ * @param flags combination of MALLOC_XXX flags defined in zenwinx.h file.
  * @return A pointer to the allocated block. NULL indicates failure.
  */
-void *winx_heap_alloc_ex(SIZE_T size,SIZE_T flags)
+void *winx_heap_alloc(size_t size,int flags)
 {
+    void *p = NULL;
+
     /*
     * Avoid winx_dbg_xxx calls here
     * to avoid recursion.
     */
-    if(hGlobalHeap == NULL) return NULL;
-    return RtlAllocateHeap(hGlobalHeap,flags,size); 
+    
+    if(!hGlobalHeap) return NULL;
+
+    if(!(flags & MALLOC_ABORT_ON_FAILURE))
+        return RtlAllocateHeap(hGlobalHeap,0,size);
+    
+    do {
+        p = RtlAllocateHeap(hGlobalHeap,0,size);
+        if(!p) if(!killer(size)) break;
+    } while(!p);
+    
+    return p;
 }
 
 /**
- * @brief Frees memory allocated by winx_heap_alloc_ex.
- * @param[in] addr address of the memory block.
+ * @brief Frees memory allocated by winx_malloc.
+ * @param[in] addr the address of the memory block.
  */
-void winx_heap_free(void *addr)
+void winx_free(void *addr)
 {
     /*
     * Avoid winx_dbg_xxx calls here
     * to avoid recursion.
     */
-    if(hGlobalHeap && addr) (void)RtlFreeHeap(hGlobalHeap,0,addr);
+    if(hGlobalHeap && addr)
+        (void)RtlFreeHeap(hGlobalHeap,0,addr);
 }
 
 /**
@@ -94,16 +107,19 @@ void winx_heap_free(void *addr)
  */
 int winx_create_global_heap(void)
 {
-    /* create growable heap with initial size of 100 kb */
+    /* create growable heap with initial size of 100 KB */
     if(hGlobalHeap == NULL){
         hGlobalHeap = RtlCreateHeap(HEAP_GROWABLE,NULL,0,100 * 1024,NULL,NULL);
     }
     if(hGlobalHeap == NULL){
-        /* DebugPrint cannot be used here */
+        /* trace macro cannot be used here */
         /* winx_printf cannot be used here */
         winx_print("\nCannot create global memory heap!\n");
         return (-1);
     }
+    
+    /* reserve 1 MB of memory for the out of memory condition handling */
+    reserved_memory = (char *)winx_tmalloc(1024 * 1024);
     return 0;
 }
 

@@ -1,6 +1,6 @@
 /*
  *  WGX - Windows GUI Extended Library.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,107 +24,57 @@
  * @{
  */
 
-#include <windows.h>
-#include <shellapi.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-#include "wgx.h"
+#include "wgx-internals.h"
 
 /**
- * @brief Calls a Win32 ShellExecute() procedure and shows a message
- * box with detailed information in case of errors.
+ * @brief A lightweight version of the ShellExecuteEx system API.
  */
-BOOL WgxShellExecuteW(HWND hwnd,LPCWSTR lpOperation,LPCWSTR lpFile,
-                               LPCWSTR lpParameters,LPCWSTR lpDirectory,INT nShowCmd)
+BOOL WgxShellExecute(HWND hwnd,LPCWSTR lpOperation,LPCWSTR lpFile,
+  LPCWSTR lpParameters,LPCWSTR lpDirectory,INT nShowCmd,INT nFlags)
 {
-    HINSTANCE hApp;
-    int error_code;
-    char *error_description = "";
-    wchar_t *error_msg;
-    int buffer_length;
+    SHELLEXECUTEINFOW se;
+    LPCWSTR op, file, args;
     
-    hApp = ShellExecuteW(hwnd,lpOperation,lpFile,lpParameters,lpDirectory,nShowCmd);
-    error_code = (int)(LONG_PTR)hApp;
-    if(error_code > 32) return TRUE;
+    op = lpOperation ? lpOperation : L"open";
+    file = lpFile ? lpFile : L"";
+    args = lpParameters ? lpParameters : L"";
     
-    /* handle errors */
-    switch(error_code){
-    case 0:
-        error_description = "The operating system is out of memory or resources.";
-        break;
-    case ERROR_FILE_NOT_FOUND:
-    /*case SE_ERR_FNF:*/
-        error_description = "The specified file was not found.";
-        break;
-    case ERROR_PATH_NOT_FOUND:
-    /*case SE_ERR_PNF:*/
-        error_description = "The specified path was not found.";
-        break;
-    case ERROR_BAD_FORMAT:
-        error_description = "The .exe file is invalid (non-Microsoft Win32 .exe or error in .exe image).";
-        break;
-    case SE_ERR_ACCESSDENIED:
-        error_description = "The operating system denied access to the specified file.";
-        break;
-    case SE_ERR_ASSOCINCOMPLETE:
-        error_description = "The file name association is incomplete or invalid.";
-        break;
-    case SE_ERR_DDEBUSY:
-        error_description = "The Dynamic Data Exchange (DDE) transaction could not be completed\n"
-                            " because other DDE transactions were being processed.";
-        break;
-    case SE_ERR_DDEFAIL:
-        error_description = "The DDE transaction failed.";
-        break;
-    case SE_ERR_DDETIMEOUT:
-        error_description = "The DDE transaction could not be completed because the request timed out.";
-        break;
-    case SE_ERR_DLLNOTFOUND:
-        error_description = "The specified dynamic-link library (DLL) was not found.";
-        break;
-    case SE_ERR_NOASSOC:
-        error_description = "There is no application associated with the given file name extension.\n"
-                            "Or you attempt to print a file that is not printable.";
-        break;
-    case SE_ERR_OOM:
-        error_description = "There was not enough memory to complete the operation.";
-        break;
-    case SE_ERR_SHARE:
-        error_description = "A sharing violation occurred.";
-        break;
-    }
-    
-    if(!lpOperation) lpOperation = L"open";
-    if(!lpFile) lpFile = L"";
-    if(!lpParameters) lpParameters = L"";
-
-    buffer_length = wcslen(lpOperation) + wcslen(lpFile) + wcslen(lpParameters);
-    if(error_description[0]){
-        buffer_length += strlen(error_description);
-    } else {
-        buffer_length += 64;
-    }
-    buffer_length += 64;
-
-    error_msg = malloc(buffer_length * sizeof(wchar_t));
-    if(error_msg == NULL){
-        MessageBoxW(hwnd,L"Not enough memory!",L"Error!",MB_OK | MB_ICONHAND);
+    memset(&se,0,sizeof(se));
+    se.cbSize = sizeof(se);
+    se.fMask = SEE_MASK_FLAG_NO_UI;
+    if(nFlags & WSH_NOASYNC)
+        se.fMask |= SEE_MASK_FLAG_DDEWAIT;
+    se.hwnd = hwnd;
+    se.lpVerb = lpOperation;
+    se.lpFile = lpFile;
+    se.lpParameters = lpParameters;
+    se.lpDirectory = lpDirectory;
+    se.nShow = nShowCmd;
+    if(!ShellExecuteExW(&se)){
+        if(nFlags & WSH_SILENT || \
+           nFlags & WSH_ALLOW_DEFAULT_ACTION){
+            letrace("cannot %ls %ls %ls",op,file,args);
+        } else {
+            WgxDisplayLastError(hwnd,MB_OK | MB_ICONHAND,
+                L"Cannot %ls %ls %ls",op,file,args);
+        }
+        if(nFlags & WSH_ALLOW_DEFAULT_ACTION){
+            /* try the default action */
+            se.lpVerb = NULL;
+            if(!ShellExecuteExW(&se)){
+                if(nFlags & WSH_SILENT){
+                    letrace("cannot launch %ls %ls",file,args);
+                } else {
+                    WgxDisplayLastError(hwnd,MB_OK | MB_ICONHAND,
+                        L"Cannot launch %ls %ls",file,args);
+                }
+                return FALSE;
+            }
+            return TRUE;
+        }
         return FALSE;
     }
-    
-    if(error_description[0]){
-        (void)_snwprintf(error_msg,buffer_length,L"Cannot %ls %ls %ls\n%hs",
-                lpOperation,lpFile,lpParameters,error_description);
-    } else {
-        (void)_snwprintf(error_msg,buffer_length,L"Cannot %ls %ls %ls\nError code = 0x%x",
-                lpOperation,lpFile,lpParameters,error_code);
-    }
-    error_msg[buffer_length-1] = 0;
-
-    MessageBoxW(hwnd,error_msg,L"Error!",MB_OK | MB_ICONHAND);
-    free(error_msg);
-    return FALSE;
+    return TRUE;
 }
 
 /** @} */

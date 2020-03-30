@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,6 @@
 #define IDD_ABOUT                       102
 #define IDD_ABOUT_8_BIT                 103
 #define IDD_SHUTDOWN                    104
-#define IDD_CHECK_CONFIRM               105
 #define IDI_APP                         106
 #define IDI_DIR                         107
 #define IDI_UNFRAGM                     110
@@ -44,27 +43,35 @@
 
 #define IDI_SHUTDOWN                    140
 #define IDI_BUSY                        145
+#define IDI_PAUSED                      146
+#define IDI_TRAY_ICON                   147
+#define IDI_TRAY_ICON_BUSY              148
+#define IDI_TRAY_ICON_PAUSED            149
+
 #define IDR_MAIN_ACCELERATOR            150
 
-/* for 24/32 bits per pixel (xp etc) */
-#define IDB_TOOLBAR                     160
-#define IDB_TOOLBAR_DISABLED            161
-#define IDB_TOOLBAR_HIGHLIGHTED         162
+#define IDB_TOOLBAR_16                  160
+#define IDB_TOOLBAR_DISABLED_16         161
+#define IDB_TOOLBAR_HIGHLIGHTED_16      162
+#define IDB_TOOLBAR_20                  163
+#define IDB_TOOLBAR_DISABLED_20         164
+#define IDB_TOOLBAR_HIGHLIGHTED_20      165
+#define IDB_TOOLBAR_24                  166
+#define IDB_TOOLBAR_DISABLED_24         167
+#define IDB_TOOLBAR_HIGHLIGHTED_24      168
+#define IDB_TOOLBAR_32                  169
+#define IDB_TOOLBAR_DISABLED_32         170
+#define IDB_TOOLBAR_HIGHLIGHTED_32      171
 
-/* for 8 bits per pixel displays (nt4 etc) */
-#define IDB_TOOLBAR_8_BIT               163
-#define IDB_TOOLBAR_DISABLED_8_BIT      164
-#define IDB_TOOLBAR_HIGHLIGHTED_8_BIT   165
 
-/* for 16 bits per pixel displays (w2k etc) */
-#define IDB_TOOLBAR_16_BIT              166
-#define IDB_TOOLBAR_DISABLED_16_BIT     167
-#define IDB_TOOLBAR_HIGHLIGHTED_16_BIT  168
+#define IDB_TOOLBAR_16_LOW_BPP             172
+#define IDB_TOOLBAR_DISABLED_16_LOW_BPP    173
+#define IDB_TOOLBAR_HIGHLIGHTED_16_LOW_BPP 174
 
-#define IDB_MENU_ICONS_15               170
-#define IDB_MENU_ICONS_19               171
-#define IDB_MENU_ICONS_25               172
-#define IDB_MENU_ICONS_31               173
+#define IDB_MENU_ICONS_15               175
+#define IDB_MENU_ICONS_19               176
+#define IDB_MENU_ICONS_25               177
+#define IDB_MENU_ICONS_31               178
 
 #define IDM_STATUSBAR                   500
 
@@ -91,6 +98,7 @@
 #define IDM_QUICK_OPTIMIZE              1130
 #define IDM_FULL_OPTIMIZE               1131
 #define IDM_OPTIMIZE_MFT                1132
+#define IDM_PAUSE                       1134
 #define IDM_STOP                        1135
 #define IDM_REPEAT_ACTION               1137
 #define IDM_IGNORE_REMOVABLE_MEDIA      1140
@@ -129,23 +137,34 @@
 #define IDM_CFG_BOOT_ENABLE             2686
 #define IDM_CFG_BOOT_SCRIPT             2687
 #define IDM_CFG_REPORTS                 2690
+enum {
+    IDM_CFG_SORTING = 2700,
+    IDM_CFG_SORTING_SORT_BY_PATH,
+    IDM_CFG_SORTING_SORT_BY_SIZE,
+    IDM_CFG_SORTING_SORT_BY_CREATION_TIME,
+    IDM_CFG_SORTING_SORT_BY_MODIFICATION_TIME,
+    IDM_CFG_SORTING_SORT_BY_ACCESS_TIME,
+    IDM_CFG_SORTING_SORT_ASCENDING,
+    IDM_CFG_SORTING_SORT_DESCENDING,
+    IDM_CFG_SORTING_LAST_ITEM    /* must always be the last IDM_CFG_SORTING_xxx entry */
+};
 
-#define IDM_HELP                        2700
-#define IDM_CONTENTS                    2710
-#define IDM_BEST_PRACTICE               2720
-#define IDM_FAQ                         2730
-#define IDM_CM_LEGEND                   2732
-#define IDM_CHECK_UPDATE                2735
-#define IDM_ABOUT                       2740
+#define IDM_HELP                        2800
+#define IDM_CONTENTS                    2810
+#define IDM_BEST_PRACTICE               2820
+#define IDM_FAQ                         2830
+#define IDM_CM_LEGEND                   2832
+#define IDM_CHECK_UPDATE                2835
+#define IDM_ABOUT                       2840
 
-#define IDM_SELECT_ALL                  2750
+#define IDM_SELECT_ALL                  2850
+
+/* tray icon context menu constants */
+#define IDM_SHOWHIDE                    2860
 
 /* preview menu items */
 enum {
     IDM_PREVIEW = 5000,
-//    IDM_PREVIEW_MOVE_FRONT,
-    IDM_PREVIEW_LARGEST,
-    IDM_PREVIEW_MATCHING,
-//    IDM_PREVIEW_SKIP_PARTIAL,
-    IDM_PREVIEW_LAST_ITEM    /* must always be the last entry */
+    IDM_PREVIEW_DUMMY,
+    IDM_PREVIEW_LAST_ITEM    /* must always be the last IDM_PREVIEW_xxx entry */
 };

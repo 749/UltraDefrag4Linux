@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -63,8 +63,8 @@ int web_statistics_completed = 0;
 * including terminal zero.
 */
 #define MAX_ENV_VARIABLE_LENGTH 32766
-wchar_t in_filter[MAX_ENV_VARIABLE_LENGTH + 1];
-wchar_t new_in_filter[MAX_ENV_VARIABLE_LENGTH + 1];
+wchar_t orig_cut_filter[MAX_ENV_VARIABLE_LENGTH + 1];
+wchar_t cut_filter[MAX_ENV_VARIABLE_LENGTH + 1];
 wchar_t aux_buffer[MAX_ENV_VARIABLE_LENGTH + 1];
 wchar_t env_buffer[MAX_ENV_VARIABLE_LENGTH + 1];
 
@@ -125,7 +125,7 @@ DWORD WINAPI UpdateWebStatisticsThreadProc(LPVOID lpParameter)
     /* getenv() may give wrong results as stated in MSDN */
     if(!GetEnvironmentVariableW(L"UD_DISABLE_USAGE_TRACKING",env_buffer,MAX_ENV_VARIABLE_LENGTH + 1)){
         if(GetLastError() != ERROR_ENVVAR_NOT_FOUND)
-            WgxDbgPrintLastError("UpdateWebStatisticsThreadProc: cannot get %%UD_DISABLE_USAGE_TRACKING%%!");
+            letrace("cannot get %%UD_DISABLE_USAGE_TRACKING%%");
     } else {
         if(wcscmp(env_buffer,L"1") == 0)
             tracking_enabled = 0;
@@ -153,7 +153,7 @@ DWORD WINAPI UpdateWebStatisticsThreadProc(LPVOID lpParameter)
 void start_web_statistics(void)
 {
     if(!WgxCreateThread(UpdateWebStatisticsThreadProc,NULL)){
-        WgxDbgPrintLastError("Cannot run UpdateWebStatisticsThreadProc");
+        letrace("cannot run UpdateWebStatisticsThreadProc");
         web_statistics_completed = 1;
     }
 }
@@ -175,7 +175,6 @@ static void init_console(void)
 {
     CONSOLE_SCREEN_BUFFER_INFO csbi;
 
-    hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
     /* save default color */
     if(GetConsoleScreenBufferInfo(hStdOut,&csbi))
         default_color = csbi.wAttributes;
@@ -202,7 +201,8 @@ static void terminate_console(int code)
 
     /* wait for web statistics request completion */
     stop_web_statistics();
-    
+
+    udefrag_flush_dbg_log(0);
     exit(code);
 }
 
@@ -457,13 +457,13 @@ static int process_single_volume(char volume_letter)
 
     /* validate volume letter */
     if(volume_letter == 0){
-        display_error("Drive letter should be specified!\n");
-        return 3;
+        display_error("Drive letter must be specified!\n");
+        return EXIT_FAILURE;
     }
     result = udefrag_validate_volume(volume_letter,FALSE);
     if(result < 0){
         display_invalid_volume_error(result);
-        return 3;
+        return EXIT_FAILURE;
     }
 
     /* initialize cluster map */
@@ -471,7 +471,7 @@ static int process_single_volume(char volume_letter)
         if(AllocateClusterMap() < 0){
             /* terminate process */
             (void)SetConsoleCtrlHandler((PHANDLER_ROUTINE)CtrlHandlerRoutine,FALSE);
-            terminate_console(4);
+            terminate_console(EXIT_FAILURE);
         }
         InitializeMapDisplay(volume_letter);
         map_size = map_rows * map_symbols_per_line;
@@ -481,7 +481,7 @@ static int process_single_volume(char volume_letter)
     if(screensaver_mode){
         RunScreenSaver();
         FreeClusterMap();
-        return 0;
+        return EXIT_SUCCESS;
     }
 
     /* run the job */
@@ -500,11 +500,11 @@ static int process_single_volume(char volume_letter)
     if(result < 0){
         display_defrag_error(job_type, result);
         FreeClusterMap();
-        return 5;
+        return EXIT_FAILURE;
     }
 
     FreeClusterMap();
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 /**
@@ -516,7 +516,7 @@ static int process_volumes(void)
     object_path *path, *another_path;
     int single_path = 0;
     volume_info *v;
-    int i, result = 0;
+    int i, result = EXIT_SUCCESS;
     char letter;
     int n, path_found;
     int first_path = 1;
@@ -554,53 +554,53 @@ static int process_volumes(void)
             /* extract drive letter */
             letter = (char)path->path[0];
             
-            /* save %UD_IN_FILTER% */
-            in_filter[0] = 0;
-            if(!GetEnvironmentVariableW(L"UD_IN_FILTER",in_filter,MAX_ENV_VARIABLE_LENGTH + 1)){
+            /* save %UD_CUT_FILTER% */
+            orig_cut_filter[0] = 0;
+            if(!GetEnvironmentVariableW(L"UD_CUT_FILTER",orig_cut_filter,MAX_ENV_VARIABLE_LENGTH + 1)){
                 if(GetLastError() != ERROR_ENVVAR_NOT_FOUND)
-                    display_last_error("process_volumes: cannot get %%UD_IN_FILTER%%!");
+                    display_last_error("process_volumes: cannot get %%UD_CUT_FILTER%%!");
             }
             
             if(shellex_flag && (folder_flag || folder_itself_flag)){
                 if(folder_flag){
                     if(path->path[wcslen(path->path) - 1] == '\\'){
-                        /* set UD_IN_FILTER=c:\* */
-                        n = _snwprintf(new_in_filter,MAX_ENV_VARIABLE_LENGTH + 1,L"%ls*",path->path);
+                        /* set UD_CUT_FILTER=c:\* */
+                        n = _snwprintf(cut_filter,MAX_ENV_VARIABLE_LENGTH + 1,L"%ls*",path->path);
                     } else {
-                        /* set UD_IN_FILTER=c:\test;c:\test\* */
-                        n = _snwprintf(new_in_filter,MAX_ENV_VARIABLE_LENGTH + 1,L"%ls;%ls\\*",path->path,path->path);
+                        /* set UD_CUT_FILTER=c:\test;c:\test\* */
+                        n = _snwprintf(cut_filter,MAX_ENV_VARIABLE_LENGTH + 1,L"%ls;%ls\\*",path->path,path->path);
                     }
                 } else {
-                    /* set UD_IN_FILTER=c:\test */
-                    n = _snwprintf(new_in_filter,MAX_ENV_VARIABLE_LENGTH + 1,L"%ls",path->path);
+                    /* set UD_CUT_FILTER=c:\test */
+                    n = _snwprintf(cut_filter,MAX_ENV_VARIABLE_LENGTH + 1,L"%ls",path->path);
                 }
                 if(n < 0){
-                    display_error("process_volumes: cannot set %%UD_IN_FILTER%% - path is too long!");
-                    wcscpy(new_in_filter,in_filter);
+                    display_error("process_volumes: cannot set %%UD_CUT_FILTER%% - path is too long!");
+                    wcscpy(cut_filter,L"");
                     path_found = 0;
                 } else {
-                    new_in_filter[MAX_ENV_VARIABLE_LENGTH] = 0;
+                    cut_filter[MAX_ENV_VARIABLE_LENGTH] = 0;
                 }
             } else {
-                /* save the current path to %UD_IN_FILTER% */
-                n = _snwprintf(new_in_filter,MAX_ENV_VARIABLE_LENGTH + 1,L"%ls",path->path);
+                /* save the current path to %UD_CUT_FILTER% */
+                n = _snwprintf(cut_filter,MAX_ENV_VARIABLE_LENGTH + 1,L"%ls",path->path);
                 if(n < 0){
-                    display_error("process_volumes: cannot set %%UD_IN_FILTER%% - path is too long!");
-                    wcscpy(new_in_filter,in_filter);
+                    display_error("process_volumes: cannot set %%UD_CUT_FILTER%% - path is too long!");
+                    wcscpy(cut_filter,L"");
                     path_found = 0;
                 } else {
-                    new_in_filter[MAX_ENV_VARIABLE_LENGTH] = 0;
+                    cut_filter[MAX_ENV_VARIABLE_LENGTH] = 0;
                 }
                 
                 /* search for another paths with the same drive letter */
                 for(another_path = path->next; another_path; another_path = another_path->next){
                     if(another_path == paths) break;
                     if(udefrag_toupper(letter) == udefrag_toupper((char)another_path->path[0])){
-                        /* try to append it to %UD_IN_FILTER% */
-                        n = _snwprintf(aux_buffer,MAX_ENV_VARIABLE_LENGTH + 1,L"%ls;%ls",new_in_filter,another_path->path);
+                        /* try to append it to %UD_CUT_FILTER% */
+                        n = _snwprintf(aux_buffer,MAX_ENV_VARIABLE_LENGTH + 1,L"%ls;%ls",cut_filter,another_path->path);
                         if(n >= 0){
                             aux_buffer[MAX_ENV_VARIABLE_LENGTH] = 0;
-                            wcscpy(new_in_filter,aux_buffer);
+                            wcscpy(cut_filter,aux_buffer);
                             path_found = 1;
                             settextcolor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
                             WgxPrintUnicodeString(another_path->path,stdout);
@@ -612,27 +612,26 @@ static int process_volumes(void)
                 }
             }
             
-            /* set %UD_IN_FILTER% */
-            if(stop_flag) return 0;
-            if(!SetEnvironmentVariableW(L"UD_IN_FILTER",new_in_filter)){
-                display_last_error("process_volumes: cannot set %%UD_IN_FILTER%%!");
+            /* set %UD_CUT_FILTER% */
+            if(stop_flag) return EXIT_SUCCESS;
+            if(!SetEnvironmentVariableW(L"UD_CUT_FILTER",cut_filter)){
+                display_last_error("process_volumes: cannot set %%UD_CUT_FILTER%%!");
             }
             
             /* run the job */
             if(path_found)
                 result = process_single_volume(letter);
             
-            /* restore %UD_IN_FILTER% */
-            if(!SetEnvironmentVariableW(L"UD_IN_FILTER",in_filter)){
-                display_last_error("process_volumes: cannot restore %%UD_IN_FILTER%%!");
+            /* restore %UD_CUT_FILTER% */
+            if(!SetEnvironmentVariableW(L"UD_CUT_FILTER",orig_cut_filter)){
+                display_last_error("process_volumes: cannot restore %%UD_CUT_FILTER%%!");
             }
         }
         if(path->next == paths) break;
     }
     
     /* if the job was stopped return success */
-    if(stop_flag)
-        return 0;
+    if(stop_flag) return EXIT_SUCCESS;
     
     /* in case of a single path processing return result */
     if(paths){
@@ -645,14 +644,13 @@ static int process_volumes(void)
     /* 2. process individual volumes specified on the command line */
     for(i = 0; i < MAX_DOS_DRIVES; i++){
         if(letters[i] == 0) break;
-        if(stop_flag) return 0;
+        if(stop_flag) return EXIT_SUCCESS;
         //printf("%c:\n",letters[i]);
         result = process_single_volume(letters[i]);
     }
     
     /* if the job was stopped return success */
-    if(stop_flag)
-        return 0;
+    if(stop_flag) return EXIT_SUCCESS;
     
     /* in case of a single volume processing return result */
     if(letters[1] == 0 && !all_flag && !all_fixed_flag)
@@ -661,8 +659,7 @@ static int process_volumes(void)
     /* 3. handle --all and --all-fixed options */
     if(all_flag || all_fixed_flag){
         v = udefrag_get_vollist(all_fixed_flag ? TRUE : FALSE);
-        if(v == NULL)
-            return 1;
+        if(v == NULL) return EXIT_FAILURE;
         for(i = 0; v[i].letter != 0; i++){
             if(stop_flag) break;
             //printf("%c:\n",v[i].letter);
@@ -670,7 +667,7 @@ static int process_volumes(void)
         }
         udefrag_release_vollist(v);
     }
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 /**
@@ -684,7 +681,7 @@ static int show_vollist(void)
     volume_info *v;
     int i, percent;
     char s[32];
-    ULONGLONG free, total;
+    double free, total;
     double d = 0;
 
     settextcolor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
@@ -695,17 +692,14 @@ static int show_vollist(void)
     v = udefrag_get_vollist(la_flag ? FALSE : TRUE);
     if(v == NULL){
         settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-        return 2;
+        return EXIT_FAILURE;
     }
 
     for(i = 0; v[i].letter != 0; i++){
         udefrag_bytes_to_hr((ULONGLONG)(v[i].total_space.QuadPart),2,s,sizeof(s));
-        /* conversion to LONGLONG is needed for Win DDK */
-        /* so, let's divide both numbers to make safe conversion then */
-        total = v[i].total_space.QuadPart / 2;
-        free = v[i].free_space.QuadPart / 2;
-        if(total > 0)
-            d = (double)(LONGLONG)free / (double)(LONGLONG)total;
+        total = (double)v[i].total_space.QuadPart;
+        free = (double)v[i].free_space.QuadPart;
+        if(total > 0) d = free / total;
         percent = (int)(100 * d);
         settextcolor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
         printf("%c:  %8s %12s %8u %%   %ls\n",
@@ -713,7 +707,7 @@ static int show_vollist(void)
     }
     udefrag_release_vollist(v);
     settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 /**
@@ -739,12 +733,24 @@ void test(void)
 }
 */
 
+static int out_of_memory_handler(size_t n)
+{
+    settextcolor(FOREGROUND_RED | FOREGROUND_INTENSITY);
+    printf("\nOut of memory!\n");
+    settextcolor(default_color);
+    udefrag_flush_dbg_log(FLUSH_IN_OUT_OF_MEMORY);
+    exit(3); return 0;
+}
+
 /**
  * @brief Command line tool entry point.
  */
 int __cdecl main(int argc, char **argv)
 {
-    int result, pause_result;
+    int init_result;
+    int parse_cmdline_result;
+    int pause_result;
+    int result = EXIT_FAILURE;
     
     /*test();
     getch();
@@ -752,17 +758,20 @@ int __cdecl main(int argc, char **argv)
     */
 
     /* initialize the program */
-    WgxSetDbgPrintHandler(udefrag_dbg_print);
-    parse_cmdline(argc,argv);
+    hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    init_result = udefrag_init_library();
+    udefrag_set_killer(out_of_memory_handler);
+    WgxSetInternalTraceHandler(udefrag_dbg_print);
+    parse_cmdline_result = parse_cmdline(argc,argv);
     init_console();
     
     /* handle help request */
     if(h_flag){
         show_help();
-        terminate_console(0);
+        terminate_console(EXIT_SUCCESS);
     }
 
-    printf(VERSIONINTITLE ", Copyright (c) UltraDefrag Development Team, 2007-2012.\n"
+    printf(VERSIONINTITLE ", Copyright (c) UltraDefrag Development Team, 2007-2013.\n"
         "UltraDefrag comes with ABSOLUTELY NO WARRANTY. This is free software, \n"
         "and you are welcome to redistribute it under certain conditions.\n\n"
         );
@@ -770,40 +779,42 @@ int __cdecl main(int argc, char **argv)
     /* check for admin rights - they're strongly required */
     if(!WgxCheckAdminRights()){
         display_error("Administrative rights are needed to run the program!\n");
-        terminate_console(1);
+        terminate_console(EXIT_FAILURE);
     }
 
     /* handle initialization failure */
-    if(udefrag_init_failed()){
+    if(init_result < 0){
         display_error("Initialization failed!\nSend bug report to the authors please.\n");
-        terminate_console(1);
+        terminate_console(EXIT_FAILURE);
     }
 
     /* handle obsolete options */
     if(obsolete_option){
         display_error("The -i, -e, -s, -d options are oblolete.\n"
             "Use environment variables instead!\n");
-        terminate_console(1);
+        terminate_console(EXIT_FAILURE);
     }
 
     /* show list of volumes if requested */
     if(l_flag) terminate_console(show_vollist());
     
     /* run disk defragmentation job */
-    if(!SetConsoleCtrlHandler((PHANDLER_ROUTINE)CtrlHandlerRoutine,TRUE))
-        display_last_error("Cannot set Ctrl + C handler!");
-    
-    begin_synchronization();
-    
-    /* uncomment for the --wait option testing */
-    //printf("the job gets running\n");
-    //_getch();
-    result = process_volumes();
-    
-    end_synchronization();
-    
-    (void)SetConsoleCtrlHandler((PHANDLER_ROUTINE)CtrlHandlerRoutine,FALSE);
-    
+    if(parse_cmdline_result == 0){
+        if(!SetConsoleCtrlHandler((PHANDLER_ROUTINE)CtrlHandlerRoutine,TRUE))
+            display_last_error("Cannot set Ctrl + C handler!");
+        
+        begin_synchronization();
+        
+        /* uncomment for the --wait option testing */
+        //printf("the job gets running\n");
+        //_getch();
+        result = process_volumes();
+        
+        end_synchronization();
+        
+        (void)SetConsoleCtrlHandler((PHANDLER_ROUTINE)CtrlHandlerRoutine,FALSE);
+    }
+
     /* display prompt to hit any key in case of context menu handler */
     if(shellex_flag){
         settextcolor(default_color);
@@ -822,5 +833,5 @@ int __cdecl main(int argc, char **argv)
 
     destroy_paths();
     terminate_console(result);
-    return 0; /* this point will never be reached */
+    return EXIT_SUCCESS; /* this point will never be reached */
 }

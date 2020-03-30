@@ -29,6 +29,7 @@ DEFRAGMENT                = דעפראגםענטירנ
 QUICK_OPTIMIZE            = שנעל אופטימיזציה
 FULL_OPTIMIZE             = גאַנץ אופטימיזציה
 OPTIMIZE_MFT              = מפט אופטימיזציה
+PAUSE                     = &Pause
 STOP                      = האַלטן
 REPEAT_ACTION             = איבערחזרן אַקציע
 SKIP_REMOVABLE_MEDIA      = דיסקים נשלפים האָפּקען
@@ -57,6 +58,7 @@ LANGUAGE                  = שפּראַך
 GRAPHICAL_INTERFACE       = גראַפיק קוק
 BOOT_TIME_SCAN            = דורכפירונג פון אָנהייב
 REPORTS                   = מעלדונג
+SORTING                   = &Sorting
 
 ; --- --- Language submenu
 
@@ -74,6 +76,16 @@ OPTIONS                   = אָפּציעס
 
 ENABLE                    = געבן
 SCRIPT                    = סצענאַר
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Sort by &path
+SORT_BY_SIZE              = Sort by &size
+SORT_BY_C_TIME            = Sort by &creation time
+SORT_BY_M_TIME            = Sort by last &modification time
+SORT_BY_A_TIME            = Sort by &last access time
+SORT_ASCENDING            = Sort in &ascending order
+SORT_DESCENDING           = Sort in &descending order
 
 ; --- Help Menu
 

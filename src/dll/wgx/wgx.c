@@ -1,6 +1,6 @@
 /*
  *  WGX - Windows GUI Extended Library.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,9 +23,7 @@
  * @{
  */
 
-#include <windows.h>
-
-#include "wgx.h"
+#include "wgx-internals.h"
 
 void WgxInitSynchObjects(void);
 void WgxDestroySynchObjects(void);

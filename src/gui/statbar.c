@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,11 +32,22 @@ HWND hStatus;
 
 static void SetIcon(int part,int id)
 {
-    HANDLE hImg;
+    int size;
+    HANDLE hIcon;
 
-    hImg = LoadImage(hInstance,(LPCSTR)(size_t)id,IMAGE_ICON,16,16,LR_VGACOLOR|LR_SHARED);
-    (void)SendMessage(hStatus,SB_SETICON,part,(LPARAM)hImg);
-    (void)DestroyIcon(hImg);
+    size = GetSystemMetrics(SM_CXSMICON);
+    if(size < 20){
+        size = 16;
+    } else if(size < 24){
+        size = 20;
+    } else if(size < 32){
+        size = 24;
+    } else {
+        size = 32;
+    }
+    hIcon = LoadImage(hInstance,(LPCSTR)(size_t)id,IMAGE_ICON,size,size,LR_VGACOLOR|LR_SHARED);
+    (void)SendMessage(hStatus,SB_SETICON,part,(LPARAM)hIcon);
+    (void)DestroyIcon(hIcon);
 }
 
 /**
@@ -51,7 +62,7 @@ void CreateStatusBar(void)
                                  "0 dirs", hWindow, IDM_STATUSBAR);
     if(hStatus == NULL){
         WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,
-            "Cannot create status bar control!");
+            L"Cannot create status bar control!");
         return;
     }
     

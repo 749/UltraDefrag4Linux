@@ -1,7 +1,7 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
- *  Copyright (c) 2010-2012 Stefan Pendl (stefanpe@users.sourceforge.net).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -100,9 +100,8 @@ static int man_listing_terminator(void *user_defined_parameter)
 
 static int list_installed_man_pages(int argc,wchar_t **argv,wchar_t **envp)
 {
-    wchar_t instdir[MAX_PATH + 1];
-    char path[MAX_PATH + 1];
-    wchar_t wpath[MAX_PATH + 1];
+    wchar_t *instdir;
+    wchar_t path[MAX_PATH + 1];
     winx_file_info *file, *filelist;
     WINX_FILE *f;
     int i, column;
@@ -112,15 +111,16 @@ static int list_installed_man_pages(int argc,wchar_t **argv,wchar_t **envp)
         return (-1);
 
     /* get %UD_INSTALL_DIR% path */
-    if(winx_query_env_variable(L"UD_INSTALL_DIR",instdir,MAX_PATH) < 0){
+    instdir = winx_getenv(L"UD_INSTALL_DIR");
+    if(instdir == NULL){
         winx_printf("\n%ws: cannot get %%ud_install_dir%% path\n\n",argv[0]);
         return (-1);
     }
 
     /* try to get list of installed man pages through winx_ftw call */
-    _snwprintf(wpath,MAX_PATH,L"\\??\\%ws\\man",instdir);
-    wpath[MAX_PATH] = 0;
-    filelist = winx_ftw(wpath,0,NULL,NULL,man_listing_terminator,NULL);
+    _snwprintf(path,MAX_PATH,L"\\??\\%ws\\man",instdir);
+    path[MAX_PATH] = 0;
+    filelist = winx_ftw(path,0,NULL,NULL,man_listing_terminator,NULL);
     if(filelist){
         winx_printf("Available Manual Pages:\n");
         for(file = filelist->prev, column = 0; file; file = file->prev){
@@ -143,16 +143,16 @@ static int list_installed_man_pages(int argc,wchar_t **argv,wchar_t **envp)
         /* cycle through names of existing commands */
         for(i = 0, column = 0; cmd_table[i].cmd_handler != NULL; i++){
             /* build path to the manual page */
-            _snprintf(path,MAX_PATH,"\\??\\%ws\\man\\%ws.man",instdir,cmd_table[i].cmd_name);
+            _snwprintf(path,MAX_PATH,L"\\??\\%ws\\man\\%ws.man",instdir,cmd_table[i].cmd_name);
             path[MAX_PATH] = 0;
             /* check for the page existence */
             f = winx_fopen(path,"r");
             if(f != NULL){
                 winx_fclose(f);
                 /* display man page filename on the screen */
-                _snprintf(path,MAX_PATH,"%ws.man",cmd_table[i].cmd_name);
+                _snwprintf(path,MAX_PATH,L"%ws.man",cmd_table[i].cmd_name);
                 path[MAX_PATH] = 0;
-                winx_printf("%-15s",path);
+                winx_printf("%-15ws",path);
                 column ++;
                 if(column >= max_columns){
                     winx_printf("\n");
@@ -163,6 +163,7 @@ static int list_installed_man_pages(int argc,wchar_t **argv,wchar_t **envp)
         winx_printf("%-15s\n","variables.man");
     }
 
+    winx_free(instdir);
     return 0;
 }
 
@@ -172,7 +173,7 @@ static int list_installed_man_pages(int argc,wchar_t **argv,wchar_t **envp)
 static int man_handler(int argc,wchar_t **argv,wchar_t **envp)
 {
     wchar_t *type_argv[2];
-    wchar_t instdir[MAX_PATH + 1];
+    wchar_t *instdir;
     wchar_t path[MAX_PATH + 1];
     
     if(argc < 1)
@@ -184,12 +185,14 @@ static int man_handler(int argc,wchar_t **argv,wchar_t **envp)
     }
     
     /* build path to requested manual page */
-    if(winx_query_env_variable(L"UD_INSTALL_DIR",instdir,MAX_PATH) < 0){
+    instdir = winx_getenv(L"UD_INSTALL_DIR");
+    if(instdir == NULL){
         winx_printf("\n%ws: cannot get %%ud_install_dir%% path\n\n",argv[0]);
         return (-1);
     }
     _snwprintf(path,MAX_PATH,L"%ws\\man\\%ws.man",instdir,argv[1]);
     path[MAX_PATH] = 0;
+    winx_free(instdir);
 
     /* build argv for type command handler */
     type_argv[0] = L"man";
@@ -209,7 +212,7 @@ static int help_handler(int argc,wchar_t **argv,wchar_t **envp)
     if(argc > 1)
         return man_handler(argc,argv,envp);
     
-    return winx_print_array_of_strings(help_message,
+    return winx_print_strings(help_message,
         MAX_LINE_WIDTH,MAX_DISPLAY_ROWS,
         DEFAULT_PAGING_PROMPT_TO_HIT_ANY_KEY,
         scripting_mode ? 0 : 1);
@@ -231,15 +234,8 @@ static int history_handler(int argc,wchar_t **argv,wchar_t **envp)
         return 0;
     
     /* convert list of strings to array */
-    strings = winx_heap_alloc((history.n_entries + 3) * sizeof(char *));
-    if(strings == NULL){
-        winx_printf("\n%ws: cannot allocate %u bytes of memory\n\n",
-            argv[0],(history.n_entries + 3) * sizeof(char *));
-        return (-1);
-    }
-    strings[0] = "Typed commands history:";
-    strings[1] = "";
-    i = 2;
+    strings = winx_malloc((history.n_entries + 3) * sizeof(char *));
+    strings[0] = "Typed commands history:"; strings[1] = ""; i = 2;
     for(entry = history.head; i < history.n_entries; entry = entry->next){
         if(entry->string){
             strings[i] = entry->string;
@@ -251,11 +247,11 @@ static int history_handler(int argc,wchar_t **argv,wchar_t **envp)
     
     winx_printf("\n");
 
-    result = winx_print_array_of_strings(strings,
+    result = winx_print_strings(strings,
         MAX_LINE_WIDTH,MAX_DISPLAY_ROWS,
         DEFAULT_PAGING_PROMPT_TO_HIT_ANY_KEY,1);
 
-    winx_heap_free(strings);
+    winx_free(strings);
     return result;
 }
 
@@ -310,7 +306,8 @@ static int echo_handler(int argc,wchar_t **argv,wchar_t **envp)
  */
 static int type_handler(int argc,wchar_t **argv,wchar_t **envp)
 {
-    char path[MAX_PATH];
+    wchar_t *windir;
+    wchar_t path[MAX_PATH + 1];
     wchar_t *filename;
     int i, length;
     size_t filesize;
@@ -324,31 +321,28 @@ static int type_handler(int argc,wchar_t **argv,wchar_t **envp)
 
     /* display boot time script if filename is missing */
     if(argc < 2){
-        if(winx_get_windows_directory(path,MAX_PATH) < 0){
+        windir = winx_get_windows_directory();
+        if(windir == NULL){
             winx_printf("\n%ws: cannot get %%windir%% path\n\n",argv[0]);
             return (-1);
         }
-        (void)strncat(path,"\\system32\\ud-boot-time.cmd",
-                MAX_PATH - strlen(path) - 1);
+        (void)_snwprintf(path,MAX_PATH,L"%ws\\system32\\ud-boot-time.cmd",windir);
+        path[MAX_PATH] = 0;
+        winx_free(windir);
     } else {
         length = 0;
         for(i = 1; i < argc; i++)
             length += wcslen(argv[i]) + 1;
-        filename = winx_heap_alloc(length * sizeof(wchar_t));
-        if(filename == NULL){
-            winx_printf("\n%ws: cannot allocate %u bytes of memory\n\n",
-                argv[0],length * sizeof(wchar_t));
-            return (-1);
-        }
+        filename = winx_malloc(length * sizeof(wchar_t));
         filename[0] = 0;
         for(i = 1; i < argc; i++){
             wcscat(filename,argv[i]);
             if(i != argc - 1)
                 wcscat(filename,L" ");
         }
-        (void)_snprintf(path,MAX_PATH - 1,"\\??\\%ws",filename);
-        path[MAX_PATH - 1] = 0;
-        winx_heap_free(filename);
+        (void)_snwprintf(path,MAX_PATH,L"\\??\\%ws",filename);
+        path[MAX_PATH] = 0;
+        winx_free(filename);
     }
     (void)filename;
 
@@ -369,7 +363,7 @@ static int type_handler(int argc,wchar_t **argv,wchar_t **envp)
 
     /* print file contents */
     if(unicode_detected){
-        second_buffer = winx_heap_alloc(filesize + 1);
+        second_buffer = winx_tmalloc(filesize + 1);
         if(second_buffer == NULL){
             winx_printf("\n%ws: cannot allocate %u bytes of memory\n\n",
                 argv[0],filesize + 1);
@@ -379,13 +373,13 @@ static int type_handler(int argc,wchar_t **argv,wchar_t **envp)
         (void)_snprintf(second_buffer,filesize + 1,"%ws",(wchar_t *)(buffer + 2));
         second_buffer[filesize] = 0;
         strings[0] = second_buffer;
-        result = winx_print_array_of_strings(strings,MAX_LINE_WIDTH,
+        result = winx_print_strings(strings,MAX_LINE_WIDTH,
             MAX_DISPLAY_ROWS,DEFAULT_PAGING_PROMPT_TO_HIT_ANY_KEY,
             scripting_mode ? 0 : 1);
-        winx_heap_free(second_buffer);
+        winx_free(second_buffer);
     } else {
         strings[0] = buffer;
-        result = winx_print_array_of_strings(strings,MAX_LINE_WIDTH,
+        result = winx_print_strings(strings,MAX_LINE_WIDTH,
             MAX_DISPLAY_ROWS,DEFAULT_PAGING_PROMPT_TO_HIT_ANY_KEY,
             scripting_mode ? 0 : 1);
     }
@@ -400,7 +394,7 @@ static int type_handler(int argc,wchar_t **argv,wchar_t **envp)
  */
 static int hexview_handler(int argc,wchar_t **argv,wchar_t **envp)
 {
-    char path[MAX_PATH];
+    wchar_t path[MAX_PATH + 1];
     wchar_t *filename;
     int i, length;
     WINX_FILE *f;
@@ -429,26 +423,21 @@ static int hexview_handler(int argc,wchar_t **argv,wchar_t **envp)
     length = 0;
     for(i = 1; i < argc; i++)
         length += wcslen(argv[i]) + 1;
-    filename = winx_heap_alloc(length * sizeof(wchar_t));
-    if(filename == NULL){
-        winx_printf("\n%ws: cannot allocate %u bytes of memory\n\n",
-            argv[0],length * sizeof(wchar_t));
-        return (-1);
-    }
+    filename = winx_malloc(length * sizeof(wchar_t));
     filename[0] = 0;
     for(i = 1; i < argc; i++){
         wcscat(filename,argv[i]);
         if(i != argc - 1)
             wcscat(filename,L" ");
     }
-    (void)_snprintf(path,MAX_PATH - 1,"\\??\\%ws",filename);
-    path[MAX_PATH - 1] = 0;
-    winx_heap_free(filename);
+    (void)_snwprintf(path,MAX_PATH,L"\\??\\%ws",filename);
+    path[MAX_PATH] = 0;
+    winx_free(filename);
     
     /* open the file */
     f = winx_fopen(path,"r");
     if(f == NULL){
-        winx_printf("\n%ws: cannot open %s\n\n",argv[0],path);
+        winx_printf("\n%ws: cannot open %ws\n\n",argv[0],path);
         return (-1);
     }
     size = winx_fsize(f);
@@ -471,7 +460,7 @@ static int hexview_handler(int argc,wchar_t **argv,wchar_t **envp)
         bytes_to_read = min(SCREEN_BUFFER_SIZE,filesize);
         result = winx_fread(buffer,sizeof(char),bytes_to_read,f);
         if(result != bytes_to_read && winx_fsize(f) == size){
-            winx_printf("\n%ws: cannot read %s\n\n",argv[0],path);
+            winx_printf("\n%ws: cannot read %ws\n\n",argv[0],path);
             winx_fclose(f);
             return (-1);
         }
@@ -557,45 +546,30 @@ static int list_environment_variables(int argc,wchar_t **argv,wchar_t **envp)
     
     /* convert envp to array of ANSI strings */
     for(n = 0; envp[n] != NULL; n++) {}
-    strings = winx_heap_alloc((n + 1) * sizeof(char *));
-    if(strings == NULL){
-        winx_printf("\n%ws: cannot allocate %u bytes of memory\n\n",
-            argv[0],(n + 1) * sizeof(char *));
-        return (-1);
-    }
+    strings = winx_malloc((n + 1) * sizeof(char *));
     RtlZeroMemory((void *)strings,(n + 1) * sizeof(char *));
     for(i = 0, j = 0; i < n; i++){
         if(filter_strings && winx_wcsistr(envp[i],argv[1]) != (wchar_t *)envp[i])
             continue;
         length = wcslen(envp[i]);
-        strings[j] = winx_heap_alloc((length + 1) * sizeof(char));
-        if(strings[j] == NULL){
-            winx_printf("\n%ws: cannot allocate %u bytes of memory\n\n",
-                argv[0],(length + 1) * sizeof(char));
-            goto fail;
-        }
+        strings[j] = winx_malloc((length + 1) * sizeof(char));
         (void)_snprintf(strings[j],length + 1,"%ws",envp[i]);
         strings[j][length] = 0;
         j++;
     }
     /* print strings */
-    result = winx_print_array_of_strings(strings,MAX_LINE_WIDTH,
+    result = winx_print_strings(strings,MAX_LINE_WIDTH,
         MAX_DISPLAY_ROWS,DEFAULT_PAGING_PROMPT_TO_HIT_ANY_KEY,
         scripting_mode ? 0 : 1);
     /* cleanup */
-    for(i = 0; i < n; i++){
-        if(strings[i])
-            winx_heap_free(strings[i]);
-    }
-    winx_heap_free(strings);
+    for(i = 0; i < n; i++)
+        winx_free(strings[i]);
+    winx_free(strings);
     return result;
 
-fail:
-    for(i = 0; i < n; i++){
-        if(strings[i])
-            winx_heap_free(strings[i]);
-    }
-    winx_heap_free(strings);
+    for(i = 0; i < n; i++)
+        winx_free(strings[i]);
+    winx_free(strings);
     return (-1);
 }
 
@@ -645,21 +619,9 @@ static int set_handler(int argc,wchar_t **argv,wchar_t **envp)
         for(i = 2; i < argc; i++)
             value_length += 1 + wcslen(argv[i]);
         /* allocate memory */
-        name = winx_heap_alloc((name_length + 1) * sizeof(wchar_t));
-        if(name == NULL){
-            winx_printf("\n%ws: cannot allocate %u bytes of memory\n",
-                argv[0],(name_length + 1) * sizeof(wchar_t));
-            return (-1);
-        }
-        if(value_length){
-            value = winx_heap_alloc((value_length + 1) * sizeof(wchar_t));
-            if(value == NULL){
-                winx_printf("\n%ws: cannot allocate %u bytes of memory\n",
-                    argv[0],(value_length + 1) * sizeof(wchar_t));
-                winx_heap_free(name);
-                return (-1);
-            }
-        }
+        name = winx_malloc((name_length + 1) * sizeof(wchar_t));
+        if(value_length)
+            value = winx_malloc((value_length + 1) * sizeof(wchar_t));
         /* extract name and value */
         n = wcslen(argv[1]);
         for(i = 0; i < n; i++){
@@ -680,18 +642,18 @@ static int set_handler(int argc,wchar_t **argv,wchar_t **envp)
         }
         if(value_length){
             /* set environment variable */
-            result = winx_set_env_variable(name,value);
-            winx_heap_free(value);
+            result = winx_setenv(name,value);
+            winx_free(value);
         } else {
             /* clear environment variable */
-            result = winx_set_env_variable(name,NULL);
+            result = winx_setenv(name,NULL);
         }
         /* handle a special case of %UD_LOG_FILE_PATH% */
         if(wcscmp(_wcsupr(name),L"UD_LOG_FILE_PATH") == 0){
             if(udefrag_set_log_file_path() < 0)
                 winx_printf("\n%ws: udefrag_set_log_file_path failed\n");
         }
-        winx_heap_free(name);
+        winx_free(name);
         return result;
     }
     
@@ -729,17 +691,20 @@ static int pause_handler(int argc,wchar_t **argv,wchar_t **envp)
  */
 int ExecPendingBootOff(void)
 {
-    char path[MAX_PATH];
+    wchar_t *windir;
+    wchar_t path[MAX_PATH + 1];
     WINX_FILE *f;
 
-    if(winx_get_windows_directory(path,MAX_PATH) < 0){
-        DebugPrint("ExecPendingBootOff: cannot get %%windir%% path");
+    windir = winx_get_windows_directory();
+    if(windir == NULL){
+        etrace("cannot get %%windir%% path");
         winx_printf("\nExecPendingBootOff: cannot get %%windir%% path\n\n");
         short_dbg_delay();
         return 0;
     }
-    (void)strncat(path,"\\pending-boot-off",
-            MAX_PATH - strlen(path) - 1);
+    (void)_snwprintf(path,MAX_PATH,L"%ws\\pending-boot-off",windir);
+    path[MAX_PATH] = 0;
+    winx_free(windir);
 
     f = winx_fopen(path,"r");
     if(f == NULL) return 0;
@@ -749,7 +714,7 @@ int ExecPendingBootOff(void)
         short_dbg_delay();
     }
     if(winx_delete_file(path) < 0){
-        DebugPrint("ExecPendingBootOff: cannot delete %%windir%%\\pending-boot-off file");
+        etrace("cannot delete %%windir%%\\pending-boot-off file");
         winx_printf("\nExecPendingBootOff: cannot delete %%windir%%\\pending-boot-off file\n\n");
         short_dbg_delay();
     }
@@ -759,23 +724,26 @@ int ExecPendingBootOff(void)
 
 static void SavePendingBootOffState(void)
 {
-    char path[MAX_PATH];
+    wchar_t *windir;
+    wchar_t path[MAX_PATH + 1];
     WINX_FILE *f;
     char *comment = "UltraDefrag boot-off command is pending.";
     
     if(!pending_boot_off) return;
 
-    if(winx_get_windows_directory(path,MAX_PATH) < 0){
-        DebugPrint("SavePendingBootOffState: cannot get %%windir%% path");
+    windir = winx_get_windows_directory();
+    if(windir == NULL){
+        etrace("cannot get %%windir%% path");
         winx_printf("\nSavePendingBootOffState: cannot get %%windir%% path\n\n");
         short_dbg_delay();
         return;
     }
-    (void)strncat(path,"\\pending-boot-off",
-            MAX_PATH - strlen(path) - 1);
+    (void)_snwprintf(path,MAX_PATH,L"%ws\\pending-boot-off",windir);
+    path[MAX_PATH] = 0;
+    winx_free(windir);
     f = winx_fopen(path,"w");
     if(f == NULL){
-        DebugPrint("%%windir%%\\pending-boot-off file creation failed");
+        etrace("%%windir%%\\pending-boot-off file creation failed");
         winx_printf("\n%%windir%%\\pending-boot-off file creation failed\n\n");
         short_dbg_delay();
         return;
@@ -791,7 +759,7 @@ static int boot_on_handler(int argc,wchar_t **argv,wchar_t **envp)
 {
     pending_boot_off = 0;
     
-    if(winx_register_boot_exec_command(L"defrag_native") < 0){
+    if(winx_bootex_register(L"defrag_native") < 0){
         winx_printf("\nCannot enable the boot time defragmenter.\n\n");
         return (-1);
     }
@@ -805,7 +773,7 @@ int boot_off_handler(int argc,wchar_t **argv,wchar_t **envp)
 {
     pending_boot_off = 1;
     
-    if(winx_unregister_boot_exec_command(L"defrag_native") < 0){
+    if(winx_bootex_unregister(L"defrag_native") < 0){
         winx_printf("\nCannot disable the boot time defragmenter.\n\n");
         return (-1);
     }
@@ -876,12 +844,7 @@ static int call_handler(int argc,wchar_t **argv,wchar_t **envp)
         length = 0;
         for(i = 1; i < argc; i++)
             length += wcslen(argv[i]) + 1;
-        filename = winx_heap_alloc(length * sizeof(wchar_t));
-        if(filename == NULL){
-            winx_printf("\n%ws: cannot allocate %u bytes of memory\n\n",
-                argv[0],length * sizeof(wchar_t));
-            return (-1);
-        }
+        filename = winx_malloc(length * sizeof(wchar_t));
         filename[0] = 0;
         for(i = 1; i < argc; i++){
             wcscat(filename,argv[i]);
@@ -889,7 +852,7 @@ static int call_handler(int argc,wchar_t **argv,wchar_t **envp)
                 wcscat(filename,L" ");
         }
         result = ProcessScript(filename);
-        winx_heap_free(filename);
+        winx_free(filename);
     }
 
     scripting_mode = old_scripting_mode;
@@ -933,16 +896,16 @@ static wchar_t *expand_environment_variables(wchar_t *command)
     _snwprintf(buffer,sizeof(buffer)/sizeof(wchar_t),
         L"%04i-%02i-%02i",(int)t.year,(int)t.month,(int)t.day);
     buffer[sizeof(buffer)/sizeof(wchar_t) - 1] = 0;
-    if(winx_set_env_variable(L"DATE",buffer) < 0){
-        DebugPrint("expand_environment_variables: cannot set %DATE% environment variable");
-        winx_printf("\ncannot set %DATE% environment variable\n\n");
+    if(winx_setenv(L"DATE",buffer) < 0){
+        etrace("cannot set %%DATE%% environment variable");
+        winx_printf("\ncannot set %%DATE%% environment variable\n\n");
     }
     _snwprintf(buffer,sizeof(buffer)/sizeof(wchar_t),
         L"%02i-%02i",(int)t.hour,(int)t.minute);
     buffer[sizeof(buffer)/sizeof(wchar_t) - 1] = 0;
-    if(winx_set_env_variable(L"TIME",buffer) < 0){
-        DebugPrint("expand_environment_variables: cannot set %TIME% environment variable");
-        winx_printf("\ncannot set %TIME% environment variable\n\n");
+    if(winx_setenv(L"TIME",buffer) < 0){
+        etrace("cannot set %%TIME%% environment variable");
+        winx_printf("\ncannot set %%TIME%% environment variable\n\n");
     }
 
     /* expand environment variables */
@@ -952,7 +915,7 @@ static wchar_t *expand_environment_variables(wchar_t *command)
     number_of_bytes = 0;
     status = RtlExpandEnvironmentStrings_U(NULL,
         &in,&out,&number_of_bytes);
-    expanded_string = winx_heap_alloc(number_of_bytes + sizeof(wchar_t));
+    expanded_string = winx_tmalloc(number_of_bytes + sizeof(wchar_t));
     length = (number_of_bytes + sizeof(wchar_t)) / sizeof(wchar_t);
     if(expanded_string){
         RtlInitUnicodeString(&in,command);
@@ -963,21 +926,21 @@ static wchar_t *expand_environment_variables(wchar_t *command)
         if(NT_SUCCESS(status)){
             expanded_string[length - 1] = 0;
         } else {
-            winx_dbg_print_ex(status,"expand_environment_variables failed");
+            strace(status,"cannot expand environment variables");
             winx_printf("\ncannot expand environment variables\n\n");
-            winx_heap_free(expanded_string);
+            winx_free(expanded_string);
             expanded_string = NULL;
         }
     } else {
-        DebugPrint("expand_environment_variables: cannot allocate %u bytes of memory",
+        etrace("cannot allocate %u bytes of memory",
             number_of_bytes + sizeof(wchar_t));
         winx_printf("\ncannot allocate %u bytes of memory\n\n",
             number_of_bytes + sizeof(wchar_t));
     }
     
     /* clear %DATE% and %TIME% */
-    (void)winx_set_env_variable(L"DATE",NULL);
-    (void)winx_set_env_variable(L"TIME",NULL);
+    (void)winx_setenv(L"DATE",NULL);
+    (void)winx_setenv(L"TIME",NULL);
     return expanded_string;
 }
 
@@ -1029,7 +992,7 @@ int parse_command(wchar_t *cmdline)
     /* disable default logging before the first command parsing */
     if(first_command){
         winx_disable_dbg_log();
-        (void)winx_set_env_variable(L"UD_LOG_FILE_PATH",NULL);
+        (void)winx_setenv(L"UD_LOG_FILE_PATH",NULL);
         first_command = 0;
     }
     
@@ -1084,13 +1047,7 @@ int parse_command(wchar_t *cmdline)
         }
     }
     /* c. allocate memory for argv array */
-    argv = winx_heap_alloc(sizeof(wchar_t *) * argc);
-    if(argv == NULL){
-        winx_printf("\n%ws: cannot allocate %u bytes of memory\n\n",
-            cmdline,sizeof(wchar_t *) * argc);
-        winx_heap_free(cmdline_copy);
-        return (-1);
-    }
+    argv = winx_malloc(sizeof(wchar_t *) * argc);
     /* d. fill argv array */
     j = 0; arg_detected = 0;
     for(i = 0; i < n; i++){
@@ -1118,20 +1075,15 @@ int parse_command(wchar_t *cmdline)
                     string += length + 1;
                 }
                 if(n > 0){
-                    envp = winx_heap_alloc((n + 1) * sizeof(wchar_t *));
-                    if(envp == NULL){
-                        winx_printf("\n%ws: cannot allocate %u bytes of memory\n\n",
-                            cmdline,(n + 1) * sizeof(wchar_t *));
-                    } else {
-                        RtlZeroMemory((void *)envp,(n + 1) * sizeof(wchar_t *));
-                        string = peb->ProcessParameters->Environment;
-                        for(i = 0; i < n; i++){
-                            /* empty line indicates the end of environment */
-                            if(string[0] == 0) break;
-                            envp[i] = string;
-                            length = wcslen(string);
-                            string += length + 1;
-                        }
+                    envp = winx_malloc((n + 1) * sizeof(wchar_t *));
+                    RtlZeroMemory((void *)envp,(n + 1) * sizeof(wchar_t *));
+                    string = peb->ProcessParameters->Environment;
+                    for(i = 0; i < n; i++){
+                        /* empty line indicates the end of environment */
+                        if(string[0] == 0) break;
+                        envp[i] = string;
+                        length = wcslen(string);
+                        string += length + 1;
                     }
                 }
             }
@@ -1160,10 +1112,10 @@ int parse_command(wchar_t *cmdline)
     */
     if(cmd_table[i].cmd_handler == NULL){
         winx_printf("\nUnknown command: %ws!\n\n",full_cmdline);
-        DebugPrint("Unknown command: %ws!",full_cmdline);
-        winx_heap_free(argv);
-        if(envp) winx_heap_free(envp);
-        winx_heap_free(cmdline_copy);
+        etrace("Unknown command: %ws!",full_cmdline);
+        winx_free(argv);
+        winx_free(envp);
+        winx_free(cmdline_copy);
         return 0;
     }
     
@@ -1171,8 +1123,8 @@ int parse_command(wchar_t *cmdline)
     * Handle the command.
     */
     result = cmd_table[i].cmd_handler(argc,argv,envp);
-    winx_heap_free(argv);
-    if(envp) winx_heap_free(envp);
-    winx_heap_free(cmdline_copy);
+    winx_free(argv);
+    winx_free(envp);
+    winx_free(cmdline_copy);
     return result;
 }

@@ -1,12 +1,12 @@
 ﻿;------------------------------------------------------------------------------
 ; UltraDefrag GUI Czech Language Pack.
 ; Copyright (C) 2009, 2010 David Horák /Dave MacBlack/.
-; Copyright (C) 2010-2012 Pavel Kinkor.
+; Copyright (C) 2010-2013 Pavel Kinkor.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
 ; Revised Apr. 17, 2012 by Jiri Sedlak
-; Revised Oct. 21, 2012 by Pavel Kinkor
+; Revised Jan. 20, 2013 by Pavel Kinkor
 ;------------------------------------------------------------------------------
 
 ; Please keep the header and comments in English and use Latin letters,
@@ -31,6 +31,7 @@ DEFRAGMENT                = Defragmentace
 QUICK_OPTIMIZE            = Rychlá optimalizace
 FULL_OPTIMIZE             = Plná optimalizace
 OPTIMIZE_MFT              = Optimalizovat MFT
+PAUSE                     = Pauza
 STOP                      = Zastavit
 REPEAT_ACTION             = Opakovat akci
 SKIP_REMOVABLE_MEDIA      = Přeskočit vyměnitelná média
@@ -59,6 +60,7 @@ LANGUAGE                  = Jazyk
 GRAPHICAL_INTERFACE       = Grafické uživatelské rozhraní
 BOOT_TIME_SCAN            = Defragmentace při startu OS
 REPORTS                   = Zprávy
+SORTING                   = Řazení
 
 ; --- --- Language submenu
 
@@ -76,6 +78,16 @@ OPTIONS                   = Možnosti
 
 ENABLE                    = Povolit
 SCRIPT                    = Skript
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Řadit dle cesty
+SORT_BY_SIZE              = Řadit dle velikosti
+SORT_BY_C_TIME            = Řadit dle vytvoření
+SORT_BY_M_TIME            = Řadit dle změny
+SORT_BY_A_TIME            = Řadit dle přístupu
+SORT_ASCENDING            = Řadit vzestupnně
+SORT_DESCENDING           = Řadit sestupně
 
 ; --- Help Menu
 
@@ -124,7 +136,7 @@ COMPRESSED                = komprimováno
 
 ABOUT_WIN_TITLE           = O aplikaci Ultra Defragmenter
 CREDITS                   = Autoři
-LICENCE                   = Licence
+LICENSE                   = Licence
 
 ; Shutdown confirmation
 

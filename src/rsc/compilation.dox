@@ -1,7 +1,7 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
- *  Copyright (c) 2010-2012 Stefan Pendl (stefanpe@users.sourceforge.net).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
  *  under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -12,16 +12,14 @@
 /**
  * @page Compilation Compilation
  *
- * To compile UltraDefrag from sources you need first of all decide
- * which development environment to use. There are two possible choices:
- * <a href="http://www.mingw.org/">MinGW environment</a>
- * and <a href="http://download.microsoft.com/download/9/0/f/90f019ac-8243-48d3-91cf-81fc4093ecfd/1830_usa_ddk.iso" 
- * title="DDK for Windows Server 2003 SP1 (231MB CD-ISO-Image)">Windows Server
- * 2003 DDK</a>. The first one is easier to use while the last one
- * is a single choice when you need to compile binaries for all of the
- * supported processor architectures.
+ * UltraDefrag libraries written in C use the variadic macros feature defined in the C99 standard.
+ * Because the compiled binaries must be compatible with all the Windows editions starting with NT 4.0
+ * a combination of two compilers is needed to build UltraDefrag: 
+ * <a href="http://sourceforge.net/projects/tdm-gcc/">MinGW</a> is used to build 32-bit binaries, 
+ * <a href="http://www.microsoft.com/en-us/download/details.aspx?id=11800">Windows Driver Kit v7.1.0</a> is
+ * used for 64-bit binaries production.
  *
- * MinGW also needs to be patched to be able to compile UltraDefrag.
+ * MinGW needs to be patched to be able to compile UltraDefrag.
  * Type <b>build --help</b> (see below) for details.
  *
  * You can download the <a href="http://koti.mbnet.fi/vaultec/mingwstudio.php">MinGW Developer Studio</a>,
@@ -29,8 +27,7 @@
  * directory of the source tree and type:
  * @code lua tools\make-mingw-projects.lua @endcode
  *
- * Regardless of the selected development environment you need to setup a few other little
- * tools on your system:
+ * In addition to the compilers a few other packages need to be installed as well:
  *
  * - <a href="http://nsis.sourceforge.net/">NSIS compiler</a> to create the installers
  * - <a href="http://luabinaries.luaforge.net/">Lua</a>, 

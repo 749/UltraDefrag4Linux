@@ -29,6 +29,7 @@ DEFRAGMENT                = &Defragment
 QUICK_OPTIMIZE            = &Quick optimisation
 FULL_OPTIMIZE             = &Full optimisation
 OPTIMIZE_MFT              = &Optimise MFT
+PAUSE                     = Pa&use
 STOP                      = &Stop
 REPEAT_ACTION             = Re&peat action
 SKIP_REMOVABLE_MEDIA      = Skip removable &media
@@ -57,6 +58,7 @@ LANGUAGE                  = &Language
 GRAPHICAL_INTERFACE       = &Graphical interface
 BOOT_TIME_SCAN            = &Boot time scan
 REPORTS                   = &Reports
+SORTING                   = &Sorting
 
 ; --- --- Language submenu
 
@@ -75,13 +77,23 @@ OPTIONS                   = &Options
 ENABLE                    = &Enable
 SCRIPT                    = &Script
 
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Sort by &path
+SORT_BY_SIZE              = Sort by &size
+SORT_BY_C_TIME            = Sort by &creation time
+SORT_BY_M_TIME            = Sort by last &modification time
+SORT_BY_A_TIME            = Sort by &last access time
+SORT_ASCENDING            = Sort in &ascending order
+SORT_DESCENDING           = Sort in &descending order
+
 ; --- Help Menu
 
 CONTENTS                  = &Contents
 BEST_PRACTICE             = Best &practice
 FAQ                       = &Frequently asked questions
 CM_LEGEND                 = Cluster map &legend
-DEBUG                     = De&bug
+DEBUG                     = &Debug
 CHECK_UPDATE              = Check for &update
 ABOUT                     = &About
 

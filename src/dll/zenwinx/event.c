@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,39 +28,39 @@
 
 /**
  * @brief Creates a named event.
- * @param[in] name the name of the event.
- * @param[in] type the type of the event:
+ * @param[in] name the event name.
+ * @param[in] type the event type:
  * SynchronizationEvent or NotificationEvent.
- * @param[out] phandle pointer to the handle of the event.
+ * @param[out] phandle pointer to the event handle.
  * @return Zero for success, negative value otherwise.
  * @note
  * - The initial state of the successfully created
  *   event is signaled.
- * - If an event already exists this function returns
+ * - If the event already exists this function returns
  *   STATUS_OBJECT_NAME_COLLISION defined in ntndk.h file.
  */
-int winx_create_event(short *name,int type,HANDLE *phandle)
+int winx_create_event(wchar_t *name,int type,HANDLE *phandle)
 {
     UNICODE_STRING us;
-    NTSTATUS Status;
+    NTSTATUS status;
     OBJECT_ATTRIBUTES oa;
 
-    DbgCheck3(name,(type == SynchronizationEvent) || (type == NotificationEvent),
-        phandle,"winx_create_event",-1);
+    DbgCheck3(name,(type == SynchronizationEvent) \
+        || (type == NotificationEvent),phandle,-1);
     *phandle = NULL;
 
     RtlInitUnicodeString(&us,name);
     InitializeObjectAttributes(&oa,&us,0,NULL,NULL);
-    Status = NtCreateEvent(phandle,STANDARD_RIGHTS_ALL | 0x1ff,&oa,type,1/*TRUE*/);
-    if(Status == STATUS_OBJECT_NAME_COLLISION){
+    status = NtCreateEvent(phandle,STANDARD_RIGHTS_ALL | 0x1ff,&oa,type,1);
+    if(status == STATUS_OBJECT_NAME_COLLISION){
         *phandle = NULL;
-        DebugPrint("winx_create_event: %ws already exists",name);
+        dtrace("%ws already exists",name);
         /* useful for allowing a single instance of the program */
         return (int)STATUS_OBJECT_NAME_COLLISION;
     }
-    if(!NT_SUCCESS(Status)){
+    if(!NT_SUCCESS(status)){
         *phandle = NULL;
-        DebugPrintEx(Status,"cannot create %ws event",name);
+        strace(status,"cannot create %ws",name);
         return (-1);
     }
     return 0;
@@ -68,27 +68,27 @@ int winx_create_event(short *name,int type,HANDLE *phandle)
 
 /**
  * @brief Opens a named event.
- * @param[in] name the name of the event.
+ * @param[in] name the event name.
  * @param[in] flags the same flags as in Win32
  * OpenEvent() call's dwDesiredAccess parameter.
- * @param[out] phandle pointer to the handle of the event.
+ * @param[out] phandle pointer to the event handle.
  * @return Zero for success, negative value otherwise.
  */
-int winx_open_event(short *name,int flags,HANDLE *phandle)
+int winx_open_event(wchar_t *name,int flags,HANDLE *phandle)
 {
     UNICODE_STRING us;
-    NTSTATUS Status;
+    NTSTATUS status;
     OBJECT_ATTRIBUTES oa;
 
-    DbgCheck2(name,phandle,"winx_open_event",-1);
+    DbgCheck2(name,phandle,-1);
     *phandle = NULL;
 
     RtlInitUnicodeString(&us,name);
     InitializeObjectAttributes(&oa,&us,0,NULL,NULL);
-    Status = NtOpenEvent(phandle,flags,&oa);
-    if(!NT_SUCCESS(Status)){
+    status = NtOpenEvent(phandle,flags,&oa);
+    if(!NT_SUCCESS(status)){
         *phandle = NULL;
-        DebugPrintEx(Status,"cannot open %ws event",name);
+        strace(status,"cannot open %ws",name);
         return (-1);
     }
     return 0;
@@ -96,8 +96,9 @@ int winx_open_event(short *name,int flags,HANDLE *phandle)
 
 /**
  * @brief Destroys an event.
- * @details Destroys named event created by winx_create_event().
- * @param[in] h the handle of the event.
+ * @details Destroys named event
+ * created by winx_create_event().
+ * @param[in] h the event handle.
  */
 void winx_destroy_event(HANDLE h)
 {

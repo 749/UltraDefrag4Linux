@@ -10,6 +10,7 @@
 ; Revised Oct. 18, 2010 by Leo Smulders
 ; Revised Jan. 10, 2012 by Jan Iemhoff
 ; Revised May  23, 2012 by Fabrizio Marana
+; Revised Feb. 23, 2012 by Tjeerd van Sas
 ;------------------------------------------------------------------------------
 
 ; Please keep the header and comments in English and use Latin letters,
@@ -20,95 +21,107 @@
 ; Use an ampersand (&) before a letter to make it a keyboard accelerator
 
 
-; Main Menu
+; Main Menu (Hoofdmenu)
 
 ACTION                    = &Actie
 REPORT                    = &Logboek
 SETTINGS                  = &Instellingen
-HELP                      = &Hulp
+HELP                      = &Help
 
-; --- Action Menu
+; --- Action Menu (Acties)
 
 ANALYSE                   = &Analyseren
 DEFRAGMENT                = &Defragmenteren
-QUICK_OPTIMIZE            = Snel &optimaliseren
+QUICK_OPTIMIZE            = &Snel optimaliseren
 FULL_OPTIMIZE             = &Volledig optimaliseren
 OPTIMIZE_MFT              = &MFT optimaliseren
+PAUSE                     = &Pauzeren
 STOP                      = &Stoppen
-REPEAT_ACTION             = Actie he&rhalen
+REPEAT_ACTION             = &Actie herhalen
 SKIP_REMOVABLE_MEDIA      = &Verwijderbare media overslaan
 RESCAN_DRIVES             = &Her-scannen harde schijven/media
 REPAIR_DRIVES             = Reparatie drives
 WHEN_DONE                 = &Indien klaar
 EXIT                      = &Programma afsluiten
 
-; --- --- When done submenu
+; --- --- When done submenu (Klaar)
 
 WHEN_DONE_NONE            = &Niets
 WHEN_DONE_EXIT            = &Programma afsluiten
-WHEN_DONE_STANDBY         = Computer in &sluimerstand zetten
+WHEN_DONE_STANDBY         = &Computer in sluimerstand zetten
 WHEN_DONE_HIBERNATE       = &Computer in slaapstand zetten
 WHEN_DONE_LOGOFF          = &Uitloggen
 WHEN_DONE_REBOOT          = &Opnieuw starten
-WHEN_DONE_SHUTDOWN        = Computer u&itschakelen
+WHEN_DONE_SHUTDOWN        = &Computer uitschakelen
 
-; --- Report Menu
+; --- Report Menu (Raporten)
 
-SHOW_REPORT               = Toon &logboek
+SHOW_REPORT               = &Toon logboek
 
-; --- Settings Menu
+; --- Settings Menu (Instellingen)
 
 LANGUAGE                  = &Taal
 GRAPHICAL_INTERFACE       = &Grafische Weergave
 BOOT_TIME_SCAN            = &Defragmenteren tijdens opstarten Windows
 REPORTS                   = &Logboeken
+SORTING                   = &Sortering
 
-; --- --- Language submenu
+; --- --- Language submenu (Taal)
 
-TRANSLATIONS_CHANGE_LOG   = &Bekijk veranderingen
-TRANSLATIONS_REPORT       = Bekijk vertaald &rapport
+TRANSLATIONS_CHANGE_LOG   = &Rapport met veranderingen
+TRANSLATIONS_REPORT       = &Bekijk vertalingsrapport
 TRANSLATIONS_FOLDER       = &Map met vertalingen
 TRANSLATIONS_SUBMIT       = &Huidige vertaling opsturen
 
-; --- --- Graphical interface submenu
+; --- --- Graphical interface submenu (Grafisch)
 
 FONT                      = &Lettertype
 OPTIONS                   = &Opties
 
-; --- --- Boot time scan submenu
+; --- --- Boot time scan submenu (opstarten naar scancontrole)
 
 ENABLE                    = &Activeren
 SCRIPT                    = &Script
 
-; --- Help Menu
+; --- --- Sorting submenu (Sortering)
 
-CONTENTS                  = In&houd
+SORT_BY_PATH              = &Sorteren op pad
+SORT_BY_SIZE              = &Sorteren op grootte
+SORT_BY_C_TIME            = &Sorteren op aanmmaakdatum
+SORT_BY_M_TIME            = &Sorteren op wijzigingsdatum
+SORT_BY_A_TIME            = &Sorteren op laatste gebruik
+SORT_ASCENDING            = &Aflopend sorteren
+SORT_DESCENDING           = &Oplopend sorteren
+
+; --- Help Menu (Help)
+
+CONTENTS                  = &Inhoud
 BEST_PRACTICE             = &Beste aanpak
 FAQ                       = &Veelgestelde vragen
-CM_LEGEND                 = Cluster kaart &legende
-DEBUG                     = De&bug
-CHECK_UPDATE              = Controleer op &update
+CM_LEGEND                 = &legenda Clusterkaart
+DEBUG                     = &Fout
+CHECK_UPDATE              = &Controleer op update
 ABOUT                     = &Info
 
-; --- --- Debug submenu
+; --- --- Debug submenu (Fouten)
 
-OPEN_LOG                  = Open &log
-REPORT_BUG                = Verstuur fout&rapport
+OPEN_LOG                  = &Open rapport
+REPORT_BUG                = &Verstuur foutrapport
 
-; --- Toolbar Tooltips
+; --- Toolbar Tooltips (Werkbalk programmatips)
 
 BOOT_TIME_SCRIPT          = Opstarttijd script
 
-; Drives list items.
+; Drives list items. (Schijflijst)
 
-VOLUME                    = Drive
+VOLUME                    = Schijf
 STATUS                    = Staat
 FRAGMENTATION             = Fragmentatie
 TOTAL                     = Capaciteit
-FREE                      = Beschikbare ruimte
+FREE                      = Beschikbare/vrije ruimte
 PERCENT                   = % vrij
 
-; Status messages
+; Status messages (Meldingenstatus)
 
 STATUS_RUNNING            = Bezig...
 STATUS_ANALYSED           = Geanalyseerd
@@ -116,20 +129,20 @@ STATUS_DEFRAGMENTED       = Gedefragmenteerd
 STATUS_OPTIMIZED          = Geoptimaliseerd
 STATUS_DIRTY              = Disk moet worden gerepareerd
 
-; Status bar messages.
+; Status bar messages. (Statusbalkmeldingen)
 
 DIRS                      = mappen
 FILES                     = bestanden
 FRAGMENTED                = gefragmenteerd
 COMPRESSED                = gecomprimeerd
 
-; About window.
+; About window. (Venster)
 
 ABOUT_WIN_TITLE           = Over Ultra Defragmenter
 CREDITS                   = &Dankwoord
 LICENSE                   = &Licentie
 
-; Shutdown confirmation
+; Shutdown confirmation (Afsluitbevestiging)
 
 PLEASE_CONFIRM            = Bevestig alstublieft
 REALLY_SHUTDOWN_WHEN_DONE = Weet u zeker dat u de computer wilt afsluiten als alle taken voltooid zijn?
@@ -143,10 +156,10 @@ SECONDS_TILL_REBOOT       = seconden tot herstarten
 YES                       = &Ja
 NO                        = &Nee
 
-; Upgrade dialog
+; Upgrade dialog (Opwaardering dialoog)
 
-UPGRADE_CAPTION           = U kunt een upgrade me ^-^
-UPGRADE_MESSAGE           = release is beschikbaar voor download!
+UPGRADE_CAPTION           = U kunt mij upgraden ^-^
+UPGRADE_MESSAGE           = Er is een nieuwe versie berschikbaar!
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 
@@ -171,7 +184,7 @@ FILENAME                  = bestandsnaam
 COMMENT                   = commentaar
 
 LOCKED                    = op slot
-MOVE_FAILED               = te verplaatsen mislukt
+MOVE_FAILED               = verplaatsen mislukt
 INVALID                   = ongeldig
 
 ; END OF FILE

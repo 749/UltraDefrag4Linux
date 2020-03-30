@@ -30,6 +30,7 @@ DEFRAGMENT                = Дефрагментуј
 QUICK_OPTIMIZE            = Брзa оптимизацијa
 FULL_OPTIMIZE             = Пуна оптимизација
 OPTIMIZE_MFT              = Оптимизујте МФТ
+PAUSE                     = &Pause
 STOP                      = Стоп
 REPEAT_ACTION             = Поновите акцију
 SKIP_REMOVABLE_MEDIA      = Прескочити преносиве медијe
@@ -58,6 +59,7 @@ LANGUAGE                  = Језик
 GRAPHICAL_INTERFACE       = Графички интерфејс
 BOOT_TIME_SCAN            = Старт током преузети Windows
 REPORTS                   = Извештаји
+SORTING                   = &Sorting
 
 ; --- --- Language submenu
 
@@ -75,6 +77,16 @@ OPTIONS                   = Опције
 
 ENABLE                    = Укључити
 SCRIPT                    = Сценарио
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Sort by &path
+SORT_BY_SIZE              = Sort by &size
+SORT_BY_C_TIME            = Sort by &creation time
+SORT_BY_M_TIME            = Sort by last &modification time
+SORT_BY_A_TIME            = Sort by &last access time
+SORT_ASCENDING            = Sort in &ascending order
+SORT_DESCENDING           = Sort in &descending order
 
 ; --- Help Menu
 

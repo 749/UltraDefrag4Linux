@@ -1,7 +1,7 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
- *  Copyright (c) 2010-2012 Stefan Pendl (stefanpe@users.sourceforge.net).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
  *  under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -57,7 +57,7 @@
  * Options:
  * @par -r, \--repeat
  * Defragment or optimize the disk until there is nothing left that can be moved.
- * This will process the disk multiple times in a row.
+ * This will process the disk multiple times in a row if needed and possible.
  *
  * @par -b, \--use-system-color-scheme
  * Use system color scheme (usually black/white) instead of the green color.
@@ -99,6 +99,11 @@
  * This option forces to list objects to be processed and display a prompt 
  * to hit any key after a job completion. It is intended for use 
  * in Explorer's context menu handler.
+ *
+ * @note
+ * All the environment variables listed below are ignored when the \--shellex switch
+ * is on the command line. Instead of taking environment variables into account
+ * the program interprets the \%UD_INSTALL_DIR\%\\options\\guiopts.lua file.
  *
  * Drive letter:
  * <ul>
@@ -142,12 +147,30 @@
  * List of file patterns to be excluded from the defragmentation process. File patterns 
  * must be separated by semicolons.
  *
+ * @par UD_FRAGMENT_SIZE_THRESHOLD
+ * Eliminate only fragments smaller than specified.<br/>The following 
+ * size suffixes are accepted: KB, MB, GB, TB, PB, EB.
+ *
  * @par UD_FILE_SIZE_THRESHOLD
  * Exclude all files larger than the specified size.<br/>The following 
  * size suffixes are accepted: KB, MB, GB, TB, PB, EB.
  *
+ * @par UD_OPTIMIZER_FILE_SIZE_THRESHOLD
+ * In optimization sort out files smaller than specified only.<br/>The following 
+ * size suffixes are accepted: KB, MB, GB, TB, PB, EB.<br/>The default value is 20MB.
+ *
  * @par UD_FRAGMENTS_THRESHOLD
  * Exclude all files which have less fragments than the specified number.
+ *
+ * @par UD_SORTING
+ * Set the file sorting method for the disk optimization. PATH is used by default,
+ * it forces to sort files by their paths. Four more options are available:
+ * SIZE (sort by size), C_TIME (sort by creation time), M_TIME (sort by last
+ * modification time) and A_TIME (sort by last access time).
+ *
+ * @par UD_SORTING_ORDER
+ * Set the file sorting order for the disk optimization. ASC (ascending) is used
+ * by default. DESC (descending) forces to sort files in descending order.
  *
  * @par UD_FRAGMENTATION_THRESHOLD
  * Set the fragmentation threshold, in percents. When the disk fragmentation level is below
@@ -221,6 +244,11 @@
  * set UD_IN_FILTER=*windows*;*winnt*
  * @endcode
  *
+ * @par eliminate only fragments below 20 MB in size
+ * @code
+ * set UD_FRAGMENT_SIZE_THRESHOLD=20MB
+ * @endcode
+ *
  * @par process only files below 50 MB in size
  * @code
  * set UD_FILE_SIZE_THRESHOLD=50MB
@@ -280,36 +308,19 @@
  * The following example illustrates defragmentation of a few
  * different disks in series adjusting parameters separately for
  * each disk.
- * @htmlonly
- * <div class="fragment">
- *     <div class="line">@echo off</div>
- *     <div class="line"></div>
- *     <div class="line"><span class="keyword">set</span> UD_EX_FILTER=*system volume information*;*temp*;*tmp*;*recycle*;*.zip;*.7z;*.rar</div>
- *     <div class="line"><span class="keyword">set</span> UD_FILE_SIZE_THRESHOLD=50MB</div>
- *     <div class="line">udefrag c: &gt; c:\ud.log</div>
- *     <div class="line"></div>
- *     <div class="line"><span class="keyword">set</span> UD_IN_FILTER=D:\My Documents\*</div>
- *     <div class="line">udefrag d: &gt;&gt; c:\ud.log</div>
- *     <div class="line"></div>
- *     <div class="line"><span class="keyword">set</span> UD_IN_FILTER=</div>
- *     <div class="line">udefrag e: &gt;&gt; c:\ud.log</div>
- * </div>
- * @endhtmlonly
- * @latexonly
- * \begin{DoxyCode}
+ * @code
  * @echo off
  *
- * \textcolor{keyword}{set} UD\_EX\_FILTER=*system volume information*;*temp*;*tmp*;*recycle*;*.zip;*.7z;*.rar
- * \textcolor{keyword}{set} UD\_FILE\_SIZE\_THRESHOLD=50MB
- * udefrag c: > c:\(\backslash\)ud.log
+ * set UD_EX_FILTER=*system volume information*;*temp*;*tmp*;*recycle*;*.zip;*.7z;*.rar
+ * set UD_FILE_SIZE_THRESHOLD=50MB
+ * udefrag c: > c:\ud.log
  *
- * \textcolor{keyword}{set} UD\_IN\_FILTER=D:\(\backslash\)My Documents\(\backslash\)*
- * udefrag d: >> c:\(\backslash\)ud.log
+ * set UD_IN_FILTER=D:\My Documents\*
+ * udefrag d: >> c:\ud.log
  *
- * \textcolor{keyword}{set} UD\_IN\_FILTER=
- * udefrag e: >> c:\(\backslash\)ud.log
- * \end{DoxyCode}
- * @endlatexonly
+ * set UD_IN_FILTER=
+ * udefrag e: >> c:\ud.log
+ * @endcode
  * Notice that we are excluding archives in the script above. Because they
  * are usually rarely accessed and may be left fragmented therefore
  * without noticeable system performance degradation.
@@ -351,10 +362,8 @@
  * To stop the defragmentation press Ctrl+C keys or close
  * the command prompt.
  *
- * @note
- * Both UD_IN_FILTER and UD_EX_FILTER environment variables
- * are ignored by the context menu handler. It is intended to defragment
- * exactly what is selected.
+ * To configure the context menu handler edit the IV-th section of the 
+ * <b>\%UD_INSTALL_DIR\%\\options\\guiopts.lua</b> file.
  *
  * Currently the context menu handler is not available in the portable
  * version of the program.

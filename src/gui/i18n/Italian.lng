@@ -4,6 +4,7 @@
 ; Copyright (C) 2010 Sherpya.
 ; Copyright (C) 2011 Edoardo Brunetti
 ; Copyright (C) 2012 Alessandro Visentin
+; Copyright (C) 2012-2013 Giacomo Margarito
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
@@ -12,6 +13,7 @@
 ; Revised Mar. 23, 2012 by Antonio Vivace
 ; Revised May  05, 2012 by Luigi C.
 ; Revised Jun. 05, 2012 by Zirikkanen
+; Revised Feb. 10, 2013 by Carlo Bruschi
 ;------------------------------------------------------------------------------
 
 ; Please keep the header and comments in English and use Latin letters,
@@ -36,27 +38,28 @@ DEFRAGMENT                = &Deframmenta
 QUICK_OPTIMIZE            = Ottimizzazione &veloce
 FULL_OPTIMIZE             = Ottimizzazione &completa
 OPTIMIZE_MFT              = Ottimizzazione &MFT
+PAUSE                     = &Pausa
 STOP                      = &Interrompi
 REPEAT_ACTION             = Ripeti &Azione
 SKIP_REMOVABLE_MEDIA      = Escludi dischi &rimovibili
 RESCAN_DRIVES             = Riscansiona &unità
 REPAIR_DRIVES             = Ri&para unità
-WHEN_DONE                 = Quando &finito
+WHEN_DONE                 = Al &termine
 EXIT                      = &Esci
 
 ; --- --- When done submenu
 
-WHEN_DONE_NONE            = Quando finito &non fare nulla
-WHEN_DONE_EXIT            = Quando finito &esci
-WHEN_DONE_STANDBY         = Quando finito entra in &Standby
-WHEN_DONE_HIBERNATE       = Quando finito entra in &Ibernazione
-WHEN_DONE_LOGOFF          = Quando finito &Disconnetti
-WHEN_DONE_REBOOT          = Quando finito &Riavvia
-WHEN_DONE_SHUTDOWN        = Quando finito S&pegni
+WHEN_DONE_NONE            = Al termine &non fare nulla
+WHEN_DONE_EXIT            = Al termine &esci
+WHEN_DONE_STANDBY         = Al termine entra in &Standby
+WHEN_DONE_HIBERNATE       = Al termine entra in &Ibernazione
+WHEN_DONE_LOGOFF          = Al termine &Disconnetti
+WHEN_DONE_REBOOT          = Al termine &Riavvia
+WHEN_DONE_SHUTDOWN        = Al termine S&pegni
 
 ; --- Report Menu
 
-SHOW_REPORT               = &Mostra rapporto
+SHOW_REPORT               = &Visualizza rapporto
 
 ; --- Settings Menu
 
@@ -64,11 +67,12 @@ LANGUAGE                  = &Lingua
 GRAPHICAL_INTERFACE       = Interfaccia &grafica
 BOOT_TIME_SCAN            = Scansione all'&avvio
 REPORTS                   = &Rapporti
+SORTING                   = &Elencazione
 
 ; --- --- Language submenu
 
-TRANSLATIONS_CHANGE_LOG   = &Vedi lista cambiamenti
-TRANSLATIONS_REPORT       = Vedi &rapporto traduzioni
+TRANSLATIONS_CHANGE_LOG   = &Visualizza elenco modifiche
+TRANSLATIONS_REPORT       = Visualizza &rapporto traduzioni
 TRANSLATIONS_FOLDER       = Cartella &traduzioni
 TRANSLATIONS_SUBMIT       = &Invia traduzione corrente
 
@@ -81,6 +85,16 @@ OPTIONS                   = &Opzioni
 
 ENABLE                    = &Abilita
 SCRIPT                    = &Script
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Elenca per &percorso
+SORT_BY_SIZE              = Elenca per &dimensioni
+SORT_BY_C_TIME            = Elenca per ora di &creazione
+SORT_BY_M_TIME            = Elenca per ora dell'ultima &modifica
+SORT_BY_A_TIME            = Elenca per ora dell'ultimo &accesso
+SORT_ASCENDING            = Elenca in &ordine crescente
+SORT_DESCENDING           = Elenca in &ordine decrescente
 
 ; --- Help Menu
 
@@ -136,8 +150,8 @@ LICENSE                   = &Licenza
 PLEASE_CONFIRM            = Conferma
 REALLY_SHUTDOWN_WHEN_DONE = Vuoi veramente spegnere il PC dopo la deframmentazione?
 REALLY_HIBERNATE_WHEN_DONE= Vuoi veramente ibernare il PC dopo la deframmentazione?
-REALLY_LOGOFF_WHEN_DONE   = Vuoi veramente disconnetterti quando il processo ha finito?
-REALLY_REBOOT_WHEN_DONE   = Vuoi veramente riavviare il sistema quando il processo ha finito?
+REALLY_LOGOFF_WHEN_DONE   = Vuoi veramente disconnetterti quando il processo è terminato?
+REALLY_REBOOT_WHEN_DONE   = Vuoi veramente riavviare il sistema quando il processo è terminato?
 SECONDS_TILL_SHUTDOWN     = secondi allo spegnimento
 SECONDS_TILL_HIBERNATION  = secondi all'ibernazione
 SECONDS_TILL_LOGOFF       = secondi alla disconnessione utente
@@ -156,14 +170,14 @@ JOB_IS_RUNNING            = Operazione in esecuzione
 
 ; Strings for system tray icon context menu.
 
-SHOW                      = Mostra
+SHOW                      = Visualizza
 HIDE                      = Nascondi
 
 ; Strings for the file fragmentation reports.
 
 FRAGMENTED_FILES_ON       = File frammentati su
 
-VISIT_HOMEPAGE            = Visita la Homepage
+VISIT_HOMEPAGE            = Visita il sito web
 VIEW_REPORT_OPTIONS       = Vedi opzioni rapporto
 POWERED_BY_LUA            = Powered by Lua
 

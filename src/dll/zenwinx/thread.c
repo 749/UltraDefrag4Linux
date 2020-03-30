@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,8 +29,7 @@
 /**
  * @brief Creates a thread and starts them.
  * @param[in] start_addr the starting address of the thread.
- * @param[in] parameter pointer to data passed to thread routine.
- * @param[out] phandle the thread handle pointer. May be NULL.
+ * @param[in] parameter pointer to the data passed to the thread routine.
  * @return Zero for success, negative value otherwise.
  * @note Look at the following example for the thread function prototype.
  * @par Example:
@@ -44,27 +43,20 @@
  * winx_create_thread(thread_proc,NULL);
  * @endcode
  */
-int winx_create_thread(PTHREAD_START_ROUTINE start_addr,PVOID parameter,HANDLE *phandle)
+int winx_create_thread(PTHREAD_START_ROUTINE start_addr,PVOID parameter)
 {
-    NTSTATUS Status;
+    NTSTATUS status;
     HANDLE hThread;
-    HANDLE *ph;
 
-    DbgCheck1(start_addr,"winx_create_thread",-1);
+    DbgCheck1(start_addr,-1);
 
-    /*
-    * Implementation is very easy, because we have required call
-    * on all of the supported versions of Windows.
-    */
-    if(phandle) ph = phandle;
-    else ph = &hThread;
-    Status = RtlCreateUserThread(NtCurrentProcess(),NULL,
-                    0,0,0,0,start_addr,parameter,ph,NULL);
-    if(!NT_SUCCESS(Status)){
-        DebugPrintEx(Status,"winx_create_thread: cannot create thread");
+    status = RtlCreateUserThread(NtCurrentProcess(),NULL,
+                    0,0,0,0,start_addr,parameter,&hThread,NULL);
+    if(!NT_SUCCESS(status)){
+        strace(status,"cannot create thread");
         return (-1);
     }
-    if(phandle == NULL) NtCloseSafe(*ph);
+    NtCloseSafe(hThread);
     return 0;
 }
 
@@ -80,9 +72,9 @@ int winx_create_thread(PTHREAD_START_ROUTINE start_addr,PVOID parameter,HANDLE *
  */
 void winx_exit_thread(NTSTATUS status)
 {
-    NTSTATUS Status = ZwTerminateThread(NtCurrentThread(),status);
-    if(!NT_SUCCESS(Status)){
-        DebugPrintEx(Status,"winx_exit_thread: cannot terminate thread");
+    NTSTATUS s = ZwTerminateThread(NtCurrentThread(),status);
+    if(!NT_SUCCESS(s)){
+        strace(s,"cannot terminate thread");
     }
 }
 

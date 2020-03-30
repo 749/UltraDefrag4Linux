@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,8 +29,11 @@
 #include "ntndk.h"
 #endif /* !WINX_CUSTOM_NTNDK_H */
 
+#include "../../include/dbg.h"
+
 #define DEFAULT_TAB_WIDTH 2
-#define DEFAULT_PAGING_PROMPT_TO_HIT_ANY_KEY "      Hit any key to display next page,\n          ESC or Break to abort..."
+#define DEFAULT_PAGING_PROMPT_TO_HIT_ANY_KEY "      Hit any key to display next page,\n" \
+                                             "          ESC or Break to abort..."
 
 #ifndef max
 #define max(a,b) ((a)>(b)?(a):(b))
@@ -40,41 +43,89 @@
 #endif
 
 #define NtCloseSafe(h) { if(h) { NtClose(h); h = NULL; } }
-#define DebugPrint winx_dbg_print
-#define DebugPrintEx winx_dbg_print_ex
 
-#define TraceEnter  { DebugPrint("Inside function '%s'...",__FUNCTION__); }
-#define TraceExit   { DebugPrint("Leaving function '%s'...",__FUNCTION__); }
-#define TraceSource { DebugPrint("Source file '%s' at line %d ...",__FILE__,__LINE__); }
+/* debugging macros */
+
+/* prints whatever specified */
+#define trace(format,...)  winx_dbg_print(0,format,## __VA_ARGS__)
+
+/* prints {prefix}{function name}: {specified string} */
+#define etrace(format,...) winx_dbg_print(0,E "%s: " format,__FUNCTION__,## __VA_ARGS__)
+#define itrace(format,...) winx_dbg_print(0,I "%s: " format,__FUNCTION__,## __VA_ARGS__)
+#define dtrace(format,...) winx_dbg_print(0,D "%s: " format,__FUNCTION__,## __VA_ARGS__)
+
+/* prints {error prefix}{function name}: {specified string}: {specified nt status and its description} */
+#define strace(status,format,...) { \
+    NtCurrentTeb()->LastStatusValue = status; \
+    winx_dbg_print(NT_STATUS_FLAG,E "%s: " format,__FUNCTION__,## __VA_ARGS__); \
+}
+
+/* prints {error prefix}{function name}: not enough memory */
+#define mtrace() etrace("not enough memory")
+
+#define TraceEnter  { trace(D"Inside function '%s'...",__FUNCTION__); }
+#define TraceExit   { trace(D"Leaving function '%s'...",__FUNCTION__); }
+#define TraceSource { trace(D"Source file '%s' at line %d ...",__FILE__,__LINE__); }
 
 /*
 * DbgCheckN macro definitions are used
 * to simplify debugging of a situation 
 * when something is mistyped in sources.
 */
-#define DbgCheck1(c,f,r) { \
+#define DbgCheck1(c,r) { \
     if(!(c)) {           \
-        DebugPrint("first parameter of %s is invalid",f); \
+        etrace("the first parameter is incorrect"); \
         return (r);      \
     }                    \
 }
 
-#define DbgCheck2(c1,c2,f,r) { \
-    DbgCheck1(c1,f,r)        \
+#define DbgCheck2(c1,c2,r) { \
+    DbgCheck1(c1,r)          \
     if(!(c2)) {              \
-        DebugPrint("second parameter of %s is invalid",f); \
+        etrace("the second parameter is incorrect"); \
         return (r);          \
     }                        \
 }
 
-#define DbgCheck3(c1,c2,c3,f,r) { \
-    DbgCheck2(c1,c2,f,r)        \
+#define DbgCheck3(c1,c2,c3,r) { \
+    DbgCheck2(c1,c2,r)       \
     if(!(c3)) {              \
-        DebugPrint("third parameter of %s is invalid",f); \
+        etrace("the third parameter is incorrect"); \
         return (r);          \
     }                        \
 }
 
+/* zenwinx functions prototypes */
+
+/* dbg.c */
+#define DEFAULT_DBG_PRINT_DECORATION_CHAR  '-'
+#define DEFAULT_DBG_PRINT_HEADER_WIDTH     64
+
+void winx_set_dbg_log(wchar_t *path);
+#define winx_enable_dbg_log(path) winx_set_dbg_log(path)
+#define winx_disable_dbg_log()    winx_set_dbg_log(NULL)
+
+/* flags for winx_flush_dbg_log */
+#ifndef FLUSH_ALREADY_SYNCHRONIZED
+#define FLUSH_ALREADY_SYNCHRONIZED 0x1 /* for internal use only */
+#define FLUSH_IN_OUT_OF_MEMORY     0x2 /* flush in the out of memory condition */
+#endif
+
+void winx_flush_dbg_log(int flags);
+
+void winx_dbg_print(int flags,char *format, ...);
+void winx_dbg_print_header(char ch, int width, char *format, ...);
+
+/* env.c */
+wchar_t *winx_getenv(wchar_t *name);
+int winx_setenv(wchar_t *name, wchar_t *value);
+
+/* event.c */
+int winx_create_event(wchar_t *name,int type,HANDLE *phandle);
+int winx_open_event(wchar_t *name,int flags,HANDLE *phandle);
+void winx_destroy_event(HANDLE h);
+
+/* file.c */
 typedef struct _WINX_FILE {
     HANDLE hFile;             /* file handle */
     LARGE_INTEGER roffset;    /* offset for read requests */
@@ -87,31 +138,8 @@ typedef struct _WINX_FILE {
 
 #define winx_fileno(f) ((f)->hFile)
 
-/* zenwinx functions prototypes */
-
-/* dbg.c */
-#define DEFAULT_DBG_PRINT_DECORATION_CHAR  '-'
-#define DEFAULT_DBG_PRINT_HEADER_WIDTH     64
-
-void winx_enable_dbg_log(char *path);
-void winx_disable_dbg_log(void);
-void winx_flush_dbg_log(void);
-void winx_dbg_print(char *format, ...);
-void winx_dbg_print_ex(unsigned long status,char *format, ...);
-void winx_dbg_print_header(char ch, int width, char *format, ...);
-
-/* env.c */
-int winx_query_env_variable(short *name, short *buffer, int length);
-int winx_set_env_variable(short *name, short *value);
-
-/* event.c */
-int winx_create_event(short *name,int type,HANDLE *phandle);
-int winx_open_event(short *name,int flags,HANDLE *phandle);
-void winx_destroy_event(HANDLE h);
-
-/* file.c */
-WINX_FILE *winx_fopen(const char *filename,const char *mode);
-WINX_FILE *winx_fbopen(const char *filename,const char *mode,int buffer_size);
+WINX_FILE *winx_fopen(const wchar_t *filename,const char *mode);
+WINX_FILE *winx_fbopen(const wchar_t *filename,const char *mode,int buffer_size);
 size_t winx_fread(void *buffer,size_t size,size_t count,WINX_FILE *f);
 size_t winx_fwrite(const void *buffer,size_t size,size_t count,WINX_FILE *f);
 ULONGLONG winx_fsize(WINX_FILE *f);
@@ -122,11 +150,12 @@ int winx_ioctl(WINX_FILE *f,
     void *out_buffer,int out_size,
     int *pbytes_returned);
 int winx_fflush(WINX_FILE *f);
-int winx_create_directory(const char *path);
-int winx_delete_file(const char *filename);
-void *winx_get_file_contents(const char *filename,size_t *bytes_read);
+int winx_create_directory(const wchar_t *path);
+int winx_delete_file(const wchar_t *filename);
+void *winx_get_file_contents(const wchar_t *filename,size_t *bytes_read);
 void winx_release_file_contents(void *contents);
 
+/* float.c */
 /* ftw.c */
 /* winx_ftw flags */
 #define WINX_FTW_RECURSIVE              0x1 /* forces to recursively scan all subdirectories */
@@ -151,9 +180,7 @@ void winx_release_file_contents(void *contents);
 #define are_valid_flags(f)        ((f)->flags & FILE_ATTRIBUTE_VALID_FLAGS)
 #define are_valid_set_flags(f)    ((f)->flags & FILE_ATTRIBUTE_VALID_SET_FLAGS)
 
-#define WINX_FILE_DISP_FRAGMENTED 0x1
-
-#define is_fragmented(f)          ((f)->disp.flags & WINX_FILE_DISP_FRAGMENTED)
+#define is_fragmented(f)          ((f)->disp.fragments > 1)
 
 typedef struct _winx_blockmap {
     struct _winx_blockmap *next; /* pointer to the next fragment */
@@ -165,9 +192,8 @@ typedef struct _winx_blockmap {
 
 typedef struct _winx_file_disposition {
     ULONGLONG clusters;                /* total number of clusters belonging to the file */
-    ULONGLONG fragments;               /* total number of file fragments */
-    unsigned long flags;               /* combination of WINX_FILE_DISP_xxx flags */
-    winx_blockmap *blockmap;           /* map of blocks <=> list of fragments */
+    ULONGLONG fragments;               /* total number of file fragments, not blocks */
+    winx_blockmap *blockmap;           /* map of blocks */
 } winx_file_disposition;
 
 typedef struct _winx_file_internal_info {
@@ -182,8 +208,8 @@ typedef struct _winx_file_internal_info {
 typedef struct _winx_file_info {
     struct _winx_file_info *next;      /* pointer to the next item */
     struct _winx_file_info *prev;      /* pointer to the previous item */
-    short *name;                       /* name of the file */
-    short *path;                       /* full native path */
+    wchar_t *name;                     /* name of the file */
+    wchar_t *path;                     /* full native path */
     unsigned long flags;               /* combination of FILE_ATTRIBUTE_xxx flags defined in winnt.h */
     winx_file_disposition disp;        /* information about file fragments and their disposition */
     unsigned long user_defined_flags;  /* combination of flags defined by the caller */
@@ -197,7 +223,7 @@ typedef int  (*ftw_filter_callback)(winx_file_info *f,void *user_defined_data);
 typedef void (*ftw_progress_callback)(winx_file_info *f,void *user_defined_data);
 typedef int  (*ftw_terminator)(void *user_defined_data);
 
-winx_file_info *winx_ftw(short *path, int flags,
+winx_file_info *winx_ftw(wchar_t *path, int flags,
         ftw_filter_callback fcb, ftw_progress_callback pcb, ftw_terminator t,void *user_defined_data);
 
 winx_file_info *winx_scan_disk(char volume_letter, int flags,
@@ -222,7 +248,7 @@ int winx_kb_init(void);
 
 /* keytrans.c */
 /* ldr.c */
-int winx_get_proc_address(short *libname,char *funcname,PVOID *proc_addr);
+void *winx_get_proc_address(wchar_t *libname,char *funcname);
 
 /* list.c */
 /**
@@ -233,8 +259,8 @@ typedef struct _list_entry {
     struct _list_entry *prev; /* pointer to previous entry */
 } list_entry;
 
-list_entry *winx_list_insert_item(list_entry **phead,list_entry *prev,long size);
-void winx_list_remove_item(list_entry **phead,list_entry *item);
+list_entry *winx_list_insert(list_entry **phead,list_entry *prev,long size);
+void winx_list_remove(list_entry **phead,list_entry *item);
 void winx_list_destroy(list_entry **phead);
 
 /* lock.c */
@@ -248,12 +274,35 @@ int winx_release_spin_lock(winx_spin_lock *sl);
 void winx_destroy_spin_lock(winx_spin_lock *sl);
 
 /* mem.c */
-void *winx_virtual_alloc(SIZE_T size);
-void winx_virtual_free(void *addr,SIZE_T size);
-void *winx_heap_alloc_ex(SIZE_T size,SIZE_T flags);
-#define winx_heap_alloc(n)      winx_heap_alloc_ex(n,0)
-#define winx_heap_alloc_zero(n) winx_heap_alloc_ex(n,HEAP_ZERO_MEMORY)
+void *winx_heap_alloc(size_t size,int flags);
 void winx_heap_free(void *addr);
+
+/* flags for winx_heap_alloc */
+#define MALLOC_ABORT_ON_FAILURE 0x1
+
+/*
+* If a small amount of memory is needed,
+* call winx_malloc and don't care on the 
+* returned value correctness. In case of
+* allocation failure it'll simply abort
+* the application.
+* On the other hand, it some big amount
+* of memory needs to be allocated,
+* winx_tmalloc needs to be called and then
+* its returned value needs to be checked for
+* being equal to zero.
+*/
+
+/* aborts the application in case of allocation failure */
+#define winx_malloc(n) winx_heap_alloc(n,MALLOC_ABORT_ON_FAILURE)
+
+/* this form is tolerant for allocation failures */
+#define winx_tmalloc(n) winx_heap_alloc(n,0)
+
+#define winx_free winx_heap_free
+
+typedef int (*winx_killer)(size_t n);
+void winx_set_killer(winx_killer k);
 
 /* misc.c */
 void winx_sleep(int msec);
@@ -264,40 +313,39 @@ void winx_sleep(int msec);
 #define WINDOWS_2K3    52 /* and Server 2003 R2 and XP x64 */
 #define WINDOWS_VISTA  60 /* and Server 2008 */
 #define WINDOWS_7      61 /* and Server 2008 R2 */
+#define WINDOWS_8      62 /* and Server 2012 */
 int winx_get_os_version(void);
 
-int winx_get_windows_directory(char *buffer, int length);
-int winx_query_symbolic_link(short *name, short *buffer, int length);
+wchar_t *winx_get_windows_directory(void);
+int winx_query_symbolic_link(wchar_t *name, wchar_t *buffer, int length);
 
 /* process mode constants */
 #define INTERNAL_SEM_FAILCRITICALERRORS 0
 int winx_set_system_error_mode(unsigned int mode);
 
-int winx_load_driver(short *driver_name);
-int winx_unload_driver(short *driver_name);
-
-short *winx_get_windows_boot_options(void);
+wchar_t *winx_get_windows_boot_options(void);
 int winx_windows_in_safe_mode(void);
 
 /* mutex.c */
-int winx_create_mutex(short *name,HANDLE *phandle);
-int winx_open_mutex(short *name,HANDLE *phandle);
+int winx_create_mutex(wchar_t *name,HANDLE *phandle);
+int winx_open_mutex(wchar_t *name,HANDLE *phandle);
 int winx_release_mutex(HANDLE h);
 void winx_destroy_mutex(HANDLE h);
 
 /* path.c */
-void winx_path_remove_extension(char *path);
-void winx_path_remove_filename(char *path);
-void winx_path_extract_filename(char *path);
-void winx_get_module_filename(char *path);
-int winx_create_path(char *path);
+void winx_path_remove_extension(wchar_t *path);
+void winx_path_remove_filename(wchar_t *path);
+void winx_path_extract_filename(wchar_t *path);
+wchar_t *winx_get_module_filename(void);
+int winx_create_path(wchar_t *path);
 
 /* privilege.c */
 int winx_enable_privilege(unsigned long luid);
 
 /* reg.c */
-int winx_register_boot_exec_command(short *command);
-int winx_unregister_boot_exec_command(short *command);
+int winx_bootex_check(wchar_t *command);
+int winx_bootex_register(wchar_t *command);
+int winx_bootex_unregister(wchar_t *command);
 
 /* stdio.c */
 int winx_putch(int ch);
@@ -332,10 +380,10 @@ typedef struct _winx_history {
 void winx_init_history(winx_history *h);
 void winx_destroy_history(winx_history *h);
 
-int winx_prompt_ex(char *prompt,char *string,int n,winx_history *h);
-int winx_prompt(char *prompt,char *string,int n);
+int winx_prompt(char *prompt,char *string,int n,winx_history *h);
 
-int winx_print_array_of_strings(char **strings,int line_width,int max_rows,char *prompt,int divide_to_pages);
+int winx_print_strings(char **strings,int line_width,
+    int max_rows,char *prompt,int divide_to_pages);
 
 /* string.c */
 /* reliable _toupper and _tolower analogs */
@@ -357,6 +405,41 @@ int winx_wcsmatch(wchar_t *string, wchar_t *mask, int flags);
 char *winx_vsprintf(const char *format,va_list arg);
 char *winx_sprintf(const char *format, ...);
 
+/*
+* winx_swprintf routine implementation
+* would be too sophisticated because
+* nt 4.0 misses _vsnwprintf call.
+* The macro implementation is much easier.
+*
+* Example:
+*
+* wchar_t *msg;
+* int size, result;
+*
+* winx_swprintf(msg,size,result,L"%hs","hello");
+* if(msg){
+*   winx_printf("%ws\n",msg);
+*   winx_free(msg);
+* }
+*/
+#define WINX_SWPRINTF_BUFFER_SIZE 128
+#define winx_swprintf(retval,size,result,format,...) { \
+    size = WINX_SWPRINTF_BUFFER_SIZE; \
+    do { \
+        retval = winx_tmalloc(size * sizeof(wchar_t)); \
+        if(!retval) break; \
+        memset(retval,0,size * sizeof(wchar_t)); \
+        result = _snwprintf(retval,size,format,## __VA_ARGS__); \
+        if(result != -1 && result != size){ \
+            retval[size - 1] = 0; \
+            break; \
+        } \
+        winx_free(retval); \
+        retval = NULL; \
+        size <<= 1; \
+    } while(size > 0); \
+}
+
 #define WINX_PAT_ICASE  0x1 /* compile patterns for case insensitive search */
 
 typedef struct _winx_patlist {
@@ -377,7 +460,7 @@ ULONGLONG winx_hr_to_bytes(char *string);
 void winx_to_utf8(char *dst,int size,wchar_t *src);
 
 /* thread.c */
-int winx_create_thread(PTHREAD_START_ROUTINE start_addr,PVOID parameter,HANDLE *phandle);
+int winx_create_thread(PTHREAD_START_ROUTINE start_addr,PVOID parameter);
 void winx_exit_thread(NTSTATUS status);
 
 /* time.c */
@@ -415,8 +498,6 @@ typedef struct _winx_volume_information {
     char volume_letter;                    /* must be set by caller! */
     char fs_name[MAX_FS_NAME_LENGTH + 1];  /* the name of the file system */
     wchar_t label[MAX_PATH + 1];           /* volume label */
-    ULONG fat32_mj_version;                /* major number of FAT32 version */
-    ULONG fat32_mn_version;                /* minor number of FAT32 version */
     ULONGLONG total_bytes;                 /* total volume size, in bytes */
     ULONGLONG free_bytes;                  /* amount of free space, in bytes */
     ULONGLONG total_clusters;              /* total number of clusters */
@@ -425,6 +506,7 @@ typedef struct _winx_volume_information {
     ULONG bytes_per_sector;                /* sector size, in bytes */
     NTFS_DATA ntfs_data;                   /* NTFS data, valid for NTFS formatted volumes only */
     int is_dirty;                          /* nonzero value indicates that volume is dirty and needs to be checked */
+    ULONGLONG device_capacity;             /* total device capacity (including all partitions), in bytes */
 } winx_volume_information;
 
 int winx_get_volume_information(char volume_letter,winx_volume_information *v);
@@ -452,8 +534,7 @@ winx_volume_region *winx_sub_volume_region(winx_volume_region *rlist,
 void winx_release_free_volume_regions(winx_volume_region *rlist);
 
 /* zenwinx.c */
-int winx_init_library(void *peb);
-int winx_init_failed(void);
+int winx_init_library(void);
 void winx_unload_library(void);
 
 void winx_exit(int exit_code);

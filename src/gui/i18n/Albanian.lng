@@ -29,6 +29,7 @@ DEFRAGMENT                = &Defragmentimi
 QUICK_OPTIMIZE            = &Shpejtësia e optimizimit
 FULL_OPTIMIZE             = &Optimizimi i plotë
 OPTIMIZE_MFT              = &Optimizimi MFT
+PAUSE                     = &Pause
 STOP                      = &Ndalimi
 REPEAT_ACTION             = Për&sërit aksionin
 SKIP_REMOVABLE_MEDIA      = Tejkalo &mediumin e lëvizshëm
@@ -57,6 +58,7 @@ LANGUAGE                  = &Gjuha
 GRAPHICAL_INTERFACE       = &Interfejsi grafik
 BOOT_TIME_SCAN            = &Skenimi para kyçjes së kompjuterit
 REPORTS                   = &Raportet
+SORTING                   = &Sorting
 
 ; --- --- Language submenu
 
@@ -74,6 +76,16 @@ OPTIONS                   = &Opcioni
 
 ENABLE                    = &Ndërlidhur
 SCRIPT                    = &Skripta
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Sort by &path
+SORT_BY_SIZE              = Sort by &size
+SORT_BY_C_TIME            = Sort by &creation time
+SORT_BY_M_TIME            = Sort by last &modification time
+SORT_BY_A_TIME            = Sort by &last access time
+SORT_ASCENDING            = Sort in &ascending order
+SORT_DESCENDING           = Sort in &descending order
 
 ; --- Help Menu
 

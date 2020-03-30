@@ -30,9 +30,10 @@ DEFRAGMENT                = Defragmentacija
 QUICK_OPTIMIZE            = Hitra optimizacija
 FULL_OPTIMIZE             = Polna optimizacija
 OPTIMIZE_MFT              = Optimizacija MFT
+PAUSE                     = &Premor
 STOP                      = Ustavi
 REPEAT_ACTION             = Ponovi opravilo
-SKIP_REMOVABLE_MEDIA      = Preskoči odstranljive medije
+SKIP_REMOVABLE_MEDIA      = Preskoči odstranljive nosilce
 RESCAN_DRIVES             = Osveži
 REPAIR_DRIVES             = Popravi
 WHEN_DONE                 = Ko končate
@@ -58,6 +59,7 @@ LANGUAGE                  = Jezik
 GRAPHICAL_INTERFACE       = Grafični vmesnik
 BOOT_TIME_SCAN            = Naj se zaženejo ob zagonu Windows
 REPORTS                   = Poročila
+SORTING                   = &Urejanje
 
 ; --- --- Language submenu
 
@@ -76,13 +78,23 @@ OPTIONS                   = Možnosti
 ENABLE                    = Vključi
 SCRIPT                    = Skripta
 
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Uredi po &poti
+SORT_BY_SIZE              = Uredi po &velikosti
+SORT_BY_C_TIME            = Uredi po &času stvaritve
+SORT_BY_M_TIME            = Uredi po času zadnje &spremembe
+SORT_BY_A_TIME            = Uredi po času zadnjega &dostopa
+SORT_ASCENDING            = Uredi od &začetka
+SORT_DESCENDING           = Uredi od &konca
+
 ; --- Help Menu
 
 CONTENTS                  = Vsebina
 BEST_PRACTICE             = Najboljša praksa
 FAQ                       = Pogosta vprašanja
 CM_LEGEND                 = Cluster map &legend
-DEBUG                     = De&bug
+DEBUG                     = &Razhroščevanje
 CHECK_UPDATE              = Preveri za posodobitve
 ABOUT                     = O programu
 
@@ -117,7 +129,7 @@ STATUS_DIRTY              = Disk je potrebno popraviti
 DIRS                      = map
 FILES                     = datotek
 FRAGMENTED                = fragmentirano
-COMPRESSED                = skompresirano
+COMPRESSED                = stisnjeno
 
 ; About window.
 
@@ -128,10 +140,10 @@ LICENSE                   = Licenca
 ; Shutdown confirmation
 
 PLEASE_CONFIRM            = Prosimo, da potrdite
-REALLY_SHUTDOWN_WHEN_DONE = Ali res želite, da se računalnik zaustavi, ko se opravila končajo?
-REALLY_HIBERNATE_WHEN_DONE= Ali res želite, da računalnik preide v mirovanje, ko se opravila končajo?
-REALLY_LOGOFF_WHEN_DONE   = Ali se res želite odjaviti, ko se opravila končajo?
-REALLY_REBOOT_WHEN_DONE   = Ali res želite, da se računalnik ponovno zažene, ko se opravila končajo?
+REALLY_SHUTDOWN_WHEN_DONE = Ali želite, da se računalnik zaustavi, ko se opravila končajo?
+REALLY_HIBERNATE_WHEN_DONE= Ali želite, da računalnik preide v mirovanje, ko se opravila končajo?
+REALLY_LOGOFF_WHEN_DONE   = Ali se želite odjaviti, ko se opravila končajo?
+REALLY_REBOOT_WHEN_DONE   = Ali želite, da se računalnik ponovno zažene, ko se opravila končajo?
 SECONDS_TILL_SHUTDOWN     = sekunde do zaustavitve
 SECONDS_TILL_HIBERNATION  = sekunde do mirovanja
 SECONDS_TILL_LOGOFF       = sekunde do odjave

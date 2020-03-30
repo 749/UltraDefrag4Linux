@@ -1,6 +1,6 @@
 /*
  *  WGX - Windows GUI Extended Library.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,9 +24,7 @@
  * @{
  */
 
-#include <windows.h>
-
-#include "wgx.h"
+#include "wgx-internals.h"
 
 /**
  * @internal
@@ -225,7 +223,7 @@ static HMENU BuildMenu(HMENU hMenu,WGX_MENU *menu_table,HBITMAP bitmap)
         if(menu_table[i].flags & MF_POPUP){
             hPopup = WgxBuildPopupMenu(menu_table[i].submenu,bitmap);
             if(hPopup == NULL){
-                WgxDbgPrintLastError("WgxBuildMenu: cannot build popup menu");
+                letrace("cannot build popup menu");
                 return NULL;
             }
             if(!AppendMenuW(hMenu,menu_table[i].flags,(UINT_PTR)hPopup,menu_table[i].text))
@@ -254,11 +252,11 @@ static HMENU BuildMenu(HMENU hMenu,WGX_MENU *menu_table,HBITMAP bitmap)
     return hMenu;
 
 append_menu_fail:
-    WgxDbgPrintLastError("WgxBuildMenu: cannot append menu");
+    letrace("cannot append menu");
     return NULL;
 
 set_menu_info_fail:
-    WgxDbgPrintLastError("WgxBuildMenu: cannot set menu item id");
+    letrace("cannot set menu item id");
     return NULL;
 }
 
@@ -287,7 +285,7 @@ HMENU WgxBuildMenu(WGX_MENU *menu_table,HBITMAP bitmap)
 
     hMenu = CreateMenu();
     if(hMenu == NULL){
-        WgxDbgPrintLastError("WgxBuildMenu: cannot create menu");
+        letrace("cannot create menu");
         return NULL;
     }
     
@@ -312,7 +310,7 @@ HMENU WgxBuildPopupMenu(WGX_MENU *menu_table,HBITMAP bitmap)
 
     hMenu = CreatePopupMenu();
     if(hMenu == NULL){
-        WgxDbgPrintLastError("WgxBuildPopupMenu: cannot create menu");
+        letrace("cannot create menu");
         return NULL;
     }
     

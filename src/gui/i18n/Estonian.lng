@@ -29,6 +29,7 @@ DEFRAGMENT                = Defragmendi
 QUICK_OPTIMIZE            = Kiire optimeerimine
 FULL_OPTIMIZE             = Täielik optimeerimine
 OPTIMIZE_MFT              = MFT optimeerimine
+PAUSE                     = &Pause
 STOP                      = Peata
 REPEAT_ACTION             = Korda tegevust
 SKIP_REMOVABLE_MEDIA      = Jäta vahele eemaldatav meedia
@@ -57,6 +58,7 @@ LANGUAGE                  = Keel
 GRAPHICAL_INTERFACE       = Graafiline kasutajaliides
 BOOT_TIME_SCAN            = Windowsi bootimise aja skänn
 REPORTS                   = Raportid
+SORTING                   = &Sorting
 
 ; --- --- Language submenu
 
@@ -74,6 +76,16 @@ OPTIONS                   = Valikud
 
 ENABLE                    = Võimalda
 SCRIPT                    = Skript
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Sort by &path
+SORT_BY_SIZE              = Sort by &size
+SORT_BY_C_TIME            = Sort by &creation time
+SORT_BY_M_TIME            = Sort by last &modification time
+SORT_BY_A_TIME            = Sort by &last access time
+SORT_ASCENDING            = Sort in &ascending order
+SORT_DESCENDING           = Sort in &descending order
 
 ; --- Help Menu
 

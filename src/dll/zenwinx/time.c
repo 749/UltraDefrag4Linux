@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2009-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2009-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -133,25 +133,25 @@ int xtime_failed = 0;
  */
 ULONGLONG winx_xtime(void)
 {
-    NTSTATUS Status;
+    NTSTATUS status;
     LARGE_INTEGER frequency;
     LARGE_INTEGER counter;
     ULONGLONG xtime;
     
-    Status = NtQueryPerformanceCounter(&counter,&frequency);
-    if(!NT_SUCCESS(Status)){
+    status = NtQueryPerformanceCounter(&counter,&frequency);
+    if(!NT_SUCCESS(status)){
         if(!xtime_failed)
-            DebugPrint("winx_xtime: NtQueryPerformanceCounter failed: %x",(UINT)Status);
+            etrace("NtQueryPerformanceCounter failed: %x",(UINT)status);
         xtime_failed = 1;
         return 0;
     }
     if(!frequency.QuadPart){
         if(!xtime_failed)
-            DebugPrint("winx_xtime: your hardware has no support for High Resolution timer");
+            etrace("your hardware has no support for high resolution timer");
         xtime_failed = 1;
         return 0;
     }
-    /*DebugPrint("*** Frequency = %I64u, Counter = %I64u ***",frequency.QuadPart,counter.QuadPart);*/
+    /*trace(D"*** Frequency = %I64u, Counter = %I64u ***",frequency.QuadPart,counter.QuadPart);*/
     xtime = 1000 * counter.QuadPart;
     if(xtime / 1000 != counter.QuadPart){
         /* overflow occured; to avoid use of arbitrary
@@ -174,14 +174,14 @@ int winx_get_system_time(winx_time *t)
 {
     LARGE_INTEGER SystemTime;
     TIME_FIELDS TimeFields;
-    NTSTATUS Status;
+    NTSTATUS status;
     
     if(t == NULL)
         return (-1);
     
-    Status = NtQuerySystemTime(&SystemTime);
-    if(Status != STATUS_SUCCESS){
-        DebugPrintEx(Status,"winx_get_system_time: NtQuerySystemTime failed");
+    status = NtQuerySystemTime(&SystemTime);
+    if(status != STATUS_SUCCESS){
+        strace(status,"NtQuerySystemTime failed");
         return (-1);
     }
     
@@ -209,20 +209,20 @@ int winx_get_local_time(winx_time *t)
     LARGE_INTEGER SystemTime;
     LARGE_INTEGER LocalTime;
     TIME_FIELDS TimeFields;
-    NTSTATUS Status;
+    NTSTATUS status;
     
     if(t == NULL)
         return (-1);
     
-    Status = NtQuerySystemTime(&SystemTime);
-    if(Status != STATUS_SUCCESS){
-        DebugPrintEx(Status,"winx_get_local_time: NtQuerySystemTime failed");
+    status = NtQuerySystemTime(&SystemTime);
+    if(status != STATUS_SUCCESS){
+        strace(status,"NtQuerySystemTime failed");
         return (-1);
     }
     
-    Status = RtlSystemTimeToLocalTime(&SystemTime,&LocalTime);
-    if(Status != STATUS_SUCCESS){
-        DebugPrintEx(Status,"winx_get_local_time: RtlSystemTimeToLocalTime failed");
+    status = RtlSystemTimeToLocalTime(&SystemTime,&LocalTime);
+    if(status != STATUS_SUCCESS){
+        strace(status,"RtlSystemTimeToLocalTime failed");
         return (-1);
     }
     

@@ -1,7 +1,7 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
- *  Copyright (c) 2010-2012 Stefan Pendl (stefanpe@users.sourceforge.net).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,8 +29,6 @@
 * prevent BSOD in case of missing UltraDefrag native libraries.
 * Otherwise the following modules becomes critical for the Windows
 * boot process: udefrag.dll, zenwinx.dll.
-* We don't know how to build monolithic app on MinGW,
-* but on Windows DDK this works fine.
 */
 
 /**
@@ -53,27 +51,27 @@ int exit_flag = 0;
 /* forward declarations */
 static void set_dbg_log(char *name);
 
+static int out_of_memory_handler(size_t n)
+{
+    winx_print("\nOut of memory!\n");
+    
+    winx_flush_dbg_log(FLUSH_IN_OUT_OF_MEMORY);
+    /* terminate process with exit code 3 */
+    winx_exit(3); return 0;
+}
+
 /**
  * @brief Initializes the native application.
  */
-static int NativeAppInit(PPEB Peb)
+static int native_app_init(void)
 {
-    /*
-    * Initialize registry in case 
-    * of smss.exe replacement.
-    */
 #ifdef USE_INSTEAD_SMSS
-    (void)NtInitializeRegistry(0/*FALSE*/); /* saves boot log etc. */
+    /* it saves boot log etc. */
+    (void)NtInitializeRegistry(0);
 #endif
 
-    /*
-    * Since v4.3.0 this app is monolithic
-    * to reach the highest level of reliability.
-    * It was not reliable before because crashed
-    * the system in case of missing DLL's.
-    */
-    if(winx_init_library(Peb) < 0)
-        return (-1);
+    if(udefrag_init_library() < 0) return (-1);
+    winx_set_killer(out_of_memory_handler);
     
     /* start initial logging */
     set_dbg_log("startup-phase");
@@ -85,7 +83,7 @@ static int NativeAppInit(PPEB Peb)
  * @return Nonzero value if safe mode is
  * detected, zero otherwise.
  */
-static int HandleSafeModeBoot(void)
+static int handle_safe_mode_boot(void)
 {
     int safe_mode;
     
@@ -127,13 +125,13 @@ void __stdcall NtProcessStartup(PPEB Peb)
     
     /* initialize the program */
     peb = Peb;
-    init_result = NativeAppInit(Peb);
+    init_result = native_app_init();
 
     /* display copyrights */
     winx_print("\n\n");
     winx_print(VERSIONINTITLE " boot time interface\n"
-        "Copyright (c) Dmitri Arkhangelski, 2007-2012.\n"
-        "Copyright (c) Stefan Pendl, 2010-2012.\n\n"
+        "Copyright (c) Dmitri Arkhangelski, 2007-2013.\n"
+        "Copyright (c) Stefan Pendl, 2010-2013.\n\n"
         "UltraDefrag comes with ABSOLUTELY NO WARRANTY.\n\n"
         "If something is wrong, hit F8 on startup\n"
         "and select 'Last Known Good Configuration'\n"
@@ -148,7 +146,7 @@ void __stdcall NtProcessStartup(PPEB Peb)
     }
         
     /* handle safe mode boot */
-    if(HandleSafeModeBoot())
+    if(handle_safe_mode_boot())
         return;
         
     /* check for the pending boot-off command */
@@ -188,7 +186,7 @@ void __stdcall NtProcessStartup(PPEB Peb)
     scripting_mode = 0;
     abort_flag = 0;
     winx_init_history(&history);
-    while(winx_prompt_ex("# ",buffer,MAX_LINE_WIDTH,&history) >= 0){
+    while(winx_prompt("# ",buffer,MAX_LINE_WIDTH,&history) >= 0){
         /* convert command to unicode */
         if(_snwprintf(wbuffer,MAX_LINE_WIDTH,L"%hs",buffer) < 0){
             winx_printf("Command line is too long!\n");
@@ -204,7 +202,7 @@ void __stdcall NtProcessStartup(PPEB Peb)
             return;
     }
 
-    /* break on winx_prompt_ex() errors */
+    /* break on winx_prompt() errors */
     exit_handler(0,NULL,NULL);
 }
 
@@ -216,47 +214,31 @@ void __stdcall NtProcessStartup(PPEB Peb)
  */
 static void set_dbg_log(char *name)
 {
-    wchar_t instdir[MAX_PATH];
-    char *logpath = NULL;
-    int length;
-    wchar_t *unicode_path = NULL;
-    
-    if(winx_query_env_variable(L"UD_INSTALL_DIR",instdir,MAX_PATH) < 0){
+    wchar_t *instdir;
+    wchar_t *path = NULL;
+    int size, result;
+
+    instdir = winx_getenv(L"UD_INSTALL_DIR");
+    if(instdir == NULL){
         winx_printf("\nset_dbg_log: cannot get %%ud_install_dir%% path\n\n");
         return;
     }
     
-    logpath = winx_sprintf("%ws\\logs\\boot-%s.log",instdir,name);
-    if(logpath == NULL){
+    winx_swprintf(path,size,result,
+        L"%ws\\logs\\boot-%hs.log",
+        instdir,name);
+    winx_free(instdir);
+    if(path == NULL){
         winx_printf("\nset_dbg_log: cannot build log path\n\n");
         return;
     }
-    
-    length = strlen(logpath);
-    unicode_path = winx_heap_alloc((length + 1) * sizeof(wchar_t));
-    if(unicode_path == NULL){
-        winx_printf("\nset_dbg_log: cannot allocate %u bytes of memory",
-            (length + 1) * sizeof(wchar_t));
-        goto done;
-    }
-    
-    if(_snwprintf(unicode_path,length + 1,L"%hs",logpath) < 0){
-        winx_printf("\nset_dbg_log: cannot convert log path to unicode\n\n");
-        goto done;
-    }
-    
-    unicode_path[length] = 0;
-    if(winx_set_env_variable(L"UD_LOG_FILE_PATH",unicode_path) < 0){
-        winx_printf("\nset_dbg_log: cannot set %%UD_LOG_FILE_PATH%%\n\n");
-        goto done;
-    }
-    
-    if(udefrag_set_log_file_path() < 0)
-        winx_printf("\nset_dbg_log: udefrag_set_log_file_path failed\n\n");
 
-done:
-    if(logpath)
-        winx_heap_free(logpath);
-    if(unicode_path)
-        winx_heap_free(unicode_path);
+    result = winx_setenv(L"UD_LOG_FILE_PATH",path);
+    winx_free(path);
+    if(result < 0){
+        winx_printf("\nset_dbg_log: cannot set %%UD_LOG_FILE_PATH%%\n\n");
+    } else {
+        if(udefrag_set_log_file_path() < 0)
+            winx_printf("\nset_dbg_log: udefrag_set_log_file_path failed\n\n");
+    }
 }

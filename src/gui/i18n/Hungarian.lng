@@ -2,7 +2,7 @@
 ; UltraDefrag GUI Hungarian Language Pack.
 ; Copyright (C) 2008-2010 Nagy Zsolt.
 ; Copyright (C) 2010 Áron Hegedüs.
-; Copyright (C) 2011-2012 Gellért Lukács.
+; Copyright (C) 2011-2013 Gellért Lukács.
 ; Copyright (C) 2012 Brechler Zsolt.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
@@ -32,6 +32,7 @@ DEFRAGMENT                = Indítás
 QUICK_OPTIMIZE            = Gyors optimalizálás
 FULL_OPTIMIZE             = Teljes optimalizálás
 OPTIMIZE_MFT              = MFT optimalizálás
+PAUSE                     = &Szünet
 STOP                      = Megáll
 REPEAT_ACTION             = Művelet ismétlése
 SKIP_REMOVABLE_MEDIA      = Hordozható meghajtók kihagyása
@@ -42,7 +43,7 @@ EXIT                      = Kilépés
 
 ; --- --- When done submenu
 
-WHEN_DONE_NONE            = Ne
+WHEN_DONE_NONE            = nincs
 WHEN_DONE_EXIT            = Kilépés
 WHEN_DONE_STANDBY         = Készenlét
 WHEN_DONE_HIBERNATE       = Hibernálás
@@ -60,6 +61,7 @@ LANGUAGE                  = Nyelv
 GRAPHICAL_INTERFACE       = Grafikus felület
 BOOT_TIME_SCAN            = Vizsgálat rendszerinduláskor
 REPORTS                   = Jelentések
+SORTING                   = Rendezé&s
 
 ; --- --- Language submenu
 
@@ -77,6 +79,16 @@ OPTIONS                   = Opciók
 
 ENABLE                    = Bekapcsolva
 SCRIPT                    = Szkript
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = útvonal szerint
+SORT_BY_SIZE              = méret szerint
+SORT_BY_C_TIME            = létrehozási dátum szerint
+SORT_BY_M_TIME            = módosítási dátum szerint
+SORT_BY_A_TIME            = hozzáférési dátum szerint
+SORT_ASCENDING            = növekvő sorrendben
+SORT_DESCENDING           = csökkenő sorrrendben
 
 ; --- Help Menu
 
@@ -123,8 +135,8 @@ COMPRESSED                = tömörített
 
 ; About window.
 
-ABOUT_WIN_TITLE           = Ultra Defragmenter súgó
-CREDITS                   = Készítők
+ABOUT_WIN_TITLE           = Ultra Defragmenter névjegy
+CREDITS                   = Szerzők
 LICENSE                   = Licenc
 
 ; Shutdown confirmation
@@ -161,7 +173,7 @@ FRAGMENTED_FILES_ON       = Töredezett fájlok itt:
 
 VISIT_HOMEPAGE            = Látogasd meg a honlapunkat
 VIEW_REPORT_OPTIONS       = Jelentési beállítások mutatása
-POWERED_BY_LUA            = Meghajtja a Lua
+POWERED_BY_LUA            = Engem is 'Lua' hajt!
 
 FRAGMENTS                 = töredékek
 SIZE                      = méret

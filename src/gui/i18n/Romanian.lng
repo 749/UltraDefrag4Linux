@@ -1,6 +1,6 @@
 ﻿;------------------------------------------------------------------------------
 ; UltraDefrag GUI Romanian Language Pack.
-; Copyright (C) 2011 Micu Dumitru.
+; Copyright (C) 2011-2013 Micu (BeBe) Dumitru.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
@@ -29,9 +29,10 @@ DEFRAGMENT                = Defragmentare
 QUICK_OPTIMIZE            = Optimizare rapidă
 FULL_OPTIMIZE             = Optimizare completă
 OPTIMIZE_MFT              = Optimizare MFT
+PAUSE                     = Pauzã
 STOP                      = Stop
 REPEAT_ACTION             = Repetă acțiunea
-SKIP_REMOVABLE_MEDIA      = Treci peste drive-urile portabile
+SKIP_REMOVABLE_MEDIA      = Omite drive-urile portabile
 RESCAN_DRIVES             = Re-scanează unitățile
 REPAIR_DRIVES             = Repară unitățile
 WHEN_DONE                 = Când e gata
@@ -57,6 +58,7 @@ LANGUAGE                  = Limba
 GRAPHICAL_INTERFACE       = Interfața grafică
 BOOT_TIME_SCAN            = Scanare la pornirea sistemului
 REPORTS                   = Rapoarte
+SORTING                   = Sortare
 
 ; --- --- Language submenu
 
@@ -74,6 +76,16 @@ OPTIONS                   = Opțiuni
 
 ENABLE                    = Activează
 SCRIPT                    = Script
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Sortare dupa locatie
+SORT_BY_SIZE              = Sortare dupa marime
+SORT_BY_C_TIME            = Sortare dupa durata
+SORT_BY_M_TIME            = Sortare dupa timp
+SORT_BY_A_TIME            = Sortare dupa accesare
+SORT_ASCENDING            = Sortare ordine crescatoare
+SORT_DESCENDING           = Sortare ordine descrescatoare
 
 ; --- Help Menu
 

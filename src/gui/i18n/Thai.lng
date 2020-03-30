@@ -29,6 +29,7 @@ DEFRAGMENT                = จัดระเบียบ
 QUICK_OPTIMIZE            = การเพิ่มประสิทธิภาพรวดเร็ว
 FULL_OPTIMIZE             = เพิ่มประสิทธิภาพเต็ม
 OPTIMIZE_MFT              = MFT เพิ่มประสิทธิภาพ
+PAUSE                     = &Pause
 STOP                      = หยุดทำงาน
 REPEAT_ACTION             = ทำซ้ำการกระทำ
 SKIP_REMOVABLE_MEDIA      = ยกเว้นไดรฟ์ไม่ถาวร
@@ -57,6 +58,7 @@ LANGUAGE                  = ภาษา
 GRAPHICAL_INTERFACE       = ส่วนติดต่อกราฟฟิก
 BOOT_TIME_SCAN            = ทำงานขณะบูต Windows
 REPORTS                   = รายงาน
+SORTING                   = &Sorting
 
 ; --- --- Language submenu
 
@@ -74,6 +76,16 @@ OPTIONS                   = ตัวเลือก
 
 ENABLE                    = เปิดใช้งาน
 SCRIPT                    = สคริปต์
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Sort by &path
+SORT_BY_SIZE              = Sort by &size
+SORT_BY_C_TIME            = Sort by &creation time
+SORT_BY_M_TIME            = Sort by last &modification time
+SORT_BY_A_TIME            = Sort by &last access time
+SORT_ASCENDING            = Sort in &ascending order
+SORT_DESCENDING           = Sort in &descending order
 
 ; --- Help Menu
 

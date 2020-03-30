@@ -5,7 +5,7 @@
 ; Copyright (C) 2010 Mathieu Van Weersch.
 ; Copyright (C) 2010 Marina Louwrier-Johannsen.
 ; Copyright (C) 2012 Thomas Laroche.
-; Copyright (C) 2012 William Gathoye.
+; Copyright (C) 2012-2013 William Gathoye.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
@@ -34,6 +34,7 @@ DEFRAGMENT                = &Défragmenter
 QUICK_OPTIMIZE            = Optimisation &rapide
 FULL_OPTIMIZE             = Optimisation &complète
 OPTIMIZE_MFT              = Optimiser la &MFT
+PAUSE                     = Mettre en &Pause
 STOP                      = Arrê&ter
 REPEAT_ACTION             = Ré&péter l'action
 SKIP_REMOVABLE_MEDIA      = Exclure les supports a&movibles
@@ -62,6 +63,7 @@ LANGUAGE                  = &Langue
 GRAPHICAL_INTERFACE       = Interface &graphique
 BOOT_TIME_SCAN            = &Analyse au démarrage de Windows
 REPORTS                   = &Rapports
+SORTING                   = &Trier
 
 ; --- --- Language submenu
 
@@ -79,6 +81,16 @@ OPTIONS                   = &Options
 
 ENABLE                    = &Activer
 SCRIPT                    = &Script
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Trier par c&hemin
+SORT_BY_SIZE              = Trier par &taille
+SORT_BY_C_TIME            = Trier par date de &création
+SORT_BY_M_TIME            = Trier par date de &modification
+SORT_BY_A_TIME            = Trier par date de d&ernier accès
+SORT_ASCENDING            = Trier par ordre croiss&ant
+SORT_DESCENDING           = Trier par ordre &décroissant
 
 ; --- Help Menu
 

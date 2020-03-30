@@ -7,7 +7,7 @@ includes = { "include", "lua5.1" }
 
 libs = { "msvcrt", "kernel32", "user32", "comctl32" }
 adlibs = { "$(UDEFRAG_LIB_PATH)\\lua5.1a" }
-umentry = "winmain"
+umentry = "main"
 
 function mingw_project_rules()
     output_dir = "../obj/lua-gui"

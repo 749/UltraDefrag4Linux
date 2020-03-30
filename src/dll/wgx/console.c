@@ -1,6 +1,6 @@
 /*
  *  WGX - Windows GUI Extended Library.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,10 +24,7 @@
  * @{
  */
 
-#include <windows.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include "wgx.h"
+#include "wgx-internals.h"
 
 /* definitions of routines missing on some Windows editions */
 #define WIN_TMPF_TRUETYPE 0x04
@@ -40,15 +37,6 @@ typedef struct WIN_CONSOLE_FONT_INFO_EX {
   WCHAR FaceName[LF_FACESIZE];
 } WIN_CONSOLE_FONT_INFO_EX, *PWIN_CONSOLE_FONT_INFO_EX;
 typedef BOOL (WINAPI *GET_CURRENT_CONSOLE_FONT_EX_PROC)(HANDLE hConsoleOutput,BOOL bMaximumWindow,PWIN_CONSOLE_FONT_INFO_EX lpConsoleCurrentFontEx);
-
-/**
- * @internal
- * @brief WgxPrintUnicodeString helper.
- */
-static void handle_api_failure(char *func_name,char *api_name)
-{
-    WgxDbgPrintLastError("%s: %s failed",func_name,api_name);
-}
 
 /**
  * @brief Displays Unicode string
@@ -103,11 +91,11 @@ void WgxPrintUnicodeString(wchar_t *string,FILE *f)
     /* output redirected to a file can be converted to UTF-8 */
     hOut = GetStdHandle(f == stdout ? STD_OUTPUT_HANDLE : STD_ERROR_HANDLE);
     if(hOut == INVALID_HANDLE_VALUE){
-        handle_api_failure("WgxPrintUnicodeString","GetStdHandle");
+        letrace("GetStdHandle failed");
     } else {
         file_type = GetFileType(hOut);
         if(file_type == FILE_TYPE_UNKNOWN && GetLastError() != NO_ERROR){
-            handle_api_failure("WgxPrintUnicodeString","GetFileType");
+            letrace("GetFileType failed");
         } else {
             file_type &= ~(FILE_TYPE_REMOTE);
             if(file_type == FILE_TYPE_CHAR){
@@ -116,7 +104,7 @@ void WgxPrintUnicodeString(wchar_t *string,FILE *f)
                         new_code_page = CP_UTF8;
                         goto convert;
                     } else {
-                        handle_api_failure("WgxPrintUnicodeString","GetConsoleMode");
+                        letrace("GetConsoleMode failed");
                     }
                 }
             } else {
@@ -129,18 +117,18 @@ void WgxPrintUnicodeString(wchar_t *string,FILE *f)
     /* if the console uses a TrueType font, UTF-8 can be used too */
     hKernel32Dll = LoadLibrary("kernel32.dll");
     if(hKernel32Dll == NULL){
-        handle_api_failure("WgxPrintUnicodeString","LoadLibrary");
+        letrace("cannot load kernel32.dll library");
     } else {
         pGetCurrentConsoleFontEx = (GET_CURRENT_CONSOLE_FONT_EX_PROC)GetProcAddress(hKernel32Dll,"GetCurrentConsoleFontEx");
         if(pGetCurrentConsoleFontEx){
             memset(&cfie,0,sizeof(cfie));
             cfie.cbSize = sizeof(cfie);
             if(!pGetCurrentConsoleFontEx(hOut,FALSE,&cfie)){
-                handle_api_failure("WgxPrintUnicodeString","GetCurrentConsoleFontEx");
+                letrace("GetCurrentConsoleFontEx failed");
             } else {
                 if((cfie.FontFamily & WIN_TMPF_TRUETYPE) == WIN_TMPF_TRUETYPE){
                     if(!SetConsoleOutputCP(CP_UTF8)){
-                        handle_api_failure("WgxPrintUnicodeString","SetConsoleOutputCP");
+                        letrace("SetConsoleOutputCP failed");
                     } else {
                         new_code_page = CP_UTF8;
                     }
@@ -157,11 +145,11 @@ convert:
     length = (wcslen(string) + 1) * 4; /* should be enough */
     cnv_string = malloc(length);
     if(cnv_string == NULL){
-        WgxDbgPrint("WgxPrintUnicodeString: not enough memory");
+        mtrace();
         goto done;
     }
     if(!WideCharToMultiByte(new_code_page,0,string,-1,cnv_string,length,NULL,NULL)){
-        handle_api_failure("WgxPrintUnicodeString","WideCharToMultiByte");
+        letrace("WideCharToMultiByte failed");
         goto done;
     }
     

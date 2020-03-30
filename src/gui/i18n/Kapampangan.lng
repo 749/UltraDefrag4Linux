@@ -29,6 +29,7 @@ DEFRAGMENT                = &Piaben-abayan
 QUICK_OPTIMIZE            = &Samasan yang malagwa
 FULL_OPTIMIZE             = &Samasan yang laganas
 OPTIMIZE_MFT              = &Samasan ya ing MFT
+PAUSE                     = &Pause
 STOP                      = &Ituknang
 REPEAT_ACTION             = &Pasibaywan/Ulitan
 SKIP_REMOVABLE_MEDIA      = &Lakton la reng mediang milalako
@@ -57,6 +58,7 @@ LANGUAGE                  = &Amanu/Lenggwahi
 GRAPHICAL_INTERFACE       = &Interface
 BOOT_TIME_SCAN            = &Pamag-scan keng umpisa
 REPORTS                   = &Ulat
+SORTING                   = &Sorting
 
 ; --- --- Language submenu
 
@@ -74,6 +76,16 @@ OPTIONS                   = &Option/Pipamilinan
 
 ENABLE                    = &Paintulutan/Papalyaryan
 SCRIPT                    = &Script
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Sort by &path
+SORT_BY_SIZE              = Sort by &size
+SORT_BY_C_TIME            = Sort by &creation time
+SORT_BY_M_TIME            = Sort by last &modification time
+SORT_BY_A_TIME            = Sort by &last access time
+SORT_ASCENDING            = Sort in &ascending order
+SORT_DESCENDING           = Sort in &descending order
 
 ; --- Help Menu
 

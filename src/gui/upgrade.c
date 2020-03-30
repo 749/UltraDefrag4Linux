@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2010-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,17 +31,7 @@
 
 #include "main.h"
 
-/*
-* On Windows NT 4.0 and Windows 2000 the program
-* checks the version.ini file for the most recent
-* release compatible with these Windows editions.
-*/
-#define VERSION_URL    "http://ultradefrag.sourceforge.net/version.ini"
-/*
-* On Windows XP and more recent Windows editions
-* the program checks the version_xp.ini file.
-*/
-#define VERSION_URL_XP "http://ultradefrag.sourceforge.net/version_xp.ini"
+#define VERSION_URL "http://ultradefrag.sourceforge.net/version.ini"
 #define MAX_VERSION_FILE_LEN 32
 #define MAX_ANNOUNCEMENT_LEN 128
 
@@ -72,53 +62,40 @@ static char *GetLatestVersion(void)
     HMODULE hUrlmonDLL = NULL;
     HRESULT result;
     FILE *f;
-    OSVERSIONINFO osvi;
-    BOOL bIsWindowsXPorLater;
     int res;
     int i;
     
     /* load urlmon.dll library */
     hUrlmonDLL = LoadLibrary("urlmon.dll");
     if(hUrlmonDLL == NULL){
-        WgxDbgPrintLastError("GetLatestVersion: LoadLibrary(urlmon.dll) failed");
+        letrace("cannot load urlmon.dll library");
         return NULL;
     }
     
     /* get an address of procedure downloading a file */
     pURLDownloadToCacheFile = (URLMON_PROCEDURE)GetProcAddress(hUrlmonDLL,"URLDownloadToCacheFileA");
     if(pURLDownloadToCacheFile == NULL){
-        WgxDbgPrintLastError("GetLatestVersion: URLDownloadToCacheFile not found in urlmon.dll");
+        letrace("URLDownloadToCacheFile not found in urlmon.dll");
         return NULL;
     }
     
-    ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
-    osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-
-    GetVersionEx(&osvi);
-
-    bIsWindowsXPorLater = 
-       ( (osvi.dwMajorVersion > 5) ||
-       ( (osvi.dwMajorVersion == 5) && (osvi.dwMinorVersion >= 1) ));
-
     /* download a file */
-    if(bIsWindowsXPorLater)
-        result = pURLDownloadToCacheFile(NULL,VERSION_URL_XP,version_ini_path,MAX_PATH,0,NULL);
-    else
-        result = pURLDownloadToCacheFile(NULL,VERSION_URL,version_ini_path,MAX_PATH,0,NULL);
+    result = pURLDownloadToCacheFile(NULL,VERSION_URL,version_ini_path,MAX_PATH,0,NULL);
 
     version_ini_path[MAX_PATH] = 0;
     if(result != S_OK){
-        if(result == E_OUTOFMEMORY)
-            WgxDbgPrint("GetLatestVersion: not enough memory for URLDownloadToCacheFile\n");
-        else
-            WgxDbgPrint("GetLatestVersion: URLDownloadToCacheFile failed\n");
+        if(result == E_OUTOFMEMORY){
+            mtrace();
+        } else {
+            etrace("URLDownloadToCacheFile failed");
+        }
         return NULL;
     }
     
     /* open the file */
     f = fopen(version_ini_path,"rb");
     if(f == NULL){
-        WgxDbgPrint("GetLatestVersion: cannot open %s: %s\n",
+        etrace("cannot open %s: %s",
             version_ini_path,_strerror(NULL));
         return NULL;
     }
@@ -129,9 +106,9 @@ static char *GetLatestVersion(void)
     /* remove cached data, otherwise it may not be loaded next time */
     (void)remove(version_ini_path);
     if(res == 0){
-        WgxDbgPrint("GetLatestVersion: cannot read %s\n",version_ini_path);
+        etrace("cannot read %s",version_ini_path);
         if(feof(f))
-            WgxDbgPrint("File seems to be empty\n");
+            etrace("file seems to be empty");
         return NULL;
     }
     
@@ -146,6 +123,51 @@ static char *GetLatestVersion(void)
 }
 
 /**
+ * @brief Parses a version string and generates an integer for comparison.
+ * @return An integer representing the version. -1 indicates that
+ * the version string parsing failed.
+ */
+static int ParseVersionString(char *version)
+{
+    char *string;
+    int mj, mn, i, uv; /* version numbers (major, minor, index, unstable version) */
+    int res;
+    
+    if(version == NULL) return -1;
+    
+    string = _strdup(version);
+    if(!string) return -1;
+    
+    _strlwr(string);
+    res = sscanf(string,"%u.%u.%u alpha%u",&mj,&mn,&i,&uv);
+    if(res == 4){
+        uv += 100;
+    } else {
+        res = sscanf(string,"%u.%u.%u beta%u",&mj,&mn,&i,&uv);
+        if(res == 4){
+            uv += 200;
+        } else {
+            res = sscanf(string,"%u.%u.%u rc%u",&mj,&mn,&i,&uv);
+            if(res == 4){
+                uv += 300;
+            } else {
+                res = sscanf(string,"%u.%u.%u",&mj,&mn,&i);
+                if(res == 3){
+                    uv = 999;
+                } else {
+                    etrace("parsing of '%s' failed",version);
+                    return -1;
+                }
+            }
+        }
+    }
+    free(string);
+    
+    /* 5.0.0 > 4.99.99 rc10*/
+    return mj * 10000000 + mn * 100000 + i * 1000 + uv;
+}
+
+/**
  * @brief Defines whether a new version is available for download or not.
  * @return A string containing an announcement. NULL indicates that
  * there is no new version available.
@@ -154,51 +176,40 @@ static wchar_t *GetNewVersionAnnouncement(void)
 {
     char *lv;
     char *cv = VERSIONINTITLE;
-    char *string;
-    int lmj, lmn, li; /* latest version numbers */
-    int cmj, cmn, ci; /* current version numbers */
+    OSVERSIONINFO osvi;
     int current_version, last_version;
-    int unstable_version = 0;
-    int upgrade_needed = 0;
-    int res;
     wchar_t *text, *message;
 
     lv = GetLatestVersion();
     if(lv == NULL) return NULL;
     
-    /*lv[2] = '4';*/
-    res = sscanf(lv,"%u.%u.%u",&lmj,&lmn,&li);
-    if(res != 3){
-        WgxDbgPrint("GetNewVersionAnnouncement: the first sscanf call returned %u\n",res);
-        return NULL;
-    }
-    res = sscanf(cv,"UltraDefrag %u.%u.%u",&cmj,&cmn,&ci);
-    if(res != 3){
-        WgxDbgPrint("GetNewVersionAnnouncement: the second sscanf call returned %u\n",res);
-        return NULL;
-    }
-    string = _strdup(cv);
-    if(string){
-        _strlwr(string);
-        if(strstr(string,"alpha")) unstable_version = 1;
-        else if(strstr(string,"beta")) unstable_version = 1;
-        else if(strstr(string,"rc")) unstable_version = 1;
-        free(string);
+    current_version = ParseVersionString(&cv[12]);
+    if(current_version == -1) return NULL;
+    itrace("current version is %s ... %u",cv,current_version);
+    
+    last_version = ParseVersionString(lv);
+    if(last_version == -1) return NULL;
+    itrace("latest version is %s ... %u",lv,last_version);
+    
+    /* v7 will not support nt4 and w2k */
+    ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
+    osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+    GetVersionEx(&osvi);
+    if(osvi.dwMajorVersion * 10 + osvi.dwMinorVersion < 51){
+        if(last_version > 69999999){
+            itrace("upgrade to v7+ is not available for nt4/w2k");
+            return NULL;
+        }
     }
     
-    /* 5.0.0 > 4.99.99 */
-    current_version = cmj * 10000 + cmn * 100 + ci;
-    last_version = lmj * 10000 + lmn * 100 + li;
-    if(last_version > current_version) upgrade_needed = 1;
-    else if(last_version == current_version && unstable_version) upgrade_needed = 1;
-    if(upgrade_needed){
+    if(last_version > current_version){
         text = WgxGetResourceString(i18n_table,"UPGRADE_MESSAGE");
         if(text) message = text; else message = L"release is available for download!";
         _snwprintf(announcement,MAX_ANNOUNCEMENT_LEN,L"%hs %ws",lv,message);
         announcement[MAX_ANNOUNCEMENT_LEN - 1] = 0;
         free(text);
         
-        WgxDbgPrint("GetNewVersionAnnouncement: upgrade to %s\n",lv);
+        itrace("upgrade to %s",lv);
         return announcement;
     }
     
@@ -215,7 +226,7 @@ void CheckForTheNewVersion(void)
     
     if(!WgxCreateThread(CheckForTheNewVersionThreadProc,NULL)){
         WgxDisplayLastError(NULL,MB_OK | MB_ICONWARNING,
-            "Cannot create thread checking the latest version of the program!");
+            L"Cannot create thread checking the latest version of the program!");
     }
 }
 
@@ -227,8 +238,11 @@ DWORD WINAPI CheckForTheNewVersionThreadProc(LPVOID lpParameter)
     if(s){
         text = WgxGetResourceString(i18n_table,"UPGRADE_CAPTION");
         if(text) caption = text; else caption = L"You can upgrade me ^-^";
-        if(MessageBoxW(hWindow,s,caption,MB_OKCANCEL | MB_ICONINFORMATION) == IDOK)
-            (void)WgxShellExecuteW(hWindow,L"open",L"http://ultradefrag.sourceforge.net",NULL,NULL,SW_SHOW);
+        if(MessageBoxW(hWindow,s,caption,MB_OKCANCEL | MB_ICONINFORMATION) == IDOK){
+            (void)WgxShellExecute(hWindow,L"open",
+                L"http://ultradefrag.sourceforge.net",NULL,NULL,
+                SW_SHOW,WSH_NOASYNC | WSH_ALLOW_DEFAULT_ACTION);
+        }
         free(text);
     }
     

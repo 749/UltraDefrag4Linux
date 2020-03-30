@@ -7,6 +7,7 @@ includes = { "include", "lua5.1", "wgx" }
 
 libs = { "kernel32", "msvcrt", "advapi32" }
 adlibs = { 
+    "$(UDEFRAG_LIB_PATH)\\udefrag",
     "$(UDEFRAG_LIB_PATH)\\wgx"
 }
 umentry = "main"

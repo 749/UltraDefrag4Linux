@@ -3,7 +3,7 @@
 ; Copyright (C) 2011 Conrad Flyckt.
 ; Copyright (C) 2012 Felipe Ángel González Báñez.
 ; Copyright (C) 2012 Joseph S. Maza.
-; Copyright (C) 2012 Francisco Ortega Olivos.
+; Copyright (C) 2012-2013 Francisco Ortega Olivos.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
@@ -32,6 +32,7 @@ DEFRAGMENT                = &Desfragmentar
 QUICK_OPTIMIZE            = Optimización &rápida
 FULL_OPTIMIZE             = Optimización &completa
 OPTIMIZE_MFT              = &Optimizar MFT
+PAUSE                     = &Pausa
 STOP                      = &Detener
 REPEAT_ACTION             = Re&petir acción
 SKIP_REMOVABLE_MEDIA      = &Ignorar discos extraíbles
@@ -60,11 +61,12 @@ LANGUAGE                  = &Idioma
 GRAPHICAL_INTERFACE       = Interfaz &gráfica
 BOOT_TIME_SCAN            = &Escaneo en arranque
 REPORTS                   = &Reportes
+SORTING                   = &Ordenar por...
 
 ; --- --- Language submenu
 
 TRANSLATIONS_CHANGE_LOG   = &Ver el registro de cambios
-TRANSLATIONS_REPORT       = Ver &informe de la traducción
+TRANSLATIONS_REPORT       = Ver &informe de traducciones
 TRANSLATIONS_FOLDER       = &Carpeta de traducciones
 TRANSLATIONS_SUBMIT       = &Enviar traducción actual
 
@@ -77,6 +79,16 @@ OPTIONS                   = &Opciones
 
 ENABLE                    = &Activar
 SCRIPT                    = &Comandos
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Ordenar por &Ruta
+SORT_BY_SIZE              = Ordenar por &Tamaño
+SORT_BY_C_TIME            = Ordenar por fecha de &Creación
+SORT_BY_M_TIME            = Ordenar por fecha de Última &Modificación
+SORT_BY_A_TIME            = Ordenar por fecha de &Último acceso
+SORT_ASCENDING            = Ordenar en forma &Ascendente
+SORT_DESCENDING           = Ordenar en forma &Descendente
 
 ; --- Help Menu
 
@@ -161,7 +173,7 @@ FRAGMENTED_FILES_ON       = Archivos fragmentados en
 
 VISIT_HOMEPAGE            = Visitar el sitio Web
 VIEW_REPORT_OPTIONS       = Ver las opciones del reporte
-POWERED_BY_LUA            = Desarrollado con LUA
+POWERED_BY_LUA            = Desarrollado en LUA
 
 FRAGMENTS                 = fragmentos
 SIZE                      = tamaño

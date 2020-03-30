@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -41,6 +41,8 @@ int list_height = 0;
 int repeat_action = FALSE;
 int show_menu_icons = 1;
 int show_taskbar_icon_overlay = 1;
+int show_progress_in_taskbar = 1;
+int minimize_to_system_tray = 0;
 
 int rx = UNDEFINED_COORD;
 int ry = UNDEFINED_COORD;
@@ -58,7 +60,6 @@ extern int grid_color_b;
 extern int free_color_r;
 extern int free_color_g;
 extern int free_color_b;
-extern double pix_per_dialog_unit;
 extern int last_block_size;
 extern int last_grid_width;
 extern int last_x;
@@ -76,56 +77,57 @@ RECT map_rc = {0,0,0,0};
 
 /* options read from guiopts.lua */
 WGX_OPTION read_only_options[] = {
-    /* type, value buffer size, name, value, default value */
-    {WGX_CFG_INT,     0, "dry_run", &dry_run, 0},
-    {WGX_CFG_INT,     0, "seconds_for_shutdown_rejection", &seconds_for_shutdown_rejection, (void *)60},
-    {WGX_CFG_INT,     0, "map_block_size", &map_block_size, (void *)DEFAULT_MAP_BLOCK_SIZE},
-    {WGX_CFG_INT,     0, "grid_line_width", &grid_line_width, (void *)DEFAULT_GRID_LINE_WIDTH},
-    {WGX_CFG_INT,     0, "grid_color_r", &grid_color_r, (void *)0},
-    {WGX_CFG_INT,     0, "grid_color_g", &grid_color_g, (void *)0},
-    {WGX_CFG_INT,     0, "grid_color_b", &grid_color_b, (void *)0},
-    {WGX_CFG_INT,     0, "free_color_r", &free_color_r, (void *)255},
-    {WGX_CFG_INT,     0, "free_color_g", &free_color_g, (void *)255},
-    {WGX_CFG_INT,     0, "free_color_b", &free_color_b, (void *)255},
-    {WGX_CFG_INT,     0, "disable_latest_version_check", &disable_latest_version_check, 0},
-    {WGX_CFG_INT,     0, "scale_by_dpi", &scale_by_dpi, (void *)1},
-    {WGX_CFG_INT,     0, "restore_default_window_size", &restore_default_window_size, 0},
-    {WGX_CFG_INT,     0, "show_menu_icons", &show_menu_icons, 0},
-    {WGX_CFG_INT,     0, "show_taskbar_icon_overlay", &show_taskbar_icon_overlay, 0},
-    
-    {0,               0, NULL, NULL, NULL}
+    /* name, type, value buffer, buffer length, default value */
+    {"disable_latest_version_check", WGX_CFG_INT, &disable_latest_version_check, 0, 0},
+    {"dry_run", WGX_CFG_INT, &dry_run, 0, 0},
+    {"free_color_r", WGX_CFG_INT, &free_color_r, 0, 255},
+    {"free_color_g", WGX_CFG_INT, &free_color_g, 0, 255},
+    {"free_color_b", WGX_CFG_INT, &free_color_b, 0, 255},
+    {"grid_color_r", WGX_CFG_INT, &grid_color_r, 0, 0},
+    {"grid_color_g", WGX_CFG_INT, &grid_color_g, 0, 0},
+    {"grid_color_b", WGX_CFG_INT, &grid_color_b, 0, 0},
+    {"grid_line_width", WGX_CFG_INT, &grid_line_width, 0, DEFAULT_GRID_LINE_WIDTH},
+    {"map_block_size", WGX_CFG_INT, &map_block_size, 0, DEFAULT_MAP_BLOCK_SIZE},
+    {"minimize_to_system_tray", WGX_CFG_INT, &minimize_to_system_tray, 0, 0},
+    {"restore_default_window_size", WGX_CFG_INT, &restore_default_window_size, 0, 0},
+    {"scale_by_dpi", WGX_CFG_INT, &scale_by_dpi, 0, 1},
+    {"seconds_for_shutdown_rejection", WGX_CFG_INT, &seconds_for_shutdown_rejection, 0, 60},
+    {"show_menu_icons", WGX_CFG_INT, &show_menu_icons, 0, 1},
+    {"show_progress_in_taskbar", WGX_CFG_INT, &show_progress_in_taskbar, 0, 1},
+    {"show_taskbar_icon_overlay", WGX_CFG_INT, &show_taskbar_icon_overlay, 0, 1},
+    {NULL, 0, NULL, 0, 0}
 };
 
 /* options stored in guiopts-internals.lua */
 WGX_OPTION internal_options[] = {
-    /* type, value buffer size, name, value, default value */
-    {WGX_CFG_COMMENT, 0, "the settings below are not changeable by the user,", NULL, ""},
-    {WGX_CFG_COMMENT, 0, "they are always overwritten when the program ends", NULL, ""},
+    /* name, type, value buffer, buffer length, default value */
+    {"the settings below are not changeable by the user,", WGX_CFG_COMMENT, NULL, 0, 0},
+    {"they are always overwritten when the program ends", WGX_CFG_COMMENT, NULL, 0, 0},
     
-    {WGX_CFG_INT,     0, "rx", &rx, (void *)UNDEFINED_COORD},
-    {WGX_CFG_INT,     0, "ry", &ry, (void *)UNDEFINED_COORD},
-    {WGX_CFG_INT,     0, "rwidth",  &rwidth,  (void *)DEFAULT_WIDTH},
-    {WGX_CFG_INT,     0, "rheight", &rheight, (void *)DEFAULT_HEIGHT}, 
-    {WGX_CFG_INT,     0, "maximized", &maximized_window, 0},
-    {WGX_CFG_EMPTY,   0, "", NULL, ""},
+    {"rx", WGX_CFG_INT, &rx, 0, UNDEFINED_COORD},
+    {"ry", WGX_CFG_INT, &ry, 0, UNDEFINED_COORD},
+    {"rwidth", WGX_CFG_INT, &rwidth, 0, DEFAULT_WIDTH},
+    {"rheight", WGX_CFG_INT, &rheight, 0, DEFAULT_HEIGHT}, 
+    {"maximized", WGX_CFG_INT, &maximized_window, 0, 0},
+    {"", WGX_CFG_EMPTY, NULL, 0, 0},
 
-    {WGX_CFG_INT,     0, "skip_removable", &skip_removable, (void *)1},
-    {WGX_CFG_INT,     0, "repeat_action", &repeat_action, (void *)0},
-    {WGX_CFG_EMPTY,   0, "", NULL, ""},
+    {"skip_removable", WGX_CFG_INT, &skip_removable, 0, 1},
+    {"repeat_action", WGX_CFG_INT, &repeat_action, 0, 0},
+    {"", WGX_CFG_EMPTY, NULL, 0, 0},
 
-    {WGX_CFG_INT,     0, "column1_width",  &user_defined_column_widths[0], (void *)C1_DEFAULT_WIDTH},
-    {WGX_CFG_INT,     0, "column2_width",  &user_defined_column_widths[1], (void *)C2_DEFAULT_WIDTH},
-    {WGX_CFG_INT,     0, "column2b_width", &user_defined_column_widths[2], (void *)C3_DEFAULT_WIDTH},
-    {WGX_CFG_INT,     0, "column3_width",  &user_defined_column_widths[3], (void *)C4_DEFAULT_WIDTH},
-    {WGX_CFG_INT,     0, "column4_width",  &user_defined_column_widths[4], (void *)C5_DEFAULT_WIDTH},
-    {WGX_CFG_INT,     0, "column5_width",  &user_defined_column_widths[5], (void *)C6_DEFAULT_WIDTH},
-    {WGX_CFG_INT,     0, "list_height", &list_height, (void *)0},
-    {WGX_CFG_EMPTY,   0, "", NULL, ""},
+    {"column1_width", WGX_CFG_INT, &user_defined_column_widths[0], 0, C1_DEFAULT_WIDTH},
+    {"column2_width", WGX_CFG_INT, &user_defined_column_widths[1], 0, C2_DEFAULT_WIDTH},
+    {"column2b_width", WGX_CFG_INT, &user_defined_column_widths[2], 0, C3_DEFAULT_WIDTH},
+    {"column3_width", WGX_CFG_INT, &user_defined_column_widths[3], 0, C4_DEFAULT_WIDTH},
+    {"column4_width", WGX_CFG_INT, &user_defined_column_widths[4], 0, C5_DEFAULT_WIDTH},
+    {"column5_width", WGX_CFG_INT, &user_defined_column_widths[5], 0, C6_DEFAULT_WIDTH},
+    {"list_height", WGX_CFG_INT, &list_height, 0, 0},
+    {"", WGX_CFG_EMPTY, NULL, 0, 0},
 
-    {WGX_CFG_INT,     0, "job_flags", &job_flags, (void *)UD_PREVIEW_MATCHING},
-    {WGX_CFG_EMPTY,   0, "", NULL, ""},
-
-    {0,               0, NULL, NULL, NULL}
+    {"job_flags", WGX_CFG_INT, &job_flags, 0, 0},
+    {"sorting_flags", WGX_CFG_INT, &sorting_flags, 0, SORT_BY_PATH | SORT_ASCENDING},
+    {"", WGX_CFG_EMPTY, NULL, 0, 0},
+    {NULL, 0, NULL, 0, 0}
 };
 
 /**
@@ -137,7 +139,9 @@ static void CleanupEnvironment(void)
 {
     (void)SetEnvironmentVariable("UD_IN_FILTER",NULL);
     (void)SetEnvironmentVariable("UD_EX_FILTER",NULL);
+    (void)SetEnvironmentVariable("UD_FRAGMENT_SIZE_THRESHOLD",NULL);
     (void)SetEnvironmentVariable("UD_FILE_SIZE_THRESHOLD",NULL);
+    (void)SetEnvironmentVariable("UD_OPTIMIZER_FILE_SIZE_THRESHOLD",NULL);
     (void)SetEnvironmentVariable("UD_FRAGMENTS_THRESHOLD",NULL);
     (void)SetEnvironmentVariable("UD_FRAGMENTATION_THRESHOLD",NULL);
     (void)SetEnvironmentVariable("UD_REFRESH_INTERVAL",NULL);
@@ -146,6 +150,8 @@ static void CleanupEnvironment(void)
     (void)SetEnvironmentVariable("UD_LOG_FILE_PATH",NULL);
     (void)SetEnvironmentVariable("UD_TIME_LIMIT",NULL);
     (void)SetEnvironmentVariable("UD_DRY_RUN",NULL);
+    (void)SetEnvironmentVariable("UD_SORTING",NULL);
+    (void)SetEnvironmentVariable("UD_SORTING_ORDER",NULL);
 }
 
 /**
@@ -207,7 +213,7 @@ void SavePrefs(void)
 
     if(_mkdir(".\\options") < 0){
         if(errno != EEXIST)
-            WgxDbgPrint("Cannot create .\\options directory: errno = %u\n",errno);
+            etrace("cannot create .\\options directory: errno = %u",errno);
     }
     WgxSaveOptions(".\\options\\guiopts-internals.lua",internal_options,SavePrefsCallback);
 }
@@ -243,12 +249,13 @@ DWORD WINAPI PrefsChangesTrackingProc(LPVOID lpParameter)
     int cw[sizeof(user_defined_column_widths) / sizeof(int)];
     int s_list_height;
     int s_show_taskbar_icon_overlay;
+    int s_minimize_to_system_tray;
     ULONGLONG counter = 0;
     
     h = FindFirstChangeNotification(".\\options",
             FALSE,FILE_NOTIFY_CHANGE_LAST_WRITE);
     if(h == INVALID_HANDLE_VALUE){
-        WgxDbgPrintLastError("PrefsChangesTrackingProc: FindFirstChangeNotification failed");
+        letrace("FindFirstChangeNotification failed");
         changes_tracking_stopped = 1;
         return 0;
     }
@@ -275,7 +282,7 @@ DWORD WINAPI PrefsChangesTrackingProc(LPVOID lpParameter)
             } else {
                 /* synchronize preferences reload with map redraw */
                 if(WaitForSingleObject(hMapEvent,INFINITE) != WAIT_OBJECT_0){
-                    WgxDbgPrintLastError("PrefsChangesTrackingProc: wait on hMapEvent failed");
+                    letrace("wait on hMapEvent failed");
                 } else {
                     /* save state */
                     memcpy(&rc,&r_rc,sizeof(RECT));
@@ -287,6 +294,7 @@ DWORD WINAPI PrefsChangesTrackingProc(LPVOID lpParameter)
                     s_list_height = list_height;
                     s_job_flags = job_flags;
                     s_show_taskbar_icon_overlay = show_taskbar_icon_overlay;
+                    s_minimize_to_system_tray = minimize_to_system_tray;
                     
                     /* reload preferences */
                     GetPrefs();
@@ -325,16 +333,33 @@ DWORD WINAPI PrefsChangesTrackingProc(LPVOID lpParameter)
                         /* redraw map if grid color changed */
                         RedrawMap(current_job,0);
                     }
-
-                    /* handle show_taskbar_icon_overlay option adjustment */
+                    
+                    /* handle show_taskbar_icon_overlay and minimize_to_system_tray options adjustment */
                     if(WaitForSingleObject(hTaskbarIconEvent,INFINITE) != WAIT_OBJECT_0){
-                        WgxDbgPrintLastError("PrefsChangesTrackingProc: wait on hTaskbarIconEvent failed");
+                        letrace("wait on hTaskbarIconEvent failed");
                     } else {
                         if(show_taskbar_icon_overlay != s_show_taskbar_icon_overlay){
-                            if(show_taskbar_icon_overlay && job_is_running)
-                                SetTaskbarIconOverlay(IDI_BUSY,"JOB_IS_RUNNING");
-                            else
+                            if(show_taskbar_icon_overlay && job_is_running){
+                                if(pause_flag)
+                                    SetTaskbarIconOverlay(IDI_PAUSED,"JOB_IS_PAUSED");
+                                else
+                                    SetTaskbarIconOverlay(IDI_BUSY,"JOB_IS_RUNNING");
+                            } else {
                                 RemoveTaskbarIconOverlay();
+                            }
+                        }
+                        if(minimize_to_system_tray != s_minimize_to_system_tray){
+                            if(IsIconic(hWindow)){
+                                if(minimize_to_system_tray)
+                                    WgxHideWindow(hWindow);
+                                else
+                                    WgxShowWindow(hWindow);
+                            }
+                            /* set/remove notification area icon */
+                            if(minimize_to_system_tray)
+                                ShowSystemTrayIcon(NIM_ADD);
+                            else
+                                HideSystemTrayIcon();
                         }
                         SetEvent(hTaskbarIconEvent);
                     }
@@ -343,7 +368,7 @@ DWORD WINAPI PrefsChangesTrackingProc(LPVOID lpParameter)
             counter ++;
             /* wait for the next notification */
             if(!FindNextChangeNotification(h)){
-                WgxDbgPrintLastError("PrefsChangesTrackingProc: FindNextChangeNotification failed");
+                letrace("FindNextChangeNotification failed");
                 break;
             }
         }
@@ -361,7 +386,7 @@ DWORD WINAPI PrefsChangesTrackingProc(LPVOID lpParameter)
 void StartPrefsChangesTracking()
 {
     if(!WgxCreateThread(PrefsChangesTrackingProc,NULL)){
-        WgxDbgPrintLastError("Cannot create thread for guiopts.lua changes tracking");
+        letrace("cannot create thread for guiopts.lua changes tracking");
         changes_tracking_stopped = 1;
     }
 }
@@ -384,55 +409,7 @@ void StopPrefsChangesTracking()
  */
 int IsBootTimeDefragEnabled(void)
 {
-    HKEY hKey;
-    DWORD type, size;
-    char *data, *curr_pos;
-    DWORD i, length, curr_len;
-
-    if(RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-            "SYSTEM\\CurrentControlSet\\Control\\Session Manager",
-            0,
-            KEY_QUERY_VALUE,
-            &hKey) != ERROR_SUCCESS){
-        WgxDisplayLastError(hWindow,MB_OK | MB_ICONHAND,"Cannot open SMSS key!");
-        return FALSE;
-    }
-
-    type = REG_MULTI_SZ;
-    (void)RegQueryValueEx(hKey,"BootExecute",NULL,&type,NULL,&size);
-    data = malloc(size + 10);
-    if(!data){
-        (void)RegCloseKey(hKey);
-        MessageBox(0,"Not enough memory for IsBootTimeDefragEnabled()!",
-            "Error",MB_OK | MB_ICONHAND);
-        return FALSE;
-    }
-
-    type = REG_MULTI_SZ;
-    if(RegQueryValueEx(hKey,"BootExecute",NULL,&type,
-            (LPBYTE)data,&size) != ERROR_SUCCESS){
-        WgxDisplayLastError(hWindow,MB_OK | MB_ICONHAND,"Cannot query BootExecute value!");
-        (void)RegCloseKey(hKey);
-        free(data);
-        return FALSE;
-    }
-
-    length = size - 1;
-    for(i = 0; i < length;){
-        curr_pos = data + i;
-        curr_len = strlen(curr_pos) + 1;
-        /* if the command is yet registered then exit */
-        if(!strcmp(curr_pos,"defrag_native")){
-            (void)RegCloseKey(hKey);
-            free(data);
-            return TRUE;
-        }
-        i += curr_len;
-    }
-
-    (void)RegCloseKey(hKey);
-    free(data);
-    return FALSE;
+    return udefrag_bootex_check(L"defrag_native") > 0 ? 1 : 0;
 }
 
 /**
@@ -450,14 +427,14 @@ DWORD WINAPI BootExecTrackingProc(LPVOID lpParameter)
             0,
             KEY_NOTIFY,
             &hKey) != ERROR_SUCCESS){
-        WgxDbgPrintLastError("BootExecTrackingProc: cannot open SMSS key");
+        letrace("cannot open SMSS key");
         boot_exec_tracking_stopped = 1;
         return 0;
     }
             
     hEvent = CreateEvent(NULL,FALSE,FALSE,NULL);
     if(hEvent == NULL){
-        WgxDbgPrintLastError("BootExecTrackingProc: CreateEvent failed");
+        letrace("CreateEvent failed");
         goto done;
     }
 
@@ -465,7 +442,7 @@ track_again:
     error = RegNotifyChangeKeyValue(hKey,FALSE,
         REG_NOTIFY_CHANGE_LAST_SET,hEvent,TRUE);
     if(error != ERROR_SUCCESS){
-        WgxDbgPrint("BootExecTrackingProc: RegNotifyChangeKeyValue failed with code 0x%x",(UINT)error);
+        etrace("RegNotifyChangeKeyValue failed with code 0x%x",(UINT)error);
         CloseHandle(hEvent);
         goto done;
     }
@@ -473,14 +450,14 @@ track_again:
     while(!stop_track_boot_exec){
         if(WaitForSingleObject(hEvent,100) == WAIT_OBJECT_0){
             if(IsBootTimeDefragEnabled()){
-                WgxDbgPrint("Boot time defragmenter enabled (externally)\n");
+                itrace("boot time defragmenter enabled (externally)");
                 boot_time_defrag_enabled = 1;
                 CheckMenuItem(hMainMenu,
                     IDM_CFG_BOOT_ENABLE,
                     MF_BYCOMMAND | MF_CHECKED);
                 SendMessage(hToolbar,TB_CHECKBUTTON,IDM_CFG_BOOT_ENABLE,MAKELONG(TRUE,0));
             } else {
-                WgxDbgPrint("Boot time defragmenter disabled (externally)\n");
+                itrace("boot time defragmenter disabled (externally)");
                 boot_time_defrag_enabled = 0;
                 CheckMenuItem(hMainMenu,
                     IDM_CFG_BOOT_ENABLE,
@@ -505,7 +482,7 @@ void StartBootExecChangesTracking()
 {
     if(btd_installed){
         if(!WgxCreateThread(BootExecTrackingProc,NULL)){
-            WgxDbgPrintLastError("Cannot create thread for BootExecute registry value changes tracking");
+            letrace("cannot create thread for BootExecute registry value changes tracking");
             boot_exec_tracking_stopped = 1;
         }
     } else {

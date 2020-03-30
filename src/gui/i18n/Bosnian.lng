@@ -29,6 +29,7 @@ DEFRAGMENT                = &Defragmentiraj
 QUICK_OPTIMIZE            = &Brza optimizacija
 FULL_OPTIMIZE             = &Puna optimizacija
 OPTIMIZE_MFT              = &Optimiziraj MFT
+PAUSE                     = &Pause
 STOP                      = &Zaustavi
 REPEAT_ACTION             = Po&novi akciju
 SKIP_REMOVABLE_MEDIA      = Preskoči prenosne &medije
@@ -57,6 +58,7 @@ LANGUAGE                  = &Jezik
 GRAPHICAL_INTERFACE       = &Grafički interfejs
 BOOT_TIME_SCAN            = &Skeniranje pri pokretanju računara
 REPORTS                   = &Izvještaji
+SORTING                   = &Sorting
 
 ; --- --- Language submenu
 
@@ -74,6 +76,16 @@ OPTIONS                   = &Opcije
 
 ENABLE                    = &Uključi
 SCRIPT                    = &Skripta
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Sort by &path
+SORT_BY_SIZE              = Sort by &size
+SORT_BY_C_TIME            = Sort by &creation time
+SORT_BY_M_TIME            = Sort by last &modification time
+SORT_BY_A_TIME            = Sort by &last access time
+SORT_ASCENDING            = Sort in &ascending order
+SORT_DESCENDING           = Sort in &descending order
 
 ; --- Help Menu
 

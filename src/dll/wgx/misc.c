@@ -1,6 +1,6 @@
 /*
  *  WGX - Windows GUI Extended Library.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,11 +24,21 @@
  * @{
  */
 
-#include <windows.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include "wgx-internals.h"
 
-#include "wgx.h"
+/*
+* Size of the buffer to be used initially
+* in WgxGetControlDimensions routine.
+*/
+#define WGX_TEXT_BUFFER_SIZE 256
+
+/* this macro converts pixels from 96 DPI to the current one */
+#define DPI(x) ((int)((double)x * fScale))
+
+/* window layout constants, used in WgxGetControlDimensions routine */
+/* based on layout guidelines: http://msdn.microsoft.com/en-us/library/aa511279.aspx */
+#define BTN_H_SPACING  DPI(9)  /* minimal space between text and button right/left sides */
+#define BTN_V_SPACING  DPI(4)  /* minimal space between text and button top/bottom sides */
 
 enum {
    LIM_SMALL, // corresponds to SM_CXSMICON/SM_CYSMICON
@@ -96,6 +106,14 @@ BOOL WgxLoadIcon(HINSTANCE hInstance,UINT IconID,UINT size,HICON *phIcon)
     int is_standard_icon_size = 0;
     int lims = 0;
     HICON ScaledIcon;
+    OSVERSIONINFO osvi;
+    int vista_and_above = 0;
+    
+    memset(&osvi,0,sizeof(OSVERSIONINFO));
+    osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+    (void)GetVersionEx(&osvi);
+    if(osvi.dwMajorVersion >= 6)
+        vista_and_above = 1;
 
     /* validate parameters */
     if(size == 0 || phIcon == NULL) return FALSE;
@@ -116,15 +134,17 @@ BOOL WgxLoadIcon(HINSTANCE hInstance,UINT IconID,UINT size,HICON *phIcon)
     if(is_standard_icon_size){
         hLib = LoadLibrary("comctl32.dll");
         if(hLib == NULL){
-            WgxDbgPrintLastError("WgxLoadIcon: cannot load comctl32.dll library");
+            letrace("cannot load comctl32.dll library");
         } else {
             pLoadIconMetric = (LOAD_ICON_METRIC_PROC)GetProcAddress(hLib,"LoadIconMetric");
             if(pLoadIconMetric == NULL){
-                WgxDbgPrintLastError("WgxLoadIcon: LoadIconMetric procedure not found in comctl32.dll library");
+                if(vista_and_above){
+                    letrace("LoadIconMetric procedure not found in comctl32.dll library");
+                }
             } else {
                 hr = pLoadIconMetric(hInstance,MAKEINTRESOURCEW(IconID),lims,phIcon);
                 if(hr != S_OK || *phIcon == NULL){
-                    WgxDbgPrint("WgxLoadIcon: LoadIconMetric failed with code 0x%x",(UINT)hr);
+                    etrace("LoadIconMetric failed with code 0x%x",(UINT)hr);
                 } else {
                     return TRUE;
                 }
@@ -141,7 +161,7 @@ BOOL WgxLoadIcon(HINSTANCE hInstance,UINT IconID,UINT size,HICON *phIcon)
         IMAGE_ICON,size,size,
         LR_DEFAULTCOLOR);
     if(*phIcon == NULL){
-        WgxDbgPrintLastError("WgxLoadIcon: LoadImage failed (case 1)");
+        letrace("LoadImage failed (case 1)");
     } else {
         return TRUE;
     }
@@ -153,12 +173,12 @@ BOOL WgxLoadIcon(HINSTANCE hInstance,UINT IconID,UINT size,HICON *phIcon)
     */
     *phIcon = LoadIcon(hInstance,MAKEINTRESOURCE(IconID));
     if(*phIcon == NULL){
-        WgxDbgPrintLastError("WgxLoadIcon: LoadIcon failed");
+        letrace("LoadIcon failed");
     } else {
         ScaledIcon = (HICON)CopyImage((HANDLE)*phIcon,
             IMAGE_ICON,size,size,0);
         if(ScaledIcon == NULL){
-            WgxDbgPrintLastError("WgxLoadIcon: CopyImage failed (case 1)");
+            letrace("CopyImage failed (case 1)");
             DestroyIcon(*phIcon);
             *phIcon = NULL;
         } else {
@@ -177,12 +197,12 @@ BOOL WgxLoadIcon(HINSTANCE hInstance,UINT IconID,UINT size,HICON *phIcon)
         IMAGE_ICON,0,0,
         LR_DEFAULTCOLOR);
     if(*phIcon == NULL){
-        WgxDbgPrintLastError("WgxLoadIcon: LoadImage failed (case 2)");
+        letrace("LoadImage failed (case 2)");
     } else {
         ScaledIcon = (HICON)CopyImage((HANDLE)*phIcon,
             IMAGE_ICON,size,size,0);
         if(ScaledIcon == NULL){
-            WgxDbgPrintLastError("WgxLoadIcon: CopyImage failed (case 2)");
+            letrace("CopyImage failed (case 2)");
             DestroyIcon(*phIcon);
             *phIcon = NULL;
             return FALSE;
@@ -304,7 +324,7 @@ BOOL WgxGetTextDimensions(wchar_t *text,HFONT hFont,HWND hWnd,int *pWidth,int *p
     if(hFont == NULL){
         hFont = (HFONT)SendMessage(hWnd,WM_GETFONT,0,0);
         if(hFont == NULL){
-            WgxDbgPrintLastError("WgxGetTextDimensions: cannot get default font");
+            letrace("cannot get default font");
             return FALSE;
         }
     }
@@ -312,13 +332,13 @@ BOOL WgxGetTextDimensions(wchar_t *text,HFONT hFont,HWND hWnd,int *pWidth,int *p
     /* get dimensions of text */
     hdc = GetDC(hWnd);
     if(hdc == NULL){
-        WgxDbgPrintLastError("WgxGetTextDimensions: cannot get device context of the window");
+        letrace("cannot get device context of the window");
         return FALSE;
     }
     hOldFont = SelectObject(hdc,hFont);
     result = GetTextExtentPoint32W(hdc,text,wcslen(text),&size);
     if(result == FALSE){
-        WgxDbgPrintLastError("WgxGetTextDimensions: cannot get text dimensions");
+        letrace("cannot get text dimensions");
     } else {
         *pWidth = size.cx;
         *pHeight = size.cy;
@@ -326,6 +346,87 @@ BOOL WgxGetTextDimensions(wchar_t *text,HFONT hFont,HWND hWnd,int *pWidth,int *p
     SelectObject(hdc,hOldFont);
     ReleaseDC(hWnd,hdc);
     return result;
+}
+
+/**
+ * @brief Calculates minimal size of
+ * a control sufficient to cover
+ * its contents entirely.
+ * @param[in] hControl the control handle.
+ * @param[in] hFont the font to be used.
+ * @param[out] pWidth pointer to variable
+ * receiving the width of the control.
+ * @param[out] pHeight pointer to variable
+ * receiving the height of the control.
+ * @return TRUE for success, FALSE otherwise.
+ * @note Works properly for text labels
+ * and simple text buttons currently.
+ */
+BOOL WgxGetControlDimensions(HWND hControl,HFONT hFont,int *pWidth,int *pHeight)
+{
+    #define CLASS_NAME_LENGTH 32 /* enough for this routine */
+    wchar_t classname[CLASS_NAME_LENGTH];
+    wchar_t *buffer;
+    int size, result;
+    double fScale = 1.0f;
+    HDC hDC;
+
+    /* validate parameters */
+    if(hControl == NULL) return FALSE;
+    if(pWidth == NULL || pHeight == NULL) return FALSE;
+    *pWidth = *pHeight = 0;
+    
+    /* calculate DPI related stuff */
+    hDC = GetDC(NULL);
+    if(hDC){
+        fScale = (double)GetDeviceCaps(hDC,LOGPIXELSX) / 96.0f;
+        ReleaseDC(NULL,hDC);
+    }
+
+    /* calculate space needed to cover the entire text */
+    size = WGX_TEXT_BUFFER_SIZE;
+    do {
+        buffer = malloc(size * sizeof(wchar_t));
+        if(!buffer){
+            mtrace();
+            return FALSE;
+        }
+        result = GetWindowTextW(hControl,buffer,size);
+        if(result == 0){
+            letrace("cannot get control text");
+            free(buffer);
+            return FALSE;
+        }
+        if(result < size - 1){
+            if(!WgxGetTextDimensions(buffer,
+              hFont,hControl,pWidth,pHeight)){
+                free(buffer);
+                return FALSE;
+            }
+            /* everything's all right */
+            free(buffer);
+            break;
+        }
+        /* buffer is too small; try to allocate two times larger */
+        free(buffer);
+        size <<= 1;
+        if(size * sizeof(wchar_t) <= 0){
+            etrace("unexpected condition");
+            return FALSE;
+        }
+    } while(1);
+    
+    /* add extra space for buttons */
+    if(!GetClassNameW(hControl,classname,CLASS_NAME_LENGTH)){
+        letrace("cannot get class name of the control");
+        return FALSE;
+    }
+    if(!_wcsicmp(classname,L"button")){
+        *pWidth += 2 * BTN_H_SPACING;
+        *pHeight += 2 * BTN_V_SPACING;
+    }
+
+    return TRUE;
 }
 
 /**

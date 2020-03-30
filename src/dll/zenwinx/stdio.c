@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ int kb_read(PKEYBOARD_INPUT_DATA pKID,int msec_timeout);
 void IntTranslateKey(PKEYBOARD_INPUT_DATA InputData, KBD_RECORD *kbd_rec);
 
 /**
- * @brief Displays ANSI string on the screen.
+ * @brief Displays an ANSI string on the screen.
  * @details This routine requires no library
  * initialization, therefore may be used when
  * it fails.
@@ -76,8 +76,8 @@ int winx_putch(int ch)
 {
     UNICODE_STRING us;
     int i;
-    short t[DEFAULT_TAB_WIDTH + 1];
-    short s[2];
+    wchar_t t[DEFAULT_TAB_WIDTH + 1];
+    wchar_t s[2];
 
     /*
     * Use neither memory allocation nor debugging
@@ -89,7 +89,7 @@ int winx_putch(int ch)
         t[DEFAULT_TAB_WIDTH] = 0;
         RtlInitUnicodeString(&us,t);
     } else {
-        s[0] = (short)ch; s[1] = 0;
+        s[0] = (wchar_t)ch; s[1] = 0;
         RtlInitUnicodeString(&us,s);
     }
     NtDisplayString(&us);
@@ -122,7 +122,7 @@ int winx_printf(const char *format, ...)
         if(string){
             winx_print(string);
             result = strlen(string);
-            winx_heap_free(string);
+            winx_free(string);
         }
         va_end(arg);
     }
@@ -149,7 +149,8 @@ int winx_kbhit(int msec)
 
 /**
  * @brief Low level winx_kbhit() equivalent.
- * @param[in] kbd_rec pointer to structure receiving key information.
+ * @param[in] kbd_rec pointer to structure receiving
+ * the key information.
  * @param[in] msec the timeout interval, in milliseconds.
  * @return If any key was pressed, the return value is
  * the ascii character or zero for the control keys.
@@ -161,7 +162,7 @@ int winx_kb_read(KBD_RECORD *kbd_rec,int msec)
 {
     KEYBOARD_INPUT_DATA kbd;
     
-    DbgCheck1(kbd_rec,"winx_kb_read",-1);
+    DbgCheck1(kbd_rec,-1);
 
     do{
         if(kb_read(&kbd,msec) < 0) return (-1);
@@ -231,7 +232,7 @@ int winx_getche(void)
  */
 int winx_gets(char *string,int n)
 {
-    return winx_prompt_ex(NULL,string,n,NULL);
+    return winx_prompt(NULL,string,n,NULL);
 }
 
 /**
@@ -242,7 +243,7 @@ int winx_gets(char *string,int n)
 void winx_init_history(winx_history *h)
 {
     if(h == NULL){
-        DebugPrint("winx_init_history: h = NULL!");
+        etrace("h = NULL!");
         return;
     }
     h->head = h->current = NULL;
@@ -261,12 +262,12 @@ void winx_destroy_history(winx_history *h)
     winx_history_entry *entry;
     
     if(h == NULL){
-        DebugPrint("winx_destroy_history: h = NULL!");
+        etrace("h = NULL!");
         return;
     }
 
     for(entry = h->head; entry != NULL; entry = entry->next){
-        if(entry->string) winx_heap_free(entry->string);
+        winx_free(entry->string);
         if(entry->next == h->head) break;
     }
     winx_list_destroy((list_entry **)(void *)&h->head);
@@ -276,7 +277,7 @@ void winx_destroy_history(winx_history *h)
 
 /**
  * @internal
- * @brief Adds an entry to commands history list.
+ * @brief Adds an entry to the commands history list.
  */
 static void winx_add_history_entry(winx_history *h,char *string)
 {
@@ -286,20 +287,15 @@ static void winx_add_history_entry(winx_history *h,char *string)
     if(h == NULL || string == NULL) return;
     
     if(h->head) last_entry = h->head->prev;
-    entry = (winx_history_entry *)winx_list_insert_item((list_entry **)(void *)&h->head,
+    entry = (winx_history_entry *)winx_list_insert((list_entry **)(void *)&h->head,
         (list_entry *)last_entry,sizeof(winx_history_entry));
-    if(entry == NULL){
-        DebugPrint("winx_add_winx_history_entry: cannot allocate %u bytes of memory",sizeof(winx_history_entry));
-        winx_printf("\nNot enough memory for winx_add_winx_history_entry()!\n");
-        return;
-    }
     
     entry->string = winx_strdup(string);
     if(entry->string == NULL){
         length = strlen(string) + 1;
-        DebugPrint("winx_add_winx_history_entry: cannot allocate %u bytes of memory",length);
-        winx_printf("\nCannot allocate %u bytes of memory for winx_add_winx_history_entry()!\n",length);
-        winx_list_remove_item((list_entry **)(void *)&h->head,(list_entry *)entry);
+        etrace("cannot allocate %u bytes of memory",length);
+        winx_printf("\nCannot allocate %u bytes of memory for %s()!\n",length,__FUNCTION__);
+        winx_list_remove((list_entry **)(void *)&h->head,(list_entry *)entry);
     } else {
         h->n_entries ++;
         h->current = entry;
@@ -325,7 +321,7 @@ static void winx_add_history_entry(winx_history *h,char *string)
  * - Recognizes arrow keys to walk through commands history.
  * @note Does not recognize tabulation.
  */
-int winx_prompt_ex(char *prompt,char *string,int n,winx_history *h)
+int winx_prompt(char *prompt,char *string,int n,winx_history *h)
 {
     KEYBOARD_INPUT_DATA kbd;
     KBD_RECORD kbd_rec;
@@ -336,21 +332,17 @@ int winx_prompt_ex(char *prompt,char *string,int n,winx_history *h)
     int history_listed_to_the_last_entry = 0;
 
     if(!string){
-        winx_printf("\nwinx_prompt_ex: invalid string!\n");
+        winx_printf("\nwinx_prompt: invalid string!\n");
         return (-1);
     }
     if(n <= 0){
-        winx_printf("\nwinx_prompt_ex: invalid string length %d!\n",n);
+        winx_printf("\nwinx_prompt: invalid string length %d!\n",n);
         return (-1);
     }
     
     if(!prompt) prompt = "";
     buffer_length = strlen(prompt) + n;
-    buffer = winx_heap_alloc(buffer_length);
-    if(buffer == NULL){
-        winx_printf("\nNot enough memory for winx_prompt_ex()!\n");
-        return (-1);
-    }
+    buffer = winx_malloc(buffer_length);
     
     winx_printf("%s",prompt);
     
@@ -463,10 +455,10 @@ int winx_prompt_ex(char *prompt,char *string,int n,winx_history *h)
         /* clear the flag in case of ordinary characters typed */
         history_listed_to_the_last_entry = 0;
     }
-    winx_printf("\nwinx_prompt_ex: buffer overflow!\n");
+    winx_printf("\nwinx_prompt: buffer overflow!\n");
 
 done:
-    winx_heap_free(buffer);
+    winx_free(buffer);
     /* add nonempty strings to the history */
     if(string[0]){
         winx_add_history_entry(h,string);
@@ -474,22 +466,14 @@ done:
     return (i+1);
     
 fail:
-    winx_heap_free(buffer);
+    winx_free(buffer);
     return (-1);
 }
 
-/**
- * @brief Simplified analog of winx_prompt_ex() call.
- * Has no support of commands history.
- * @note Does not recognize tabulation.
- */
-int winx_prompt(char *prompt,char *string,int n)
-{
-    return winx_prompt_ex(prompt,string,n,NULL);
-}
-
 /* returns 1 if break or escape was pressed, zero otherwise */
-static int print_line(char *line_buffer,char *prompt,int max_rows,int *rows_printed,int last_line)
+static int print_line(char *line_buffer,
+    char *prompt,int max_rows,int *rows_printed,
+    int last_line)
 {
     KBD_RECORD kbd_rec;
     int escape_detected = 0;
@@ -522,19 +506,19 @@ static int print_line(char *line_buffer,char *prompt,int max_rows,int *rows_prin
 }
 
 /**
- * @brief Displays text on the screen,
+ * @brief Displays a text on the screen,
  * divided to pages if requested so.
- * Accepts array of strings as an input.
+ * Accepts array of strings as input.
  * @param[in] strings - array of strings
- * to be displayed. Last entry of it
+ * to be displayed. The last entry of it
  * must be NULL to indicate the end of
- * array.
- * @param[in] line_width - maximum line
- * width, in characters.
- * @param[in] max_rows - maximum number
- * of lines on the screen.
+ * the array.
+ * @param[in] line_width - the maximum
+ * line width, in characters.
+ * @param[in] max_rows - the maximum
+ * number of lines on the screen.
  * @param[in] prompt - the string to be
- * displayed as a prompt to hit any key
+ * displayed as the prompt to hit any key
  * to list forward.
  * @param[in] divide_to_pages - boolean
  * value indicating whether the text
@@ -543,13 +527,14 @@ static int print_line(char *line_buffer,char *prompt,int max_rows,int *rows_prin
  * except of the first one, will be
  * ignored.
  * @note If user hits Escape or Pause
- * at the prompt, text listing breaks
+ * at the prompt, the text listing breaks
  * immediately.
  * @return Zero for success, negative
  * value otherwise.
  * @note Does not recognize \\b character.
  */
-int winx_print_array_of_strings(char **strings,int line_width,int max_rows,char *prompt,int divide_to_pages)
+int winx_print_strings(char **strings,int line_width,
+    int max_rows,char *prompt,int divide_to_pages)
 {
     int i, j, k, index, length;
     char *line_buffer, *second_buffer;
@@ -557,10 +542,7 @@ int winx_print_array_of_strings(char **strings,int line_width,int max_rows,char 
     int rows_printed;
     
     /* check the main parameter for correctness */
-    if(!strings){
-        DebugPrint("winx_print_array_of_strings: strings = NULL!");
-        return (-1);
-    }
+    DbgCheck1(strings, -1);
     
     /* handle situation when text must be displayed entirely */
     if(!divide_to_pages){
@@ -571,11 +553,11 @@ int winx_print_array_of_strings(char **strings,int line_width,int max_rows,char 
 
     /* check other parameters */
     if(!line_width){
-        DebugPrint("winx_print_array_of_strings: line_width = 0!");
+        etrace("line_width = 0!");
         return (-1);
     }
     if(!max_rows){
-        DebugPrint("winx_print_array_of_strings: max_rows = 0!");
+        etrace("max_rows = 0!");
         return (-1);
     }
     if(prompt == NULL) prompt = DEFAULT_PAGING_PROMPT_TO_HIT_ANY_KEY;
@@ -584,20 +566,10 @@ int winx_print_array_of_strings(char **strings,int line_width,int max_rows,char 
     max_rows -= 4;
     
     /* allocate memory for line buffer */
-    line_buffer = winx_heap_alloc(line_width + 1);
-    if(!line_buffer){
-        DebugPrint("winx_print_array_of_strings: cannot allocate %u bytes of memory",
-            line_width + 1);
-        return (-1);
-    }
+    line_buffer = winx_malloc(line_width + 1);
+
     /* allocate memory for second ancillary buffer */
-    second_buffer = winx_heap_alloc(line_width + 1);
-    if(!second_buffer){
-        DebugPrint("winx_print_array_of_strings: cannot allocate %u bytes of memory",
-            line_width + 1);
-        winx_heap_free(line_buffer);
-        return (-1);
-    }
+    second_buffer = winx_malloc(line_width + 1);
     
     /* start to display strings */
     rows_printed = 0;
@@ -681,8 +653,8 @@ print_rest_of_string:
     }
 
 cleanup:
-    winx_heap_free(line_buffer);
-    winx_heap_free(second_buffer);
+    winx_free(line_buffer);
+    winx_free(second_buffer);
     return 0;
 }
 

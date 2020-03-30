@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -53,16 +53,17 @@ struct toolbar_button buttons[] = {
     {4,  IDM_QUICK_OPTIMIZE,   TBSTATE_ENABLED, TBSTYLE_BUTTON, "QUICK_OPTIMIZE",   "F7"      },
     {5,  IDM_FULL_OPTIMIZE,    TBSTATE_ENABLED, TBSTYLE_BUTTON, "FULL_OPTIMIZE",    "Ctrl+F7" },
     {6,  IDM_OPTIMIZE_MFT,     TBSTATE_ENABLED, TBSTYLE_BUTTON, "OPTIMIZE_MFT",     "Shift+F7"},
-    {7,  IDM_STOP,             TBSTATE_ENABLED, TBSTYLE_BUTTON, "STOP",             "Ctrl+C"  },
-    {0,  0,                    TBSTATE_ENABLED, TBSTYLE_SEP,    NULL,                NULL      },
-    {8,  IDM_SHOW_REPORT,      TBSTATE_ENABLED, TBSTYLE_BUTTON, "REPORT",           "F8"      },
-    {0,  0,                    TBSTATE_ENABLED, TBSTYLE_SEP,    NULL,                NULL      },
-    {9,  IDM_CFG_GUI_SETTINGS, TBSTATE_ENABLED, TBSTYLE_BUTTON, "OPTIONS",          "F10"     },
-    {0,  0,                    TBSTATE_ENABLED, TBSTYLE_SEP,    NULL,                NULL      },
-    {10, IDM_CFG_BOOT_ENABLE,  TBSTATE_ENABLED, TBSTYLE_CHECK,  "BOOT_TIME_SCAN",   "F11"     },
-    {11, IDM_CFG_BOOT_SCRIPT,  TBSTATE_ENABLED, TBSTYLE_BUTTON, "BOOT_TIME_SCRIPT", "F12"     },
-    {0,  0,                    TBSTATE_ENABLED, TBSTYLE_SEP,    NULL,                NULL      },
-    {12, IDM_CONTENTS,         TBSTATE_ENABLED, TBSTYLE_BUTTON, "HELP",             "F1"      }
+    {7,  IDM_PAUSE,            TBSTATE_ENABLED, TBSTYLE_BUTTON, "PAUSE",            "Space"   },
+    {8,  IDM_STOP,             TBSTATE_ENABLED, TBSTYLE_BUTTON, "STOP",             "Ctrl+C"  },
+    {0,  0,                    TBSTATE_ENABLED, TBSTYLE_SEP,    NULL,                NULL     },
+    {9,  IDM_SHOW_REPORT,      TBSTATE_ENABLED, TBSTYLE_BUTTON, "REPORT",           "F8"      },
+    {0,  0,                    TBSTATE_ENABLED, TBSTYLE_SEP,    NULL,                NULL     },
+    {10, IDM_CFG_GUI_SETTINGS, TBSTATE_ENABLED, TBSTYLE_BUTTON, "OPTIONS",          "F10"     },
+    {0,  0,                    TBSTATE_ENABLED, TBSTYLE_SEP,    NULL,                NULL     },
+    {11, IDM_CFG_BOOT_ENABLE,  TBSTATE_ENABLED, TBSTYLE_CHECK,  "BOOT_TIME_SCAN",   "F11"     },
+    {12, IDM_CFG_BOOT_SCRIPT,  TBSTATE_ENABLED, TBSTYLE_BUTTON, "BOOT_TIME_SCRIPT", "F12"     },
+    {0,  0,                    TBSTATE_ENABLED, TBSTYLE_SEP,    NULL,                NULL     },
+    {13, IDM_CONTENTS,         TBSTATE_ENABLED, TBSTYLE_BUTTON, "HELP",             "F1"      }
 };
 
 #define N_BUTTONS (sizeof(buttons)/sizeof(struct toolbar_button))
@@ -75,10 +76,9 @@ TBBUTTON tb_buttons[N_BUTTONS] = {{0}};
  */
 int CreateToolbar(void)
 {
+    int i, size, id, id_d, id_h;
     HDC hdc;
     int bpp = 32;
-    int id, idd, idh;
-    int i;
     TOOLINFOW ti;
     RECT rc;
     
@@ -90,11 +90,35 @@ int CreateToolbar(void)
         hWindow, NULL, hInstance, NULL);
     if(hToolbar == NULL){
         WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,
-            "Cannot create main toolbar!");
+            L"Cannot create main toolbar!");
         return (-1);
     }
     
     /* set buttons */
+    size = GetSystemMetrics(SM_CXSMICON);
+    if(size < 20){
+        size = 16;
+        id = IDB_TOOLBAR_16;
+        id_d = IDB_TOOLBAR_DISABLED_16;
+        id_h = IDB_TOOLBAR_HIGHLIGHTED_16;
+    } else if(size < 24){
+        size = 20;
+        id = IDB_TOOLBAR_20;
+        id_d = IDB_TOOLBAR_DISABLED_20;
+        id_h = IDB_TOOLBAR_HIGHLIGHTED_20;
+    } else if(size < 32){
+        size = 24;
+        id = IDB_TOOLBAR_24;
+        id_d = IDB_TOOLBAR_DISABLED_24;
+        id_h = IDB_TOOLBAR_HIGHLIGHTED_24;
+    } else {
+        size = 32;
+        id = IDB_TOOLBAR_32;
+        id_d = IDB_TOOLBAR_DISABLED_32;
+        id_h = IDB_TOOLBAR_HIGHLIGHTED_32;
+    }
+    SendMessage(hToolbar,TB_SETBITMAPSIZE,0,(LPARAM)MAKELONG(size,size));
+    SendMessage(hToolbar,TB_AUTOSIZE,0,0);
     for(i = 0; i < N_BUTTONS; i++){
         tb_buttons[i].iBitmap = buttons[i].bitmap;
         tb_buttons[i].idCommand = buttons[i].command;
@@ -110,48 +134,34 @@ int CreateToolbar(void)
         bpp = GetDeviceCaps(hdc,BITSPIXEL);
         ReleaseDC(hWindow,hdc);
     }
-    switch(bpp){
-    case 1:
-    case 2:
-    case 4:
-    case 8:
-        /* nt4 etc */
-        id = IDB_TOOLBAR_8_BIT;
-        idd = IDB_TOOLBAR_DISABLED_8_BIT;
-        idh = IDB_TOOLBAR_HIGHLIGHTED_8_BIT;
-        break;
-    case 16:
-        /* w2k etc */
-        id = IDB_TOOLBAR_16_BIT;
-        idd = IDB_TOOLBAR_DISABLED_16_BIT;
-        idh = IDB_TOOLBAR_HIGHLIGHTED_16_BIT;
-        break;
-    default:
-        /* xp etc */
-        id = IDB_TOOLBAR;
-        idd = IDB_TOOLBAR_DISABLED;
-        idh = IDB_TOOLBAR_HIGHLIGHTED;
-        break;
+    if(bpp <= 8 && size == 16){
+        /* for better nt4 and w2k support */
+        id = IDB_TOOLBAR_16_LOW_BPP;
+        id_d = IDB_TOOLBAR_DISABLED_16_LOW_BPP;
+        id_h = IDB_TOOLBAR_HIGHLIGHTED_16_LOW_BPP;
     }
-    hToolbarImgList = ImageList_LoadImage(hInstance,MAKEINTRESOURCE(id),
-        16,0,RGB(255,0,255),IMAGE_BITMAP,LR_CREATEDIBSECTION);
+    hToolbarImgList = ImageList_LoadImage(hInstance,
+        MAKEINTRESOURCE(id),size,0,RGB(255,0,255),
+        IMAGE_BITMAP,LR_CREATEDIBSECTION);
     if(hToolbarImgList == NULL){
         WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,
-            "Cannot load main images for the main toolbar!");
+            L"Cannot load main images for the main toolbar!");
         return (-1);
     }
-    hToolbarImgListD = ImageList_LoadImage(hInstance,MAKEINTRESOURCE(idd),
-        16,0,RGB(255,0,255),IMAGE_BITMAP,LR_CREATEDIBSECTION);
+    hToolbarImgListD = ImageList_LoadImage(hInstance,
+        MAKEINTRESOURCE(id_d),size,0,RGB(255,0,255),
+        IMAGE_BITMAP,LR_CREATEDIBSECTION);
     if(hToolbarImgListD == NULL){
         WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,
-            "Cannot load grayed images for the main toolbar!");
+            L"Cannot load grayed images for the main toolbar!");
         return (-1);
     }
-    hToolbarImgListH = ImageList_LoadImage(hInstance,MAKEINTRESOURCE(idh),
-        16,0,RGB(255,0,255),IMAGE_BITMAP,LR_CREATEDIBSECTION);
+    hToolbarImgListH = ImageList_LoadImage(hInstance,
+        MAKEINTRESOURCE(id_h),size,0,RGB(255,0,255),
+        IMAGE_BITMAP,LR_CREATEDIBSECTION);
     if(hToolbarImgListH == NULL){
         WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,
-            "Cannot load highlighted images for the main toolbar!");
+            L"Cannot load highlighted images for the main toolbar!");
         return (-1);
     }
     SendMessage(hToolbar,TB_SETIMAGELIST,0,(LPARAM)hToolbarImgList);
@@ -178,7 +188,7 @@ int CreateToolbar(void)
     /* initialize tooltips */
     hTooltip = (HWND)SendMessage(hToolbar,TB_GETTOOLTIPS,0,0);
     if(hTooltip == NULL){
-        WgxDbgPrintLastError("CreateToolbar: cannot get tooltip control handle");
+        letrace("cannot get tooltip control handle");
     } else {
         memset(&rc,0,sizeof(RECT));
         for(i = 0; i < N_BUTTONS; i++){

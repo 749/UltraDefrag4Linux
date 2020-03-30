@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -77,12 +77,6 @@
 *    it will fail.
 */
 
-#define _CRT_SECURE_NO_WARNINGS /* for Windows Server 2008 SDK compiler */
-
-/*
-* We use STATUS_WAIT_0...
-* #define WIN32_NO_STATUS
-*/
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
@@ -1190,6 +1184,35 @@ typedef struct _TIME_FIELDS {
 } TIME_FIELDS;
 typedef TIME_FIELDS *PTIME_FIELDS;
 
+typedef NTSTATUS (NTAPI *PRTL_QUERY_REGISTRY_ROUTINE)(
+    IN PWSTR ValueName,
+    IN ULONG ValueType,
+    IN PVOID ValueData,
+    IN ULONG ValueLength,
+    IN PVOID Context,
+    IN PVOID EntryContext
+);
+
+#define RTL_REGISTRY_ABSOLUTE     0   // Path is a full path
+#define RTL_REGISTRY_SERVICES     1   // \Registry\Machine\System\CurrentControlSet\Services
+#define RTL_REGISTRY_CONTROL      2   // \Registry\Machine\System\CurrentControlSet\Control
+#define RTL_REGISTRY_WINDOWS_NT   3   // \Registry\Machine\Software\Microsoft\Windows NT\CurrentVersion
+#define RTL_REGISTRY_DEVICEMAP    4   // \Registry\Machine\Hardware\DeviceMap
+#define RTL_REGISTRY_USER         5   // \Registry\User\CurrentUser
+#define RTL_REGISTRY_MAXIMUM      6
+#define RTL_REGISTRY_HANDLE       0x40000000    // Low order bits are registry handle
+#define RTL_REGISTRY_OPTIONAL     0x80000000    // Indicates the key node is optional
+
+typedef struct _RTL_QUERY_REGISTRY_TABLE {
+    PRTL_QUERY_REGISTRY_ROUTINE QueryRoutine;
+    ULONG Flags;
+    PWSTR Name;
+    PVOID EntryContext;
+    ULONG DefaultType;
+    PVOID DefaultData;
+    ULONG DefaultLength;
+} RTL_QUERY_REGISTRY_TABLE, *PRTL_QUERY_REGISTRY_TABLE;
+
 /* native functions prototypes */
 NTSTATUS    NTAPI    NtAdjustPrivilegesToken(HANDLE,SIZE_T,PTOKEN_PRIVILEGES,SIZE_T,PTOKEN_PRIVILEGES,PDWORD);
 NTSTATUS    NTAPI    NtAllocateVirtualMemory(HANDLE,PVOID*,SIZE_T,SIZE_T *,SIZE_T,SIZE_T);
@@ -1259,11 +1282,13 @@ VOID        NTAPI    RtlInitUnicodeString(PUNICODE_STRING,PCWSTR);
 PRTL_USER_PROCESS_PARAMETERS NTAPI RtlNormalizeProcessParams(RTL_USER_PROCESS_PARAMETERS*);
 ULONG       NTAPI    RtlNtStatusToDosError(NTSTATUS);
 NTSTATUS    NTAPI    RtlQueryEnvironmentVariable_U(PWSTR,PUNICODE_STRING,PUNICODE_STRING);
+NTSTATUS    NTAPI    RtlQueryRegistryValues(ULONG RelativeTo,PCWSTR Path,PRTL_QUERY_REGISTRY_TABLE QueryTable,PVOID Context,PVOID Environment);
 NTSTATUS    NTAPI    RtlSetEnvironmentVariable(PWSTR,PUNICODE_STRING,PUNICODE_STRING);
 NTSTATUS    NTAPI    RtlSystemTimeToLocalTime(const LARGE_INTEGER* SystemTime,PLARGE_INTEGER LocalTime);
 VOID        NTAPI    RtlTimeToTimeFields(PLARGE_INTEGER Time,PTIME_FIELDS TimeFields);
 NTSTATUS    NTAPI    RtlUnicodeStringToAnsiString(PANSI_STRING,PUNICODE_STRING,SIZE_T);
 NTSTATUS    NTAPI    RtlUnicodeToMultiByteN(PCHAR,ULONG,PULONG,PCWCH,ULONG);
+NTSTATUS    NTAPI    RtlWriteRegistryValue(ULONG RelativeTo,PCWSTR Path,PCWSTR ValueName,ULONG ValueType,PVOID ValueData,ULONG ValueLength);
 
 VOID        NTAPI    DbgBreakPoint(VOID);
 NTSTATUS    NTAPI    LdrGetDllHandle(SIZE_T,SIZE_T,const UNICODE_STRING*,HMODULE*);

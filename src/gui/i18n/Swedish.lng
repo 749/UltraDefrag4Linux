@@ -31,6 +31,7 @@ DEFRAGMENT                = Defragmentera
 QUICK_OPTIMIZE            = Snabb optimering
 FULL_OPTIMIZE             = Utförlig optimering
 OPTIMIZE_MFT              = Optimera MFT
+PAUSE                     = &Pause
 STOP                      = Stoppa
 REPEAT_ACTION             = Upprepande aktivitet
 SKIP_REMOVABLE_MEDIA      = Hoppa över flyttbara medier
@@ -59,6 +60,7 @@ LANGUAGE                  = Språk
 GRAPHICAL_INTERFACE       = Grafiskt användargränssnitt
 BOOT_TIME_SCAN            = Boot-skanning
 REPORTS                   = Rapporter
+SORTING                   = &Sorting
 
 ; --- --- Language submenu
 
@@ -76,6 +78,16 @@ OPTIONS                   = Inställningar
 
 ENABLE                    = Aktivera
 SCRIPT                    = Redigera skript
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Sort by &path
+SORT_BY_SIZE              = Sort by &size
+SORT_BY_C_TIME            = Sort by &creation time
+SORT_BY_M_TIME            = Sort by last &modification time
+SORT_BY_A_TIME            = Sort by &last access time
+SORT_ASCENDING            = Sort in &ascending order
+SORT_DESCENDING           = Sort in &descending order
 
 ; --- Help Menu
 

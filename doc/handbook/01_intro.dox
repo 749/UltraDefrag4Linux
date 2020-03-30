@@ -1,7 +1,7 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
- *  Copyright (c) 2010-2012 Stefan Pendl (stefanpe@users.sourceforge.net).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
  *  under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -21,24 +21,26 @@
  *
  * UltraDefrag reduces the file fragmentation, thus it makes disk
  * operations faster. Also the program can optimize a whole disk
- * placing all the files to the fastest part of the disk - to its
- * beginning.
+ * by placing small files close to each other, sorted by path (or
+ * other criteria). After the disk optimization less mechanical work
+ * is needed to read groups of small files. This reduces startup times
+ * of many applications including web and photo browsers.
  *
  * In contrast with the most other disk defragmenters UltraDefrag
  * can defragment locked files by running during the Windows boot.
- * Actually all files including registry hives and page-file 
+ * Actually all files including page and hibernation files
  * can be defragmented there.
  *
  * Also UltraDefrag aims to be fast, simple, reliable and efficient.
  *
  * <h1>About the software</h1>
  * UltraDefrag has the following features:
- * - system files defragmentation (registry, page-file, ...)
+ * - system files defragmentation (page-file, hibernation file, ...)
  * - MFT (master file table) defragmentation (on XP and later systems)
  * - NTFS metafiles defragmentation (on Windows 2000 and later systems)
  * - ultra fast NTFS analysis
  * - fast defragmentation algorithm
- * - effective disk optimization algorithm (two strategies available)
+ * - effective disk optimization algorithm (many strategies available)
  * - safety, it can never damage processed files
  * - simplicity, it can be used without reading the documentation
  * - ability to defragment single files/directories from the context menu of Explorer
@@ -53,7 +55,7 @@
  * - ability to automatically hibernate/shutdown PC after a job is done
  * - ability to make an automatic effective defragmentation through Windows Task Scheduler
  * - multilingual graphical interface
- * - little binaries (less than 500 kb)
+ * - little binaries (about 500 kb)
  * - portable version available which requires no installation
  * - native 64-bit support
  * - open source code licensed under GPL
@@ -61,11 +63,8 @@
  * UltraDefrag runs on Windows NT 4.0, Windows 2000, Windows XP,
  * Windows Server 2003, Windows Vista, Windows Server 2008
  * and Windows 7, including all 64 bit versions of Windows.
- * NT 4.0 Alpha is currently not supported. ReactOS and Wine
- * aren't supported yet, because they have no defragmentation
- * API implemented at this moment.
  *
- * UltraDefrag cannot be used on DOS, Windows 9x, Windows NT 3.51 and Mac OS
+ * UltraDefrag cannot be used on DOS, Windows 9x, Windows NT 3.51, ReactOS and Mac OS
  * since these operating systems provide no defragmentation API.
  * However, <a href="http://b.andre.pagesperso-orange.fr/advanced-ntfs-3g.html">Linux port of UltraDefrag</a> exists.
  * It is based on NTFS-3G capabilities.
@@ -77,84 +76,66 @@
  * There are a few system restrictions which apply to disk
  * defragmentation. Unfortunately UltraDefrag cannot take away
  * these restrictions:
- * - Directories on FAT disks cannot be moved. This is a well
- *   known FAT driver restriction and cannot be fixed.
- * - The $Bitmap and other internal NTFS files cannot be
- *   defragmented on Windows versions prior to Windows 2000 and
- *   to defragment the $MFT file at least Windows XP is needed, because
- *   the NTFS system driver prevents accessing them.
- * - The first 16 clusters of MFT cannot be moved on Windows XP and Windows
- *   Server 2003, this is a file system driver limitation. So, UltraDefrag
- *   skips $Mft file on these systems, if it contains two fragments only.
- *   In case of three or more fragments the file will be defragmented
- *   partially, if possible.
- * - NTFS disks with a cluster size greater than 4 kilobytes
+ * - The first clusters of FAT directories cannot be moved.
+ *   This is a well known FAT driver restriction and cannot be fixed.
+ *   So, UltraDefrag cannot defragment FAT directories. It tries to
+ *   optimize them instead by placing all fragments close to each other
+ *   behind the first one.
+ * - The first 16 clusters of MFT cannot be moved, this is a file
+ *   system driver limitation. So, UltraDefrag cannot defragment
+ *   the MFT. However, it can optimize it by placing all fragments
+ *   close to each other.
+ * - On Windows NT 4.0 and Windows 2000 both FAT directories and
+ *   MFT cannot be optimized because the file system drivers
+ *   disallow to move their clusters.
+ * - On Windows NT 4.0 NTFS metafiles cannot be defragmented
+ *   because the file system driver prevents accessing them.
+ *   NTFS directories cannot be defragmented too because the
+ *   driver disallows to move their clusters.
+ * - On Windows NT 4.0 and Windows 2000 quite complex limitations exist
+ *   in the move file API for NTFS disks. To keep algorithms simple and
+ *   reliable UltraDefrag never tries to defragment files partially there.
+ * - NTFS disks with cluster size greater than 4 kilobytes
  *   cannot be defragmented on Windows NT 4.0 and Windows 2000.
- * - On Windows NT 4.0 and Windows 2000 NTFS driver cannot move 
- *   any part of the file - quite complex rules exist to define
- *   whether a part of the file can be moved or not. Due to the complexity
- *   of rules, UltraDefrag is not able to process NTFS disks so 
- *   effectively as it does on Windows XP and later versions of Windows.
  *
  * <h1>Fragmentation level</h1>
  * The fragmentation level or percentage is calculated as follows:
- * @htmlonly
- * <div class="fragment">
- *     <div class="line">fragmentation = number of fragmented file fragments / number of all file fragments</div>
- * </div>
- * @endhtmlonly
- * @latexonly
- * \begin{DoxyCode}
+ * @code
  * fragmentation = number of fragmented file fragments / number of all file fragments
- * \end{DoxyCode}
- * @endlatexonly
+ * @endcode
  *
  * <h1>Processing algorithms</h1>
- *
- * @note Both optimization algorithms ignore any size, name and fragment count filters.
  *
  * <h2>Defragmentation algorithm</h2>
  * <ol>
  * <li>The analysis phase scans the whole disk to collect
  * information about all files and free space.</li>
- * <li>The defragmentation phase concatenates all fragmented files
- * into one chunk. Files that can't be moved or are locked are skipped.</li>
- * <li>The partial defragmentation phase tries to concatenate the
- * remaining fragmented files into as less pieces as possible.</li>
- * </ol>
- *
- * <h2>Quick optimization algorithm</h2>
- * <ol>
- * <li>The analysis phase is the same as for defragmentation.</li>
- * <li>The next phase moves only fragmented files to the end of the
- * disk to free space at the beginning of it.</li>
- * <li>The defragmentation phase is the same as for defragmentation.</li>
- * <li>The last phase tries to move as much not fragmented files 
- * to the beginning of the disk to create a big free space at the end.</li>
+ * <li>The defragmentation phase eliminates little fragments
+ * by joining them together. This speeds up access to individual files.</li>
  * </ol>
  *
  * <h2>Full optimization algorithm</h2>
  * <ol>
  * <li>The analysis phase is the same as for defragmentation.</li>
- * <li>The next phase moves all files, fragmented or not, to the end of the
+ * <li>The next phase moves all small files and fragments to the end of the
  * disk to free space at the beginning of it.</li>
- * <li>The defragmentation phase is the same as for defragmentation.</li>
- * <li>The last phase is the same as for quick optimization.</li>
+ * <li>The third phase moves small files back, sorted by user defined criteria 
+ * (by path in ascending order by default). This speeds up access to groups of files.</li>
+ * <li>The last phase defragments all files.</li>
  * </ol>
  *
- * Another advantage of the described optimization algorithms
- * over more complicated algorithms is their relatively small
- * processing time.
+ * <h2>Quick optimization algorithm</h2>
+ * Quick optimization consists of the same steps as the full
+ * optimization. However, to speed things up it skips already sorted out
+ * groups of files. Free space consolidation becomes not so good
+ * in this case, but overall disk processing time becomes shorter.
  *
- * Unfortunately the disk optimization algorithm works only
- * on NTFS disks, because FAT directories are not movable.
+ * @note Optimization algorithms ignore any size, name and fragment count filters.
  *
- * On the other hand, NTFS disks are often logically split
- * into several parts by files which cannot be moved ($Bitmap and others).
- * Therefore it may be sometimes impossible to get a very large
- * continuous free space area for, for instance, pagefile
- * defragmentation. For such cases there are two workarounds
- * available:
+ * Sometimes even the disk optimization fails to make a large 
+ * continuous free space gap. This happens when unmovable (locked)
+ * files are scattered around the disk. In order to defragment big
+ * files (pagefile etc.) in such cases they are two workarounds available:
  * - Move all files to another disk, reformat the disk and move
  * all back. This causes the perfect disk optimization.
  * - Run <a href="http://gparted.sourceforge.net/">GParted</a> or

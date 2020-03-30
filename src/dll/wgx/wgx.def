@@ -1,50 +1,45 @@
 LIBRARY wgx.dll
 
 EXPORTS
+    IncreaseGoogleAnalyticsCounter
     WgxAddAccelerators
+    WgxApplyResourceTable
     WgxBuildMenu
     WgxBuildPopupMenu
-    
-    WgxCreateMenuBitmapMasked
-
     WgxBuildResourceTable
-    WgxApplyResourceTable
-    WgxSetText
-    WgxGetResourceString
-    WgxDestroyResourceTable
-
-    WgxEnableWindows
-    WgxDisableWindows
-    WgxLoadIcon
-    WgxSetIcon
-    WgxCheckWindowCoordinates
     WgxCenterWindow
-    WgxGetTextDimensions
-    WgxSafeSubclassWindow
-    WgxSafeCallWndProc
-
-    WgxShellExecuteW
-
+    WgxCheckAdminRights
+    WgxCheckWindowCoordinates
     WgxCreateFont
-    WgxSetFont
-    WgxDestroyFont
-    WgxSaveFont
-
-    IncreaseGoogleAnalyticsCounter
-
-    WgxSetDbgPrintHandler
-    WgxDbgPrint
-    WgxDbgPrintLastError
-    WgxDisplayLastError
-    
-    WgxGetOptions
-    WgxSaveOptions
-
-    WgxSetTaskbarIconOverlay
-    WgxRemoveTaskbarIconOverlay
-    
+    WgxCreateMenuBitmapMasked
     WgxCreateProcess
     WgxCreateThread
-    WgxCheckAdminRights
-    
+    WgxDestroyFont
+    WgxDestroyResourceTable
+    WgxDisableWindows
+    WgxDisplayLastError
+    WgxEnableWindows
+    WgxGetControlDimensions
+    WgxGetOptions
+    WgxGetResourceString
+    WgxGetTextDimensions
+    WgxLoadIcon
     WgxPrintUnicodeString
+    WgxRemoveTaskbarIconOverlay
+    WgxSafeCallWndProc
+    WgxSafeSubclassWindow
+    WgxSaveFont
+    WgxSaveOptions
+    WgxSetFont
+    WgxSetIcon
+    WgxSetInternalTraceHandler
+    WgxSetProcessPriority
+    WgxSetTaskbarIconOverlay
+    WgxSetTaskbarProgressState
+    WgxSetTaskbarProgressValue
+    WgxSetText
+    WgxShellExecute
+    wgx_sprintf
+    wgx_swprintf
+    wgx_vsprintf
+    wgx_vswprintf

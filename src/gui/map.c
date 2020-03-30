@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -65,7 +65,6 @@ COLORREF colors[NUM_OF_SPACE_STATES] =
     RGB(255,255,0),RGB(238,221,0),  /* directories */
     RGB(185,185,0),RGB(93,93,0),    /* compressed */
     RGB(211,0,255),RGB(128,0,128),  /* mft zone; mft itself */
-    RGB(0,255,255)                  /* temporary system */
 };
 HBRUSH hBrushes[NUM_OF_SPACE_STATES] = { NULL };
 
@@ -89,7 +88,7 @@ void InitMap(void)
     for(i = 0; i < NUM_OF_SPACE_STATES; i++){
         hBrushes[i] = CreateSolidBrush(colors[i]);
         if(hBrushes[i] == NULL)
-            WgxDbgPrintLastError("InitMap: CreateSolidBrush failed");
+            letrace("CreateSolidBrush failed");
     }
 }
 
@@ -135,7 +134,7 @@ void ResizeMap(int x, int y, int width, int height)
     long dx, dy, threshold;
     
     if(WaitForSingleObject(hMapEvent,INFINITE) != WAIT_OBJECT_0){
-        WgxDbgPrintLastError("ResizeMap: wait on hMapEvent failed");
+        letrace("synchronization failed");
         return;
     }
     
@@ -291,7 +290,7 @@ void RedrawMap(volume_processing_job *job, int map_refill_required)
         return;
     
     if(WaitForSingleObject(hMapEvent,INFINITE) != WAIT_OBJECT_0){
-        WgxDbgPrintLastError("RedrawMap: wait on hMapEvent failed");
+        letrace("synchronization failed");
         return;
     }
     
@@ -319,7 +318,7 @@ void RedrawMap(volume_processing_job *job, int map_refill_required)
         hBitmap = CreateCompatibleBitmap(hMainDC,map_width,map_height);
         
         if(hBitmap == NULL){
-            WgxDbgPrintLastError("RedrawMap: CreateCompatibleBitmap failed");
+            letrace("CreateCompatibleBitmap failed");
             (void)ReleaseDC(hWindow,hMainDC);
             (void)DeleteDC(hDC);
             SetEvent(hMapEvent);
@@ -357,7 +356,7 @@ void RedrawMap(volume_processing_job *job, int map_refill_required)
         free(job->map.scaled_buffer);
         job->map.scaled_buffer = malloc(map_blocks_per_line * map_lines);
         if(job->map.scaled_buffer == NULL){
-            WgxDbgPrint("RedrawMap: cannot allocate %u bytes of memory\n",
+            etrace("cannot allocate %u bytes of memory",
                 map_blocks_per_line * map_lines);
             job->map.scaled_size = 0;
             SetEvent(hMapEvent);

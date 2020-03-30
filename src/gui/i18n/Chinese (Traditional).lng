@@ -1,9 +1,10 @@
 ﻿;------------------------------------------------------------------------------
 ; UltraDefrag GUI Traditional Chinese Language Pack.
-; Copyright (C) 2008, 2009 muzuiget.
+; Copyright (C) 2008-2009 muzuiget.
 ; Copyright (C) 2010 Ryan Ping Chih Ko.
 ; Copyright (C) 2010 rexx.
 ; Copyright (C) 2010 James Bond.
+; Copyright (C) 2013 Passerby.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
@@ -27,71 +28,83 @@ HELP                      = 說明(&H)
 
 ; --- Action Menu
 
-ANALYSE                   = 分析
-DEFRAGMENT                = 重組
-QUICK_OPTIMIZE            = 快速優化
-FULL_OPTIMIZE             = 完整優化
-OPTIMIZE_MFT              = 優化 MFT
-STOP                      = 停止
-REPEAT_ACTION             = 重複動作
-SKIP_REMOVABLE_MEDIA      = 不顯示卸除式磁碟
-RESCAN_DRIVES             = 更新磁碟機清單
-REPAIR_DRIVES             = 修復硬盤
-WHEN_DONE                 = 作業完成後
-EXIT                      = 離開
+ANALYSE                   = 分析(&A)
+DEFRAGMENT                = 重組(&D)
+QUICK_OPTIMIZE            = 快速優化(&Q)
+FULL_OPTIMIZE             = 完整優化(&F)
+OPTIMIZE_MFT              = 優化MFT(&O)
+PAUSE                     = 暫停(&U)
+STOP                      = 停止(&S)
+REPEAT_ACTION             = 重複動作(&P)
+SKIP_REMOVABLE_MEDIA      = 隱藏可卸除式裝置(&M)
+RESCAN_DRIVES             = 更新磁碟機清單(&R)
+REPAIR_DRIVES             = 修復磁碟(&V)
+WHEN_DONE                 = 當作業完成後(&W)
+EXIT                      = 離開(&X)
 
 ; --- --- When done submenu
 
-WHEN_DONE_NONE            = 無動作
-WHEN_DONE_EXIT            = 離開
-WHEN_DONE_STANDBY         = 進入待機模式
-WHEN_DONE_HIBERNATE       = 進入休眠模式
-WHEN_DONE_LOGOFF          = 登出
-WHEN_DONE_REBOOT          = 重新開機
-WHEN_DONE_SHUTDOWN        = 關機
+WHEN_DONE_NONE            = 無動作(&N)
+WHEN_DONE_EXIT            = 離開(&X)
+WHEN_DONE_STANDBY         = 進入待機模式(&D)
+WHEN_DONE_HIBERNATE       = 進入休眠模式(&H)
+WHEN_DONE_LOGOFF          = 登出(&L)
+WHEN_DONE_REBOOT          = 重新開機(&R)
+WHEN_DONE_SHUTDOWN        = 關機(&S)
 
 ; --- Report Menu
 
-SHOW_REPORT               = 顯示報告
+SHOW_REPORT               = 顯示報告(&S)
 
 ; --- Settings Menu
 
-LANGUAGE                  = 語言
-GRAPHICAL_INTERFACE       = 圖形界面
-BOOT_TIME_SCAN            = 開機時進行重組
-REPORTS                   = 報告
+LANGUAGE                  = 語系(&L)
+GRAPHICAL_INTERFACE       = 圖形介面(&G)
+BOOT_TIME_SCAN            = 開機重組(&B)
+REPORTS                   = 報告(&R)
+SORTING                   = 排序(&S)
 
 ; --- --- Language submenu
 
-TRANSLATIONS_CHANGE_LOG   = 查看更改日誌
-TRANSLATIONS_REPORT       = 查看交易及報告
-TRANSLATIONS_FOLDER       = 翻譯資料夾
-TRANSLATIONS_SUBMIT       = 提交當前翻譯
+TRANSLATIONS_CHANGE_LOG   = 查看更新日誌(&V)
+TRANSLATIONS_REPORT       = 查看翻譯報告(&R)
+TRANSLATIONS_FOLDER       = 語系檔資料夾(&T)
+TRANSLATIONS_SUBMIT       = 提交當前的翻譯(&S)
 
 ; --- --- Graphical interface submenu
 
-FONT                      = 字型
-OPTIONS                   = 選項
+FONT                      = 字型(&F)
+OPTIONS                   = 選項(&O)
 
 ; --- --- Boot time scan submenu
 
-ENABLE                    = 啟用
-SCRIPT                    = 指令碼
+ENABLE                    = 啟用(&E)
+SCRIPT                    = 指令碼(&S)
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = 依照路徑排序(&P)
+SORT_BY_SIZE              = 依照容量排序(&S)
+SORT_BY_C_TIME            = 依照建立時間排序(&C)
+SORT_BY_M_TIME            = 依照最後修改時間排序(&M)
+SORT_BY_A_TIME            = 依照最後存取時間排序(&L)
+SORT_ASCENDING            = 升序排序(&A)
+SORT_DESCENDING           = 降序排序(&D)
 
 ; --- Help Menu
 
-CONTENTS                  = 內容
-BEST_PRACTICE             = 最佳作法
-FAQ                       = 問與答
-CM_LEGEND                 = 群集地圖圖例
-DEBUG                     = 除蟲
-CHECK_UPDATE              = 檢查更新
-ABOUT                     = 關於
+CONTENTS                  = 目錄(&C)
+BEST_PRACTICE             = 最佳方法(&P)
+FAQ                       = 常見問答集(&F)
+CM_LEGEND                 = 磁碟叢集圖例(&L)
+DEBUG                     = 除錯(&B)
+CHECK_UPDATE              = 檢查更新(&U)
+ABOUT                     = 關於(&A)
 
 ; --- --- Debug submenu
 
-OPEN_LOG                  = 打開及登錄
-REPORT_BUG                = 發送錯誤報告
+OPEN_LOG                  = 開啟記錄檔(&L)
+REPORT_BUG                = 發送錯誤報告(&R)
 
 ; --- Toolbar Tooltips
 
@@ -99,56 +112,56 @@ BOOT_TIME_SCRIPT          = 開機重組指令碼
 
 ; Drives list items.
 
-VOLUME                    = 磁碟區
+VOLUME                    = 磁碟
 STATUS                    = 狀態
-FRAGMENTATION             = 碎片
+FRAGMENTATION             = 分散率
 TOTAL                     = 磁碟大小
 FREE                      = 可用空間
-PERCENT                   = 可用空間百分比
+PERCENT                   = ％可用
 
 ; Status messages
 
-STATUS_RUNNING            = 正在執行作業
+STATUS_RUNNING            = 作業執行中
 STATUS_ANALYSED           = 已分析
 STATUS_DEFRAGMENTED       = 已重組
 STATUS_OPTIMIZED          = 已優化
-STATUS_DIRTY              = 磁盤需要被修復
+STATUS_DIRTY              = 磁碟需要修復
 
 ; Status bar messages.
 
-DIRS                      = 目錄
-FILES                     = 檔案
-FRAGMENTED                = 破碎的檔案
-COMPRESSED                = 壓縮的檔案
+DIRS                      = 個目錄
+FILES                     = 個檔案
+FRAGMENTED                = 個分散的檔案
+COMPRESSED                = 個壓縮的檔案
 
 ; About window.
 
-ABOUT_WIN_TITLE           = 關於 Ultra Defragmenter
-CREDITS                   = 致謝
-LICENSE                   = 授權
+ABOUT_WIN_TITLE           = 關於Ultra Defragmenter
+CREDITS                   = 致謝(&C)
+LICENSE                   = 授權(&L)
 
 ; Shutdown confirmation
 
 PLEASE_CONFIRM            = 請確認
 REALLY_SHUTDOWN_WHEN_DONE = 確定要在作業完成後關機嗎？
 REALLY_HIBERNATE_WHEN_DONE= 確定要在作業完成後進入休眠嗎？
-REALLY_LOGOFF_WHEN_DONE   = 確定要在作業完成後登出嗎?
-REALLY_REBOOT_WHEN_DONE   = 確定要在作業完成後重新開機嗎?
-SECONDS_TILL_SHUTDOWN     = 關機前等候秒數
-SECONDS_TILL_HIBERNATION  = 進入休眠前等候秒數
+REALLY_LOGOFF_WHEN_DONE   = 確定要在作業完成後登出嗎？
+REALLY_REBOOT_WHEN_DONE   = 確定要在作業完成後重新開機嗎？
+SECONDS_TILL_SHUTDOWN     = 秒後關機
+SECONDS_TILL_HIBERNATION  = 秒後進入休眠
 SECONDS_TILL_LOGOFF       = 秒後登出
 SECONDS_TILL_REBOOT       = 秒後重新開機
-YES                       = 是
-NO                        = 否
+YES                       = 是(&Y)
+NO                        = 否(&N)
 
 ; Upgrade dialog
 
-UPGRADE_CAPTION           = 你可以升級我 ^-^
-UPGRADE_MESSAGE           = 版本是可供下載!
+UPGRADE_CAPTION           = 您可升級我 ^-^
+UPGRADE_MESSAGE           = 版已可下載！
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 
-JOB_IS_RUNNING            = 作業運行
+JOB_IS_RUNNING            = 一個作業正在執行中
 
 ; Strings for system tray icon context menu.
 
@@ -157,16 +170,16 @@ HIDE                      = 隱藏
 
 ; Strings for the file fragmentation reports.
 
-FRAGMENTED_FILES_ON       = 上零散的文件。
+FRAGMENTED_FILES_ON       = 分散檔案的於
 
-VISIT_HOMEPAGE            = 訪問我們的網站
-VIEW_REPORT_OPTIONS       = 報告選項
-POWERED_BY_LUA            = 技術支持 Lua
+VISIT_HOMEPAGE            = 拜訪我們的網站
+VIEW_REPORT_OPTIONS       = 查看報告設定
+POWERED_BY_LUA            = 基於Lua建構
 
-FRAGMENTS                 = 片段
-SIZE                      = 大小
-FILENAME                  = 文件名
-COMMENT                   = 評語
+FRAGMENTS                 = 分散數量
+SIZE                      = 檔案大小
+FILENAME                  = 檔案名稱
+COMMENT                   = 檔案說明
 
 LOCKED                    = 鎖定
 MOVE_FAILED               = 移動失敗

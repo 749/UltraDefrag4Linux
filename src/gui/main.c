@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -44,6 +44,7 @@ RECT win_rc; /* coordinates of main window */
 RECT r_rc;   /* coordinates of restored window */
 double fScale = 1.0f;
 UINT TaskbarButtonCreatedMsg = 0;
+UINT TaskbarCreatedMsg = 0;
 
 int when_done_action = IDM_WHEN_DONE_NONE;
 int shutdown_requested = 0;
@@ -77,8 +78,9 @@ int btd_installed = 0;
 
 int web_statistics_completed = 0;
 
-/* algorithm preview flags controlled through the preview menu */
-int job_flags = UD_PREVIEW_MATCHING;
+/* flags controlled through the preview menu */
+int job_flags = 0;
+int sorting_flags = SORT_BY_PATH | SORT_ASCENDING;
 
 /* forward declarations */
 LRESULT CALLBACK MainWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam);
@@ -95,33 +97,33 @@ static int InitSynchObjects(void)
     hLangMenuEvent = CreateEvent(NULL,FALSE,TRUE,NULL);
     if(hLangMenuEvent == NULL){
         WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,
-            "Cannot create language menu synchronization event!");
-        WgxDbgPrintLastError("InitSynchObjects: language menu event creation failed");
+            L"Cannot create language menu synchronization event!");
+        letrace("language menu event creation failed");
         return (-1);
     }
     hTaskbarIconEvent = CreateEvent(NULL,FALSE,TRUE,NULL);
     if(hTaskbarIconEvent == NULL){
         WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,
-            "Cannot create taskbar icon synchronization event!");
-        WgxDbgPrintLastError("InitSynchObjects: taskbar icon event creation failed");
-        WgxDbgPrint("no taskbar icon overlays will be shown");
-        WgxDbgPrint("and no system tray icon will be shown");
+            L"Cannot create taskbar icon synchronization event!");
+        letrace("taskbar icon event creation failed");
+        itrace("no taskbar icon overlays will be shown");
+        itrace("and no system tray icon will be shown");
         DestroySynchObjects();
         return (-1);
     }
     hMapEvent = CreateEvent(NULL,FALSE,TRUE,NULL);
     if(hMapEvent == NULL){
         WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,
-            "Cannot create cluster map synchronization event!");
-        WgxDbgPrintLastError("InitSynchObjects: map event creation failed");
+            L"Cannot create cluster map synchronization event!");
+        letrace("map event creation failed");
         DestroySynchObjects();
         return (-1);
     }
     hListEvent = CreateEvent(NULL,FALSE,TRUE,NULL);
     if(hListEvent == NULL){
         WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,
-            "Cannot create drives list synchronization event!");
-        WgxDbgPrintLastError("InitSynchObjects: list event creation failed");
+            L"Cannot create drives list synchronization event!");
+        letrace("list event creation failed");
         DestroySynchObjects();
         return (-1);
     }
@@ -164,7 +166,7 @@ static int IsPortable(void)
     int i;
     
     if(!GetModuleFileNameW(NULL,cd,MAX_PATH)){
-        WgxDbgPrintLastError("IsPortable: cannot get module file name");
+        letrace("cannot get module file name");
         return 1;
     }
     
@@ -201,7 +203,7 @@ static int IsPortable(void)
         0,samDesired,&hRegKey);
     if(result != ERROR_SUCCESS){
         SetLastError((DWORD)result);
-        WgxDbgPrintLastError("IsPortable: cannot open registry");
+        letrace("cannot open registry");
         return 1;
     }
     
@@ -209,7 +211,7 @@ static int IsPortable(void)
     RegCloseKey(hRegKey);
     if(result != ERROR_SUCCESS){
         SetLastError((DWORD)result);
-        WgxDbgPrintLastError("IsPortable: cannot read registry");
+        letrace("cannot read registry");
         return 1;
     }
     
@@ -225,11 +227,11 @@ static int IsPortable(void)
     }
     
     if(udefrag_wcsicmp(path,cd) == 0){
-        WgxDbgPrint("Install location \"%ws\" matches \"%ws\", so it isn't portable\n",path,cd);
+        trace(I"Install location \"%ws\" matches \"%ws\", so it isn't portable",path,cd);
         return 0;
     }
     
-    WgxDbgPrint("Install location \"%ws\" differs from \"%ws\", so it is portable\n",path,cd);
+    trace(I"Install location \"%ws\" differs from \"%ws\", so it is portable",path,cd);
     return 1;
 }
 
@@ -244,7 +246,7 @@ static int IsBtdInstalled(void)
     FILE *f;
     
     if(!GetSystemDirectory(sysdir,MAX_PATH)){
-        WgxDbgPrintLastError("IsBtdInstalled: cannot get system directory");
+        letrace("cannot get system directory");
         return 1; /* let's assume that it is installed */
     }
     
@@ -253,7 +255,7 @@ static int IsBtdInstalled(void)
 
     f = fopen(path,"rb");
     if(f == NULL){
-        WgxDbgPrint("Cannot open %s => the boot time defragmenter is not installed\n",path);
+        trace(I"Cannot open %s => the boot time defragmenter is not installed",path);
         return 0;
     }
     
@@ -288,7 +290,7 @@ static int RegisterMainWindowClass(void)
     
     if(!RegisterClassEx(&wc)){
         WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,
-            "RegisterMainWindowClass failed!");
+            L"RegisterMainWindowClass failed!");
         return (-1);
     }
     return 0;
@@ -361,7 +363,7 @@ void ResizeMainWindow(int force)
         return; /* this happens on early stages of window initialization */
     
     if(!GetClientRect(hWindow,&rc)){
-        WgxDbgPrint("GetClientRect failed in RepositionMainWindowControls()!\n");
+        letrace("GetClientRect failed");
         return;
     }
     
@@ -429,7 +431,14 @@ int CreateMainWindow(int nShowCmd)
 
     TaskbarButtonCreatedMsg = RegisterWindowMessage("TaskbarButtonCreated");
     if(TaskbarButtonCreatedMsg == 0)
-        WgxDbgPrintLastError("CreateMainWindow: cannot register TaskbarButtonCreated message");
+        letrace("cannot register TaskbarButtonCreated message");
+    TaskbarCreatedMsg = RegisterWindowMessage("TaskbarCreated");
+    if(TaskbarCreatedMsg == 0){
+        letrace("cannot register TaskbarCreated message");
+        /* turn off minimize to tray option */
+        minimize_to_system_tray = 0;
+        itrace("minimize_to_system_tray option turned off");
+    }
 
     if(dry_run == 0){
         if(portable_mode) caption = VERSIONINTITLE_PORTABLE;
@@ -451,7 +460,7 @@ int CreateMainWindow(int nShowCmd)
             NULL,NULL,hInstance,NULL);
     if(hWindow == NULL){
         WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,
-            "Cannot create main window!");
+            L"Cannot create main window!");
         return (-1);
     }
     
@@ -473,7 +482,7 @@ int CreateMainWindow(int nShowCmd)
             hWindow,NULL,hInstance,NULL);
     if(hList == NULL){
         WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,
-            "Cannot create disk list control!");
+            L"Cannot create disk list control!");
         return (-1);
     }
 
@@ -484,7 +493,7 @@ int CreateMainWindow(int nShowCmd)
             hWindow,NULL,hInstance,NULL);
     if(hMap == NULL){
         WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,
-            "Cannot create cluster map control!");
+            L"Cannot create cluster map control!");
         return (-1);
     }
     
@@ -520,14 +529,25 @@ int CreateMainWindow(int nShowCmd)
     ApplyLanguagePack();
     BuildLanguageMenu();
     
-    /* show main window on the screen */
+    /*
+    * Show main window on the screen.
+    *
+    * The following sequence does the job fine,
+    * but causes a flicker, so we're using a dirty
+    * code here and trying then to avoid ShowWindow
+    * calls whenever possible instead.
+    *
+    * ShowWindow(hWindow,nShowCmd);
+    * if(init_maximized_window)
+    *     ShowWindow(hWindow,SW_MAXIMIZE);
+    */
     ShowWindow(hWindow,init_maximized_window ? SW_MAXIMIZE : nShowCmd);
     UpdateWindow(hWindow);
 
     /* load accelerators */
     hAccelTable = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAIN_ACCELERATOR));
     if(hAccelTable == NULL){
-        WgxDbgPrintLastError("CreateMainWindow: accelerators cannot be loaded");
+        letrace("accelerators cannot be loaded");
     }
     
     SetFocus(hList);
@@ -549,68 +569,82 @@ int CreateMainWindow(int nShowCmd)
  */
 void OpenWebPage(char *page, char *anchor)
 {
-    int i;
-    DWORD url_length;
-    wchar_t url[INTERNET_MAX_URL_LENGTH];
-    wchar_t path[INTERNET_MAX_URL_LENGTH];
-    wchar_t exe[MAX_PATH] = {0};
-    char cd[MAX_PATH];
-    HINSTANCE hApp;
+    wchar_t path[INTERNET_MAX_URL_LENGTH + 1];
+    BOOL result = FALSE;
+    HINSTANCE hInst;
+    wchar_t exe[MAX_PATH + 1] = {0};
+    char cd[MAX_PATH + 1];
     HMODULE hShlwapiDll;
     typedef HRESULT (WINAPI *URLCANONICALIZEW_PROC)(wchar_t *pszUrl,
         wchar_t *pszCanonicalized,LPDWORD pcchCanonicalized,DWORD dwFlags);
     URLCANONICALIZEW_PROC pUrlCanonicalizeW = NULL;
-    
-    hShlwapiDll = LoadLibrary("shlwapi.dll");
-    if(hShlwapiDll){
-        pUrlCanonicalizeW = (URLCANONICALIZEW_PROC)GetProcAddress(hShlwapiDll,"UrlCanonicalizeW");
-    }
+    wchar_t url[INTERNET_MAX_URL_LENGTH + 1];
+    DWORD url_length;
+    int i;
 
     (void)_snwprintf(path,INTERNET_MAX_URL_LENGTH,L".\\handbook\\%hs",page);
+    path[INTERNET_MAX_URL_LENGTH] = 0;
 
-    if (anchor != NULL){
-        if(GetModuleFileName(NULL,cd,MAX_PATH)){
-            cd[MAX_PATH-1] = 0;
-
-            i = strlen(cd) - 1;
-            while(i >= 0) {
-                if(cd[i] == '\\'){
-                    cd[i] = 0;
-                    break;
+    if(anchor == NULL){
+        result = WgxShellExecute(hWindow,L"open",path,NULL,NULL,
+            SW_SHOW,WSH_SILENT | WSH_ALLOW_DEFAULT_ACTION);
+    } else {
+        hInst = FindExecutableW(path,NULL,exe);
+        if((int)(LONG_PTR)hInst <= 32 || exe[0] == 0){
+            etrace("cannot retrieve associated application"
+                " path: 0x%x error",(UINT)(LONG_PTR)hInst);
+        } else {
+            if(!GetModuleFileName(NULL,cd,MAX_PATH)){
+                letrace("cannot get current directory");
+            } else {
+                cd[MAX_PATH] = 0;
+                i = strlen(cd) - 1;
+                while(i >= 0) {
+                    if(cd[i] == '\\'){
+                        cd[i] = 0;
+                        break;
+                    }
+                    i--;
                 }
-                i--;
-            }
-
-            (void)FindExecutableW(path,NULL,exe);
-
-            (void)_snwprintf(path,INTERNET_MAX_URL_LENGTH,
-                L"file://%hs\\handbook\\%hs#%hs",cd,page,anchor);
-
-            if(pUrlCanonicalizeW){
-                /* URL-encode spaces */
-                url_length = INTERNET_MAX_URL_LENGTH - 1;
-                if(pUrlCanonicalizeW(path,url,&url_length,URL_ESCAPE_SPACES_ONLY | URL_DONT_ESCAPE_EXTRA_INFO) == S_OK)
-                    (void)_snwprintf(path,INTERNET_MAX_URL_LENGTH,L"%ls",url);
+    
+                (void)_snwprintf(path,INTERNET_MAX_URL_LENGTH,
+                    L"file://%hs\\handbook\\%hs#%hs",cd,page,anchor);
+                path[INTERNET_MAX_URL_LENGTH] = 0;
+    
+                hShlwapiDll = LoadLibrary("shlwapi.dll");
+                if(hShlwapiDll){
+                    pUrlCanonicalizeW = (URLCANONICALIZEW_PROC) \
+                        GetProcAddress(hShlwapiDll,"UrlCanonicalizeW");
+                }
+    
+                if(pUrlCanonicalizeW){
+                    /* URL-encode spaces */
+                    url_length = INTERNET_MAX_URL_LENGTH;
+                    if(pUrlCanonicalizeW(path,url,&url_length,
+                      URL_ESCAPE_SPACES_ONLY | URL_DONT_ESCAPE_EXTRA_INFO) == S_OK){
+                        url[INTERNET_MAX_URL_LENGTH] = 0;
+                        wcscpy(path,url);
+                    }
+                }
+                
+                dtrace("%ws opens %ws",exe,path);
+                result = WgxShellExecute(hWindow,NULL,
+                    exe,path,NULL,SW_SHOW,WSH_SILENT);
             }
         }
     }
-    path[INTERNET_MAX_URL_LENGTH - 1] = 0;
-    /*WgxDbgPrint("%ws",path);*/
 
-    if (anchor != NULL && exe[0] != 0)
-        hApp = ShellExecuteW(hWindow,NULL,exe,path,NULL,SW_SHOW);
-    else
-        hApp = ShellExecuteW(hWindow,L"open",path,NULL,NULL,SW_SHOW);
-    if((int)(LONG_PTR)hApp <= 32){
-        if (anchor != NULL){
+    if(!result){
+        if(anchor != NULL){
             (void)_snwprintf(path,INTERNET_MAX_URL_LENGTH,
                 L"http://ultradefrag.sourceforge.net/handbook/%hs#%hs",page,anchor);
         } else {
             (void)_snwprintf(path,INTERNET_MAX_URL_LENGTH,
                 L"http://ultradefrag.sourceforge.net/handbook/%hs",page);
         }
-        path[INTERNET_MAX_URL_LENGTH - 1] = 0;
-        (void)WgxShellExecuteW(hWindow,L"open",path,NULL,NULL,SW_SHOW);
+        path[INTERNET_MAX_URL_LENGTH] = 0;
+        (void)WgxShellExecute(hWindow,L"open",path,
+            NULL,NULL,SW_SHOW,WSH_ALLOW_DEFAULT_ACTION);
     }
 }
 
@@ -628,7 +662,8 @@ void OpenTranslationWebPage(wchar_t *page, int islang)
     else
         (void)_snwprintf(path,MAX_PATH,L"http://ultradefrag.wikispaces.com/%ls.lng",page);
     path[MAX_PATH - 1] = 0;
-    (void)WgxShellExecuteW(hWindow,L"open",path,NULL,NULL,SW_SHOW);
+    (void)WgxShellExecute(hWindow,L"open",path,
+        NULL,NULL,SW_SHOW,WSH_ALLOW_DEFAULT_ACTION);
 }
 
 /**
@@ -638,11 +673,12 @@ void OpenLog(void)
 {
     /* getenv() may give wrong results as stated in MSDN */
     if(!GetEnvironmentVariableW(L"UD_LOG_FILE_PATH",env_buffer2,MAX_ENV_VARIABLE_LENGTH + 1)){
-        WgxDbgPrintLastError("OpenLog: cannot query UD_LOG_FILE_PATH environment variable");
+        letrace("cannot query UD_LOG_FILE_PATH environment variable");
         MessageBox(hWindow,"The log_file_path option is not set.","Cannot open log file!",MB_OK | MB_ICONHAND);
     } else {
-        udefrag_flush_dbg_log();
-        (void)WgxShellExecuteW(hWindow,L"open",env_buffer2,NULL,NULL,SW_SHOW);
+        udefrag_flush_dbg_log(0);
+        (void)WgxShellExecute(hWindow,L"open",env_buffer2,
+            NULL,NULL,SW_SHOW,WSH_ALLOW_DEFAULT_ACTION);
     }
 }
 
@@ -677,19 +713,19 @@ static int IsCursorBetweenControls(void)
     
     /* get cursor's position */
     if(!GetCursorPos(&pt)){
-        WgxDbgPrintLastError("IsCursorBetweenControls: cannot get cursor position");
+        letrace("cannot get cursor position");
         return 0;
     }
     
     /* convert screen coordinates to list view control coordinates */
     if(!MapWindowPoints(NULL,hList,&pt,1)){
-        WgxDbgPrintLastError("IsCursorBetweenControls: MapWindowPoints failed");
+        letrace("MapWindowPoints failed");
         return 0;
     }
     
     /* get dimensions of the list view control */
     if(!GetWindowRect(hList,&rc)){
-        WgxDbgPrintLastError("IsCursorBetweenControls: cannot get height of the list view control");
+        letrace("cannot get height of the list view control");
         return 0;
     }
     rc.bottom -= rc.top;
@@ -739,13 +775,13 @@ static void DrawXorBar(int y)
     
     /* get dimensions of the main window */
     if(!GetWindowRect(hWindow,&rc)){
-        WgxDbgPrintLastError("DrawXorBar: cannot get main window dimensions");
+        letrace("cannot get main window dimensions");
         return;
     }
 
     /* get dimensions of the list view control */
     if(!GetWindowRect(hList,&list_rc)){
-        WgxDbgPrintLastError("DrawXorBar: cannot get list dimensions");
+        letrace("cannot get list dimensions");
         return;
     }
     
@@ -755,7 +791,7 @@ static void DrawXorBar(int y)
     pt.x = 0;
     pt.y = y - 2;
     if(!ClientToScreen(hWindow,&pt)){
-        WgxDbgPrintLastError("DrawXorBar: ClientToScreen failed");
+        letrace("ClientToScreen failed");
         return;
     }
 
@@ -765,12 +801,12 @@ static void DrawXorBar(int y)
     /* create brush */
     hBitmap = CreateBitmap(8, 8, 1, 1, _dotPatternBmp);
     if(hBitmap == NULL){
-        WgxDbgPrintLastError("DrawXorBar: cannot create bitmap");
+        letrace("cannot create bitmap");
         return;
     }
     hBrush = CreatePatternBrush(hBitmap);
     if(hBrush == NULL){
-        WgxDbgPrintLastError("DrawXorBar: cannot create brush");
+        letrace("cannot create brush");
         DeleteObject(hBitmap);
         return;
     }
@@ -816,7 +852,7 @@ static void ResizeListMove(short y)
     /* calculate list height */
     pt.x = pt.y = 0;
     if(!MapWindowPoints(hList,hWindow,&pt,1)){
-        WgxDbgPrintLastError("ResizeListMove: MapWindowPoints failed");
+        letrace("MapWindowPoints failed");
     } else {
         list_height = y - pt.y;
         if(list_height >= 0 && list_height <= GetMaxVolListHeight()){
@@ -841,7 +877,7 @@ static void ResizeListEnd(short y)
         drag_mode = 0;
         pt.x = pt.y = 0;
         if(!MapWindowPoints(hList,hWindow,&pt,1)){
-            WgxDbgPrintLastError("ResizeListEnd: MapWindowPoints failed");
+            letrace("MapWindowPoints failed");
         } else {
             list_height = y - pt.y;
             ResizeMainWindow(1);
@@ -865,17 +901,33 @@ LRESULT CALLBACK MainWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
     wchar_t lang_name[MAX_PATH];
     wchar_t *report_opts_path;
     FILE *f;
-    int flag, disable_latest_version_check_old;
+    int disable_latest_version_check_old;
     
     /* handle shell restart */
     if(uMsg == TaskbarButtonCreatedMsg){
         /* set taskbar icon overlay */
         if(show_taskbar_icon_overlay){
             if(WaitForSingleObject(hTaskbarIconEvent,INFINITE) != WAIT_OBJECT_0){
-                WgxDbgPrintLastError("MainWindowProc: wait on hTaskbarIconEvent failed");
+                letrace("wait on hTaskbarIconEvent failed");
             } else {
-                if(job_is_running)
-                    SetTaskbarIconOverlay(IDI_BUSY,"JOB_IS_RUNNING");
+                if(job_is_running){
+                    if(pause_flag)
+                        SetTaskbarIconOverlay(IDI_PAUSED,"JOB_IS_PAUSED");
+                    else
+                        SetTaskbarIconOverlay(IDI_BUSY,"JOB_IS_RUNNING");
+                }
+                SetEvent(hTaskbarIconEvent);
+            }
+        }
+        return 0;
+    }
+    if(uMsg == TaskbarCreatedMsg){
+        /* set notification area icon */
+        if(minimize_to_system_tray){
+            if(WaitForSingleObject(hTaskbarIconEvent,INFINITE) != WAIT_OBJECT_0){
+                letrace("wait on hTaskbarIconEvent failed");
+            } else {
+                ShowSystemTrayIcon(NIM_ADD);
                 SetEvent(hTaskbarIconEvent);
             }
         }
@@ -885,6 +937,15 @@ LRESULT CALLBACK MainWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
     switch(uMsg){
     case WM_CREATE:
         /* initialize main window */
+        hWindow = hWnd;
+        if(minimize_to_system_tray){
+            if(WaitForSingleObject(hTaskbarIconEvent,INFINITE) != WAIT_OBJECT_0){
+                letrace("wait on hTaskbarIconEvent failed");
+            } else {
+                ShowSystemTrayIcon(NIM_ADD);
+                SetEvent(hTaskbarIconEvent);
+            }
+        }
         return 0;
     case WM_NOTIFY:
         VolListNotifyHandler(lParam);
@@ -896,6 +957,10 @@ LRESULT CALLBACK MainWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
             return 0;
         }
         break;
+    case WM_SETFOCUS:
+        /* suggested by Brian Gaff */
+        SetFocus(hList);
+        return 0;
     case WM_LBUTTONDOWN:
         ResizeListBegin((short)HIWORD(lParam));
         return 0;
@@ -923,6 +988,12 @@ LRESULT CALLBACK MainWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
             return 0;
         case IDM_OPTIMIZE_MFT:
             start_selected_jobs(MFT_OPTIMIZATION_JOB);
+            return 0;
+        case IDM_PAUSE:
+            if(pause_flag)
+                ReleasePause();
+            else
+                SetPause();
             return 0;
         case IDM_STOP:
             stop_all_jobs();
@@ -966,9 +1037,9 @@ LRESULT CALLBACK MainWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
             OpenLog();
             return 0;
         case IDM_REPORT_BUG:
-            (void)WgxShellExecuteW(hWindow,L"open",
+            (void)WgxShellExecute(hWindow,L"open",
                 L"http://sourceforge.net/p/ultradefrag/bugs/",
-                NULL,NULL,SW_SHOW);
+                NULL,NULL,SW_SHOW,WSH_ALLOW_DEFAULT_ACTION);
             return 0;
         case IDM_EXIT:
             goto done;
@@ -984,8 +1055,8 @@ LRESULT CALLBACK MainWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
             OpenTranslationWebPage(L"Translation+Report", 0);
             return 0;
         case IDM_TRANSLATIONS_FOLDER:
-            (void)WgxShellExecuteW(hWindow,L"open",L"explorer.exe",
-                L"/select, \".\\i18n\\translation.template\"",NULL,SW_SHOW);
+            (void)WgxShellExecute(hWindow,L"open",L"explorer.exe",
+                L"/select, \".\\i18n\\translation.template\"",NULL,SW_SHOW,0);
             return 0;
         case IDM_TRANSLATIONS_SUBMIT:
             if(GetPrivateProfileStringW(L"Language",L"Selected",NULL,lang_name,MAX_PATH,L".\\lang.ini")>0)
@@ -1008,38 +1079,44 @@ LRESULT CALLBACK MainWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
             return 0;
         case IDM_CFG_GUI_SETTINGS:
             if(portable_mode)
-                WgxShellExecuteW(hWindow,L"open",L"notepad.exe",L".\\options\\guiopts.lua",NULL,SW_SHOW);
+                WgxShellExecute(hWindow,L"open",L"notepad.exe",
+                    L".\\options\\guiopts.lua",NULL,SW_SHOW,0);
             else
-                WgxShellExecuteW(hWindow,L"Edit",L".\\options\\guiopts.lua",NULL,NULL,SW_SHOW);
+                WgxShellExecute(hWindow,L"Edit",
+                    L".\\options\\guiopts.lua",NULL,NULL,SW_SHOW,0);
             return 0;
         case IDM_CFG_BOOT_ENABLE:
-            if(!GetWindowsDirectoryW(path,MAX_PATH)){
-                WgxDisplayLastError(hWindow,MB_OK | MB_ICONHAND,"Cannot retrieve the Windows directory path!");
-            } else {
-                if(boot_time_defrag_enabled){
+            if(boot_time_defrag_enabled){
+                if(udefrag_bootex_unregister(L"defrag_native") < 0){
+                    MessageBox(hWindow,"Enable logs or use DbgView program to get more information.",
+                        "Unable to unregister the boot time defragmenter!",MB_OK | MB_ICONHAND);
+                } else {
                     boot_time_defrag_enabled = 0;
                     CheckMenuItem(hMainMenu,
                         IDM_CFG_BOOT_ENABLE,
                         MF_BYCOMMAND | MF_UNCHECKED);
                     SendMessage(hToolbar,TB_CHECKBUTTON,IDM_CFG_BOOT_ENABLE,MAKELONG(FALSE,0));
-                    (void)wcscat(path,L"\\System32\\boot-off.cmd");
+                }
+            } else {
+                if(udefrag_bootex_register(L"defrag_native") < 0){
+                    MessageBox(hWindow,"Enable logs or use DbgView program to get more information.",
+                        "Unable to register the boot time defragmenter!",MB_OK | MB_ICONHAND);
                 } else {
                     boot_time_defrag_enabled = 1;
                     CheckMenuItem(hMainMenu,
                         IDM_CFG_BOOT_ENABLE,
                         MF_BYCOMMAND | MF_CHECKED);
                     SendMessage(hToolbar,TB_CHECKBUTTON,IDM_CFG_BOOT_ENABLE,MAKELONG(TRUE,0));
-                    (void)wcscat(path,L"\\System32\\boot-on.cmd");
                 }
-                (void)WgxShellExecuteW(hWindow,L"open",path,NULL,NULL,SW_HIDE);
             }
             return 0;
         case IDM_CFG_BOOT_SCRIPT:
             if(!GetWindowsDirectoryW(path,MAX_PATH)){
-                WgxDisplayLastError(hWindow,MB_OK | MB_ICONHAND,"Cannot retrieve the Windows directory path");
+                WgxDisplayLastError(hWindow,MB_OK | MB_ICONHAND,
+                    L"Cannot retrieve the Windows directory path");
             } else {
                 (void)wcscat(path,L"\\System32\\ud-boot-time.cmd");
-                (void)WgxShellExecuteW(hWindow,L"edit",path,NULL,NULL,SW_SHOW);
+                (void)WgxShellExecute(hWindow,L"edit",path,NULL,NULL,SW_SHOW,0);
             }
             return 0;
         case IDM_CFG_REPORTS:
@@ -1051,9 +1128,9 @@ LRESULT CALLBACK MainWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
                 report_opts_path = L".\\options\\udreportopts-custom.lua";
             }
             if(portable_mode)
-                WgxShellExecuteW(hWindow,L"open",L"notepad.exe",report_opts_path,NULL,SW_SHOW);
+                WgxShellExecute(hWindow,L"open",L"notepad.exe",report_opts_path,NULL,SW_SHOW,0);
             else
-                WgxShellExecuteW(hWindow,L"Edit",report_opts_path,NULL,NULL,SW_SHOW);
+                WgxShellExecute(hWindow,L"Edit",report_opts_path,NULL,NULL,SW_SHOW,0);
             return 0;
         /* Help menu handlers */
         case IDM_CONTENTS:
@@ -1081,6 +1158,14 @@ LRESULT CALLBACK MainWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
             if(!busy_flag)
                 SelectAllDrives();
             return 0;
+        case IDM_SHOWHIDE:
+            if(IsWindowVisible(hWindow)){
+                WgxHideWindow(hWindow);
+            } else {
+                ShowWindow(hWindow,maximized_window ? SW_MAXIMIZE : SW_RESTORE);
+                SetForegroundWindow(hWindow);
+            }
+            return 0;
         default:
             id = LOWORD(wParam);
             /* handle language menu */
@@ -1093,7 +1178,7 @@ LRESULT CALLBACK MainWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
                 mi.dwTypeData = lang_name;
                 mi.cch = MAX_PATH;
                 if(!GetMenuItemInfoW(hMainMenu,id,FALSE,&mi)){
-                    WgxDbgPrintLastError("MainWindowProc: cannot get selected language");
+                    letrace("cannot get selected language");
                     return 0;
                 }
                 
@@ -1126,38 +1211,79 @@ LRESULT CALLBACK MainWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
                 /* save choice */
                 when_done_action = id;
             }
+            /* handle sorting submenu */
+            if(id > IDM_CFG_SORTING && id < IDM_CFG_SORTING_LAST_ITEM){
+                CheckMenuItem(hMainMenu,id,MF_BYCOMMAND | MF_CHECKED);
+                switch(id){
+                case IDM_CFG_SORTING_SORT_BY_PATH:
+                    (void)SetEnvironmentVariable("UD_SORTING","path");
+                    CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_BY_SIZE,MF_BYCOMMAND | MF_UNCHECKED);
+                    CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_BY_CREATION_TIME,MF_BYCOMMAND | MF_UNCHECKED);
+                    CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_BY_MODIFICATION_TIME,MF_BYCOMMAND | MF_UNCHECKED);
+                    CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_BY_ACCESS_TIME,MF_BYCOMMAND | MF_UNCHECKED);
+                    sorting_flags &= (SORT_ASCENDING | SORT_DESCENDING);
+                    sorting_flags |= SORT_BY_PATH;
+                    break;
+                case IDM_CFG_SORTING_SORT_BY_SIZE:
+                    (void)SetEnvironmentVariable("UD_SORTING","size");
+                    CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_BY_PATH,MF_BYCOMMAND | MF_UNCHECKED);
+                    CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_BY_CREATION_TIME,MF_BYCOMMAND | MF_UNCHECKED);
+                    CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_BY_MODIFICATION_TIME,MF_BYCOMMAND | MF_UNCHECKED);
+                    CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_BY_ACCESS_TIME,MF_BYCOMMAND | MF_UNCHECKED);
+                    sorting_flags &= (SORT_ASCENDING | SORT_DESCENDING);
+                    sorting_flags |= SORT_BY_SIZE;
+                    break;
+                case IDM_CFG_SORTING_SORT_BY_CREATION_TIME:
+                    (void)SetEnvironmentVariable("UD_SORTING","c_time");
+                    CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_BY_PATH,MF_BYCOMMAND | MF_UNCHECKED);
+                    CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_BY_SIZE,MF_BYCOMMAND | MF_UNCHECKED);
+                    CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_BY_MODIFICATION_TIME,MF_BYCOMMAND | MF_UNCHECKED);
+                    CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_BY_ACCESS_TIME,MF_BYCOMMAND | MF_UNCHECKED);
+                    sorting_flags &= (SORT_ASCENDING | SORT_DESCENDING);
+                    sorting_flags |= SORT_BY_CREATION_TIME;
+                    break;
+                case IDM_CFG_SORTING_SORT_BY_MODIFICATION_TIME:
+                    (void)SetEnvironmentVariable("UD_SORTING","m_time");
+                    CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_BY_PATH,MF_BYCOMMAND | MF_UNCHECKED);
+                    CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_BY_SIZE,MF_BYCOMMAND | MF_UNCHECKED);
+                    CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_BY_CREATION_TIME,MF_BYCOMMAND | MF_UNCHECKED);
+                    CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_BY_ACCESS_TIME,MF_BYCOMMAND | MF_UNCHECKED);
+                    sorting_flags &= (SORT_ASCENDING | SORT_DESCENDING);
+                    sorting_flags |= SORT_BY_MODIFICATION_TIME;
+                    break;
+                case IDM_CFG_SORTING_SORT_BY_ACCESS_TIME:
+                    (void)SetEnvironmentVariable("UD_SORTING","a_time");
+                    CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_BY_PATH,MF_BYCOMMAND | MF_UNCHECKED);
+                    CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_BY_SIZE,MF_BYCOMMAND | MF_UNCHECKED);
+                    CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_BY_CREATION_TIME,MF_BYCOMMAND | MF_UNCHECKED);
+                    CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_BY_MODIFICATION_TIME,MF_BYCOMMAND | MF_UNCHECKED);
+                    sorting_flags &= (SORT_ASCENDING | SORT_DESCENDING);
+                    sorting_flags |= SORT_BY_ACCESS_TIME;
+                    break;
+                case IDM_CFG_SORTING_SORT_ASCENDING:
+                    (void)SetEnvironmentVariable("UD_SORTING_ORDER","asc");
+                    CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_DESCENDING,MF_BYCOMMAND | MF_UNCHECKED);
+                    sorting_flags &= ~(SORT_ASCENDING | SORT_DESCENDING);
+                    sorting_flags |= SORT_ASCENDING;
+                    break;
+                case IDM_CFG_SORTING_SORT_DESCENDING:
+                    (void)SetEnvironmentVariable("UD_SORTING_ORDER","desc");
+                    CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_ASCENDING,MF_BYCOMMAND | MF_UNCHECKED);
+                    sorting_flags &= ~(SORT_ASCENDING | SORT_DESCENDING);
+                    sorting_flags |= SORT_DESCENDING;
+                    break;
+                default:
+                    break;
+                }
+            }
             /* handle preview submenu */
             if(id > IDM_PREVIEW && id < IDM_PREVIEW_LAST_ITEM){
+                CheckMenuItem(hMainMenu,id,MF_BYCOMMAND | MF_CHECKED);
                 switch(id){
-                /* case IDM_PREVIEW_MOVE_FRONT:
-                    flag = UD_PREVIEW_MOVE_FRONT;
-                    break; */
-                case IDM_PREVIEW_LARGEST:
-                    /* "find largest" menu item affects "find matching" item too */
-                    id = IDM_PREVIEW_MATCHING;
-                case IDM_PREVIEW_MATCHING:
-                    flag = UD_PREVIEW_MATCHING;
-                    break;
-                /* case IDM_PREVIEW_SKIP_PARTIAL:
-                    flag = UD_PREVIEW_SKIP_PARTIAL;
-                    break; */
+                case IDM_PREVIEW_DUMMY:
                 default:
-                    flag = 0;
                     break;
                 }
-                if(job_flags & flag){
-                    CheckMenuItem(hMainMenu,id,MF_BYCOMMAND | MF_UNCHECKED);
-                    job_flags ^= flag;
-                } else {
-                    CheckMenuItem(hMainMenu,id,MF_BYCOMMAND | MF_CHECKED);
-                    job_flags |= flag;
-                }
-                
-                /* set "find largest" menu state opposed to "find matching" state */
-                if(job_flags & UD_PREVIEW_MATCHING)
-                    CheckMenuItem(hMainMenu,IDM_PREVIEW_LARGEST,MF_BYCOMMAND | MF_UNCHECKED);
-                else
-                    CheckMenuItem(hMainMenu,IDM_PREVIEW_LARGEST,MF_BYCOMMAND | MF_CHECKED);
             }
             break;
         }
@@ -1173,7 +1299,17 @@ LRESULT CALLBACK MainWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
                 memcpy((void *)&r_rc,(void *)&win_rc,sizeof(RECT));
             ResizeMainWindow(0);
         } else {
-            WgxDbgPrint("Wrong window dimensions on WM_SIZE message!\n");
+            etrace("wrong window dimensions on WM_SIZE message!");
+        }
+        /* hide window on minimization when minimize_to_system_tray is turned on */
+        if(wParam == SIZE_MINIMIZED && minimize_to_system_tray){
+            if(WaitForSingleObject(hTaskbarIconEvent,INFINITE) != WAIT_OBJECT_0){
+                letrace("wait on hTaskbarIconEvent failed");
+            } else {
+                if(minimize_to_system_tray)
+                    WgxHideWindow(hWindow);
+                SetEvent(hTaskbarIconEvent);
+            }
         }
         return 0;
     case WM_GETMINMAXINFO:
@@ -1200,6 +1336,28 @@ LRESULT CALLBACK MainWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
         /* maximize window */
         ShowWindow(hWnd,SW_MAXIMIZE);
         return 0;
+    case WM_TRAYMESSAGE:
+        switch(lParam){
+        case WM_LBUTTONDBLCLK:
+            /* single clicks are more handy... */
+            break;
+        case WM_LBUTTONUP:
+            /* show / hide window */
+            if(IsWindowVisible(hWindow)){
+                WgxHideWindow(hWindow);
+            } else {
+                ShowWindow(hWindow,maximized_window ? SW_MAXIMIZE : SW_RESTORE);
+                SetForegroundWindow(hWindow);
+            }
+            break;
+        case WM_RBUTTONUP:
+            /* show context menu */
+            ShowSystemTrayIconContextMenu();
+            break;
+        default:
+            break;
+        }
+        return 0;
     case WM_DESTROY:
         goto done;
     }
@@ -1210,6 +1368,13 @@ done:
     if(!maximized_window)
         memcpy((void *)&r_rc,(void *)&win_rc,sizeof(RECT));
     VolListGetColumnWidths();
+    /* remove notification area icon */
+    if(WaitForSingleObject(hTaskbarIconEvent,INFINITE) != WAIT_OBJECT_0){
+        letrace("wait on hTaskbarIconEvent failed");
+    } else {
+        HideSystemTrayIcon();
+        SetEvent(hTaskbarIconEvent);
+    }
     exit_pressed = 1;
     stop_all_jobs();
     PostQuitMessage(0);
@@ -1227,7 +1392,7 @@ DWORD WINAPI UpdateWebStatisticsThreadProc(LPVOID lpParameter)
     /* getenv() may give wrong results as stated in MSDN */
     if(!GetEnvironmentVariableW(L"UD_DISABLE_USAGE_TRACKING",env_buffer,MAX_ENV_VARIABLE_LENGTH + 1)){
         if(GetLastError() != ERROR_ENVVAR_NOT_FOUND)
-            WgxDbgPrintLastError("UpdateWebStatisticsThreadProc: cannot get %%UD_DISABLE_USAGE_TRACKING%%!");
+            letrace("cannot get %%UD_DISABLE_USAGE_TRACKING%%");
     } else {
         if(wcscmp(env_buffer,L"1") == 0)
             tracking_enabled = 0;
@@ -1255,7 +1420,7 @@ DWORD WINAPI UpdateWebStatisticsThreadProc(LPVOID lpParameter)
 void start_web_statistics(void)
 {
     if(!WgxCreateThread(UpdateWebStatisticsThreadProc,NULL)){
-        WgxDbgPrintLastError("Cannot run UpdateWebStatisticsThreadProc");
+        letrace("cannot run UpdateWebStatisticsThreadProc");
         web_statistics_completed = 1;
     }
 }
@@ -1268,6 +1433,21 @@ void stop_web_statistics()
     while(!web_statistics_completed) Sleep(100);
 }
 
+static int out_of_memory_handler(size_t n)
+{
+    int choice = MessageBox(hWindow,
+        "Try to release some memory by closing\n"
+        "other applications and click Retry then\n"
+        "or click Cancel to terminate the program.",
+        "UltraDefrag: out of memory!",
+        MB_RETRYCANCEL | MB_ICONHAND);
+    if(choice == IDCANCEL){
+        udefrag_flush_dbg_log(FLUSH_IN_OUT_OF_MEMORY);
+        exit(3); return 0;
+    }
+    return 1;
+}
+
 /**
  * @brief Entry point.
  */
@@ -1278,14 +1458,16 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nS
     typedef BOOL (WINAPI *ICCE_PROC)(LPINITCOMMONCONTROLSEX lpInitCtrls);
     ICCE_PROC pInitCommonControlsEx = NULL;
     INITCOMMONCONTROLSEX icce;
-    int result;
+    int init_result, result;
     
     ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
     osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
     GetVersionEx(&osvi);
     if(osvi.dwMajorVersion < 5) is_nt4 = 1;
 
-    WgxSetDbgPrintHandler(udefrag_dbg_print);
+    init_result = udefrag_init_library();
+    udefrag_set_killer(out_of_memory_handler);
+    WgxSetInternalTraceHandler(udefrag_dbg_print);
     hInstance = GetModuleHandle(NULL);
     
     /* check for admin rights - they're strongly required */
@@ -1293,18 +1475,20 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nS
         MessageBox(NULL,"Administrative rights are needed "
           "to run the program!","UltraDefrag",
           MB_OK | MB_ICONHAND);
-        return 1;
+        udefrag_flush_dbg_log(0);
+        return EXIT_FAILURE;
     }
 
     /* show crash info when the program crashed last time */
     StartCrashInfoCheck();
     
     /* handle initialization failure */
-    if(udefrag_init_failed()){
+    if(init_result < 0){
         MessageBoxA(NULL,"Send bug report to the authors please.",
             "UltraDefrag initialization failed!",MB_OK | MB_ICONHAND);
         StopCrashInfoCheck();
-        return 1;
+        udefrag_flush_dbg_log(0);
+        return EXIT_FAILURE;
     }
     
     /* define whether we are in portable mode or not */
@@ -1319,7 +1503,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nS
     
     if(InitSynchObjects() < 0){
         StopCrashInfoCheck();
-        return 1;
+        udefrag_flush_dbg_log(0);
+        return EXIT_FAILURE;
     }
 
     start_web_statistics();
@@ -1354,9 +1539,14 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nS
         release_jobs();
         WgxDestroyResourceTable(i18n_table);
         stop_web_statistics();
+        if(hWindow){
+            /* remove taskbar notification area icon */
+            SendMessage(hWindow,WM_DESTROY,0,0);
+        }
         DestroySynchObjects();
         StopCrashInfoCheck();
-        return 3;
+        udefrag_flush_dbg_log(0);
+        return EXIT_FAILURE;
     }
 
     /* release all resources */
@@ -1378,13 +1568,15 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nS
         WgxDestroyFont(&wgxFont);
         WgxDestroyResourceTable(i18n_table);
         DestroySynchObjects();
+        udefrag_flush_dbg_log(0);
         return result;
     }
     
     WgxDestroyFont(&wgxFont);
     WgxDestroyResourceTable(i18n_table);
     DestroySynchObjects();
-    return 0;
+    udefrag_flush_dbg_log(0);
+    return EXIT_SUCCESS;
 }
 
 /** @} */

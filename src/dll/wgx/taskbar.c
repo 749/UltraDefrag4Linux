@@ -1,6 +1,6 @@
 /*
  *  WGX - Windows GUI Extended Library.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,14 +20,15 @@
 /**
  * @file taskbar.c
  * @brief Taskbar icon overlays.
+ * @details Taskbar icon overlays and progress bars are
+ * supported by Windows 7 and more recent Windows editions.
+ * On older Windows editions these routines do nothing.
  * @addtogroup Taskbar
  * @{
  */
 
-#include <windows.h>
-#include "wgx.h"
+#include "wgx-internals.h"
 #include "taskbar.h"
-#include <objbase.h>
 
 /**
  * @return Nonzero value indicates
@@ -63,9 +64,6 @@ static int AtLeastWin7(void)
  * @param[in] description the description for 
  * the overlay icon, needed for accessibility.
  * @return Boolean value. TRUE indicates success.
- * @note Taskbar icon overlays are supported
- * by Windows 7 and more recent Windows editions.
- * On older Windows editions this routine does nothing.
  */
 BOOL WgxSetTaskbarIconOverlay(HWND hWindow,HINSTANCE hInstance,int resource_id, wchar_t *description)
 {
@@ -97,13 +95,13 @@ BOOL WgxSetTaskbarIconOverlay(HWND hWindow,HINSTANCE hInstance,int resource_id, 
         if(SUCCEEDED(hr)){
             result = TRUE;
         } else {
-            WgxDbgPrint("ITaskbarList3_SetOverlayIcon failed with code 0x%x",(UINT)hr);
+            etrace("ITaskbarList3_SetOverlayIcon failed with code 0x%x",(UINT)hr);
         }
         /* cleanup */
         DestroyIcon(hIcon);
         ITaskbarList3_Release(iTBL);
     } else {
-        WgxDbgPrint("WgxSetTaskbarIconOverlay failed with code 0x%x",(UINT)hr);
+        etrace("failed with code 0x%x",(UINT)hr);
     }
     CoUninitialize();
     return result;
@@ -115,13 +113,92 @@ BOOL WgxSetTaskbarIconOverlay(HWND hWindow,HINSTANCE hInstance,int resource_id, 
  * @param[in] hWindow handle to the main
  * application's window.
  * @return Boolean value. TRUE indicates success.
- * @note Taskbar icon overlays are supported
- * by Windows 7 and more recent Windows editions.
- * On older Windows editions this routine does nothing.
  */
 BOOL WgxRemoveTaskbarIconOverlay(HWND hWindow)
 {
     return WgxSetTaskbarIconOverlay(hWindow,NULL,-1,NULL);
+}
+
+/**
+ * @brief Sets the progress bar status
+ * for the application's taskbar icon.
+ * @param[in] hWindow handle to the main
+ * application's window.
+ * @param[in] flag one of the TBPF_xxx constants
+ * defined in wgx.h file.
+ * @return Boolean value. TRUE indicates success.
+ */
+BOOL WgxSetTaskbarProgressState(HWND hWindow,TBPFLAG flag)
+{
+    GUID clsid = CLSID_TaskbarList;
+    GUID iid = IID_ITaskbarList3;
+    ITaskbarList3 *iTBL;
+    HRESULT hr;
+    BOOL result = FALSE;
+
+    /* Windows 7 is required for icon overlays */
+    if(!AtLeastWin7()) return TRUE;
+
+    CoInitialize(NULL);
+    hr = CoCreateInstance(&clsid,NULL,
+        CLSCTX_INPROC_SERVER,&iid,
+        (void **)(void *)&iTBL);
+    if(SUCCEEDED(hr) && iTBL != NULL){
+        /* set progress state */
+        hr = ITaskbarList3_SetProgressState(iTBL,hWindow,flag);
+        if(SUCCEEDED(hr)){
+            result = TRUE;
+        } else {
+            etrace("ITaskbarList3_SetProgressState failed with code 0x%x",(UINT)hr);
+        }
+        /* cleanup */
+        ITaskbarList3_Release(iTBL);
+    } else {
+        etrace("failed with code 0x%x",(UINT)hr);
+    }
+    CoUninitialize();
+    return result;
+}
+
+/**
+ * @brief Sets the progress bar value
+ * for the application's taskbar icon.
+ * @param[in] hWindow handle to the main
+ * application's window.
+ * @param[in] completed the amount of work completed yet.
+ * @param[in] total the total amount of work to be done.
+ * @return Boolean value. TRUE indicates success.
+ */
+BOOL WgxSetTaskbarProgressValue(HWND hWindow,ULONGLONG completed,ULONGLONG total)
+{
+    GUID clsid = CLSID_TaskbarList;
+    GUID iid = IID_ITaskbarList3;
+    ITaskbarList3 *iTBL;
+    HRESULT hr;
+    BOOL result = FALSE;
+
+    /* Windows 7 is required for icon overlays */
+    if(!AtLeastWin7()) return TRUE;
+
+    CoInitialize(NULL);
+    hr = CoCreateInstance(&clsid,NULL,
+        CLSCTX_INPROC_SERVER,&iid,
+        (void **)(void *)&iTBL);
+    if(SUCCEEDED(hr) && iTBL != NULL){
+        /* set progress state */
+        hr = ITaskbarList3_SetProgressValue(iTBL,hWindow,completed,total);
+        if(SUCCEEDED(hr)){
+            result = TRUE;
+        } else {
+            etrace("ITaskbarList3_SetProgressValue failed with code 0x%x",(UINT)hr);
+        }
+        /* cleanup */
+        ITaskbarList3_Release(iTBL);
+    } else {
+        etrace("failed with code 0x%x",(UINT)hr);
+    }
+    CoUninitialize();
+    return result;
 }
 
 /** @} */

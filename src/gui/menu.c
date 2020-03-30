@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -52,6 +52,7 @@ WGX_MENU action_menu[] = {
     {MF_STRING | MF_ENABLED,IDM_QUICK_OPTIMIZE,                      NULL, L"&Quick optimization\tF7",        2 },
     {MF_STRING | MF_ENABLED,IDM_FULL_OPTIMIZE,                       NULL, L"&Full optimization\tCtrl+F7",    3 },
     {MF_STRING | MF_ENABLED,IDM_OPTIMIZE_MFT,                        NULL, L"&Optimize MFT\tShift+F7",        4 },
+    {MF_STRING | MF_ENABLED | MF_UNCHECKED,IDM_PAUSE,                NULL, L"&Pause\tSpace",                 -1 },
     {MF_STRING | MF_ENABLED,IDM_STOP,                                NULL, L"&Stop\tCtrl+C",                  5 },
     {MF_SEPARATOR,0,NULL,NULL,0},
     {MF_STRING | MF_ENABLED | MF_UNCHECKED,IDM_REPEAT_ACTION,        NULL, L"Re&peat action\tShift+R",       -1 },
@@ -90,15 +91,28 @@ WGX_MENU gui_config_menu[] = {
 
 WGX_MENU boot_config_menu[] = {
     {MF_STRING | MF_ENABLED | MF_UNCHECKED,IDM_CFG_BOOT_ENABLE, NULL, L"&Enable\tF11", -1 },
-    {MF_STRING | MF_ENABLED,IDM_CFG_BOOT_SCRIPT,                NULL, L"&Script\tF12",  8 },
+    {MF_STRING | MF_ENABLED,               IDM_CFG_BOOT_SCRIPT, NULL, L"&Script\tF12",  8 },
+    {0,0,NULL,NULL,0}
+};
+
+WGX_MENU sorting_menu[] = {
+    {MF_STRING | MF_ENABLED | MF_UNCHECKED,IDM_CFG_SORTING_SORT_BY_PATH,              NULL, L"Sort by &path",                   -1 },
+    {MF_STRING | MF_ENABLED | MF_UNCHECKED,IDM_CFG_SORTING_SORT_BY_SIZE,              NULL, L"Sort by &size",                   -1 },
+    {MF_STRING | MF_ENABLED | MF_UNCHECKED,IDM_CFG_SORTING_SORT_BY_CREATION_TIME,     NULL, L"Sort by &creation time",          -1 },
+    {MF_STRING | MF_ENABLED | MF_UNCHECKED,IDM_CFG_SORTING_SORT_BY_MODIFICATION_TIME, NULL, L"Sort by last &modification time", -1 },
+    {MF_STRING | MF_ENABLED | MF_UNCHECKED,IDM_CFG_SORTING_SORT_BY_ACCESS_TIME,       NULL, L"Sort by &last access time",       -1 },
+    {MF_SEPARATOR,0,NULL,NULL,0},
+    {MF_STRING | MF_ENABLED | MF_UNCHECKED,IDM_CFG_SORTING_SORT_ASCENDING,            NULL, L"Sort in &ascending order",        -1 },
+    {MF_STRING | MF_ENABLED | MF_UNCHECKED,IDM_CFG_SORTING_SORT_DESCENDING,           NULL, L"Sort in &descending order",       -1 },
     {0,0,NULL,NULL,0}
 };
 
 WGX_MENU settings_menu[] = {
-    {MF_STRING | MF_ENABLED | MF_POPUP, IDM_LANGUAGE,    language_menu,    L"&Language",            -1 },
-    {MF_STRING | MF_ENABLED | MF_POPUP, IDM_CFG_GUI,     gui_config_menu,  L"&Graphical interface", -1 },
-    {MF_STRING | MF_ENABLED | MF_POPUP, IDM_CFG_BOOT,    boot_config_menu, L"&Boot time scan",      -1 },
-    {MF_STRING | MF_ENABLED,            IDM_CFG_REPORTS, NULL,             L"&Reports\tCtrl+R",     -1 },
+    {MF_STRING | MF_ENABLED | MF_POPUP, IDM_LANGUAGE,     language_menu,     L"&Language",            -1 },
+    {MF_STRING | MF_ENABLED | MF_POPUP, IDM_CFG_GUI,      gui_config_menu,   L"&Graphical interface", -1 },
+    {MF_STRING | MF_ENABLED | MF_POPUP, IDM_CFG_BOOT,     boot_config_menu,  L"&Boot time scan",      -1 },
+    {MF_STRING | MF_ENABLED,            IDM_CFG_REPORTS,  NULL,              L"&Reports\tCtrl+R",     -1 },
+    {MF_STRING | MF_ENABLED | MF_POPUP, IDM_CFG_SORTING,  sorting_menu,      L"&Sorting",             -1 },
     {0,0,NULL,NULL,0}
 };
 
@@ -124,8 +138,7 @@ WGX_MENU help_menu[] = {
 };
 
 WGX_MENU preview_menu[] = {
-    {MF_STRING | MF_ENABLED | MF_UNCHECKED,IDM_PREVIEW_LARGEST,  NULL, L"Find largest free space",  -1 },
-    {MF_STRING | MF_ENABLED | MF_UNCHECKED,IDM_PREVIEW_MATCHING, NULL, L"Find matching free space", -1 },
+    {MF_STRING | MF_ENABLED | MF_UNCHECKED,IDM_PREVIEW_DUMMY, NULL, L"Dummy",  -1 },
     {0,0,NULL,NULL,0}
 };
 
@@ -152,9 +165,9 @@ int CreateMainMenu(void)
     OSVERSIONINFO osvi;
     int cx, id;
 
-    WgxDbgPrint("Menu row height ........ %d",GetSystemMetrics(SM_CYMENU));
-    WgxDbgPrint("Menu button size ....... %d x %d",GetSystemMetrics(SM_CXMENUSIZE),GetSystemMetrics(SM_CYMENUSIZE));
-    WgxDbgPrint("Menu check-mark size ... %d x %d",GetSystemMetrics(SM_CXMENUCHECK),GetSystemMetrics(SM_CYMENUCHECK));
+    trace(I"Menu row height ........ %d",GetSystemMetrics(SM_CYMENU));
+    trace(I"Menu button size ....... %d x %d",GetSystemMetrics(SM_CXMENUSIZE),GetSystemMetrics(SM_CYMENUSIZE));
+    trace(I"Menu check-mark size ... %d x %d",GetSystemMetrics(SM_CXMENUCHECK),GetSystemMetrics(SM_CYMENUCHECK));
 
     ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
     osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
@@ -190,7 +203,7 @@ int CreateMainMenu(void)
     /* attach menu to the window */
     if(!SetMenu(hWindow,hMainMenu)){
         WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,
-            "Cannot set main menu!");
+            L"Cannot set main menu!");
         DestroyMenu(hMainMenu);
         return (-1);
     }
@@ -219,18 +232,32 @@ int CreateMainMenu(void)
         EnableMenuItem(hMainMenu,IDM_CFG_BOOT_SCRIPT,MF_BYCOMMAND | MF_GRAYED);
     }
     
-    if(job_flags & UD_PREVIEW_MATCHING){
-        CheckMenuItem(hMainMenu,
-            IDM_PREVIEW_MATCHING,
-            MF_BYCOMMAND | MF_CHECKED);
+    if(sorting_flags & SORT_BY_PATH){
+        CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_BY_PATH,MF_BYCOMMAND | MF_CHECKED);
+        (void)SetEnvironmentVariable("UD_SORTING","path");
+    } else if(sorting_flags & SORT_BY_SIZE){
+        CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_BY_SIZE,MF_BYCOMMAND | MF_CHECKED);
+        (void)SetEnvironmentVariable("UD_SORTING","size");
+    } else if(sorting_flags & SORT_BY_CREATION_TIME){
+        CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_BY_CREATION_TIME,MF_BYCOMMAND | MF_CHECKED);
+        (void)SetEnvironmentVariable("UD_SORTING","c_time");
+    } else if(sorting_flags & SORT_BY_MODIFICATION_TIME){
+        CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_BY_MODIFICATION_TIME,MF_BYCOMMAND | MF_CHECKED);
+        (void)SetEnvironmentVariable("UD_SORTING","m_time");
+    } else if(sorting_flags & SORT_BY_ACCESS_TIME){
+        CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_BY_ACCESS_TIME,MF_BYCOMMAND | MF_CHECKED);
+        (void)SetEnvironmentVariable("UD_SORTING","a_time");
+    }
+    if(sorting_flags & SORT_ASCENDING){
+        CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_ASCENDING,MF_BYCOMMAND | MF_CHECKED);
+        (void)SetEnvironmentVariable("UD_SORTING_ORDER","asc");
     } else {
-        CheckMenuItem(hMainMenu,
-            IDM_PREVIEW_LARGEST,
-            MF_BYCOMMAND | MF_CHECKED);
+        CheckMenuItem(hMainMenu,IDM_CFG_SORTING_SORT_DESCENDING,MF_BYCOMMAND | MF_CHECKED);
+        (void)SetEnvironmentVariable("UD_SORTING_ORDER","desc");
     }
 
     if(!DrawMenuBar(hWindow))
-        WgxDbgPrintLastError("Cannot redraw main menu");
+        letrace("cannot redraw main menu");
 
     return 0;
 }

@@ -287,11 +287,36 @@ static int pmain (lua_State *L) {
 }
 
 
-int __cdecl internal_main (int argc, char **argv) {
+BOOL CALLBACK EmptyDlgProc (HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+  switch(msg){
+  case WM_INITDIALOG:
+    /* kill our window before showing them :) */
+    (void)EndDialog(hWnd,1);
+    return FALSE;
+  case WM_CLOSE:
+    /* this code - for extraordinary cases */
+    (void)EndDialog(hWnd,1);
+     return TRUE;
+  }
+  return FALSE;
+}
+
+int __cdecl main (int argc, char **argv) {
   int i, status;
   struct Smain s;
   lua_State *L = NULL;
   
+  /* strongly required! to be compatible with manifest */
+  InitCommonControls();
+
+  /*
+  * To disable sand glass on the cursor
+  * we must show a window on startup.
+  */
+  (void)DialogBox((HINSTANCE)GetModuleHandle(NULL),
+    MAKEINTRESOURCE(100),NULL,(DLGPROC)EmptyDlgProc);
+
   /* check for silent mode */
   for(i = 0; i < argc; i++){
       if(!strcmp(argv[i],"-s") || !strcmp(argv[i],"-S"))
@@ -309,129 +334,4 @@ int __cdecl internal_main (int argc, char **argv) {
   report(L, status);
   lua_close(L);
   return (status || s.status) ? EXIT_FAILURE : EXIT_SUCCESS;
-}
-
-/* Copyright (C) Alexander A. Telyatnikov (http://alter.org.ua/) */
-PCHAR*
-CommandLineToArgvA(
-    PCHAR CmdLine,
-    int* _argc
-    )
-{
-    PCHAR* argv;
-    PCHAR  _argv;
-    ULONG   len;
-    ULONG   argc;
-    CHAR   a;
-    ULONG   i, j;
-
-    BOOLEAN  in_QM;
-    BOOLEAN  in_TEXT;
-    BOOLEAN  in_SPACE;
-
-    len = strlen(CmdLine);
-    i = ((len+2)/2)*sizeof(PVOID) + sizeof(PVOID);
-
-    argv = (PCHAR*)GlobalAlloc(GMEM_FIXED,
-        i + (len+2)*sizeof(CHAR));
-
-    /* added by dmitriar */
-    if(!argv){
-        *_argc = 0;
-        return NULL;
-    }
-
-    _argv = (PCHAR)(((PUCHAR)argv)+i);
-
-    argc = 0;
-    argv[argc] = _argv;
-    in_QM = FALSE;
-    in_TEXT = FALSE;
-    in_SPACE = TRUE;
-    i = 0;
-    j = 0;
-
-    while( (a = CmdLine[i]) ) {
-        if(in_QM) {
-            if(a == '\"') {
-                in_QM = FALSE;
-            } else {
-                _argv[j] = a;
-                j++;
-            }
-        } else {
-            switch(a) {
-            case '\"':
-                in_QM = TRUE;
-                in_TEXT = TRUE;
-                if(in_SPACE) {
-                    argv[argc] = _argv+j;
-                    argc++;
-                }
-                in_SPACE = FALSE;
-                break;
-            case ' ':
-            case '\t':
-            case '\n':
-            case '\r':
-                if(in_TEXT) {
-                    _argv[j] = '\0';
-                    j++;
-                }
-                in_TEXT = FALSE;
-                in_SPACE = TRUE;
-                break;
-            default:
-                in_TEXT = TRUE;
-                if(in_SPACE) {
-                    argv[argc] = _argv+j;
-                    argc++;
-                }
-                _argv[j] = a;
-                j++;
-                in_SPACE = FALSE;
-                break;
-            }
-        }
-        i++;
-    }
-    _argv[j] = '\0';
-    argv[argc] = NULL;
-
-    (*_argc) = argc;
-    return argv;
-}
-
-BOOL CALLBACK EmptyDlgProc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
-{
-    switch(msg){
-    case WM_INITDIALOG:
-        /* kill our window before showing them :) */
-        (void)EndDialog(hWnd,1);
-        return FALSE;
-    case WM_CLOSE:
-        /* this code - for extraordinary cases */
-        (void)EndDialog(hWnd,1);
-        return TRUE;
-    }
-    return FALSE;
-}
-
-int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nShowCmd)
-{
-    int argc;
-    char **argv;
-    int ret;
-    
-    InitCommonControls(); /* strongly required! to be compatible with manifest */
-
-    /*
-    * To disable the sand glass on the cursor
-    * we must show a window on startup.
-    */
-    (void)DialogBox(hInst,MAKEINTRESOURCE(100),NULL,(DLGPROC)EmptyDlgProc);
-    argv = CommandLineToArgvA(GetCommandLineA(),&argc);
-    ret = internal_main(argc,argv);
-    if(argv) (void)GlobalFree(argv);
-    return ret;
 }

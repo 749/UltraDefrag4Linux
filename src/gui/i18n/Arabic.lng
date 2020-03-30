@@ -2,6 +2,7 @@
 ; UltraDefrag GUI Arabic Language Pack.
 ; Copyright (C) 2012 Ahmed Arbaoui.
 ; Copyright (C) 2012 Awadh A Al-Ghaamdi _ منتديات عميد التعريب
+; Copyright (C) 2013 Karam Al-Shorbassi
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
@@ -30,6 +31,7 @@ DEFRAGMENT                = &تجزئة
 QUICK_OPTIMIZE            = &تحسين سريع
 FULL_OPTIMIZE             = &تحسين كامل
 OPTIMIZE_MFT              = &تحسين MFT
+PAUSE                     = &Pause
 STOP                      = &إيقاف
 REPEAT_ACTION             = إع&ادة الإجراء
 SKIP_REMOVABLE_MEDIA      = استبعاد &الوسائط القابلة للنقل
@@ -58,6 +60,7 @@ LANGUAGE                  = &اللغة
 GRAPHICAL_INTERFACE       = &واجهة رسومية
 BOOT_TIME_SCAN            = &فحص عند الإقلاع
 REPORTS                   = &تقارير
+SORTING                   = ت&رتيب
 
 ; --- --- Language submenu
 
@@ -75,6 +78,16 @@ OPTIONS                   = &خيارات
 
 ENABLE                    = ت&مكين
 SCRIPT                    = &برنامج نصي
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = ترتيب حسب ال&مسار
+SORT_BY_SIZE              = ترتيب حسب ال&حجم
+SORT_BY_C_TIME            = ترتيب حسب وقت الإ&نشاء
+SORT_BY_M_TIME            = ترتيب حسب وقت ال&تعديل
+SORT_BY_A_TIME            = ترتيب حسب وقت آخر &دخول
+SORT_ASCENDING            = ترتيب ت&صاعدي
+SORT_DESCENDING           = ترتيب ت&نازلي
 
 ; --- Help Menu
 

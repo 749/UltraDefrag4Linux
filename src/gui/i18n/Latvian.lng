@@ -2,7 +2,7 @@
 ; UltraDefrag GUI Latvian Language Pack.
 ; Copyright (C) 2009 Sevelyr.
 ; Copyright (C) 2009 Vladislav Stuznev.
-; Copyright (C) 2012 Raitis Nugumanovs.
+; Copyright (C) 2012-2013 Raitis (rower) Nugumanovs.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
@@ -31,8 +31,9 @@ DEFRAGMENT                = &Defragmentēt
 QUICK_OPTIMIZE            = Ātrā &optimizācija
 FULL_OPTIMIZE             = &Pilnā optimizācija
 OPTIMIZE_MFT              = Optimizēt &MFT
+PAUSE                     = &Pauze
 STOP                      = Ap&turēt
-REPEAT_ACTION             = Atkā&rtot
+REPEAT_ACTION             = Atkā&rtot darbību
 SKIP_REMOVABLE_MEDIA      = Izlaist maināmos datu &nesējus
 RESCAN_DRIVES             = Di&sku meklēšana
 REPAIR_DRIVES             = &Labot diskus
@@ -59,6 +60,7 @@ LANGUAGE                  = &Valodas
 GRAPHICAL_INTERFACE       = &Grafiskais interfeiss
 BOOT_TIME_SCAN            = Pārbaude Windows &ielādes laikā
 REPORTS                   = &Atskaites
+SORTING                   = Šķi&rošana
 
 ; --- --- Language submenu
 
@@ -77,14 +79,24 @@ OPTIONS                   = &Opcijas
 ENABLE                    = &Atļaut
 SCRIPT                    = &Skripts
 
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Šķirot &pēc ceļa
+SORT_BY_SIZE              = Šķirot pēc izmēra (&size)
+SORT_BY_C_TIME            = Šķirot pē&c radīšanas laika (_c_reation)
+SORT_BY_M_TIME            = Šķirot pēc pēdējo iz&maiņu laika (_m_od)
+SORT_BY_A_TIME            = Šķirot pēc pēdējās pieejas &laika (_l_ast acc)
+SORT_ASCENDING            = Šķirot &augošā secībā (ascending)
+SORT_DESCENDING           = Šķirot &dilstošā secībā (descending)
+
 ; --- Help Menu
 
 CONTENTS                  = &Saturs
 BEST_PRACTICE             = &Labākās prakses
 FAQ                       = &Biežāk uzdotie jautājumi
-CM_LEGEND                 = &Klasteru karte
+CM_LEGEND                 = &Klāsteru karte
 DEBUG                     = &Atkļūdot
-CHECK_UPDATE              = Pārbaudīt &update
+CHECK_UPDATE              = Pārbaudīt jauninājumus (&update)
 ABOUT                     = &Par programmu
 
 ; --- --- Debug submenu
@@ -109,8 +121,8 @@ PERCENT                   = Procentos
 
 STATUS_RUNNING            = Izpildās
 STATUS_ANALYSED           = Analīze
-STATUS_DEFRAGMENTED       = Defragmented
-STATUS_OPTIMIZED          = Optimizēta
+STATUS_DEFRAGMENTED       = Defragmentēts
+STATUS_OPTIMIZED          = Optimizēts
 STATUS_DIRTY              = Disks jālabo
 
 ; Status bar messages.
@@ -129,10 +141,10 @@ LICENSE                   = &Licence
 ; Shutdown confirmation
 
 PLEASE_CONFIRM            = Lūdzu, apstipriniet
-REALLY_SHUTDOWN_WHEN_DONE = Vai tiešām vēlaties izslēgt datoru, kad izdarīts?
-REALLY_HIBERNATE_WHEN_DONE= Vai tiešām vēlaties hibernēt, kad izdarīts?
-REALLY_LOGOFF_WHEN_DONE   = Vai tiešām vēlaties beigt darbu, kad izdarīts?
-REALLY_REBOOT_WHEN_DONE   = Vai tiešām vēlaties pārlādēt sistēmu, kad izdarīts?
+REALLY_SHUTDOWN_WHEN_DONE = Vai tiešām vēlaties izslēgt datoru?
+REALLY_HIBERNATE_WHEN_DONE= Vai tiešām vēlaties hibernēt?
+REALLY_LOGOFF_WHEN_DONE   = Vai tiešām vēlaties beigt darbu?
+REALLY_REBOOT_WHEN_DONE   = Vai tiešām vēlaties pārlādēt sistēmu?
 SECONDS_TILL_SHUTDOWN     = sekundes līdz izslēgšanai
 SECONDS_TILL_HIBERNATION  = sekundes līdz hibernācijai
 SECONDS_TILL_LOGOFF       = sekundes līdz darba beigām
@@ -142,8 +154,8 @@ NO                        = &Nē
 
 ; Upgrade dialog
 
-UPGRADE_CAPTION           = Jūs varat jaunināt mani ^-^
-UPGRADE_MESSAGE           = presei ir pieejama lejupielādei!
+UPGRADE_CAPTION           = Jūs varat jaunināt mani ^_^
+UPGRADE_MESSAGE           = versija ir pieejama lejupielādei!
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 

@@ -1,7 +1,7 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
- *  Copyright (c) 2010-2012 Stefan Pendl (stefanpe@users.sourceforge.net).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -46,8 +46,8 @@ int progress_line_length = 0;
 
 object_path *paths = NULL;
 
-wchar_t in_filter[MAX_ENV_VARIABLE_LENGTH + 1];
-wchar_t new_in_filter[MAX_ENV_VARIABLE_LENGTH + 1];
+wchar_t orig_cut_filter[MAX_ENV_VARIABLE_LENGTH + 1];
+wchar_t cut_filter[MAX_ENV_VARIABLE_LENGTH + 1];
 wchar_t aux_buffer[MAX_ENV_VARIABLE_LENGTH + 1];
 wchar_t aux_buffer2[MAX_ENV_VARIABLE_LENGTH + 1];
 
@@ -61,20 +61,22 @@ static void add_path(wchar_t *buffer);
 int GetDebugLevel()
 {
     int result = DBG_NORMAL;
-    wchar_t buffer[128];
+    wchar_t *buffer;
     
-    if(winx_query_env_variable(L"UD_DBGPRINT_LEVEL",
-      buffer,sizeof(buffer) / sizeof(wchar_t)) >= 0){
+    buffer = winx_getenv(L"UD_DBGPRINT_LEVEL");
+    if(buffer){
         (void)_wcsupr(buffer);
         if(!wcscmp(buffer,L"DETAILED"))
             result = DBG_DETAILED;
         else if(!wcscmp(buffer,L"PARANOID"))
             result = DBG_PARANOID;
+        winx_free(buffer);
     }
     return result;
 }
 
 char old_op_name[15] = {0};
+int old_pass_number = 0;
 
 /**
  * @brief Redraws the progress information.
@@ -89,8 +91,8 @@ void RedrawProgress(udefrag_progress_info *pi)
     char s[MAX_LINE_WIDTH + 1];
     char format[16];
     char *results;
+    char *status = "";
 
-    /* TODO: optimize for speed to make redraw faster */
     switch(pi->current_operation){
         case VOLUME_ANALYSIS:
             op_name = "Analyze:  ";
@@ -113,6 +115,31 @@ void RedrawProgress(udefrag_progress_info *pi)
         p1 = 100;
         p2 = 0;
     }
+    if(abort_flag){
+        status = "aborted";
+        old_op_name[0] = 0;
+    } else {
+        status = "completed";
+    }
+
+    /* allow display of all process stages for better verification */
+    if(!winx_stristr(old_op_name,op_name) && old_op_name[0] != 0){
+        if(old_pass_number > 1)
+            _snprintf(s,sizeof(s),"%s100.00%% %s, pass %u, fragmented/total = %lu/%lu",old_op_name,status,old_pass_number,pi->fragmented,pi->files);
+        else
+            _snprintf(s,sizeof(s),"%s100.00%% %s, fragmented/total = %lu/%lu",old_op_name,status,pi->fragmented,pi->files);
+
+        s[sizeof(s) - 1] = 0;
+        _snprintf(format,sizeof(format),"\r%%-%us",progress_line_length);
+        format[sizeof(format) - 1] = 0;
+        winx_printf(format,s);
+        winx_printf("\n");
+        strncpy(old_op_name,op_name,sizeof(old_op_name)-1);
+    } else {
+        old_pass_number = pi->pass_number;
+        strncpy(old_op_name,op_name,sizeof(old_op_name)-1);
+    }
+
     if(pi->current_operation == VOLUME_OPTIMIZATION && !abort_flag && pi->completion_status == 0){
         /* display number of moves */
         if(pi->pass_number > 1)
@@ -121,22 +148,10 @@ void RedrawProgress(udefrag_progress_info *pi)
             _snprintf(s,sizeof(s),"%s%3u.%02u%% completed, moves total = %I64u",op_name,p1,p2,pi->total_moves);
     } else {
         /* display fragmentation status */
-        if(abort_flag){
-            if(pi->pass_number > 1)
-                _snprintf(s,sizeof(s),"%s%3u.%02u%% aborted, pass %u, fragmented/total = %lu/%lu",op_name,p1,p2,pi->pass_number,pi->fragmented,pi->files);
-            else
-                _snprintf(s,sizeof(s),"%s%3u.%02u%% aborted, fragmented/total = %lu/%lu",op_name,p1,p2,pi->fragmented,pi->files);
-        } else {
-            if(pi->pass_number > 1)
-                _snprintf(s,sizeof(s),"%s%3u.%02u%% completed, pass %u, fragmented/total = %lu/%lu",op_name,p1,p2,pi->pass_number,pi->fragmented,pi->files);
-            else
-                _snprintf(s,sizeof(s),"%s%3u.%02u%% completed, fragmented/total = %lu/%lu",op_name,p1,p2,pi->fragmented,pi->files);
-        }
-    }
-
-    if(!winx_stristr(old_op_name,op_name)){
-        winx_printf("\n");
-        strncpy(old_op_name,op_name,sizeof(old_op_name)-1);
+        if(pi->pass_number > 1)
+            _snprintf(s,sizeof(s),"%s%3u.%02u%% %s, pass %u, fragmented/total = %lu/%lu",op_name,p1,p2,status,pi->pass_number,pi->fragmented,pi->files);
+        else
+            _snprintf(s,sizeof(s),"%s%3u.%02u%% %s, fragmented/total = %lu/%lu",op_name,p1,p2,status,pi->fragmented,pi->files);
     }
 
     s[sizeof(s) - 1] = 0;
@@ -152,6 +167,7 @@ void RedrawProgress(udefrag_progress_info *pi)
             winx_printf("\n\n%s\n",results);
             udefrag_release_default_formatted_results(results);
         }
+        old_op_name[0] = 0;
     }
 }
 
@@ -236,11 +252,10 @@ void ProcessVolume(char letter)
         break;
     }
     /* display the time limit if possible */
-    buffer = winx_heap_alloc(MAX_ENV_VARIABLE_LENGTH * sizeof(wchar_t));
-    if(buffer != NULL){
-        if(winx_query_env_variable(L"UD_TIME_LIMIT",buffer,MAX_ENV_VARIABLE_LENGTH) >= 0)
-            winx_printf("\nProcess will be terminated in %ws automatically.\n",buffer);
-        winx_heap_free(buffer);
+    buffer = winx_getenv(L"UD_TIME_LIMIT");
+    if(buffer){
+        winx_printf("\nProcess will be terminated in %ws automatically.\n",buffer);
+        winx_free(buffer);
     }
     
     winx_printf(BREAK_MESSAGE);
@@ -296,6 +311,7 @@ int udefrag_handler(int argc,wchar_t **argv,wchar_t **envp)
     object_path *path, *another_path;
     int n, path_found;
     int result;
+    wchar_t *cf;
     
     if(argc < 2){
         winx_printf("\nNo drive letter specified!\n\n");
@@ -416,22 +432,23 @@ int udefrag_handler(int argc,wchar_t **argv,wchar_t **envp)
             /* extract drive letter */
             letter = (char)path->path[0];
             
-            /* save %UD_IN_FILTER% */
-            in_filter[0] = 0;
-            if(winx_query_env_variable(L"UD_IN_FILTER",in_filter,MAX_ENV_VARIABLE_LENGTH + 1) < 0){
-                /*if(GetLastError() != ERROR_ENVVAR_NOT_FOUND)
-                    winx_printf("udefrag_handler: cannot get %%UD_IN_FILTER%%!");
-                */
+            /* save %UD_CUT_FILTER% */
+            orig_cut_filter[0] = 0;
+            cf = winx_getenv(L"UD_CUT_FILTER");
+            if(cf){
+                wcsncpy(orig_cut_filter,cf,MAX_ENV_VARIABLE_LENGTH + 1);
+                orig_cut_filter[MAX_ENV_VARIABLE_LENGTH] = 0;
+                winx_free(cf);
             }
             
-            /* save the current path to %UD_IN_FILTER% */
-            n = _snwprintf(new_in_filter,MAX_ENV_VARIABLE_LENGTH + 1,L"%ls",path->path);
+            /* save the current path to %UD_CUT_FILTER% */
+            n = _snwprintf(cut_filter,MAX_ENV_VARIABLE_LENGTH + 1,L"%ls",path->path);
             if(n < 0){
-                winx_printf("Cannot set %%UD_IN_FILTER%% - path is too long!\n");
-                wcscpy(new_in_filter,in_filter);
+                winx_printf("Cannot set %%UD_CUT_FILTER%% - path is too long!\n");
+                wcscpy(cut_filter,L"");
                 path_found = 0;
             } else {
-                new_in_filter[MAX_ENV_VARIABLE_LENGTH] = 0;
+                cut_filter[MAX_ENV_VARIABLE_LENGTH] = 0;
             }
             
             /* search for another paths with the same drive letter */
@@ -439,10 +456,10 @@ int udefrag_handler(int argc,wchar_t **argv,wchar_t **envp)
                 if(another_path == paths) break;
                 if(winx_toupper(letter) == winx_toupper((char)another_path->path[0])){
                     /* try to append it to %UD_IN_FILTER% */
-                    n = _snwprintf(aux_buffer,MAX_ENV_VARIABLE_LENGTH + 1,L"%ls;%ls",new_in_filter,another_path->path);
+                    n = _snwprintf(aux_buffer,MAX_ENV_VARIABLE_LENGTH + 1,L"%ls;%ls",cut_filter,another_path->path);
                     if(n >= 0){
                         aux_buffer[MAX_ENV_VARIABLE_LENGTH] = 0;
-                        wcscpy(new_in_filter,aux_buffer);
+                        wcscpy(cut_filter,aux_buffer);
                         path_found = 1;
                         winx_printf("%ls\n",another_path->path);
                         another_path->processed = 1;
@@ -450,10 +467,10 @@ int udefrag_handler(int argc,wchar_t **argv,wchar_t **envp)
                 }
             }
             
-            /* set %UD_IN_FILTER% */
+            /* set %UD_CUT_FILTER% */
             if(abort_flag) goto done;
-            if(winx_set_env_variable(L"UD_IN_FILTER",new_in_filter) < 0){
-                winx_printf("Cannot set %%UD_IN_FILTER%%!\n");
+            if(winx_setenv(L"UD_CUT_FILTER",cut_filter) < 0){
+                winx_printf("Cannot set %%UD_CUT_FILTER%%!\n");
             }
             
             /* run the job */
@@ -462,13 +479,10 @@ int udefrag_handler(int argc,wchar_t **argv,wchar_t **envp)
                 if(debug_level > DBG_NORMAL) short_dbg_delay();
             }
             
-            /* restore %UD_IN_FILTER% */
-            if(in_filter[0])
-                result = winx_set_env_variable(L"UD_IN_FILTER",in_filter);
-            else
-                result = winx_set_env_variable(L"UD_IN_FILTER",NULL);
+            /* restore %UD_CUT_FILTER% */
+            result = winx_setenv(L"UD_CUT_FILTER",orig_cut_filter);
             if(result < 0){
-                winx_printf("Cannot restore %%UD_IN_FILTER%%!\n");
+                winx_printf("Cannot restore %%UD_CUT_FILTER%%!\n");
             }
         }
         if(path->next == paths) break;
@@ -592,14 +606,10 @@ static void add_path(wchar_t *buffer)
 
     if(buffer[0]){
         if(paths) last_item = paths->prev;
-        new_item = (object_path *)winx_list_insert_item((list_entry **)(void *)&paths,
+        new_item = (object_path *)winx_list_insert((list_entry **)(void *)&paths,
             (list_entry *)last_item,sizeof(object_path));
-        if(new_item == NULL){
-            winx_printf("add_path: not enough memory!\n");
-        } else {
-            new_item->processed = 0;
-            wcsncpy(new_item->path,buffer,MAX_LONG_PATH);
-            new_item->path[MAX_LONG_PATH] = 0;
-        }
+        new_item->processed = 0;
+        wcsncpy(new_item->path,buffer,MAX_LONG_PATH);
+        new_item->path[MAX_LONG_PATH] = 0;
     }
 }

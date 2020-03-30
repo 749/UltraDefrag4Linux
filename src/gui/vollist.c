@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -254,7 +254,7 @@ int GetMaxVolListHeight(void)
     int h, tb_height, sb_height;
     
     if(!GetClientRect(hWindow,&rc)){
-        WgxDbgPrintLastError("GetMaxVolListHeight: cannot get main window dimensions");
+        letrace("cannot get main window dimensions");
         return DPI(VLIST_HEIGHT);
     }
     h = rc.bottom - rc.top;
@@ -265,11 +265,11 @@ int GetMaxVolListHeight(void)
         tb_height = 24 + 2 * GetSystemMetrics(SM_CYEDGE);
 
     if(!GetClientRect(hStatus,&rc)){
-        WgxDbgPrintLastError("GetMaxVolListHeight: cannot get status bar dimensions");
+        letrace("cannot get status bar dimensions");
         return DPI(VLIST_HEIGHT);
     } else {
         if(!MapWindowPoints(hStatus,hWindow,(LPPOINT)(PRECT)(&rc),(sizeof(RECT)/sizeof(POINT)))){
-            WgxDbgPrintLastError("GetMaxVolListHeight: MapWindowPoints failed");
+            letrace("MapWindowPoints failed");
             return DPI(VLIST_HEIGHT);
         } else {            
             sb_height = rc.bottom - rc.top;
@@ -325,7 +325,7 @@ static void AddCapacityInformation(int index, volume_info *v)
 {
     LV_ITEM lvi;
     char s[32];
-    ULONGLONG free, total;
+    double free, total;
     double d = 0;
     int p;
 
@@ -342,12 +342,9 @@ static void AddCapacityInformation(int index, volume_info *v)
     lvi.pszText = s;
     (void)SendMessage(hList,LVM_SETITEM,0,(LRESULT)&lvi);
     
-    /* conversion to LONGLONG is needed for Win DDK */
-    /* so, let's divide both numbers to make safe conversion then */
-    total = v->total_space.QuadPart / 2;
-    free = v->free_space.QuadPart / 2;
-    if(total > 0)
-        d = (double)(LONGLONG)free / (double)(LONGLONG)total;
+    total = (double)v->total_space.QuadPart;
+    free = (double)v->free_space.QuadPart;
+    if(total > 0) d = free / total;
     p = (int)(100 * d);
     (void)sprintf(s,"%u %%",p);
     lvi.iSubItem = 5;
@@ -361,8 +358,8 @@ static void AddCapacityInformation(int index, volume_info *v)
 static void VolListUpdateStatusFieldInternal(int index,volume_processing_job *job)
 {
     LV_ITEMW lviw;
-    wchar_t *ProcessCaption = NULL;
-    wchar_t buffer[128], PassString[32] = L"", MoveString[32] = L"", PercentString[32] = L"";
+    wchar_t *caption = NULL;
+    wchar_t *text = NULL;
 
     lviw.mask = LVIF_TEXT;
     lviw.iItem = index;
@@ -370,52 +367,55 @@ static void VolListUpdateStatusFieldInternal(int index,volume_processing_job *jo
     
     /* each job starts with a volume analysis */
     if(job->pi.current_operation == VOLUME_ANALYSIS && job->job_type != NEVER_EXECUTED_JOB){
-        ProcessCaption = WgxGetResourceString(i18n_table,"STATUS_ANALYSED");
+        caption = WgxGetResourceString(i18n_table,"STATUS_ANALYSED");
     } else {
         switch(job->job_type){
             case ANALYSIS_JOB:
-                ProcessCaption = WgxGetResourceString(i18n_table,"STATUS_ANALYSED");
+                caption = WgxGetResourceString(i18n_table,"STATUS_ANALYSED");
                 break;
             case DEFRAGMENTATION_JOB:
-                ProcessCaption = WgxGetResourceString(i18n_table,"STATUS_DEFRAGMENTED");
+                caption = WgxGetResourceString(i18n_table,"STATUS_DEFRAGMENTED");
                 break;
             case FULL_OPTIMIZATION_JOB:
             case QUICK_OPTIMIZATION_JOB:
             case MFT_OPTIMIZATION_JOB:
-                ProcessCaption = WgxGetResourceString(i18n_table,"STATUS_OPTIMIZED");
+                caption = WgxGetResourceString(i18n_table,"STATUS_OPTIMIZED");
                 break;
         }
     }
     
-    if(job->pi.completion_status < 0 || ProcessCaption == NULL){
+    if(job->pi.completion_status < 0 || caption == NULL){
         lviw.pszText = L"";
     } else {
         if(job->pi.completion_status == 0 || stop_pressed){
-            _snwprintf(PercentString,sizeof(PercentString)/sizeof(wchar_t),L"%5.2lf %% ",job->pi.percentage);
-            PercentString[sizeof(PercentString)/sizeof(wchar_t) - 1] = 0;
-            
             if(job->pi.pass_number > 1){
-                _snwprintf(PassString,sizeof(PassString)/sizeof(wchar_t),L", Pass %d",job->pi.pass_number);
-                PassString[sizeof(PassString)/sizeof(wchar_t) - 1] = 0;
-            }
-                
-            if(job->pi.current_operation == VOLUME_OPTIMIZATION){
-                _snwprintf(MoveString,sizeof(MoveString)/sizeof(wchar_t),L", %I64u moves total",job->pi.total_moves);
-                MoveString[sizeof(MoveString)/sizeof(wchar_t) - 1] = 0;
+                if(job->pi.current_operation == VOLUME_OPTIMIZATION){
+                    text = wgx_swprintf(L"%5.2lf %% %ls, Pass %d, %I64u moves total",
+                        job->pi.percentage,caption,job->pi.pass_number,job->pi.total_moves);
+                } else {
+                    text = wgx_swprintf(L"%5.2lf %% %ls, Pass %d",
+                        job->pi.percentage,caption,job->pi.pass_number);
+                }
+            } else {
+                if(job->pi.current_operation == VOLUME_OPTIMIZATION){
+                    text = wgx_swprintf(L"%5.2lf %% %ls, %I64u moves total",
+                        job->pi.percentage,caption,job->pi.total_moves);
+                } else {
+                    text = wgx_swprintf(L"%5.2lf %% %ls",
+                        job->pi.percentage,caption);
+                }
             }
         } else {
-            if(job->pi.pass_number > 1){
-                _snwprintf(PassString,sizeof(PassString)/sizeof(wchar_t),L", %d passes needed",job->pi.pass_number);
-                PassString[sizeof(PassString)/sizeof(wchar_t) - 1] = 0;
-            }
+            if(job->pi.pass_number > 1)
+                text = wgx_swprintf(L"%ls, %d passes needed",caption,job->pi.pass_number);
+            else
+                text = wgx_swprintf(L"%ls",caption);
         }
-        _snwprintf(buffer,sizeof(buffer)/sizeof(wchar_t),L"%ls%ls%ls%ls",PercentString,ProcessCaption,PassString,MoveString);
-        buffer[sizeof(buffer)/sizeof(wchar_t) - 1] = 0;
-        lviw.pszText = buffer;
+        lviw.pszText = text ? text : L"";
     }
 
     (void)SendMessage(hList,LVM_SETITEMW,0,(LRESULT)&lviw);
-    free(ProcessCaption);
+    free(caption); free(text);
 }
 
 /**
@@ -510,7 +510,7 @@ static DWORD WINAPI RescanDrivesThreadProc(LPVOID lpParameter)
     
     /* synchronize with other theads */
     if(WaitForSingleObject(hListEvent,INFINITE) != WAIT_OBJECT_0){
-        WgxDbgPrintLastError("RescanDrivesThreadProc: wait on hListEvent failed");
+        letrace("synchronization failed");
         return 0;
     }
     
@@ -549,7 +549,7 @@ void UpdateVolList(void)
 {
     if(!WgxCreateThread(RescanDrivesThreadProc,NULL)){
         WgxDisplayLastError(hWindow,MB_OK | MB_ICONHAND,
-            "Cannot create thread starting drives rescan!");
+            L"Cannot create thread starting drives rescan!");
     }
 }
 
@@ -702,7 +702,7 @@ static void InitImageList(void)
     }
     hImgList = ImageList_Create(size,size,ILC_MASK,4,0);
     if(hImgList == NULL){
-        WgxDbgPrintLastError("InitImageList: ImageList_Create failed");
+        letrace("ImageList_Create failed");
     } else {
         WgxLoadIcon(hInstance,IDI_FIXED,size,&hFixed);
         WgxLoadIcon(hInstance,IDI_REMOVABLE,size,&hRemovable);

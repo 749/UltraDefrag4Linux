@@ -8,6 +8,7 @@ includes = { "console", "include", "lua5.1", "share", "udefrag", "wgx" }
 libs = { "kernel32", "user32", "msvcrt", "shell32" }
 adlibs = { 
     "$(UDEFRAG_LIB_PATH)\\udefrag",
+    "$(UDEFRAG_LIB_PATH)\\lua5.1a", 
     "$(UDEFRAG_LIB_PATH)\\wgx"
 }
 umentry = "main"

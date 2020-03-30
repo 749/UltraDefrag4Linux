@@ -1,6 +1,7 @@
 ﻿;------------------------------------------------------------------------------
 ; UltraDefrag GUI Lithuanian Language Pack.
 ; Copyright (C) 2012 Eugenijus Januškevičius.
+; Copyright (C) 2013 Laurynas.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
@@ -29,6 +30,7 @@ DEFRAGMENT                = &Defragmentuoti
 QUICK_OPTIMIZE            = &Greitas optimizavimas
 FULL_OPTIMIZE             = &Pilnas optimizavimas
 OPTIMIZE_MFT              = &Optimizuoti MFT
+PAUSE                     = Prista&bdyti
 STOP                      = &Stabdyti
 REPEAT_ACTION             = Pa&kartoti veiksmą
 SKIP_REMOVABLE_MEDIA      = Praleisti &mobilias laikmenas
@@ -57,6 +59,7 @@ LANGUAGE                  = Ka&lba
 GRAPHICAL_INTERFACE       = &Grafinė sąsaja
 BOOT_TIME_SCAN            = &Skanuoti OS krovimo metu
 REPORTS                   = &Ataskaitos
+SORTING                   = &Rikiavimas
 
 ; --- --- Language submenu
 
@@ -67,13 +70,23 @@ TRANSLATIONS_SUBMIT       = &Siųsti vertimą
 
 ; --- --- Graphical interface submenu
 
-FONT                      = &Fontas
+FONT                      = &Šriftas
 OPTIONS                   = &Parinktys
 
 ; --- --- Boot time scan submenu
 
 ENABLE                    = &Paleisti
 SCRIPT                    = &Skriptas
+
+; --- --- Sorting submenu
+
+SORT_BY_PATH              = Rikiuoti pagal &kelią
+SORT_BY_SIZE              = Rikiuoti pagal &dydį
+SORT_BY_C_TIME            = Rikiuoti pagal &sukūrimo laiką
+SORT_BY_M_TIME            = Rikiuoti pagal paskutinį &modifikacijos laiką
+SORT_BY_A_TIME            = Rikiuoti pagal &paskutinį kreipties laiką
+SORT_ASCENDING            = Rikiuoti &didėjimo tvarka
+SORT_DESCENDING           = Rikiuoti &mažėjimo tvarka
 
 ; --- Help Menu
 

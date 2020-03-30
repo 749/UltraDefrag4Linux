@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,7 +32,14 @@
 #include <conio.h>
 #include <shellapi.h>
 
+#define lua_c
+#include "../lua5.1/lua.h"
+#include "../lua5.1/lauxlib.h"
+#include "../lua5.1/lualib.h"
+
+#define WgxTraceHandler udefrag_dbg_print
 #include "../dll/wgx/wgx.h"
+
 #include "../dll/udefrag/udefrag.h"
 #include "../include/ultradfgver.h"
 
@@ -93,7 +100,7 @@ extern int optimize_mft_flag;
 extern int repeat_flag;
 
 /* prototypes */
-void parse_cmdline(int argc, char **argv);
+int parse_cmdline(int argc, char **argv);
 void show_help(void);
 int  AllocateClusterMap(void);
 void InitializeMapDisplay(char volume_letter);

@@ -2,7 +2,7 @@
 --[[
   udreportcnv.lua - UltraDefrag report converter.
   Converts lua reports to HTML and other formats.
-  Copyright (c) 2008-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+  Copyright (c) 2008-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -183,7 +183,11 @@ end
 -- information from. So, let's avoid their localization.
 
 function write_text_header(f)
-    local formatted_time = ""
+    local compname, formatted_time = "", ""
+    
+    if computer_name then
+        compname = computer_name .. ': '
+    end
     
     -- format time appropriate for locale
     if current_time then
@@ -194,7 +198,7 @@ function write_text_header(f)
     f:write(string.char(0xEF,0xBB,0xBF))
 
     f:write(";---------------------------------------------------------------------------------------------\n")
-    f:write("; Fragmented files on ", volume_letter, ": [", formatted_time, "]\n;\n")
+    f:write("; ", compname, "Fragmented files on ", volume_letter, ": [", formatted_time, "]\n;\n")
     f:write("; Fragments    Filesize  Comment      Status    Filename\n")
     f:write(";---------------------------------------------------------------------------------------------\n")
     f:write("\n")
@@ -239,7 +243,7 @@ header = [[
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-    <title>$FRAGMENTED_FILES_ON $volume_letter: [$formatted_time]</title>
+    <title>$compname$FRAGMENTED_FILES_ON $volume_letter: [$formatted_time]</title>
     <style type="text/css">
       $css
     </style>
@@ -248,7 +252,7 @@ header = [[
     </script>
   </head>
   <body>
-    <h3 class="title">$FRAGMENTED_FILES_ON $volume_letter: ($formatted_time)</h3>
+    <h3 class="title">$compname$FRAGMENTED_FILES_ON $volume_letter: ($formatted_time)</h3>
     <div id="for_msie">
       $table_head
       <tr>
@@ -355,6 +359,12 @@ function build_html_report()
     js = get_javascript()
     css = get_css()
     
+    if computer_name then
+        compname = computer_name .. ': '
+    else
+        compname = ""
+    end
+    
     -- format time appropriate for locale
     if current_time then
         formatted_time = os.date("%c",os.time(current_time))
@@ -392,7 +402,7 @@ are no more supported. Run the disk analysis again.
 ]]
 
 -- check the report format version
-if format_version == nil or format_version < 6 then
+if format_version == nil or format_version < 7 then
     error(error_msg)
 end
 
