@@ -51,6 +51,10 @@
 !define OFFICIAL_RELEASE
 !endif
 
+!if "$%EXCLUDE_DEBUGGER%" == "1"
+!define EXCLUDE_DEBUGGER
+!endif
+
 /*
  * Constants
  */
@@ -63,6 +67,8 @@
 !else
 !define ROOTDIR "..\..\.."
 !endif
+
+!define ARCHIVE_URL "https://sourceforge.net/projects/ultradefrag/files/stable-release/$%ULTRADFGVER%/"
 
 /*
  * Compress the installer using UPX.
