@@ -7,7 +7,7 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Debug (GCC)">
+			<Target title="x86 debug (GCC)">
 				<Option platforms="Windows;" />
 				<Option output="../bin/udefrag-dbg" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../bin" />
@@ -26,9 +26,10 @@
                     <Add library="libuser32.a" />
                     <Add library="libcomctl32.a" />
                     <Add library="liburlmon.a" />
+                    <Add directory="../lib" />
 				</Linker>
 			</Target>
-			<Target title="Release (GCC)">
+			<Target title="x86 release (GCC)">
 				<Option platforms="Windows;" />
 				<Option output="../bin/udefrag-dbg" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../bin" />
@@ -41,25 +42,25 @@
 				</Compiler>
 				<Linker>
                     <Add option="-mwindows" />
-					<Add option="-s" />
+                    <Add option="-s" />
                     <Add library="libzenwinx.dll.a" />
                     <Add library="libkernel32.a" />
                     <Add library="libuser32.a" />
                     <Add library="libcomctl32.a" />
                     <Add library="liburlmon.a" />
+                    <Add directory="../lib" />
 				</Linker>
 			</Target>
             <!-- debugging of MSVC targets is not supported, so let's define Relese target only -->
-			<Target title="Release (MSVC)">
+			<Target title="x64 release (MSVC)">
 				<Option platforms="Windows;" />
-				<Option output="../bin/udefrag-dbg" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="../bin" />
-				<Option object_output="../obj/dbg/" />
+				<Option output="../bin/amd64/udefrag-dbg" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../bin/amd64" />
+				<Option object_output="../obj/dbg/codeblocks/" />
 				<Option type="0" />
 				<Option compiler="msvc10" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
-					<Add option="/arch:SSE2" />
 					<Add option="/D &quot;_CRT_SECURE_NO_WARNINGS&quot;" />
 					<Add option="/D &quot;_MBCS&quot;" />
 					<Add option="/D &quot;_WINDOWS&quot;" />
@@ -67,17 +68,20 @@
 					<Add option="/D &quot;USE_WINSDK&quot;" />
 					<Add option="/D &quot;WIN32&quot;" />
 					<Add option="/EHsc" />
+					<Add option="/Od" />
 					<Add option="/Gd" />
 					<Add option="/GS-" />
 					<Add option="/MT" />
 				</Compiler>
 				<Linker>
+                    <Add option="/machine:AMD64" />
                     <Add option="/entry:&quot;mainCRTStartup&quot;" />
                     <Add library="zenwinx.lib" />
                     <Add library="kernel32.lib" />
                     <Add library="user32.lib" />
                     <Add library="comctl32.lib" />
                     <Add library="urlmon.lib" />
+                    <Add directory="../lib/amd64" />
 				</Linker>
 			</Target>
 		</Build>
@@ -85,9 +89,6 @@
 		</Compiler>
 		<ResourceCompiler>
 		</ResourceCompiler>
-		<Linker>
-			<Add directory="../lib" />
-		</Linker>
 		<Unit filename="init.c" />
 		<Unit filename="main.c" />
 		<Unit filename="main.h" />

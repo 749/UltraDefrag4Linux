@@ -1,6 +1,6 @@
 ﻿/*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2019 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
@@ -17,7 +17,7 @@
  * - Dmitri Arkhangelski <span class="simple">\<dmitriar@users.sourceforge.net\></span>
  * - Justin Dearing      <span class="simple">\<zippy1981@users.sourceforge.net\></span>
  *
- * <b>Program and Documentation Copyright &copy; 2009, 2015-2018</b>
+ * <b>Program and Documentation Copyright &copy; 2009, 2015-2019</b>
  * 
  * - Dmitri Arkhangelski <span class="simple">\<dmitriar@users.sourceforge.net\></span>
  *
@@ -614,7 +614,7 @@
  * Jan Iemhoff, Jani Kinnunen, JIFF, Julien Chartier, Luigi C., Javier Valdivieso, Jiri Sedlak,
  * José Carlos Taveira de Souza, José Luis Farías, Karam Al-Shorbassi,
  * Ken Choy, Krzysztof Świderski, Latino, Leo Smulders, luigif, Łukasz Chojnacki, MAFA1005, Massa,
- * Matej Marton, Mateusz Krawczyk, Nikolay Parukhin, Patrick Palm, Piotr Halama, Ralf Boening,
+ * Matej Marton, Mateusz Krawczyk, Nikolay Parukhin, Onur Çakan, Patrick Palm, Piotr Halama, Ralf Boening,
  * Reynald Didier, Robert Jr, Robert Readman, Rodrigo Lopes Paitach, Seph, SMHA,
  * Suranappar.se, Timo VJ Lähde, Tjeerd van Sas, Trans-fr, translucens, TurboHz,
  * udef-jardic, Zirikkanen
@@ -697,12 +697,12 @@
  * The program is licensed under the terms of the @subpage GPL.
  *
  * @htmlonly
- * <HR>
- *  <TABLE STYLE="border: none; width: 97%; margin:auto;">
- *    <TR>
- *      <TD STYLE="text-align: left; width: 50%;">Previous: <a href="Development.html">Development</a></TD>
- *      <TD STYLE="text-align: right; width: 50%;">Next: <a href="index.html">UltraDefrag Handbook</a></TD>
- *    </TR>
- *  </TABLE>
+ * <hr>
+ * <table id="nav-table">
+ *  <tr>
+ *   <td><a href="Development.html">&#x25c4; Development</a></td>
+ *   <td></td>
+ *  </tr>
+ * </table>
  * @endhtmlonly
  */

@@ -3,14 +3,15 @@
 # This file is distributed under the Creative Commons Attribution 3.0 License.
 # 
 # Translators:
+# Onur Çakan <cakaljoe@hotmail.com>, 2018
 # yakup <mutouk@yandex.ru>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ultradefrag\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/p/ultradefrag/bugs/\n"
 "POT-Creation-Date: 2018-07-29 18:14+0300\n"
-"PO-Revision-Date: 2018-07-29 15:15+0000\n"
-"Last-Translator: Dmitri Arkhangelski <dmitriar@gmail.com>\n"
+"PO-Revision-Date: 2018-12-29 12:11+0000\n"
+"Last-Translator: Onur Çakan <cakaljoe@hotmail.com>\n"
 "Language-Team: Turkish (http://www.transifex.com/stefanpendl/ultradefrag/language/tr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -24,7 +25,7 @@ msgstr "UltraDefrag Hakkında"
 
 #: about.cpp:109
 msgid "A powerful defragmentation utility."
-msgstr ""
+msgstr "Güçlü bir birleştirme aracı."
 
 #: about.cpp:111
 msgid "Credits and licenses are listed in the handbook."
@@ -83,7 +84,7 @@ msgstr "&Raporu göster"
 #. : to process all files on the disk.
 #: i18n.cpp:178
 msgid "Deep a&ction"
-msgstr ""
+msgstr "Derin t&arama"
 
 #: i18n.cpp:180
 msgid "Skip removable &media"
@@ -147,7 +148,7 @@ msgstr "&Açılışta çalış"
 
 #: i18n.cpp:200
 msgid "&Automatic defragmentation"
-msgstr ""
+msgstr "&Otomatik birleştirme"
 
 #: i18n.cpp:203
 msgid "&Enable"
@@ -159,7 +160,7 @@ msgstr "&Betiği düzenle"
 
 #: i18n.cpp:207
 msgid "S&cheduler"
-msgstr ""
+msgstr "P&lan"
 
 #: i18n.cpp:211
 msgid "By &path"
@@ -247,11 +248,11 @@ msgstr "Çalıştırma Betiğini Düze&nle"
 
 #: i18n.cpp:243
 msgid "Automatic defragmentation scheduler"
-msgstr ""
+msgstr "Otomatik tarama planı"
 
 #: i18n.cpp:245
 msgid "Automatic defragmentation script"
-msgstr ""
+msgstr "Otomatik birleştirme komut dosyası"
 
 #: i18n.cpp:252
 msgid "Drive"

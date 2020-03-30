@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2019 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
@@ -49,12 +49,12 @@
  * is pretty slow: it may take a few seconds.
  *
  * @htmlonly
- * <HR>
- *  <TABLE STYLE="border: none; width: 97%; margin:auto;">
- *    <TR>
- *      <TD STYLE="text-align: left; width: 50%;">Previous: <a href="Schedule.html">Scheduled Defragmentation</a></TD>
- *      <TD STYLE="text-align: right; width: 50%;">Next: <a href="Tips.html">Tips and Tricks</a></TD>
- *    </TR>
- *  </TABLE>
+ * <hr>
+ * <table id="nav-table">
+ *  <tr>
+ *   <td><a href="Schedule.html">&#x25c4; Scheduled Defragmentation</a></td>
+ *   <td><a href="Tips.html">Tips and Tricks &#x25b6;</a></td>
+ *  </tr>
+ * </table>
  * @endhtmlonly
  */

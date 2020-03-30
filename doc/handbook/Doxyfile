@@ -34,7 +34,7 @@ PROJECT_NAME           = "UltraDefrag Handbook"
 # This could be handy for archiving the generated documentation or
 # if some version control system is used.
 
-PROJECT_NUMBER         = 7.1.0
+PROJECT_NUMBER         = 7.1.2
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer
@@ -941,7 +941,8 @@ HTML_EXTRA_STYLESHEET  = ./rsc/custom_doxygen.css
 # files. In the HTML_STYLESHEET file, use the file name only. Also note that
 # the files will be copied as-is; there are no commands or markers available.
 
-HTML_EXTRA_FILES       = ./rsc/sflogo.gif \
+HTML_EXTRA_FILES       = ./rsc/udefrag.ico \
+                         ./rsc/sflogo.gif \
                          ./rsc/languages.png
 
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output.

@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2019 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -119,6 +119,8 @@ Icon "${ROOTDIR}\src\installer\udefrag-install.ico"
 UninstallIcon "${ROOTDIR}\src\installer\udefrag-uninstall.ico"
 
 XPStyle on
+ManifestDPIAware true
+ManifestSupportedOS all
 RequestExecutionLevel admin
 
 InstType "Full"
@@ -143,7 +145,7 @@ SetCompress off
 VIProductVersion "$%ULTRADFGVER%.0"
 VIAddVersionKey  "ProductName"     "UltraDefrag"
 VIAddVersionKey  "CompanyName"     "UltraDefrag Development Team"
-VIAddVersionKey  "LegalCopyright"  "Copyright © 2007-2018 UltraDefrag Development Team"
+VIAddVersionKey  "LegalCopyright"  "Copyright © 2007-2019 UltraDefrag Development Team"
 VIAddVersionKey  "FileDescription" "UltraDefrag Setup"
 VIAddVersionKey  "FileVersion"     "$%ULTRADFGVER%"
 
@@ -165,10 +167,11 @@ VIAddVersionKey  "FileVersion"     "$%ULTRADFGVER%"
 !define MUI_ICON   "${ROOTDIR}\src\installer\udefrag-install.ico"
 !define MUI_UNICON "${ROOTDIR}\src\installer\udefrag-uninstall.ico"
 
-!define MUI_WELCOMEFINISHPAGE_BITMAP   "${ROOTDIR}\src\installer\WelcomePageBitmap.bmp"
-!define MUI_UNWELCOMEFINISHPAGE_BITMAP "${ROOTDIR}\src\installer\WelcomePageBitmap.bmp"
+;!define MUI_WELCOMEFINISHPAGE_BITMAP   "${ROOTDIR}\src\installer\WelcomePageBitmap.bmp"
+;!define MUI_UNWELCOMEFINISHPAGE_BITMAP "${ROOTDIR}\src\installer\WelcomePageBitmap.bmp"
 !define MUI_COMPONENTSPAGE_SMALLDESC
 
+!define MUI_PAGE_CUSTOMFUNCTION_SHOW .onWelcomePageShow
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_LICENSE "${ROOTDIR}\src\LICENSE.TXT"
 !define MUI_DIRECTORYPAGE_TEXT_TOP "Only empty folders and folders containing a previous UltraDefrag \
@@ -177,11 +180,14 @@ VIAddVersionKey  "FileVersion"     "$%ULTRADFGVER%"
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_INSTFILES
 !define MUI_FINISHPAGE_NOAUTOCLOSE
+!define MUI_PAGE_CUSTOMFUNCTION_SHOW .onFinishPageShow
 !insertmacro MUI_PAGE_FINISH
 
+!define MUI_PAGE_CUSTOMFUNCTION_SHOW un.onWelcomePageShow
 !insertmacro MUI_UNPAGE_WELCOME
 !insertmacro MUI_UNPAGE_CONFIRM
 !insertmacro MUI_UNPAGE_INSTFILES
+!define MUI_PAGE_CUSTOMFUNCTION_SHOW un.onFinishPageShow
 !insertmacro MUI_UNPAGE_FINISH
 
 !insertmacro MUI_LANGUAGE "English"
@@ -328,7 +334,11 @@ Function .onInit
 
     ${EnableX64FSRedirection}
     InitPluginsDir
-
+    SetOutPath $PLUGINSDIR
+    File "${ROOTDIR}\src\installer\WelcomePageBitmap96.bmp" 
+    File "${ROOTDIR}\src\installer\WelcomePageBitmap120.bmp" 
+    File "${ROOTDIR}\src\installer\WelcomePageBitmap144.bmp" 
+    File "${ROOTDIR}\src\installer\WelcomePageBitmap192.bmp" 
     ${DisableX64FSRedirection}
 
     ReadRegStr $OldInstallDir HKLM ${UD_UNINSTALL_REG_KEY} "InstallLocation"
@@ -342,10 +352,11 @@ Function .onInit
 
 FunctionEnd
 
-Function un.onInit
+;----------------------------------------------
 
-    ${CheckAdminRights}
-    ${CheckMutex}
+Function .onWelcomePageShow
+
+    ${SetPageBitmap} WelcomePage
 
 FunctionEnd
 
@@ -370,6 +381,14 @@ FunctionEnd
 
 ;----------------------------------------------
 
+Function .onFinishPageShow
+
+    ${SetPageBitmap} FinishPage
+
+FunctionEnd
+
+;----------------------------------------------
+
 Function .onInstSuccess
 
     ${PreserveInRegistry}
@@ -377,6 +396,33 @@ Function .onInstSuccess
     ${RegisterInstallationFolder}
 
 FunctionEnd
+
+;----------------------------------------------
+
+Function un.onInit
+
+    ${CheckAdminRights}
+    ${CheckMutex}
+
+FunctionEnd
+
+;----------------------------------------------
+
+Function un.onWelcomePageShow
+
+    ${SetPageBitmap} WelcomePage
+
+FunctionEnd
+
+;----------------------------------------------
+
+Function un.onFinishPageShow
+
+    ${SetPageBitmap} FinishPage
+
+FunctionEnd
+
+;----------------------------------------------
 
 Function un.onUninstSuccess
 

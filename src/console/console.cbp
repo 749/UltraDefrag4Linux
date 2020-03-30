@@ -7,7 +7,7 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Debug (GCC)">
+			<Target title="x86 debug (GCC)">
 				<Option platforms="Windows;" />
 				<Option output="../bin/udefrag" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../bin" />
@@ -35,9 +35,10 @@
                     <Add library="liburlmon.a" />
                     <Add library="libversion.a" />
                     <Add directory="$(WXWIDGETSDIR)/lib/gcc_libmingw-X86" />
+                    <Add directory="../lib" />
 				</Linker>
 			</Target>
-			<Target title="Release (GCC)">
+			<Target title="x86 release (GCC)">
 				<Option platforms="Windows;" />
 				<Option output="../bin/udefrag" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../bin" />
@@ -64,20 +65,20 @@
                     <Add library="liburlmon.a" />
                     <Add library="libversion.a" />
                     <Add directory="$(WXWIDGETSDIR)/lib/gcc_libmingw-X86" />
+                    <Add directory="../lib" />
 				</Linker>
 			</Target>
             <!-- debugging of MSVC targets is not supported, so let's define Relese target only -->
-			<Target title="Release (MSVC)">
+			<Target title="x64 release (MSVC)">
 				<Option platforms="Windows;" />
-				<Option output="../bin/udefrag" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="../bin" />
-				<Option object_output="../obj/console/" />
+				<Option output="../bin/amd64/udefrag" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../bin/amd64" />
+				<Option object_output="../obj/console/codeblocks/" />
 				<Option type="1" />
 				<Option compiler="msvc10" />
 				<Option use_console_runner="0" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
-					<Add option="/arch:SSE2" />
 					<Add option="/D &quot;_CONSOLE&quot;" />
 					<Add option="/D &quot;_CRT_SECURE_NO_WARNINGS&quot;" />
 					<Add option="/D &quot;_MBCS&quot;" />
@@ -85,13 +86,15 @@
 					<Add option="/D &quot;USE_WINSDK&quot;" />
 					<Add option="/D &quot;WIN32&quot;" />
 					<Add option="/EHsc" />
+					<Add option="/Od" />
 					<Add option="/Gd" />
 					<Add option="/GS-" />
 					<Add option="/MT" />
                     <Add option="/Yuprec.h" />
-					<Add directory="$(WXWIDGETSDIR)/lib/vc_libwinsdk-X86/mswu" />
+					<Add directory="$(WXWIDGETSDIR)/lib/vc_x64_libwinsdk-amd64/mswu" />
 				</Compiler>
 				<Linker>
+                    <Add option="/machine:AMD64" />
                     <Add library="zenwinx.lib" />
                     <Add library="udefrag.lib" />
                     <Add library="lua5.1a.lib" />
@@ -104,7 +107,8 @@
                     <Add library="uuid.lib" />
                     <Add library="urlmon.lib" />
                     <Add library="version.lib" />
-					<Add directory="$(WXWIDGETSDIR)/lib/vc_libwinsdk-X86" />
+                    <Add directory="$(WXWIDGETSDIR)/lib/vc_x64_libwinsdk-amd64" />
+                    <Add directory="../lib/amd64" />
 				</Linker>
 			</Target>
 		</Build>
@@ -114,9 +118,6 @@
 		<ResourceCompiler>
 			<Add directory="$(WXWIDGETSDIR)/include" />
 		</ResourceCompiler>
-		<Linker>
-			<Add directory="../lib" />
-		</Linker>
 		<Unit filename="console.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>
@@ -127,7 +128,7 @@
 		<Unit filename="map.cpp" />
 		<Unit filename="options.cpp" />
 		<Unit filename="prec.cpp">
-			<Option target="Release (MSVC)" />
+			<Option target="x64 release (MSVC)" />
 			<Option compiler="msvc10" use="1" buildCommand="$compiler /nologo $options $includes /Ycprec.h /c $file /Fo$object" />
 			<Option weight="10" />
 			<Option link="0" />

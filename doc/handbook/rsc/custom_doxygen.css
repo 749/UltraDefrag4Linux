@@ -1,8 +1,8 @@
 /* The customized CSS for doxygen */
 
 body, table, div, p, dl {
-	font-family: Lucida Grande, Verdana, Geneva, Arial, sans-serif;
-	font-size: 12px;
+	font-family: sans-serif;
+	font-size: 14px;
 	line-height: normal;
 }
 
@@ -38,8 +38,8 @@ body, table, div, p, dl {
 
 #projectname
 {
-	font-family: Lucida Grande, Verdana, Geneva, Arial, sans-serif;
-	font-size: 100%;
+	font-family: sans-serif;
+	font-size: 97%;
 	text-align: right;
 	padding-right: 20px;
 }
@@ -50,12 +50,12 @@ body, table, div, p, dl {
 }
 
 h1 {
-	font-size: 140%;
+	font-size: 130%;
 	text-align: center;
 }
 
 h2 {
-	font-size: 120%;
+	font-size: 113%;
 }
 
 h3 {
@@ -67,6 +67,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .title {
+    font-size: 135%;
 	text-align: center;
 	margin: 0;
 }
@@ -131,6 +132,43 @@ div.headertitle
 .navpath li.footer a
 {
 	text-decoration: none;
+}
+
+#nav-tree .label
+{
+    font-family: sans-serif;
+    font-size: 12px;
+    line-height: 22px;
+}
+
+#nav-table
+{
+    width: 100%;
+    border-collapse: collapse;
+    border: none;
+    margin: auto;
+    margin-bottom: 9px;
+}
+
+#nav-table td
+{
+    width: 50%;
+    padding: 0;
+}
+
+#nav-table td:nth-child(1)
+{
+    text-align: left;
+}
+
+#nav-table td:nth-child(2)
+{
+    text-align: right;
+}
+
+#nav-table a
+{
+    text-decoration: none;
 }
 
 /* custom style for batch scripts colorization */

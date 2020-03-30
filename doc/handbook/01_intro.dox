@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2019 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
@@ -34,14 +34,13 @@
  * - small size of installers (about 2 MB)
  * - availability of portable packages requiring no installation
  * - full support of 64-bit editions of Windows
- * - granted permission to freely use and redistribute the program
  *
  * UltraDefrag can defragment both FAT and NTFS disks with just a couple of restrictions:
  *
  * - It cannot defragment FAT directories, because their first clusters are immovable.
  * - It cannot defragment master file tables (MFT), because their first 16 clusters are immovable.
  *
- * However, the program tries to optimize those files placing their fragments close to each other
+ * However, the program optimizes those files placing their fragments close to each other
  * behind the first one.
  *
  * UltraDefrag can be used on Windows XP/Vista/7/8/10 as well as Windows Server
@@ -82,8 +81,8 @@
  * select <b>Defragment with UltraDefrag</b> they will be counted to avoid ambiguity.
  *
  * Additional treatment have files excluded from defragmentation. Files marked
- * as temporary by the operating system are always excluded, others can be cut
- * off by path, size and number of fragments using filters. The program never
+ * as temporary by the operating system are always excluded, others can be excluded
+ * by path, size and number of fragments using filters. The program never
  * treats those files as fragmented even if they actually are.
  *
  * For higher performance usually it does make sense to exclude not only
@@ -111,15 +110,15 @@
  * @htmlonly
  * including printable versions of this handbook
  * @endhtmlonly
- * can be found at <a href="https://ultradefrag.net/">UltraDefrag website</a>.
+ * can be found at <a href="https://ultradefrag.net/">UltraDefrag Website</a>.
  *
  * @htmlonly
- * <HR>
- *  <TABLE STYLE="border: none; width: 97%; margin:auto;">
- *    <TR>
- *      <TD STYLE="text-align: left; width: 50%;">Previous: <a href="index.html">UltraDefrag Handbook</a></TD>
- *      <TD STYLE="text-align: right; width: 50%;">Next: <a href="Installation.html">Installation</a></TD>
- *    </TR>
- *  </TABLE>
+ * <hr>
+ * <table id="nav-table">
+ *  <tr>
+ *   <td><a href="index.html">&#x25c4; UltraDefrag Handbook</a></td>
+ *   <td><a href="Installation.html">Installation &#x25b6;</a></td>
+ *  </tr>
+ * </table>
  * @endhtmlonly
  */

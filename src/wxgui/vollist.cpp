@@ -57,7 +57,7 @@ void MainFrame::InitVolList()
     if(g_locale->GetCanonicalName().Left(2) != wxT("my")){
         wxFont font = m_vList->GetFont();
         if(font.SetFaceName(wxT("Courier New"))){
-            font.SetPointSize(DPI(9));
+            font.SetPointSize(9 + (DPI(9) - 9) / 2);
             m_vList->SetFont(font);
         }
     }

@@ -90,7 +90,7 @@ void MainFrame::ReadAppConfiguration()
     );
 
     int defaultColumnWidths[LIST_COLUMNS] = {
-        110, 110, 110, 110, 110, 65
+        120, 108, 108, 108, 108, 63
     };
     for(int i = 0; i < LIST_COLUMNS; i++){
         cfg->Read(wxString::Format(wxT("/DrivesList/width%d"),i),

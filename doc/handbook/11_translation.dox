@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2019 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
@@ -38,12 +38,12 @@
  * Your changes will be applied to the next release of UltraDefrag.
  *
  * @htmlonly
- * <HR>
- *  <TABLE STYLE="border: none; width: 97%; margin:auto;">
- *    <TR>
- *      <TD STYLE="text-align: left; width: 50%;">Previous: <a href="Troubleshooting.html">Troubleshooting</a></TD>
- *      <TD STYLE="text-align: right; width: 50%;">Next: <a href="Development.html">Development</a></TD>
- *    </TR>
- *  </TABLE>
+ * <hr>
+ * <table id="nav-table">
+ *  <tr>
+ *   <td><a href="Troubleshooting.html">&#x25c4; Troubleshooting</a></td>
+ *   <td><a href="Development.html">Development &#x25b6;</a></td>
+ *  </tr>
+ * </table>
  * @endhtmlonly
  */

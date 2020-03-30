@@ -8,7 +8,7 @@
 # Stefan Pendl <stefanpe@users.sourceforge.net>, 2013
 # wwj402 <wwj402@gmail.com>, 2013,2018
 # wwj402 <wwj402@gmail.com>, 2013,2018
-# YF <yfdyh000@gmail.com>, 2014
+# YFdyh000 <yfdyh000@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ultradefrag\n"

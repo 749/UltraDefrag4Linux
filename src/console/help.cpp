@@ -46,7 +46,7 @@ void show_help(void)
     printf(
         "===============================================================================\n"
         VERSIONINTITLE " - a powerful disk defragmenter.\n"
-        "Copyright (c) UltraDefrag Development Team, 2007-2018.\n"
+        "Copyright (c) UltraDefrag Development Team, 2007-2019.\n"
         "\n"
         "===============================================================================\n"
         "This program is free software; you can redistribute it and/or\n"

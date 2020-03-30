@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2019 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
@@ -43,9 +43,10 @@
  * (<a href="http://stackoverflow.com/questions/9838384/can-gnu-make-handle-filenames-with-spaces">GNU make doesn't like them</a>).
  * Then install the following software:
  *
- * - <a href="http://sourceforge.net/projects/tdm-gcc/">MinGW</a>,
- *   <a href="http://github.com/wxWidgets/wxWidgets/releases/download/v3.1.0/wxWidgets-3.1.0.7z">wxWidgets 3.1.0</a>,
- *   <a href="http://www.doxygen.org/">Doxygen 1.8.4</a>, <a href="http://nsis.sourceforge.net/">NSIS 2.xx</a>,
+ * - <a href="http://sourceforge.net/projects/tdm-gcc/">MinGW</a> or
+ *   <a href="http://www.microsoft.com/en-us/download/details.aspx?id=8442">Microsoft Windows SDK v7.1</a>
+ * - <a href="http://github.com/wxWidgets/wxWidgets/releases/download/v3.1.0/wxWidgets-3.1.0.7z">wxWidgets 3.1.0</a>,
+ *   <a href="http://www.doxygen.org/">Doxygen 1.8.4</a>, <a href="http://nsis.sourceforge.net/">NSIS 3.xx</a>,
  *   <a href="http://www.7-zip.org/">7-zip</a>
  * - <a href="http://luabinaries.luaforge.net/">Lua 5.1.x</a>, <a href="http://upx.sf.net/">UPX</a>
  *   (extract them somewhere on your <b>\%path\%</b>)
@@ -53,8 +54,6 @@
  *   (put it to <b>\\src\\tools\\transifex</b> folder)
  * - <a href="http://sourceforge.net/projects/gnuwin32/files/gettext/">GNU gettext</a> (optional; for translations management)
  * - <a href="http://www.miktex.org/">MiKTeX</a> (optional; for pdf documentation; use basic installer)
- *
- * To build 64-bit packages install also <a href="http://www.microsoft.com/en-us/download/details.aspx?id=8442">Microsoft Windows SDK v7.1</a>.
  *
  * To configure build environment follow these steps:
  *
@@ -173,12 +172,12 @@
  * <a href="http://www.thinkingparallel.com/2006/10/15/a-short-guide-to-mastering-thread-safety/">A short guide to mastering thread-safety</a>
  *
  * @htmlonly
- * <HR>
- *  <TABLE STYLE="border: none; width: 97%; margin:auto;">
- *    <TR>
- *      <TD STYLE="text-align: left; width: 50%;">Previous: <a href="Translation.html">Translation</a></TD>
- *      <TD STYLE="text-align: right; width: 50%;">Next: <a href="Credits.html">Credits and License</a></TD>
- *    </TR>
- *  </TABLE>
+ * <hr>
+ * <table id="nav-table">
+ *  <tr>
+ *   <td><a href="Translation.html">&#x25c4; Translation</a></td>
+ *   <td><a href="Credits.html">Credits and License &#x25b6;</a></td>
+ *  </tr>
+ * </table>
  * @endhtmlonly
  */

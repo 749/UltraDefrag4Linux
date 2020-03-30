@@ -630,7 +630,7 @@ int __cdecl main(int argc, char **argv)
         return 0;
     }
 
-    printf(VERSIONINTITLE ", Copyright (c) UltraDefrag Development Team, 2007-2018.\n"
+    printf(VERSIONINTITLE ", Copyright (c) UltraDefrag Development Team, 2007-2019.\n"
         "UltraDefrag comes with ABSOLUTELY NO WARRANTY. This is free software, \n"
         "and you are welcome to redistribute it under certain conditions.\n\n"
     );

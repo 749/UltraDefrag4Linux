@@ -1,6 +1,6 @@
 ﻿/*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2018 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2019 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
@@ -13,39 +13,17 @@
  * @page Tips Tips and Tricks
  *
  * <h1>Performance</h1>
- * <h3>How to improve system performance significantly</h3>
- * The best way to improve system performance is to buy new hardware.
- * Traditional hard disk drives have a lot of mechanical parts inside
- * which have to move to and fro whenever you read something from the
- * disk or write something to it. All the movements take significant
- * amount of time and nothing can be done to eliminate these extra
- * costs completely. On the other hand, all the top performance
- * hard disk drives built recently have no mechanical parts inside
- * at all. They store information in memory chips instead and that's
- * why they are called <a href="https://en.wikipedia.org/wiki/Solid-state_drive">
- * solid state drives</a> (SSD). As they have no need to perform
- * any physical movements they are much faster than the traditional
- * drives and the only drawback is that they are still much more
- * expensive. However, if you really need top performance, it's
- * the only choice for you. Additionally, you get significantly
- * reduced power consumption, higher robustness and completely
- * silent operation. You may still use traditional drives for
- * data more tolerant for slower access, but for system files
- * we highly recommend to use an SSD.
- *
- * Then we recommend to disable the
+ * <h3>How to improve system performance</h3>
+ * First of all, we recommend to disable the
  * <a href="https://en.wikipedia.org/wiki/Paging#Windows_NT">Windows paging file</a>.
- * It expands RAM, but works much slower, no matter whether you place it on
- * an SSD or not. If you need more memory than physically installed, buy more
- * for the best performance.
+ * It expands RAM, but works much slower. If you need more memory than physically installed,
+ * buy more for the best performance.
  *
- * And, after all, if you're still using a traditional drive and would
- * like to keep some files closer to its beginning because of higher
- * speed of that area, don't ask disk defragmenters for it: just 
+ * Then, it's a good idea to keep system files as close as possible to the beginning
+ * of the disk because of higher speed of that area. The best way to do it is to
  * <a href="http://gparted.sourceforge.net/">repartition</a> the disk
- * once and then use the first partition to keep the most frequently
- * accessed files while the second one - for backups, videos, music
- * and other stuff more tolerant for slower access.
+ * once and use the first partition for system files and the second one
+ * for backups, videos, music and other stuff more tolerant for slower access.
  *
  * <h3>How frequently to defragment</h3>
  * Defragment files whenever you believe their fragmentation
@@ -208,12 +186,12 @@
  * The default values are usually 32MB and 4MB respectively.
  *
  * @htmlonly
- * <HR>
- *  <TABLE STYLE="border: none; width: 97%; margin:auto;">
- *    <TR>
- *      <TD STYLE="text-align: left; width: 50%;">Previous: <a href="Reports.html">File Fragmentation Reports</a></TD>
- *      <TD STYLE="text-align: right; width: 50%;">Next: <a href="FAQ.html">Frequently Asked Questions</a></TD>
- *    </TR>
- *  </TABLE>
+ * <hr>
+ * <table id="nav-table">
+ *  <tr>
+ *   <td><a href="Reports.html">&#x25c4; File Fragmentation Reports</a></td>
+ *   <td><a href="FAQ.html">Frequently Asked Questions &#x25b6;</a></td>
+ *  </tr>
+ * </table>
  * @endhtmlonly
  */
