@@ -1,5 +1,10 @@
 ﻿HISTORY
 
+  Version 7.1.1 2018-10-12
+  ------------------------------------------------------------------------------
+    - links to documentation pages were fixed
+
+
   Version 7.1.0 2018-09-28
   ------------------------------------------------------------------------------
     - the repeat action option was retired, now all the disk
