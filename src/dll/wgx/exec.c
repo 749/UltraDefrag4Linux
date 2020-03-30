@@ -92,8 +92,8 @@ BOOL WgxCreateProcess(char *cmd,char *args)
     CloseHandle(pi.hThread);
     
 done:
-    if(command) free(command);
-    if(cmdline) free(cmdline);
+    free(command);
+    free(cmdline);
     SetLastError(error);
     return (error == ERROR_SUCCESS) ? TRUE : FALSE;
 }
@@ -178,7 +178,7 @@ BOOL WgxCheckAdminRights(void)
                     goto done;
                 }
                 /* the call needs larger buffer */
-                if(ptg) free(ptg);
+                free(ptg);
                 ptg = malloc(bytes_needed);
                 if(ptg == NULL){
                     WgxDbgPrint("WgxCheckAdminRights: not enough memory");
@@ -207,7 +207,7 @@ BOOL WgxCheckAdminRights(void)
     result = TRUE;
 
 done:
-    if(ptg) free(ptg);
+    free(ptg);
     if(psid) FreeSid(psid);
     CloseHandle(hToken);
     return result;

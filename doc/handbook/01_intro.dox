@@ -46,6 +46,7 @@
  * - ability to exclude any unimportant files based on flexible filters
  * - ability to defragment files, which have more fragments than specified by a threshold
  * - ability to automatically break defragmentation when the specified time interval elapses
+ * - ability to perform defragmentation only when the disk fragmentation level is above the specified value
  * - ability to select multiple disks for defragmentation
  * - well readable HTML reports
  * - powerful command line interface
@@ -99,6 +100,12 @@
  * under Windows NT 4.0, because this may crash your system.
  * NTFS 1.2 had beta status and an appropriate system driver
  * was not reliable.
+ *
+ * <h1>Fragmentation level</h1>
+ * The fragmentation level or percentage is calculated as follows:
+ * @code
+ * fragmentation = number of fragmented file fragments / number of all file fragments
+ * @endcode
  *
  * <h1>Processing algorithms</h1>
  *
@@ -167,39 +174,21 @@
  * will be deleted soon, therefore they will not decrease the system performance.
  *
  * <h1>Web resources</h1>
- * The Ultra Defragmenter's home page is at:
- * @latexonly
- * \\
- * @endlatexonly
- * http://ultradefrag.sourceforge.net
+ * The Ultra Defragmenter's
+ * <a href="http://ultradefrag.sourceforge.net/">home page at Sourceforge.net</a>.
  *
  * Please be sure to visit this site for information,
  * documentation, tutorials, news, etc. All UltraDefrag
  * related things are available there.
  *
- * For help requests visit our forum:
- * @latexonly
- * \\
- * @endlatexonly
- * http://ultradefrag.sourceforge.net/forum
+ * For help requests visit our
+ * <a href="http://sourceforge.net/p/ultradefrag/discussion/709673/">forum at Sourceforge.net</a>.
  *
- * Please report all problems and bugs via our bug tracker:
- * @latexonly
- * \\
- * @endlatexonly
- * http://ultradefrag.sourceforge.net/bugs
+ * Please report all problems and bugs via our
+ * <a href="http://sourceforge.net/p/ultradefrag/bugs/">bug tracker at Sourceforge.net</a>.
  *
  * To participate in UltraDefrag translation
  * please visit <a href="http://ultradefrag.wikispaces.com/">WikiSpaces.com</a>.
- *
- * The most recent version of this handbook can be obtained
- * from the program's <a href="http://ultradefrag.svn.sourceforge.net/viewvc/ultradefrag/trunk/doc/html/handbook.tar.gz?view=tar">SVN repository</a>. 
- * Download the archive, unpack it, run the
- * <a href="http://www.doxygen.org/">Doxygen</a> tool and
- * copy all files from the /rsc subdirectory to
- * /doxy-doc/html. After these steps open /doxy-doc/html/index.html
- * in your browser to view the latest version of
- * the documentation.
  *
  * @htmlonly
  * <HR>

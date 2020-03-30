@@ -354,7 +354,7 @@ void RedrawMap(volume_processing_job *job, int map_refill_required)
     /* scale map */
     if(job->map.scaled_buffer == NULL \
         || job->map.scaled_size != map_blocks_per_line * map_lines){
-        if(job->map.scaled_buffer) free(job->map.scaled_buffer);
+        free(job->map.scaled_buffer);
         job->map.scaled_buffer = malloc(map_blocks_per_line * map_lines);
         if(job->map.scaled_buffer == NULL){
             WgxDbgPrint("RedrawMap: cannot allocate %u bytes of memory\n",

@@ -68,7 +68,7 @@ REPORTS                   = &Rapporti
 ; --- --- Language submenu
 
 TRANSLATIONS_CHANGE_LOG   = &Vedi lista cambiamenti
-TRANSLATIONS_REPORT       = Vedi &rapporto traduzione
+TRANSLATIONS_REPORT       = Vedi &rapporto traduzioni
 TRANSLATIONS_FOLDER       = Cartella &traduzioni
 TRANSLATIONS_SUBMIT       = &Invia traduzione corrente
 
@@ -105,6 +105,7 @@ BOOT_TIME_SCRIPT          = Script deframmentazione all'avvio
 
 VOLUME                    = Volume
 STATUS                    = Stato
+FRAGMENTATION             = Frammentazione
 TOTAL                     = Spazio totale
 FREE                      = Spazio libero
 PERCENT                   = % libero
@@ -147,7 +148,7 @@ NO                        = &No
 ; Upgrade dialog
 
 UPGRADE_CAPTION           = Aggiornamento disponibile ^-^
-UPGRADE_MESSAGE           = release è a disposizione per il download!
+UPGRADE_MESSAGE           = Una nuova release è a disposizione per il download!
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 

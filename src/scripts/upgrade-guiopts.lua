@@ -69,8 +69,45 @@ config_file_contents = [[
 -- of filters, since these files usually take no effect on system performance.
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-in_filter = "$in_filter"
-ex_filter = "$ex_filter"
+in_filter = "$orig_in_filter"
+ex_filter = "$orig_ex_filter"
+
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- The following ..._patterns variables allow to define groups of patterns
+-- for inclusion in the in/ex_filter variables.
+
+-- For more file extensions see http://www.fileinfo.com/
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+archive_patterns = "$archive_patterns"
+audio_patterns = "$audio_patterns"
+disk_image_patterns = "$disk_image_patterns"
+video_patterns = "$video_patterns"
+
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- The following flag variables allow to specify if the pattern groups
+-- defined above are to be added to the in_filter or ex_filter.
+
+-- To add the group defined by archive_patterns to in_filter,
+-- you set include_archive to 1.
+-- Example: include_archive = 1
+
+-- To add the group defined by archive_patterns to ex_filter,
+-- you set exclude_archive to 1.
+-- Example: exclude_archive = 1
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+include_archive = $include_archive
+exclude_archive = $exclude_archive
+
+include_audio = $include_audio
+exclude_audio = $exclude_audio
+
+include_disk_image = $include_disk_image
+exclude_disk_image = $exclude_disk_image
+
+include_video = $include_video
+exclude_video = $exclude_video
 
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- The file_size_threshold filter allows to exclude big files from
@@ -99,6 +136,22 @@ file_size_threshold = "$file_size_threshold"
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 fragments_threshold = $fragments_threshold
+
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- The fragmentation_threshold filter allows to avoid the disk processing
+-- when the disk fragmentation level is below than specified. For example,
+-- to avoid defragmentation/optimization of disks with fragmentation level
+-- below 10 percents, set:
+
+-- fragmentation_threshold = 10
+
+-- The default value is zero (0), so all the disks are processed
+-- regardless of their fragmentation level.
+
+-- Note that this filter does not affect the MFT optimization task.
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+fragmentation_threshold = $fragmentation_threshold
 
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- II. Miscellaneous options
@@ -246,14 +299,31 @@ free_color_b = $free_color_b
 version = $current_version
 
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- this code initializes environment for UltraDefrag, don't modify it
+-- this code concatenates the filter variables, don't modify it
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+orig_ex_filter = ex_filter  -- for faster upgrade
+if exclude_archive ~= 0 then ex_filter = ex_filter .. ";" .. archive_patterns end
+if exclude_audio ~= 0 then ex_filter = ex_filter .. ";" .. audio_patterns end
+if exclude_disk_image ~= 0 then ex_filter = ex_filter .. ";" .. disk_image_patterns end
+if exclude_video ~= 0 then ex_filter = ex_filter .. ";" .. video_patterns end
+
+orig_in_filter = in_filter  -- for faster upgrade
+if include_archive ~= 0 then in_filter = in_filter .. ";" .. archive_patterns end
+if include_audio ~= 0 then in_filter = in_filter .. ";" .. audio_patterns end
+if include_disk_image ~= 0 then in_filter = in_filter .. ";" .. disk_image_patterns end
+if include_video ~= 0 then in_filter = in_filter .. ";" .. video_patterns end
+
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- this code initializes the environment for UltraDefrag, don't modify it
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 os.setenv("UD_IN_FILTER",in_filter)
 os.setenv("UD_EX_FILTER",ex_filter)
 os.setenv("UD_FILE_SIZE_THRESHOLD",file_size_threshold)
-os.setenv("UD_TIME_LIMIT",time_limit)
 os.setenv("UD_FRAGMENTS_THRESHOLD",fragments_threshold)
+os.setenv("UD_FRAGMENTATION_THRESHOLD",fragmentation_threshold)
+os.setenv("UD_TIME_LIMIT",time_limit)
 os.setenv("UD_REFRESH_INTERVAL",refresh_interval)
 os.setenv("UD_DISABLE_REPORTS",disable_reports)
 os.setenv("UD_DBGPRINT_LEVEL",dbgprint_level)
@@ -302,10 +372,14 @@ function save_internal_preferences(f)
     f:write(expand(int_config_file_contents))
 end
 
+function pattern(s)
+    return string.gsub(s,"%*","%%%*")
+end
+
 -- THE MAIN CODE STARTS HERE
 -- current version of configuration file
 -- version numbers 0-99 are reserved for 5.0.x series of the program
-current_version = 9
+current_version = 13
 old_version = 0
 upgrade_needed = 1
 
@@ -315,9 +389,24 @@ assert(instdir, "upgrade-guiopts.lua: the first argument is missing")
 
 -- set defaults
 in_filter = ""
-ex_filter = "*system volume information*;*temp*;*tmp*;*recycle*;*.zip;*.7z;*.rar;*dllcache*;*ServicePackFiles*"
+ex_filter = "*system volume information*;*temp*;*tmp*;*recycle*;*dllcache*;*ServicePackFiles*"
+archive_patterns = "*.7z;*.7z.*;*.arj;*.bz2;*.bzip2;*.cab;*.cpio;*.deb;*.dmg;*.gz;*.gzip;*.lha;*.lzh;*.lzma"
+archive_patterns = archive_patterns .. ";*.rar;*.rpm;*.swm;*.tar;*.taz;*.tbz;*.tbz2;*.tgz;*.tpz;*.txz"
+archive_patterns = archive_patterns .. ";*.xar;*.xz;*.z;*.zip"
+audio_patterns = "*.aif;*.cda;*.flac;*.iff;*.kpl;*.m3u;*.m4a;*.mid;*.mp3;*.mpa;*.ra;*.wav;*.wma"
+disk_image_patterns = "*.fat;*.hdd;*.hfs;*.img;*.iso;*.ntfs;*.squashfs;*.vdi;*.vhd;*.vmdk;*.wim"
+video_patterns = "*.3g2;*.3gp;*.asf;*.asx;*.avi;*.flv;*.mov;*.mp4;*.mpg;*.rm;*.srt;*.swf;*.vob;*.wmv"
+include_archive = 0
+exclude_archive = 0
+include_audio = 0
+exclude_audio = 0
+include_disk_image = 0
+exclude_disk_image = 0
+include_video = 0
+exclude_video = 0
 sizelimit = ""
 fragments_threshold = 0
+fragmentation_threshold = 0
 time_limit = ""
 refresh_interval = 100
 disable_reports = 0
@@ -371,7 +460,7 @@ if upgrade_needed ~= 0 then
     if old_version == 0 then
         -- upgrade filters, now they should include wildcards
         in_filter = ""
-        ex_filter = "*system volume information*;*temp*;*tmp*;*recycle*;*.zip;*.7z;*.rar"
+        ex_filter = "*system volume information*;*temp*;*tmp*;*recycle*;*dllcache*;*ServicePackFiles*"
     end
     if not file_size_threshold then
         -- sizelimit has been superseded by file_size_threshold
@@ -380,6 +469,45 @@ if upgrade_needed ~= 0 then
     if old_version < 8 and log_file_path == "" then
         -- default log is needed for easier bug reporting
         log_file_path = ".\\logs\\ultradefrag.log"
+    end
+    if not orig_in_filter then
+        orig_in_filter = in_filter
+        -- subtract patterns
+        if include_archive ~= 0 then
+            orig_in_filter = string.gsub(orig_in_filter, pattern(archive_patterns), "")
+        end
+        if include_audio ~= 0 then
+            orig_in_filter = string.gsub(orig_in_filter, pattern(audio_patterns), "")
+        end
+        if include_disk_image ~= 0 then
+            orig_in_filter = string.gsub(orig_in_filter, pattern(disk_image_patterns), "")
+        end
+        if include_video ~= 0 then
+            orig_in_filter = string.gsub(orig_in_filter, pattern(video_patterns), "")
+        end
+        orig_in_filter = string.gsub(orig_in_filter, ";*$", "")
+    end
+    if not orig_ex_filter then
+        orig_ex_filter = ex_filter
+        -- subtract patterns
+        if exclude_archive ~= 0 then
+            orig_ex_filter = string.gsub(orig_ex_filter, pattern(archive_patterns), "")
+        end
+        if exclude_audio ~= 0 then
+            orig_ex_filter = string.gsub(orig_ex_filter, pattern(audio_patterns), "")
+        end
+        if exclude_disk_image ~= 0 then
+            orig_ex_filter = string.gsub(orig_ex_filter, pattern(disk_image_patterns), "")
+        end
+        if exclude_video ~= 0 then
+            orig_ex_filter = string.gsub(orig_ex_filter, pattern(video_patterns), "")
+        end
+        orig_ex_filter = string.gsub(orig_ex_filter, ";*$", "")
+    end
+    -- convert fragmentation_threshold to number
+    if type(fragmentation_threshold) == "string" then
+        fragmentation_threshold = tonumber(fragmentation_threshold)
+        if not fragmentation_threshold then fragmentation_threshold = 0 end
     end
 
     -- save the upgraded configuration

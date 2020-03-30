@@ -98,6 +98,7 @@ BOOT_TIME_SCRIPT          = תסריט בזמן אתחול
 
 VOLUME                    = נפח
 STATUS                    = מעמד
+FRAGMENTATION             = התנפצות
 TOTAL                     = סה"כ שטח
 FREE                      = שטח חופשי
 PERCENT                   = % חופשי

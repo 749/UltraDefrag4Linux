@@ -98,6 +98,7 @@ BOOT_TIME_SCRIPT          = Pamayaan iti Panagrugi
 
 VOLUME                    = Tomo
 STATUS                    = Kasasaad
+FRAGMENTATION             = Fragmentation
 TOTAL                     = Laon
 FREE                      = Nawaya
 PERCENT                   = % ti Nawaya

@@ -98,6 +98,7 @@ BOOT_TIME_SCRIPT          = Boot time script
 
 VOLUME                    = Drive
 STATUS                    = Status
+FRAGMENTATION             = Fragmentation
 TOTAL                     = Total Space
 FREE                      = Free Space
 PERCENT                   = % free

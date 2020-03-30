@@ -576,8 +576,8 @@
  * <h1>List of Disks</h1>
  * The top part of the window contains a full list of disks
  * available for defragmentation. Each line of the list contains
- * disk name, type of filesystem, total amount of space,
- * amount of free space and, finally, percent of free space
+ * disk name and type of filesystem, status display, fragmentation percentage,
+ * total amount of space, amount of free space and, finally, percentage of free space
  * on the disk.
  *
  * @htmlonly

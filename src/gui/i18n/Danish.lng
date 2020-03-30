@@ -98,6 +98,7 @@ BOOT_TIME_SCRIPT          = Boot tid script
 
 VOLUME                    = Logisk drev
 STATUS                    = Tilstand
+FRAGMENTATION             = Fragmentering
 TOTAL                     = Kapacitet
 FREE                      = Ledig plads
 PERCENT                   = % Ledig

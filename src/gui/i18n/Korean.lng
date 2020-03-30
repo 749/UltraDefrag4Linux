@@ -100,6 +100,7 @@ BOOT_TIME_SCRIPT          = 부팅시 스크립트
 
 VOLUME                    = 드라이브(볼륨)
 STATUS                    = 상태
+FRAGMENTATION             = 조각화
 TOTAL                     = 전체 공간
 FREE                      = 여유 공간
 PERCENT                   = 여유 공간 비율

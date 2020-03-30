@@ -185,11 +185,15 @@ typedef struct {
                                   /* is presented only when the attribute is really compressed */
 } NONRESIDENT_ATTRIBUTE, *PNONRESIDENT_ATTRIBUTE;
 
+/*
+* All the file access times are in the standard time format.
+* That is the number of 100-nanosecond intervals since January 1, 1601.
+*/
 typedef struct {
-    ULONGLONG CreationTime;
-    ULONGLONG ChangeTime;
-    ULONGLONG LastWriteTime;
-    ULONGLONG LastAccessTime;
+    ULONGLONG CreationTime;                /* The time when the file was created. */
+    ULONGLONG ChangeTime;                  /* The time when the file attributes were last changed. */
+    ULONGLONG LastWriteTime;               /* The time when the file was last written. */
+    ULONGLONG LastAccessTime;              /* The time when the file was last accessed. */
     ULONG FileAttributes;                  /* The attributes of the file: FILE_ATTRIBUTE_READONLY, FILE_ATTRIBUTE_HIDDEN etc. */
     ULONG AlignmentOrReservedOrUnknown[3];
     ULONG QuotaId;                         /* Optional member. */

@@ -172,6 +172,7 @@ void VolListNotifyHandler(LPARAM lParam);
 void VolListGetColumnWidths(void);
 void UpdateVolList(void);
 void VolListUpdateStatusField(volume_processing_job *job);
+void VolListUpdateFragmentationField(volume_processing_job *job);
 void VolListRefreshItem(volume_processing_job *job);
 void ReleaseVolList(void);
 void SelectAllDrives(void);
@@ -315,5 +316,14 @@ extern int show_taskbar_icon_overlay;
 #define MIN_BTN_HEIGHT DPI(23) /* recommended button height */
 #define BTN_H_SPACING  DPI(9)  /* minimal space between text and button right/left sides */
 #define BTN_V_SPACING  DPI(4)  /* minimal space between text and button top/bottom sides */
+
+/* volume list characteristics */
+#define LIST_COLUMNS 6
+#define C1_DEFAULT_WIDTH 110
+#define C2_DEFAULT_WIDTH 110
+#define C3_DEFAULT_WIDTH 110
+#define C4_DEFAULT_WIDTH 110
+#define C5_DEFAULT_WIDTH 110
+#define C6_DEFAULT_WIDTH 65
 
 #endif /* _UDEFRAG_GUI_MAIN_H_ */

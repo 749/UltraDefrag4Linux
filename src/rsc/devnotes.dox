@@ -15,9 +15,8 @@
  * the Windows boot process. For this purpose the program utilizes a lot 
  * of undocumented Windows functions, primary exported by ntdll.dll 
  * library. Please read carefully comments in the beginning of 
- * <a href="http://ultradefrag.svn.sourceforge.net/viewvc/ultradefrag/src/dll/zenwinx/ntndk.h?view=markup">/src/dll/zenwinx/ntndk.h</a>
- * file before use of such functions. They often requires
- * something unexpected, so without a careful use
+ * /src/dll/zenwinx/ntndk.h file before use of such functions.
+ * They often require something unexpected, so without a careful use
  * they may simply crash your application.
  *
  * - When some program uses MessageBox() call it must call also

@@ -98,6 +98,7 @@ BOOT_TIME_SCRIPT          = Script pentru pornirea sistemului
 
 VOLUME                    = Volum
 STATUS                    = Stadiu
+FRAGMENTATION             = Fragmentarea
 TOTAL                     = Spațiu total
 FREE                      = Spațiu liber
 PERCENT                   = % liber

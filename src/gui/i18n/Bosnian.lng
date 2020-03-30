@@ -98,6 +98,7 @@ BOOT_TIME_SCRIPT          = Skripta kod pokretanja računara
 
 VOLUME                    = Disk
 STATUS                    = Status
+FRAGMENTATION             = Fragmentation
 TOTAL                     = Ukupan prostor
 FREE                      = Slobodan prostor
 PERCENT                   = % slobodno

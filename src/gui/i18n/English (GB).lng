@@ -98,6 +98,7 @@ BOOT_TIME_SCRIPT          = Boot time script
 
 VOLUME                    = Drive
 STATUS                    = Status
+FRAGMENTATION             = Fragmentation
 TOTAL                     = Total Space
 FREE                      = Free Space
 PERCENT                   = % free
@@ -121,7 +122,7 @@ COMPRESSED                = compressed
 
 ABOUT_WIN_TITLE           = About Ultra Defragmenter
 CREDITS                   = Credits
-LICENSE                   = License
+LICENSE                   = Licence
 
 ; Shutdown confirmation
 

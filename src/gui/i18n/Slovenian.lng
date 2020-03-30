@@ -99,6 +99,7 @@ BOOT_TIME_SCRIPT          = Skripta ob zagonu
 
 VOLUME                    = Pogon
 STATUS                    = Stanje
+FRAGMENTATION             = Fragmentacija
 TOTAL                     = Skupaj prostora
 FREE                      = Nezasedeni prostor
 PERCENT                   = Odstotek

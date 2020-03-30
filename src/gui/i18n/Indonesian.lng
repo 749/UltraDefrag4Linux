@@ -34,7 +34,7 @@ STOP                      = &Berhenti
 REPEAT_ACTION             = &Ulangi tindakan
 SKIP_REMOVABLE_MEDIA      = &Lewati media yang dapat di pindahkan
 RESCAN_DRIVES             = Mem&indai ulang drive
-REPAIR_DRIVES             = Perbaikan drive
+REPAIR_DRIVES             = Memperbaiki drive
 WHEN_DONE                 = Ketika &selesai
 EXIT                      = &Keluar
 
@@ -99,6 +99,7 @@ BOOT_TIME_SCRIPT          = Naskah waktu boot
 
 VOLUME                    = Perangkat
 STATUS                    = Keadaan
+FRAGMENTATION             = Fragmentasi
 TOTAL                     = Jumlah ruang
 FREE                      = Ruang kosong
 PERCENT                   = % kosong
@@ -140,7 +141,7 @@ NO                        = &Tidak
 
 ; Upgrade dialog
 
-UPGRADE_CAPTION           = Anda dapat meng-upgrade saya ^-^
+UPGRADE_CAPTION           = Anda dapat memutakhirkan
 UPGRADE_MESSAGE           = rilis tersedia untuk di-download!
 
 ; A string for the taskbar icon overlay, needed for accessibility.

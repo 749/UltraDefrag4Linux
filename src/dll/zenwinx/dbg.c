@@ -568,7 +568,6 @@ static void flush_dbg_log(int already_synchronized)
     winx_dbg_log_entry *old_dbg_log, *log_entry;
     int length;
     char crlf[] = "\r\n";
-    char bom[4] = {0xEF, 0xBB, 0xBF, 0x00};
     char *time_stamp;
 
     /* synchronize with other threads */
@@ -613,14 +612,6 @@ static void flush_dbg_log(int already_synchronized)
     /* save log */
     if(f != NULL){
         winx_printf("\nWriting log file \"%s\" ...\n",&log_path[4]);
-        /*
-        * UTF-8 encoded files need BOM to be written before the contents;
-        * multiple occurencies of BOM inside the file contens are allowed.
-        */
-        if(winx_get_os_version() > WINDOWS_NT){
-            /* NT4 libraries contain ANSI encoded messages; confirmed on its Russian edition */
-            (void)winx_fwrite(bom,sizeof(char),3,f);
-        }
         for(log_entry = old_dbg_log; log_entry; log_entry = log_entry->next){
             if(log_entry->buffer){
                 length = strlen(log_entry->buffer);

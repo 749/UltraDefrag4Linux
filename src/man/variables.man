@@ -1,7 +1,7 @@
 VARIABLES(1)        Ultradefrag Development Team         VARIABLES(1)
 
 NAME
-        variables - manual page for variables v5.0.3
+        variables - manual page for variables v5.1.0
 
 SYNOPSIS
         [VARIABLE]
@@ -22,6 +22,12 @@ VARIABLES
 
         UD_FRAGMENTS_THRESHOLD
                 exclude files which lesser fragments
+
+        UD_FRAGMENTATION_THRESHOLD
+                fragmentation threshold, in percents;
+                all the jobs except of the MFT optimization
+                will be performed only if the disk fragmentation
+                level is above the specified value
 
         UD_TIME_LIMIT
                 space separated list of maximum timeout to terminate
@@ -76,4 +82,4 @@ COPYRIGHT
         There is NO warranty; not even for MERCHANTABILITY
         or FITNESS FOR A PARTICULAR PURPOSE.
 
-variables                    Febuary 2012                           1
+variables                   September 2012                          1

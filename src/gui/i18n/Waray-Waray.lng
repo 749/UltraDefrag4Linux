@@ -100,6 +100,7 @@ BOOT_TIME_SCRIPT          = Iskrip ha pagtikang
 
 VOLUME                    = Drayb
 STATUS                    = Kahímtang
+FRAGMENTATION             = Fragmentation
 TOTAL                     = Kabug-osan
 FREE                      = Libre
 PERCENT                   = % nga libre

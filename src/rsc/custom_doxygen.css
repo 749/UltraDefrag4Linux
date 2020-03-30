@@ -1,0 +1,88 @@
+/* The custom CSS for doxygen */
+
+body, table, div, p, dl {
+	font-family: Lucida Grande, Verdana, Geneva, Arial, sans-serif;
+	font-size: 12px;
+	line-height: normal;
+}
+
+#titlearea table
+{
+	width: 100%;
+}
+
+#projectlogo
+{
+	vertical-align: middle;
+	padding: 5px;
+	width: 120px;
+	text-align: left;
+}
+
+#sourceforgelogo
+{
+	vertical-align: middle;
+	padding: 5px;
+	width: 120px;
+	text-align: right;
+	border-collapse: separate;
+}
+
+#sourceforgelogo img
+{
+	border: 0px none;
+}
+
+#ud_projectname
+{
+	vertical-align: middle;
+}
+
+#projectname
+{
+	font-family: Lucida Grande, Verdana, Geneva, Arial, sans-serif;
+	font-size: 125%;
+	line-height: normal;
+	text-align: center;
+}
+
+#projectnumber
+{
+	font-size: 75%;
+}
+
+#projectname a
+{
+	font-size: 85%;
+}
+
+h1 {
+	font-size: 140%;
+}
+
+h2 {
+	font-size: 120%;
+}
+
+h3 {
+	font-size: 100%;
+}
+
+a {
+	font-size: 100%;
+}
+
+.title {
+	font-size: 100%;
+	margin: 0;
+}
+
+dl.author {
+	padding: 0;
+}
+
+.navpath ul
+{
+	height:20px;
+	line-height:20px;
+}

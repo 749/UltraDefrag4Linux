@@ -3,6 +3,7 @@
 ; Copyright (C) 2011 Conrad Flyckt.
 ; Copyright (C) 2012 Felipe Ángel González Báñez.
 ; Copyright (C) 2012 Joseph S. Maza.
+; Copyright (C) 2012 Francisco Ortega Olivos.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
@@ -19,87 +20,88 @@
 
 ; Main Menu
 
-ACTION                    = Acción
-REPORT                    = Reporte
-SETTINGS                  = Ajustes
-HELP                      = Ayuda
+ACTION                    = &Acción
+REPORT                    = &Reporte
+SETTINGS                  = A&justes
+HELP                      = Ay&uda
 
 ; --- Action Menu
 
-ANALYSE                   = Analizar
-DEFRAGMENT                = Desfragmentar
+ANALYSE                   = &Analizar
+DEFRAGMENT                = &Desfragmentar
 QUICK_OPTIMIZE            = Optimización &rápida
 FULL_OPTIMIZE             = Optimización &completa
 OPTIMIZE_MFT              = &Optimizar MFT
-STOP                      = Detener
-REPEAT_ACTION             = Repetir acción
+STOP                      = &Detener
+REPEAT_ACTION             = Re&petir acción
 SKIP_REMOVABLE_MEDIA      = &Ignorar discos extraíbles
-RESCAN_DRIVES             = Actualizar
-REPAIR_DRIVES             = Repair drives
-WHEN_DONE                 = Cuando termine...
-EXIT                      = Salir
+RESCAN_DRIVES             = Act&ualizar Particiones
+REPAIR_DRIVES             = &Reparar Particiones
+WHEN_DONE                 = &Cuando termine...
+EXIT                      = &Salir
 
 ; --- --- When done submenu
 
-WHEN_DONE_NONE            = Ninguna acción
-WHEN_DONE_EXIT            = Salir
-WHEN_DONE_STANDBY         = Suspender
-WHEN_DONE_HIBERNATE       = Hibernar
-WHEN_DONE_LOGOFF          = Cerrar sesión
-WHEN_DONE_REBOOT          = Reiniciar
-WHEN_DONE_SHUTDOWN        = Apagar
+WHEN_DONE_NONE            = &Ninguna acción
+WHEN_DONE_EXIT            = &Salir del Programa
+WHEN_DONE_STANDBY         = S&uspender el Equipo
+WHEN_DONE_HIBERNATE       = &Hibernar el Equipo
+WHEN_DONE_LOGOFF          = &Cerrar sesión
+WHEN_DONE_REBOOT          = &Reiniciar el Equipo
+WHEN_DONE_SHUTDOWN        = &Apagar el Equipo
 
 ; --- Report Menu
 
-SHOW_REPORT               = Mostrar reporte
+SHOW_REPORT               = &Mostrar reporte
 
 ; --- Settings Menu
 
-LANGUAGE                  = Idioma
-GRAPHICAL_INTERFACE       = Interfaz gráfica
-BOOT_TIME_SCAN            = Escaneo en arranque
-REPORTS                   = Reportes
+LANGUAGE                  = &Idioma
+GRAPHICAL_INTERFACE       = Interfaz &gráfica
+BOOT_TIME_SCAN            = &Escaneo en arranque
+REPORTS                   = &Reportes
 
 ; --- --- Language submenu
 
-TRANSLATIONS_CHANGE_LOG   = Ver el cambiode registro
-TRANSLATIONS_REPORT       = Ver informe de la traducción
-TRANSLATIONS_FOLDER       = Carpeta de traducciones
-TRANSLATIONS_SUBMIT       = Enviar traducción actual
+TRANSLATIONS_CHANGE_LOG   = &Ver el registro de cambios
+TRANSLATIONS_REPORT       = Ver &informe de la traducción
+TRANSLATIONS_FOLDER       = &Carpeta de traducciones
+TRANSLATIONS_SUBMIT       = &Enviar traducción actual
 
 ; --- --- Graphical interface submenu
 
-FONT                      = Tipo de letra
-OPTIONS                   = Opciones
+FONT                      = &Tipo de letra
+OPTIONS                   = &Opciones
 
 ; --- --- Boot time scan submenu
 
-ENABLE                    = Activar
-SCRIPT                    = Comandos
+ENABLE                    = &Activar
+SCRIPT                    = &Comandos
 
 ; --- Help Menu
 
-CONTENTS                  = Contenido
-BEST_PRACTICE             = Mejores prácticas
-FAQ                       = Preguntas frequentes
-CM_LEGEND                 = Grupoleyenda del mapa
-DEBUG                     = Depurar
-CHECK_UPDATE              = Buscar actualización
-ABOUT                     = Acerca de...
+CONTENTS                  = &Contenido
+BEST_PRACTICE             = &Mejores prácticas
+FAQ                       = &Preguntas frecuentes
+CM_LEGEND                 = &Leyenda del mapa
+DEBUG                     = &Depurar
+CHECK_UPDATE              = &Buscar actualización
+ABOUT                     = &Acerca de...
 
 ; --- --- Debug submenu
 
 OPEN_LOG                  = Abrir &registro
-REPORT_BUG                = Enviar informe de error
+REPORT_BUG                = &Enviar informe de error
 
 ; --- Toolbar Tooltips
 
-BOOT_TIME_SCRIPT          = Comandos de arranque
+BOOT_TIME_SCRIPT          = Script de Comandos de arranque
 
 ; Drives list items.
 
 VOLUME                    = Volumen
 STATUS                    = Estado
+FRAGMENTATION             = Fragmentación
 TOTAL                     = Espacio total
 FREE                      = Espacio libre
 PERCENT                   = % Libre
@@ -136,13 +138,13 @@ SECONDS_TILL_SHUTDOWN     = segundos para apagar el equipo
 SECONDS_TILL_HIBERNATION  = segundos para hibernar el equipo
 SECONDS_TILL_LOGOFF       = segundos para cerrar su sesión
 SECONDS_TILL_REBOOT       = segundos para reiniciar el equipo
-YES                       = Si
-NO                        = No
+YES                       = &Si
+NO                        = &No
 
 ; Upgrade dialog
 
 UPGRADE_CAPTION           = Una actualización está disponible ^-^
-UPGRADE_MESSAGE           = versión está disponible para descargar!
+UPGRADE_MESSAGE           = ¡Una nueva versión está disponible para descargar!
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 
@@ -158,8 +160,8 @@ HIDE                      = Ocultar
 FRAGMENTED_FILES_ON       = Archivos fragmentados en
 
 VISIT_HOMEPAGE            = Visitar el sitio Web
-VIEW_REPORT_OPTIONS       = Ver las opciones de informe
-POWERED_BY_LUA            = Desarrollado por Lua
+VIEW_REPORT_OPTIONS       = Ver las opciones del reporte
+POWERED_BY_LUA            = Desarrollado con LUA
 
 FRAGMENTS                 = fragmentos
 SIZE                      = tamaño

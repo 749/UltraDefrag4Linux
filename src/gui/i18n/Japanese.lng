@@ -101,6 +101,7 @@ BOOT_TIME_SCRIPT          = ブート時のスクリプト
 
 VOLUME                    = ボリューム
 STATUS                    = 状態
+FRAGMENTATION             = フラグメンテーション
 TOTAL                     = 容量
 FREE                      = 空き容量
 PERCENT                   = パーセント

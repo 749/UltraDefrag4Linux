@@ -99,6 +99,7 @@ BOOT_TIME_SCRIPT          = बूट काल लिपि
 
 VOLUME                    = खण्ड
 STATUS                    = स्थिति
+FRAGMENTATION             = विखंडन
 TOTAL                     = कुल स्थान
 FREE                      = रिक्त स्थान
 PERCENT                   = % प्रतिशत

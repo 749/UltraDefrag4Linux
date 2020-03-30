@@ -98,6 +98,7 @@ BOOT_TIME_SCRIPT          = Ræsingu handrit
 
 VOLUME                    = Bindi
 STATUS                    = Staða
+FRAGMENTATION             = Sundrungu
 TOTAL                     = Alger Rúm
 FREE                      = Frjáls Rúm
 PERCENT                   = % Frjáls

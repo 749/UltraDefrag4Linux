@@ -99,6 +99,7 @@ BOOT_TIME_SCRIPT          = Waktu boot naskah
 
 VOLUME                    = Kandar
 STATUS                    = Keadaan
+FRAGMENTATION             = Fragmentasi
 TOTAL                     = Kapasitas
 FREE                      = Ruang bebas
 PERCENT                   = % bebas

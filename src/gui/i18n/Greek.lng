@@ -5,6 +5,7 @@
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
 ; Revised May 17, 2012 by Dionisios Klonaris
+; Revised Oct  5, 2012 by Dionisios Klonaris
 ;------------------------------------------------------------------------------
 
 ; Please keep the header and comments in English and use Latin letters,
@@ -98,6 +99,7 @@ BOOT_TIME_SCRIPT          = Σενάριο κατά την εκκίνηση
 
 VOLUME                    = Μονάδα
 STATUS                    = Κατάσταση
+FRAGMENTATION             = Κατακερματισμός
 TOTAL                     = Σύνολο χώρου
 FREE                      = Ελεύθερος χώρος
 PERCENT                   = Ποσοστό

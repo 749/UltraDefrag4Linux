@@ -99,6 +99,7 @@ BOOT_TIME_SCRIPT          = البرنامج النصي عند الإقلاع
 
 VOLUME                    = القرص
 STATUS                    = الحالة
+FRAGMENTATION             = التجزئة
 TOTAL                     = المساحة الكلية
 FREE                      = المساحة الحرة
 PERCENT                   = % الحرة

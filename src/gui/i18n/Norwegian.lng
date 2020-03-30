@@ -99,6 +99,7 @@ BOOT_TIME_SCRIPT          = Oppstartsprogram
 
 VOLUME                    = Volum
 STATUS                    = Status
+FRAGMENTATION             = Fragmentering
 TOTAL                     = Totalt plass
 FREE                      = Ledig plass
 PERCENT                   = % ledig

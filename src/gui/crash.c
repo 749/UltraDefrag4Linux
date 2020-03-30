@@ -216,7 +216,7 @@ static void CollectCrashInfo(void)
 done:
     last_time_stamp = new_time_stamp;
     if(hLog) CloseEventLog(hLog);
-    if(buffer) free(buffer);
+    free(buffer);
 }
 
 /**

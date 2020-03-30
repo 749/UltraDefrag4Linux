@@ -1,2 +1,2 @@
-#define ZENWINX_VERSION 5,0,7,0 
-#define ZENWINX_VERSION2 "5, 0, 7, 0\0" 
+#define ZENWINX_VERSION 5,1,0,0 
+#define ZENWINX_VERSION2 "5, 1, 0, 0\0" 

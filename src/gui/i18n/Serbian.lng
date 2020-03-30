@@ -99,6 +99,7 @@ BOOT_TIME_SCRIPT          = Покретању система скрипта
 
 VOLUME                    = Партиција
 STATUS                    = Статус
+FRAGMENTATION             = Фрагментација
 TOTAL                     = Капацитет
 FREE                      = Слободног места
 PERCENT                   = Проценат

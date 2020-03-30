@@ -85,7 +85,7 @@ void WgxPrintUnicodeString(wchar_t *string,FILE *f)
     GET_CURRENT_CONSOLE_FONT_EX_PROC pGetCurrentConsoleFontEx = NULL;
     WIN_CONSOLE_FONT_INFO_EX cfie;
     UINT old_code_page, new_code_page = CP_OEMCP;
-    char *cnv_string;
+    char *cnv_string = NULL;
     int length;
 
     if(string == NULL) return;
@@ -171,7 +171,7 @@ convert:
 done:    
     /* cleanup */
     SetConsoleOutputCP(old_code_page);
-    if(cnv_string) free(cnv_string);
+    free(cnv_string);
 }
 
 /** @} */

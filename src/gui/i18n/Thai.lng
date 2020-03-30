@@ -98,6 +98,7 @@ BOOT_TIME_SCRIPT          = สคริปต์เวลาบูต
 
 VOLUME                    = ปริมาณ
 STATUS                    = สถานะ
+FRAGMENTATION             = การกระจายตัวของ
 TOTAL                     = เนื้อที่ทั้งหมด
 FREE                      = เนื้อที่ว่าง
 PERCENT                   = ร้อยละ

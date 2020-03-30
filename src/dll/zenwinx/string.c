@@ -34,23 +34,40 @@
  */
 #define WINX_VSPRINTF_BUFFER_SIZE 128
 
+/* tables for character case conversion */
+#include "case-tables.h"
+
+#define fast_toupper(c)  (ascii_uppercase[(int)(unsigned char)(c)])
+#define fast_tolower(c)  (ascii_lowercase[(int)(unsigned char)(c)])
+#define fast_towupper(c) (u16_uppercase[(unsigned int)(c)])
+#define fast_towlower(c) (u16_lowercase[(unsigned int)(c)])
+
+/**
+ * @internal
+ * @brief Initializes tables for
+ * the character case conversion.
+ */
+void winx_init_case_tables(void)
+{
+    int i;
+    
+    for(i = 0; i < sizeof(u16_uppercase) / sizeof(wchar_t); i++){
+        if(u16_uppercase[i] == 0) u16_uppercase[i] = (wchar_t)i;
+        if(u16_lowercase[i] == 0) u16_lowercase[i] = (wchar_t)i;
+    }
+}
+
 /**
  * @brief Reliable _toupper analog.
  * @details MSDN states: "In order for toupper to give
  * the expected results, __isascii and islower must both
  * return nonzero". winx_toupper has no such limitation.
- * @note Converts ANSI characters, does not accept other
- * encodings.
+ * @note Converts ASCII characters only (as well
+ * as _toupper function included in ntdll library).
  */
 char winx_toupper(char c)
 {
-    char s[2];
-    
-    s[0] = c;
-    s[1] = 0;
-    (void)_strupr(s);
-
-    return s[0];
+    return fast_toupper(c);
 }
 
 /**
@@ -58,18 +75,72 @@ char winx_toupper(char c)
  * @details MSDN states: "In order for tolower to give
  * the expected results, __isascii and isupper must both
  * return nonzero". winx_tolower has no such limitation.
- * @note Converts ANSI characters, does not accept other
- * encodings.
+ * @note Converts ASCII characters only (as well
+ * as _tolower function included in ntdll library).
  */
 char winx_tolower(char c)
 {
-    char s[2];
-    
-    s[0] = c;
-    s[1] = 0;
-    (void)_strlwr(s);
+    return fast_tolower(c);
+}
 
-    return s[0];
+/**
+ * @brief Reliable towupper analog.
+ * @details This routine doesn't depend
+ * on the current locale, it converts
+ * all the characters according to the
+ * Unicode standard.
+ */
+wchar_t winx_towupper(wchar_t c)
+{
+    return fast_towupper(c);
+}
+
+/**
+ * @brief Reliable towlower analog.
+ * @details This routine doesn't depend
+ * on the current locale, it converts
+ * all the characters according to the
+ * Unicode standard.
+ */
+wchar_t winx_towlower(wchar_t c)
+{
+    return fast_towlower(c);
+}
+
+/**
+ * @brief Reliable _wcsupr analog.
+ * @details This routine doesn't depend
+ * on the current locale, it converts
+ * all the characters according to the
+ * Unicode standard.
+ */
+wchar_t *winx_wcsupr(wchar_t *s)
+{
+    wchar_t *cp;
+    
+    if(s){
+        for(cp = s; *cp; cp++)
+            *cp = fast_towupper(*cp);
+    }
+    return s;
+}
+
+/**
+ * @brief Reliable _wcslwr analog.
+ * @details This routine doesn't depend
+ * on the current locale, it converts
+ * all the characters according to the
+ * Unicode standard.
+ */
+wchar_t *winx_wcslwr(wchar_t *s)
+{
+    wchar_t *cp;
+    
+    if(s){
+        for(cp = s; *cp; cp++)
+            *cp = fast_towlower(*cp);
+    }
+    return s;
 }
 
 /**
@@ -106,33 +177,51 @@ wchar_t *winx_wcsdup(const wchar_t *s)
     return cp;
 }
 
-/*  1. wcsstr(L"AGTENTLEPSE.SDFGSDFSDFSRG",L"AGTENTLEPSE"); x 1 mln. times = 63 ms
-    2. empty cycle = 0 ms
-    3. wcsistr(L"AGTENTLEPSE.SDFGSDFSDFSRG",L"AGTENTLEPSE"); x 1 mln. times = 340 ms
-    4. wcsistr 2 kanji strings x 1 mln. times = 310 ms
-    WCHAR s1[] = {0x30ea,0x30e0,0x30fc,0x30d0,0x30d6,0x30eb,0x30e1,0x30c7,0x30a3,0x30a2,0x306f,0x9664,0x5916,0};
-    WCHAR s2[] = {0x30ea,0x30e0,0x30fc,0x30d0,0x30d6,0x30eb,0x30e1,0x30c7,0x30a3,0x30a2,0x306f,0};
-    ULONGLONG t = _rdtsc();
-    for(i = 0; i < 1000000; i++) wcsistr(s1,s2);//wcsistr(L"AGTENTLEPSE.SDFGSDFSDFSRG",L"AGTENTLEPSE");
-    DbgPrint("AAAA %I64u ms\n",_rdtsc() - t);
-*/
+/**
+ * @brief Case insensitive version of wcscmp.
+ * @details This routine doesn't depend
+ * on the current locale, it converts
+ * all the characters according to the
+ * Unicode standard.
+ */
+int winx_wcsicmp(const wchar_t *s1, const wchar_t *s2)
+{
+    int result = 0;
+    
+    if(s1 == NULL || s2 == NULL)
+        return (!s1 && !s2) ? 0 : 1;
+    
+    do {
+        result = (int)(fast_towlower(*s1) - fast_towlower(*s2));
+        if(result != 0) break;
+        if(*s1 == 0) break;
+        s1++, s2++;
+    } while(1);
+
+    return result;
+}
 
 /**
  * @brief Case insensitive version of wcsstr.
+ * @details This routine doesn't depend
+ * on the current locale, it converts
+ * all the characters according to the
+ * Unicode standard.
  */
-wchar_t *winx_wcsistr(const wchar_t * wcs1,const wchar_t * wcs2)
+wchar_t *winx_wcsistr(const wchar_t *s1, const wchar_t *s2)
 {
-    wchar_t *cp = (wchar_t *)wcs1;
-    wchar_t *s1, *s2;
+    wchar_t *cp = (wchar_t *)s1;
+    wchar_t *_s1, *_s2;
 
-    if(wcs1 == NULL || wcs2 == NULL) return NULL;
+    if(s1 == NULL || s2 == NULL) return NULL;
     
     while(*cp){
-        s1 = cp;
-        s2 = (wchar_t *)wcs2;
+        _s1 = cp;
+        _s2 = (wchar_t *)s2;
         
-        while(*s1 && *s2 && !( towlower((wint_t)(*s1)) - towlower((wint_t)(*s2)) )){ s1++, s2++; }
-        if(!*s2) return cp;
+        while(*_s1 && *_s2 && !( fast_towlower(*_s1) \
+            - fast_towlower(*_s2) )){ _s1++, _s2++; }
+        if(!*_s2) return cp;
         cp++;
     }
     
@@ -141,8 +230,9 @@ wchar_t *winx_wcsistr(const wchar_t * wcs1,const wchar_t * wcs2)
 
 /**
  * @brief Case insensitive version of strstr.
+ * @note Compares case insensitively ASCII characters only.
  */
-char *winx_stristr(const char * s1,const char * s2)
+char *winx_stristr(const char *s1, const char *s2)
 {
     char *cp = (char *)s1;
     char *_s1, *_s2;
@@ -153,7 +243,8 @@ char *winx_stristr(const char * s1,const char * s2)
         _s1 = cp;
         _s2 = (char *)s2;
         
-        while(*_s1 && *_s2 && !( winx_tolower(*_s1) - winx_tolower(*_s2) )){ _s1++, _s2++; }
+        while(*_s1 && *_s2 && !( fast_tolower(*_s1) \
+            - fast_tolower(*_s2) )){ _s1++, _s2++; }
         if(!*_s2) return cp;
         cp++;
     }
@@ -162,40 +253,37 @@ char *winx_stristr(const char * s1,const char * s2)
 }
 
 /**
- * @brief Compares a string with a mask.
- * @details Supports <b>?</b> and <b>*</b> wildcards.
- * @param[in] string the string to be compared with mask.
- * @param[in] mask the mask to be compared with string.
- * @param[in] flags combination of WINX_PAT_xxx flags.
- * @return Nonzero value indicates that string matches the mask.
+ * @brief winx_wcsmatch helper.
+ * @internal
  */
-int winx_wcsmatch(wchar_t *string, wchar_t *mask, int flags)
+static int wcsmatch_helper(wchar_t *string, wchar_t *mask)
 {
     wchar_t cs, cm;
     
-    if(string == NULL || mask == NULL)
-        return 0;
-    
-    if(wcscmp(mask,L"*") == 0)
-        return 1;
-
     while(*string && *mask){
         cs = *string; cm = *mask;
-        if(flags & WINX_PAT_ICASE){
-            cs = (wchar_t)towlower((wint_t)cs);
-            cm = (wchar_t)towlower((wint_t)cm);
-        }
         if(cs != cm && cm != '?'){
             /* the current pair of characters differs */
             if(cm != '*') return 0;
-            /* skip asterisk */
-            mask ++;
-            if(*mask == 0)
-                return 1;
+            /* skip asterisks */
+            while(*mask == '*') mask ++;
+            if(*mask == 0) return 1;
             /* compare rest of the string with rest of the mask */
-            for(; *string; string++){
-                if(winx_wcsmatch(string, mask, flags))
-                    return 1;
+            cm = *mask;
+            if(cm == '?'){
+                /* the question mark matches any single character */
+                for(; *string; string++){
+                    if(wcsmatch_helper(string, mask))
+                        return 1;
+                }
+            } else {
+                /* skip part of the string which doesn't match for sure */
+                for(; *string; string++){
+                    if(*string == cm){
+                        if(wcsmatch_helper(string, mask))
+                            return 1;
+                    }
+                }
             }
             return 0;
         }
@@ -206,6 +294,73 @@ int winx_wcsmatch(wchar_t *string, wchar_t *mask, int flags)
     
     while(*mask == '*') mask ++;
     return (*string == 0 && *mask == 0) ? 1 : 0;
+}
+
+/**
+ * @brief winx_wcsmatch helper.
+ * @internal
+ */
+static int wcsmatch_icase_helper(wchar_t *string, wchar_t *mask)
+{
+    wchar_t cs, cm;
+    
+    while(*string && *mask){
+        cs = fast_towlower(*string);
+        cm = fast_towlower(*mask);
+        if(cs != cm && cm != '?'){
+            /* the current pair of characters differs */
+            if(cm != '*') return 0;
+            /* skip asterisks */
+            while(*mask == '*') mask ++;
+            if(*mask == 0) return 1;
+            /* compare rest of the string with rest of the mask */
+            cm = fast_towlower(*mask);
+            if(cm == '?'){
+                /* the question mark matches any single character */
+                for(; *string; string++){
+                    if(wcsmatch_icase_helper(string, mask))
+                        return 1;
+                }
+            } else {
+                /* skip part of the string which doesn't match for sure */
+                for(; *string; string++){
+                    if(fast_towlower(*string) == cm){
+                        if(wcsmatch_icase_helper(string, mask))
+                            return 1;
+                    }
+                }
+            }
+            return 0;
+        }
+        /* let's compare next pair of characters */
+        string ++;
+        mask ++;
+    }
+    
+    while(*mask == '*') mask ++;
+    return (*string == 0 && *mask == 0) ? 1 : 0;
+}
+
+/**
+ * @brief Compares a string with a mask.
+ * @details Supports <b>?</b> and <b>*</b> wildcards.
+ * @param[in] string the string to be compared with the mask.
+ * @param[in] mask the mask to be compared with the string.
+ * @param[in] flags the combination of WINX_PAT_xxx flags.
+ * @return Nonzero value indicates that the string matches the mask.
+ * @note Optimized for speed.
+ */
+int winx_wcsmatch(wchar_t *string, wchar_t *mask, int flags)
+{
+    if(string == NULL || mask == NULL)
+        return 0;
+    
+    if(wcscmp(mask,L"*") == 0)
+        return 1;
+    
+    if(flags & WINX_PAT_ICASE)
+        return wcsmatch_icase_helper(string,mask);
+    return wcsmatch_helper(string,mask);
 }
 
 /**
@@ -453,10 +608,10 @@ void winx_patfree(winx_patlist *patterns)
 int winx_bytes_to_hr(ULONGLONG bytes, int digits, char *buffer, int length)
 {
     char *suffixes[] = { "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
-    ULONGLONG n; /* an integer part of the result */
-    ULONGLONG m; /* a multiplier */
-    ULONGLONG r; /* a remaining part */
-    int i;       /* an index for the suffixes array */
+    ULONGLONG n; /* integer part */
+    ULONGLONG m; /* multiplier */
+    ULONGLONG r; /* remaining part */
+    int i;       /* index for the suffixes array */
     double rd;
     char spec[] = "%I64u.%00I64u %s";
     int result;
@@ -499,11 +654,12 @@ ULONGLONG winx_hr_to_bytes(char *string)
 {
     char *suffixes[] = { "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
     int suffix_found = 0;
-    char *dp;    /* a dot position */
-    ULONGLONG n; /* an integer part */
-    ULONGLONG m; /* a multiplier */
-    ULONGLONG r; /* a remaining part */
-    int i;       /* an index for the suffixes array */
+    char *dp;        /* dot position */
+    ULONGLONG n;     /* integer part */
+    ULONGLONG m;     /* multiplier */
+    ULONGLONG r = 0; /* remaining part */
+    int i;           /* index for the suffixes array */
+    int z;           /* number of zeros after the dot */
     double rd;
     
     DbgCheck1(string != NULL, "winx_hr_to_bytes", 0);
@@ -521,13 +677,13 @@ ULONGLONG winx_hr_to_bytes(char *string)
     }
 
     dp = strchr(string, '.');
-    if(dp == NULL){
-        return n * m;
+    if(dp != NULL){
+        for(z = 0; dp[z + 1] == '0'; z++) {}
+        for(rd = (double)_atoi64(dp + 1); rd > 1; rd /= 10){}
+        /* convertion to LONGLONG is needed for MinGW */
+        r = (ULONGLONG)(LONGLONG)((double)(LONGLONG)m * rd * pow(10, -z));
     }
     
-    for(rd = (double)_atoi64(dp + 1); rd > 1; rd /= 10){}
-    /* convertion to LONGLONG is needed for MinGW */
-    r = (ULONGLONG)(LONGLONG)((double)(LONGLONG)m * rd);
     return n * m + r;
 }
 

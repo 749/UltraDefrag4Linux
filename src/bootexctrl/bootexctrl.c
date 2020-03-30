@@ -159,9 +159,9 @@ static int cmd_compare(char *reg_cmd,char *cmd)
     result = 0;
     
 done:
-    if(reg_cmd_copy) free(reg_cmd_copy);
-    if(cmd_copy) free(cmd_copy);
-    if(long_cmd) free(long_cmd);
+    free(reg_cmd_copy);
+    free(cmd_copy);
+    free(long_cmd);
     return result;
 }
 

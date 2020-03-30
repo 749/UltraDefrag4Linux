@@ -33,6 +33,7 @@ int winx_dbg_init(void);
 void winx_dbg_close(void);
 void MarkWindowsBootAsSuccessful(void);
 char *winx_get_error_description(unsigned long status);
+void winx_init_case_tables(void);
 
 /**
  * @internal
@@ -118,6 +119,7 @@ int winx_init_library(void *peb)
         }
     }
 
+    winx_init_case_tables();
     if(winx_create_global_heap() < 0)
         return (-1);
     if(winx_dbg_init() < 0)

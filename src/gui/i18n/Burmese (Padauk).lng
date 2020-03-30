@@ -33,7 +33,7 @@ STOP                      = ရပ်
 REPEAT_ACTION             = ပြန်လည်ပြုလုပ်မှု
 SKIP_REMOVABLE_MEDIA      = ဖယ်ရသည့် ဋ္ဌာနေကို ကျော်လွှား
 RESCAN_DRIVES             = ဋ္ဌာနေများပြန်စစ်
-REPAIR_DRIVES             = Repair drives
+REPAIR_DRIVES             = ဋ္ဌာနေများ ပြင်ရန်
 WHEN_DONE                 = ပြုလုပ်ပြီးလျှင်
 EXIT                      = ထွက်
 
@@ -61,10 +61,10 @@ REPORTS                   = သတင်းသွင်း
 
 ; --- --- Language submenu
 
-TRANSLATIONS_CHANGE_LOG   = &View change log
-TRANSLATIONS_REPORT       = View translation &report
-TRANSLATIONS_FOLDER       = စကားပြန်ရာ ဖိုင်တွဲ
-TRANSLATIONS_SUBMIT       = &Submit current translation
+TRANSLATIONS_CHANGE_LOG   = မှတ်တမ်းပြောင်းလဲမှု ကြည့်ရန်
+TRANSLATIONS_REPORT       = စာသားပြန်ရာကို ကြည့်ရန်နှင့် အကြောင်းကြား
+TRANSLATIONS_FOLDER       = စာသားပြန်ရာ ဖိုင်တွဲ
+TRANSLATIONS_SUBMIT       = စာသားပြန်ရာ တင်ပြ
 
 ; --- --- Graphical interface submenu
 
@@ -82,14 +82,14 @@ CONTENTS                  = ပါဝင်ရာများ
 BEST_PRACTICE             = အကောင်းဆုံး လုပ်စဉ်
 FAQ                       = မေးပါများ စကားရ
 CM_LEGEND                 = စုပြုံလိုက် ပုံနှင့် ဖြစ်စဉ်
-DEBUG                     = De&bug
+DEBUG                     = ပြသာနာရှင်း
 CHECK_UPDATE              = နောက်ဆုံးပေါ် စစ်ဆေးရန်
 ABOUT                     = အကြောင်းအရာ
 
 ; --- --- Debug submenu
 
-OPEN_LOG                  = Open &log
-REPORT_BUG                = Send bug &report
+OPEN_LOG                  = ဖွင့်ပြီး မှတ်တမ်းတင်ရန်
+REPORT_BUG                = ပြသာနာ အကြောင်းကြားရန်
 
 ; --- Toolbar Tooltips
 
@@ -99,6 +99,7 @@ BOOT_TIME_SCRIPT          = စက်အစ အညွှန်းစာတို
 
 VOLUME                    = ဋ္ဌာနေများထုထည်
 STATUS                    = အနေအထား
+FRAGMENTATION             = အပိုင်းအစများ
 TOTAL                     = နေရာ အကုန်
 FREE                      = လွတ်လပ် နေရာ
 PERCENT                   = % လွတ်လပ်

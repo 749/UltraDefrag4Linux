@@ -338,8 +338,11 @@ static winx_file_info * ftw_add_entry_to_filelist(short *path,
         (void)_snwprintf(f->path,length,L"%ws\\%ws",path,f->name);
     f->path[length - 1] = 0;
     
-    /* save file attributes */
+    /* save file attributes and access times */
     f->flags = file_entry->FileAttributes;
+    f->creation_time = file_entry->CreationTime.QuadPart;
+    f->last_modification_time = file_entry->LastWriteTime.QuadPart;
+    f->last_access_time = file_entry->LastAccessTime.QuadPart;
     
     /* reset user defined flags */
     f->user_defined_flags = 0;
@@ -422,8 +425,11 @@ static int ftw_add_root_directory(short *path, int flags,
     f->name[0] = '.';
     f->name[1] = 0;
     
-    /* get file attributes */
-    f->flags |= FILE_ATTRIBUTE_DIRECTORY;
+    /* get file attributes and access times */
+    f->flags = FILE_ATTRIBUTE_DIRECTORY;
+    f->creation_time = 0;
+    f->last_modification_time = 0;
+    f->last_access_time = 0;
     status = winx_defrag_fopen(f,WINX_OPEN_FOR_BASIC_INFO,&hDir);
     if(status == STATUS_SUCCESS){
         memset(&fbi,0,sizeof(FILE_BASIC_INFORMATION));
@@ -434,6 +440,9 @@ static int ftw_add_root_directory(short *path, int flags,
             DebugPrintEx(status,"ftw_add_root_directory: NtQueryInformationFile(FileBasicInformation) failed");
         } else {
             f->flags = fbi.FileAttributes;
+            f->creation_time = fbi.CreationTime.QuadPart;
+            f->last_modification_time = fbi.LastWriteTime.QuadPart;
+            f->last_access_time = fbi.LastAccessTime.QuadPart;
             DebugPrint("ftw_add_root_directory: root directory flags: %u",f->flags);
         }
         winx_defrag_fclose(hDir);

@@ -118,6 +118,7 @@ static void update_progress(udefrag_progress_info *pi, void *p)
     memcpy(&job->pi,pi,sizeof(udefrag_progress_info));
     
     VolListUpdateStatusField(job);
+    VolListUpdateFragmentationField(job);
     UpdateStatusBar(pi);
     
     switch(pi->current_operation){
@@ -147,8 +148,7 @@ static void update_progress(udefrag_progress_info *pi, void *p)
     }
     if(pi->cluster_map){
         if(job->map.buffer == NULL || pi->cluster_map_size != job->map.size){
-            if(job->map.buffer)
-                free(job->map.buffer);
+            free(job->map.buffer);
             job->map.buffer = malloc(pi->cluster_map_size);
         }
         if(job->map.buffer == NULL){
@@ -467,10 +467,8 @@ void release_jobs(void)
             (void)DeleteDC(j->map.hdc);
         if(j->map.hbitmap)
             (void)DeleteObject(j->map.hbitmap);
-        if(j->map.buffer)
-            free(j->map.buffer);
-        if(j->map.scaled_buffer)
-            free(j->map.scaled_buffer);
+        free(j->map.buffer);
+        free(j->map.scaled_buffer);
     }
 }
 

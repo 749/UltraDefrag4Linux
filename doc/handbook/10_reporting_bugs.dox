@@ -13,47 +13,46 @@
  * @page ReportingBugs Reporting Bugs
  *
  * If you have encountered a bug please submit your report via our
- * <a href="http://sourceforge.net/tracker/?atid=969870&group_id=199532&func=browse">bug tracker</a>.
+ * <a href="http://sourceforge.net/p/ultradefrag/bugs/">bug tracker</a>.
  * Additional debugging information is always much appreciated.\n\n
  *
  * <h2>Collecting debugging information to report problems using the graphical interface</h2>
- * -# Download the <a href="http://technet.microsoft.com/en-us/sysinternals/bb896647.aspx">DbgView</a> program.
- *    The latest version of DbgView cannot be used on NT 4.0, check
- *    <a href="http://doc.sch130.nsc.ru/www.sysinternals.com/ntw2k/freeware/debugview.shtml">this page</a>
- *    for an earlier version.
- * -# Download and install <a href="http://www.gen.hardcopy.de/">Hardcopy</a> as a free utility to easily
+ * -# Optionally download the <a href="http://technet.microsoft.com/en-us/sysinternals/bb896647.aspx">DbgView</a> program.
+ *    -# The latest version of DbgView cannot be used on NT 4.0, check
+ *       <a href="http://doc.sch130.nsc.ru/www.sysinternals.com/ntw2k/freeware/debugview.shtml">this page</a>
+ *       for an earlier version.
+ * -# Optionally download and install <a href="http://www.gen.hardcopy.de/">Hardcopy</a> as a free utility to easily
  *    create and save screenshots.
- *    You can use the native Windows screen capture capability using the <b>[Alt]+[Print Screen]</b>
- *    keyboard shortcut and saving the image with <b>Paint</b> too.
- *    Starting with Windows 7 the <b>Snipping Tool</b> is shipping with Windows, which is similar to Hardcopy
- *    mentioned above.
+ *    -# You can use the native Windows screen capture capability using the <b>[Alt]+[Print Screen]</b>
+ *       keyboard shortcut and saving the image with <b>Paint</b> too.
+ *    -# Starting with Windows 7 the <b>Snipping Tool</b> is shipping with Windows, which is similar to Hardcopy
+ *       mentioned above.
  * -# Launch <b>UltraDefrag</b>
  *    -# Click the wrench icon on the toolbar. This should open a text editor with the
  *       settings file loaded.
  *    -# Search for the line <b>dbgprint_level = ""</b> and change it to <b>dbgprint_level = "DETAILED"</b>.
  *    -# Search for the line <b>log_file_path = ""</b> and change it to <b>log_file_path = ".\\Logs\\ultradefrag.log"</b>.
  *    -# Save the settings file and close the text editor.
- * -# End <b>UltraDefrag</b> to enable the debugging settings.
- * -# Launch the <b>DbgView</b> utility and enable the <b>Capture Win32</b> option from the <b>Capture</b> menu.
- *    On Vista and above make sure to run the utility as the Administrator user by right-clicking on it and selecting
- *    <b>Run as Administrator</b>.
+ * -# Optionally launch the <b>DbgView</b> utility and enable the <b>Capture Win32</b> option from the <b>Capture</b> menu.
+ *    -# On Vista and above make sure to run the utility as the Administrator user by right-clicking on it and selecting
+ *       <b>Run as Administrator</b>.
  * -# Launch <b>UltraDefrag</b> and perform the action you have problems with.
  *    You may just use the analysis to collect common debugging information too.
- * -# End <b>UltraDefrag</b> to create the debugging log file.
- * -# Open an Explorer window and open the folder <b>\%SystemRoot\%\\UltraDefrag\\Logs</b> where the
- *    <b>ultradefrag.log</b> file is located.
- * -# Save the log created by the <b>DbgView</b> utility through the file menu entry <b>Save as ...</b>.
+ * -# Select the menu entry <b>Help => Debug => Open log</b> to display the log file in a text editor.
+ *    -# You can use the "Save as ..." menu entry of the text editor to place the file where you want.
+ * -# Optionally save the log created by the <b>DbgView</b> utility through the file menu entry <b>Save as ...</b>.
  * -# Save any screenshot you have created as a PNG image, <b>do not include them in an Office document</b>.
  * -# Create a @ref create_bug_report_package "bug report package" and attach it to the bug tracker artifact.
+ * -# Select the menu entry <b>Help => Debug => Send bug report</b> to open the bug tracker web page.
  *
  * <h2>Collecting debugging information to report problems using the console interface</h2>
  * -# Launch a <b>command prompt</b>. On Vista and above make sure to run as the Administrator user
  *    by right-clicking on it and selecting <b>Run as Administrator</b>.
  * -# Enter <b>set UD_DBGPRINT_LEVEL=DETAILED</b> and hit return.
- * -# Enter <b>set UD_LOG_FILE_PATH=\%SystemRoot\%\\UltraDefrag\\Logs\\udefrag.log</b> and hit return.
+ * -# Enter <b>set UD_LOG_FILE_PATH=\%UD_INSTALL_DIR\%\\Logs\\udefrag.log</b> and hit return.
  * -# Execute <b>udefrag</b> with the action you have problems with.
  *    You may just use the analysis to collect common debugging information too.
- * -# Open an Explorer window and open the folder <b>\%SystemRoot\%\\UltraDefrag\\Logs</b> where the
+ * -# Open an Explorer window and open the folder <b>\%UD_INSTALL_DIR\%\\Logs</b> where the
  *    <b>udefrag.log</b> file is located.
  * -# Create a @ref create_bug_report_package "bug report package" and attach it to the tracker artifact.
  *
@@ -62,13 +61,13 @@
  *    by right-clicking on it and selecting <b>Run as Administrator</b>.
  * -# Execute the <b>boot-config</b> utility to open the boot time script in the text editor.
  *    -# Add the line <b>set UD_DBGPRINT_LEVEL=DETAILED</b> to the script.
- *    -# Add the line <b>set UD_LOG_FILE_PATH=\%SystemRoot\%\\UltraDefrag\\Logs\\defrag_native.log</b> to the script.
+ *    -# Add the line <b>set UD_LOG_FILE_PATH=\%UD_INSTALL_DIR\%\\Logs\\defrag_native.log</b> to the script.
  *    -# Add the line <b>udefrag</b> with the action you have problems with to the script.
  *       You may just use the analysis to collect common debugging information too.
  *    -# Save the script and close the text editor.
  * -# Execute the <b>boot-on</b> utility to enable boot time processing.
  * -# Reboot the system to have the boot time processing executed.
- * -# Open an Explorer window and open the folder <b>\%SystemRoot\%\\UltraDefrag\\Logs</b> where the
+ * -# Open an Explorer window and open the folder <b>\%UD_INSTALL_DIR\%\\Logs</b> where the
  *    <b>defrag_native.log</b> file is located.
  * -# Create a @ref create_bug_report_package "bug report package" and attach it to the tracker artifact.
  *

@@ -14,11 +14,10 @@
  *
  * UltraDefrag also includes a new mode that allows you to run it
  * at boot time in a manner similar to chkdsk. This is known as a
- * native application. It provides the ability to defragment any
- * system file. Including page file, registry hives, hiberfil.sys
- * file and any other files locked by the system or applications. Native
- * UltraDefrag runs before any file locking, therefore it can
- * process them as ordinary files.
+ * native application. The primary goal of it is defragmentation
+ * of locked files. UltraDefrag runs at Windows boot before any 
+ * file locking, so it can defragment almost everything,
+ * including page and hibernation files.
  * <a href="http://ultradefrag.sourceforge.net/screenshots.html">View screenshots...</a>
  *
  * If the boot time defragmenter is enabled, it will run
@@ -47,7 +46,7 @@
  * @par Boot time script
  * The boot time script consists of the disk defragmentation commands,
  * ancillary commands and comments.
- * It is located at \%windir\%\\system32\\ud-boot-time.cmd.
+ * It is located at <b>\%windir\%\\system32\\ud-boot-time.cmd</b>.
  * To edit this file execute boot-config at the command prompt or simply click
  * the Boot time script button on the UltraDefrag GUI toolbar.
  * <br/><br/>
@@ -209,7 +208,7 @@ TIME ... 12-04
  * ; set UD_DBGPRINT_LEVEL=DETAILED
  *
  * ; uncomment the following line to save debugging information to a log file
- * ; set UD_LOG_FILE_PATH=%SystemRoot%\UltraDefrag\Logs\defrag_native.log
+ * ; set UD_LOG_FILE_PATH=%UD_INSTALL_DIR%\Logs\defrag_native.log
  *
  * udefrag c:
  *
@@ -228,7 +227,7 @@ TIME ... 12-04
  * set UD_EX_FILTER=*temp*;*tmp*;*.zip;*.7z;*.rar;*dllcache*;*ServicePackFiles*
  *
  * ;create a timestamped log file
- * set UD_LOG_FILE_PATH=%SystemRoot%\UltraDefrag\Logs\defrag_native_%DATE%_%TIME%.log
+ * set UD_LOG_FILE_PATH=%UD_INSTALL_DIR%\Logs\defrag_native_%DATE%_%TIME%.log
  *
  * udefrag %SystemDrive%
  *

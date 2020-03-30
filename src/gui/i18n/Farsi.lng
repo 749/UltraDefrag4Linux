@@ -98,6 +98,7 @@ BOOT_TIME_SCRIPT          = کد زمان بوت کردن
 
 VOLUME                    = نام درايو
 STATUS                    = وضعيت
+FRAGMENTATION             = تکه تکه شدن
 TOTAL                     = فضاي كل
 FREE                      = فضاي آزاد
 PERCENT                   = درصد

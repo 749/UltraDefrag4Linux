@@ -7,6 +7,9 @@
 /*
 * os.setenv and os.shellexec calls has been
 * added by Dmitri Arkhangelski (2008, 2012).
+*
+* Note: luaL_error doesn't accept %x
+* option, so we're using %p instead.
 */
 
 #include <windows.h>
@@ -29,6 +32,12 @@
 
 #include "lauxlib.h"
 #include "lualib.h"
+
+#if defined(_WIN64)
+#define ULONG_PTR unsigned __int64
+#else
+#define ULONG_PTR unsigned long
+#endif
 
 static HINSTANCE (WINAPI *func_ShellExecuteA)(HWND,LPCSTR,LPCSTR,LPCSTR,LPCSTR,INT);
 
@@ -68,12 +77,30 @@ static wchar_t *convert_to_utf16(const char *utf8_string,int *error) {
   return utf16_string;
 }
 
+/* converts UTF-16 string to UTF-8 string, returns also Win32 error */
+static char *convert_to_utf8(const wchar_t *utf16_string,int *error) {
+  int length = wcslen(utf16_string);
+  char *utf8_string = malloc((length + 1) * 2);
+  if(utf8_string == NULL){
+    *error = ERROR_NOT_ENOUGH_MEMORY;
+    return NULL;
+  }
+  if(!WideCharToMultiByte(CP_UTF8,0,
+   utf16_string,-1,utf8_string,
+   (length + 1) * 2,NULL,NULL)){
+    *error = GetLastError();
+    free(utf8_string);
+    return NULL;
+  }
+  return utf8_string;
+}
+
 static int os_setenv (lua_State *L) {
   const char *name = luaL_checkstring(L, 1);
   const char *value;
-  int error, length, result, en;
+  wchar_t *utf16_name;
   wchar_t *utf16_value;
-  wchar_t *buffer;
+  int error, result;
   
   if(name[0] == 0){
     /* nothing to do */
@@ -86,30 +113,45 @@ static int os_setenv (lua_State *L) {
   } else {
     value = luaL_checkstring(L, 2);
   }
+  
+  utf16_name = convert_to_utf16(name,&error);
+  if(utf16_name == NULL){
+    if(error == ERROR_COMMITMENT_LIMIT || error == ERROR_NOT_ENOUGH_MEMORY){
+      return luaL_error(L, "not enough memory");
+    } else {
+      return luaL_error(L, "unable to convert %s to "
+        "utf-16: error code = 0x%p", name, (void *)(ULONG_PTR)error);
+    }
+  }
   utf16_value = convert_to_utf16(value,&error);
   if(utf16_value == NULL){
+    free(utf16_name);
     if(error == ERROR_COMMITMENT_LIMIT || error == ERROR_NOT_ENOUGH_MEMORY){
-      return luaL_error(L, "unable to convert %s to UTF-16: not enough memory",value);
+      return luaL_error(L, "not enough memory");
     } else {
-      return luaL_error(L, "unable to convert %s to UTF-16: error code = 0x%x",value,error);
+      return luaL_error(L, "unable to convert %s to "
+        "utf-16: error code = 0x%p", value, (void *)(ULONG_PTR)error);
     }
   }
 
-  length = strlen(name) + 1 + wcslen(utf16_value) + 1;
-  buffer = malloc(length * sizeof(wchar_t));
-  if(buffer == NULL){
-    free(utf16_value);
-    return luaL_error(L, "not enough memory");
-  }
-  _snwprintf(buffer,length,L"%hs=%ws",name,utf16_value);
-  buffer[length - 1] = 0;
-
-  result = _wputenv(buffer);
-  en = errno;
+  /*
+  * Being mixed with SetEnvironmentVariable
+  * calls _wputenv might cause an application
+  * crash (confirmed on XP SP2 x86):
+  * _wputenv(L"TEST=Hello");
+  * SetEnvironmentVariableW(L"TEST",NULL);
+  * _wputenv(L"TEST=");
+  */
+  if(utf16_value[0] != 0)
+    result = SetEnvironmentVariableW(utf16_name,utf16_value);
+  else
+    result = SetEnvironmentVariableW(utf16_name,NULL);
+  error = GetLastError();
+  free(utf16_name);
   free(utf16_value);
-  free(buffer);
-  if(result < 0){
-    return luaL_error(L, strerror(en));
+  if(result == 0 && error != ERROR_ENVVAR_NOT_FOUND){
+    return luaL_error(L, "SetEnvironmentVariableW "
+      "failed: error code = 0x%p", (void *)(ULONG_PTR)error);
   }
   lua_pushboolean(L, 1);
   return 1;
@@ -124,10 +166,13 @@ static int os_shellexec (lua_State *L) {
   if(!hShell){
     error = GetLastError();
     lua_pushinteger(L, 0);
-    if(error == ERROR_COMMITMENT_LIMIT || error == ERROR_NOT_ENOUGH_MEMORY){
-      lua_pushstring(L, "unable to load shell32.dll: not enough memory");
+    if(error == ERROR_COMMITMENT_LIMIT || \
+     error == ERROR_NOT_ENOUGH_MEMORY){
+      lua_pushstring(L, "unable to load shell32.dll: "
+        "not enough memory");
     } else {
-      lua_pushfstring(L, "unable to load shell32.dll: error code = 0x%x",error);
+      lua_pushfstring(L, "unable to load shell32.dll: "
+        "error code = 0x%p", (void *)(ULONG_PTR)error);
     }
     return 2;
   }
@@ -136,10 +181,13 @@ static int os_shellexec (lua_State *L) {
   if(!func_ShellExecuteA){
     error = GetLastError();
     lua_pushinteger(L, 0);
-    if(error == ERROR_COMMITMENT_LIMIT || error == ERROR_NOT_ENOUGH_MEMORY){
-      lua_pushstring(L, "unable to find ShellExecute: not enough memory");
+    if(error == ERROR_COMMITMENT_LIMIT || \
+     error == ERROR_NOT_ENOUGH_MEMORY){
+      lua_pushstring(L, "unable to find ShellExecute: "
+        "not enough memory");
     } else {
-      lua_pushfstring(L, "unable to find ShellExecute: error code = 0x%x",error);
+      lua_pushfstring(L, "unable to find ShellExecute: "
+        "error code = 0x%p", (void *)(ULONG_PTR)error);
     }
     return 2;
   }
@@ -196,9 +244,12 @@ static int os_shellexec (lua_State *L) {
   }
   if(error <= 32){
     if(error_description){
-      lua_pushfstring(L, "unable to %s %s: %s",action,path,error_description);
+      lua_pushfstring(L, "unable to %s %s: %s",
+        action, path, error_description);
     } else {
-      lua_pushfstring(L, "unable to %s %s: error code = 0x%x",action,path,error);
+      lua_pushfstring(L, "unable to %s %s: "
+        "error code = 0x%p", action, path, 
+        (void *)(ULONG_PTR)error);
     }
     return 2;
   }
@@ -230,7 +281,55 @@ static int os_tmpname (lua_State *L) {
 
 
 static int os_getenv (lua_State *L) {
-  lua_pushstring(L, getenv(luaL_checkstring(L, 1)));  /* if NULL push nil */
+  #define MAX_VALUE_LEN 32767 /* according to MSDN */
+  const char *name = luaL_checkstring(L, 1);
+  wchar_t *utf16_name;
+  wchar_t *utf16_value;
+  char *utf8_value;
+  int error, result;
+  
+  utf16_name = convert_to_utf16(name,&error);
+  if(utf16_name == NULL){
+    if(error == ERROR_COMMITMENT_LIMIT || error == ERROR_NOT_ENOUGH_MEMORY){
+      return luaL_error(L, "not enough memory");
+    } else {
+      return luaL_error(L, "unable to convert %s to "
+        "utf-16: error code = 0x%p", name, (void *)(ULONG_PTR)error);
+    }
+  }
+  
+  utf16_value = malloc(MAX_VALUE_LEN * sizeof(wchar_t));
+  if(utf16_value == NULL){
+    free(utf16_name);
+    return luaL_error(L, "not enough memory");
+  }
+  
+  result = GetEnvironmentVariableW(utf16_name,utf16_value,MAX_VALUE_LEN);
+  error = GetLastError();
+  free(utf16_name);
+  if(result == 0){
+    free(utf16_value);
+    if(error == ERROR_ENVVAR_NOT_FOUND){
+      lua_pushnil(L);
+      return 1;
+    }
+    return luaL_error(L, "GetEnvironmentVariableW "
+      "failed: error code = 0x%p", (void *)(ULONG_PTR)error);
+  }
+  
+  utf8_value = convert_to_utf8(utf16_value,&error);
+  free(utf16_value);
+  if(utf8_value == NULL){
+    if(error == ERROR_COMMITMENT_LIMIT || error == ERROR_NOT_ENOUGH_MEMORY){
+      return luaL_error(L, "not enough memory");
+    } else {
+      return luaL_error(L, "unable to convert value to "
+        "utf-8: error code = 0x%p", (void *)(ULONG_PTR)error);
+    }
+  }
+  
+  lua_pushstring(L, utf8_value);
+  free(utf8_value);
   return 1;
 }
 

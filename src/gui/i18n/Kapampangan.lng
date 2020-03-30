@@ -98,6 +98,7 @@ BOOT_TIME_SCRIPT          = Script king Pamagumpisa
 
 VOLUME                    = Volume
 STATUS                    = Kabilyan
+FRAGMENTATION             = Fragmentation
 TOTAL                     = Kapasidad/Pangkabilugan
 FREE                      = Ilibri/Itimawa
 PERCENT                   = % a libri o timawa

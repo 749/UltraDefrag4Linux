@@ -17,10 +17,6 @@
  *
  * @note
  * You must be an administrator to install and run UltraDefrag.<br /><br />
- * UltraDefrag installs into the Windows directory. This is by design,
- * because it highly simplifies the program development.
- * Moreover, it is impossible to run the boot time defragmenter without having its
- * files inside the System32 directory.<br/><br/>
  * You must have a 64-bit version of Windows to run the 64-bit versions of the program.
  * The IA-64 version was never tested by the authors. It requires the Intel Itanium processor
  * and an appropriate 64-bit edition of Windows.
@@ -53,7 +49,10 @@
  * <h1>Silent Installation</h1>
  * UltraDefrag can be installed in silent mode by adding the <b>/S</b> switch to the installer's command line
  * at the command prompt. In this case no dialogs will be shown and the program will be installed 
- * to the hard drive completely with all the features enabled. 
+ * to the hard drive completely with all the features enabled.<br/>
+ * @note
+ * For easier debugging of installation problems a log file will be created when an error is encontered.
+ * The log file is located in the temporary folder of the executing user: <b>\%TMP\%\\UltraDefrag_Install.log</b>
  *
  * The following additional command line switches are supported:
  * @par /LANG
@@ -104,17 +103,25 @@
  * Enable or disable tracking the usage of UltraDefrag. Example: <b>/DISABLE_USAGE_TRACKING=1</b> disables usage tracking.<br/>
  * Usage tracking is done by accessing a simple text file on the UltraDefrag home page.
  *
+ * @par /D={Install Location}
+ * This sets the installation folder for UltraDefrag. Example: <b>/D=C:\\Program Files\\UltraDefrag</b>.<br/>
+ * It must be the last parameter used in the command line and must not contain any quotes, even if the path contains spaces.<br/>
+ * Only absolute paths are supported. The destination folder must be empty or contain a previous UltraDefrag installation.
+ *
  * Example command line to silently install the full edition in "Burmese (Padauk)" with only the start menu icon:
  * @code
- * ultradefrag.bin.i386.exe /S /LANG="Burmese (Padauk)" /FULL=1 /ICONS=0 /STARTMENUICON=1
+ * ultradefrag.bin.i386.exe /S /LANG="Burmese (Padauk)" /FULL=1 /ICONS=0 /STARTMENUICON=1 /D=C:\Program Files\UltraDefrag
  * @endcode
  * To check the result of the command line switches omit the <b>/S</b> switch,
  * which opens the interactive installer and allows checking the selections
  * on the component page.
  *
  * There is also a silent mode for the uninstaller program.
- * At the command prompt type <b>\%windir\%\\UltraDefrag\\uninstall.exe /S</b>
- * to remove the program from the hard drive automatically without any graphical dialogs.
+ * At the command prompt type:
+ * @code
+ * %UD_INSTALL_DIR%\uninstall.exe /S
+ * @endcode
+ * to automatically remove the program from the hard drive without any graphical dialogs.
  *
  * @htmlonly
  * <HR>

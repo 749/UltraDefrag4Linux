@@ -92,8 +92,13 @@ EXPORTS
     winx_windows_in_safe_mode
     winx_toupper
     winx_tolower
+    winx_towupper
+    winx_towlower
+    winx_wcsupr
+    winx_wcslwr
     winx_strdup
     winx_wcsdup
+    winx_wcsicmp
     winx_wcsistr
     winx_stristr
     winx_wcsmatch

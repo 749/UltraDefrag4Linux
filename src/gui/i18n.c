@@ -99,6 +99,7 @@ WGX_I18N_RESOURCE_ENTRY i18n_table[] = {
     /* volume characteristics */
     {0, "VOLUME",                   L"Disk",                     NULL},
     {0, "STATUS",                   L"Status",                   NULL},
+    {0, "FRAGMENTATION",            L"Fragmentation",            NULL},
     {0, "TOTAL",                    L"Total Space",              NULL},
     {0, "FREE",                     L"Free Space",               NULL},
     {0, "PERCENT",                  L"% free",                   NULL},
@@ -260,19 +261,24 @@ void ApplyLanguagePack(void)
         SendMessage(hList,LVM_SETCOLUMNW,1,(LPARAM)&lvc);
         free(text);
     }
-    lvc.pszText =  text = WgxGetResourceString(i18n_table,"TOTAL");
+    lvc.pszText =  text = WgxGetResourceString(i18n_table,"FRAGMENTATION");
     if(text){
         SendMessage(hList,LVM_SETCOLUMNW,2,(LPARAM)&lvc);
         free(text);
     }
-    lvc.pszText =  text = WgxGetResourceString(i18n_table,"FREE");
+    lvc.pszText =  text = WgxGetResourceString(i18n_table,"TOTAL");
     if(text){
         SendMessage(hList,LVM_SETCOLUMNW,3,(LPARAM)&lvc);
         free(text);
     }
-    lvc.pszText =  text = WgxGetResourceString(i18n_table,"PERCENT");
+    lvc.pszText =  text = WgxGetResourceString(i18n_table,"FREE");
     if(text){
         SendMessage(hList,LVM_SETCOLUMNW,4,(LPARAM)&lvc);
+        free(text);
+    }
+    lvc.pszText =  text = WgxGetResourceString(i18n_table,"PERCENT");
+    if(text){
+        SendMessage(hList,LVM_SETCOLUMNW,5,(LPARAM)&lvc);
         free(text);
     }
     
@@ -325,7 +331,7 @@ void ApplyLanguagePack(void)
         }
     }
     
-    /* define whether to use custom font for dialog boxes */
+    /* define whether to use custom font for dialog boxes or not */
     use_custom_font_in_dialogs = 0;
     for(i = 0; special_font_languages[i]; i++){
         if(strcmp(lang_name,special_font_languages[i]) == 0){

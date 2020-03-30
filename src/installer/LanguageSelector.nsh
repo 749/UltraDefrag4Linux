@@ -94,6 +94,22 @@ Function LangShow
 
     ; --- get language from $INSTDIR\lang.ini file
     ${DisableX64FSRedirection}
+
+    ; move old lang.ini to new location
+    IfFileExists "$OldInstallDir\lang.ini" 0 SkipMove
+    StrCmp "$INSTDIR" "$OldInstallDir" SkipMove
+
+    CreateDirectory "$INSTDIR"
+    Delete "$INSTDIR\lang.ini"
+    ClearErrors
+    Rename "$OldInstallDir\lang.ini" "$INSTDIR\lang.ini"
+    ${If} ${Errors}
+        MessageBox MB_OK|MB_ICONINFORMATION \
+            "Cannot retrieve old language setting!" \
+            /SD IDOK
+    ${EndIf}
+
+SkipMove:
     ${If} ${FileExists} "$INSTDIR\lang.ini"
         ReadINIStr $LanguagePack "$INSTDIR\lang.ini" "Language" "Selected"
     ${EndIf}
@@ -107,7 +123,7 @@ Function LangShow
     ${Unless} ${Errors}
         StrCpy $LanguagePack $R2
     ${EndUnless}
-    
+
     ${If} $LanguagePack == "French (FR)"
         StrCpy $LanguagePack "French"
     ${EndIf}

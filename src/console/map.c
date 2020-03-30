@@ -77,7 +77,7 @@ void CalculateClusterMapDimensions(void)
         if(v_flag == 0)
             map_rows = csbi.srWindow.Bottom - csbi.srWindow.Top - 10;
         else
-            map_rows = csbi.srWindow.Bottom - csbi.srWindow.Top - 20;
+            map_rows = csbi.srWindow.Bottom - csbi.srWindow.Top - 21;
         /* scroll buffer one line up */
         if(csbi.srWindow.Top > 0){
             sr.Top = sr.Bottom = -1;
@@ -113,8 +113,7 @@ int AllocateClusterMap(void)
  */
 void FreeClusterMap(void)
 {
-    if(cluster_map)
-        free(cluster_map);
+    free(cluster_map);
 }
 
 /**
@@ -201,7 +200,7 @@ void InitializeMapDisplay(char volume_letter)
         if(v_flag == 0)
             printf("\n");
         else
-            printf("\n\n\n\n\n\n\n\n\n\n\n");
+            printf("\n\n\n\n\n\n\n\n\n\n\n\n");
         /* move cursor back to the previous line */
         if(!GetConsoleScreenBufferInfo(hStdOut,&csbi)){
             display_last_error("Cannot retrieve cursor position!");
@@ -211,7 +210,7 @@ void InitializeMapDisplay(char volume_letter)
         if(v_flag == 0)
             cursor_pos.Y = csbi.dwCursorPosition.Y - 1;
         else
-            cursor_pos.Y = csbi.dwCursorPosition.Y - 11;
+            cursor_pos.Y = csbi.dwCursorPosition.Y - 12;
         if(!SetConsoleCursorPosition(hStdOut,cursor_pos))
             display_last_error("Cannot set cursor position!");
     }

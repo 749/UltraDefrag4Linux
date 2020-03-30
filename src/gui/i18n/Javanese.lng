@@ -98,6 +98,7 @@ BOOT_TIME_SCRIPT          = Wektu boot naskah
 
 VOLUME                    = Volum
 STATUS                    = Kodisi
+FRAGMENTATION             = Fragmentation
 TOTAL                     = Total Ruang
 FREE                      = Ruang Kosong
 PERCENT                   = % bebas

@@ -98,6 +98,7 @@ BOOT_TIME_SCRIPT          = Skripti käivitamise aeg
 
 VOLUME                    = Heli
 STATUS                    = Staatus
+FRAGMENTATION             = Killustatus
 TOTAL                     = Ruumi kokku
 FREE                      = Vaba ruum
 PERCENT                   = % vaba

@@ -100,6 +100,7 @@ BOOT_TIME_SCRIPT          = Skripta pri podizanju sustava
 
 VOLUME                    = Disk
 STATUS                    = Status
+FRAGMENTATION             = Fragmentacija
 TOTAL                     = Ukupan prostor
 FREE                      = Slobodan prostor
 PERCENT                   = Postotak

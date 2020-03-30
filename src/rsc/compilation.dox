@@ -21,7 +21,7 @@
  * is a single choice when you need to compile binaries for all of the
  * supported processor architectures.
  *
- * MinGW needs to be patched to be able to compile UltraDefrag.
+ * MinGW also needs to be patched to be able to compile UltraDefrag.
  * Type <b>build --help</b> (see below) for details.
  *
  * You can download the <a href="http://koti.mbnet.fi/vaultec/mingwstudio.php">MinGW Developer Studio</a>,
@@ -44,14 +44,11 @@
  * - <a href="http://www.etree.org/md5com.html">md5sum tool</a> to create the checksums
  * - <a href="http://upx.sf.net/">UPX</a> to reduce the size of the installers
  * 
- * All listed packages can be downloaded from the
- * <a href="http://ultradefrag.sourceforge.net/devtools/">UltraDefrag web site</a>.
- *
  * - Install NSIS, 7-zip, Doxygen and optionally "Lua for Windows" and MiKTeX.
  * - If you did not install "Lua for Windows",
- * extract Lua, IUP and CD to some directory on your \%PATH\%, e.g. to C:\\Windows.
- * - Place md5sum.exe into the src\\tools folder of the source code distribution.
- * - Extract upx.exe into the src\\tools\\upx folder of the source code distribution.
+ * extract Lua, IUP and CD to some directory on your <b>\%PATH\%</b>, e.g. to <b>C:\\Windows</b>.
+ * - Place md5sum.exe into the <b>src\\tools</b> folder of the source code distribution.
+ * - Extract upx.exe into the <b>src\\tools\\upx</b> folder of the source code distribution.
  *
  * To properly set up the build environment type:
  * @code lua configure.lua @endcode

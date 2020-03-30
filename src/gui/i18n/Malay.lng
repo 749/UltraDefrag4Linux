@@ -1,0 +1,172 @@
+﻿;------------------------------------------------------------------------------
+; UltraDefrag GUI Malay Language Pack.
+; Copyright (C) 2012 Asaradik.
+;------------------------------------------------------------------------------
+; History --- Date ---------- Full Name
+;------------------------------------------------------------------------------
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
+;------------------------------------------------------------------------------
+
+; Please keep the header and comments in English and use Latin letters,
+; so everyone understands them
+
+; THIS FILE MUST BE SAVED IN **UTF-8** ENCODING
+; Use \n as a newline character in strings.
+; Use an ampersand (&) before a letter to make it a keyboard accelerator
+
+
+; Main Menu
+
+ACTION                    = &Tindakan
+REPORT                    = &Laporan
+SETTINGS                  = &Tetapan
+HELP                      = &Bantuan
+
+; --- Action Menu
+
+ANALYSE                   = &Analisa
+DEFRAGMENT                = &Defragment
+QUICK_OPTIMIZE            = &Optimalkan &Cepat
+FULL_OPTIMIZE             = &Optimalkan &Penuh
+OPTIMIZE_MFT              = &Optimalkan MFT
+STOP                      = &Berhenti
+REPEAT_ACTION             = &Ulangi tindakan
+SKIP_REMOVABLE_MEDIA      = &Langkau media alih
+RESCAN_DRIVES             = Imbas semula cakera keras
+REPAIR_DRIVES             = Pembaikan cakera keras
+WHEN_DONE                 = &Apabila selesai
+EXIT                      = &Keluar
+
+; --- --- When done submenu
+
+WHEN_DONE_NONE            = &Tidak ada
+WHEN_DONE_EXIT            = &Keluar
+WHEN_DONE_STANDBY         = &Siap
+WHEN_DONE_HIBERNATE       = &Hibernate
+WHEN_DONE_LOGOFF          = &Log keluar
+WHEN_DONE_REBOOT          = &Reboot
+WHEN_DONE_SHUTDOWN        = &Matikan
+
+; --- Report Menu
+
+SHOW_REPORT               = &Tunjukkan laporan
+
+; --- Settings Menu
+
+LANGUAGE                  = &Bahasa
+GRAPHICAL_INTERFACE       = &Antaramuka grafik
+BOOT_TIME_SCAN            = &Boot imbasan masa
+REPORTS                   = &Laporan
+
+; --- --- Language submenu
+
+TRANSLATIONS_CHANGE_LOG   = &Lihat menukar log
+TRANSLATIONS_REPORT       = &Lihat laporan terjemahan
+TRANSLATIONS_FOLDER       = &Folder terjemahan
+TRANSLATIONS_SUBMIT       = &Hanta terjemahan semasa
+
+; --- --- Graphical interface submenu
+
+FONT                      = &Fon
+OPTIONS                   = &Pilihan
+
+; --- --- Boot time scan submenu
+
+ENABLE                    = &Dayakan
+SCRIPT                    = &Skrip
+
+; --- Help Menu
+
+CONTENTS                  = &Kandungan
+BEST_PRACTICE             = &Amalan terbaik
+FAQ                       = &Soalan-soalan lazim
+CM_LEGEND                 = &Kluster peta legenda
+DEBUG                     = &Nyahpepijat
+CHECK_UPDATE              = &Semak untuk kemas kini
+ABOUT                     = &Mengenai
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = &Buka log
+REPORT_BUG                = &Hantar laporan bug
+
+; --- Toolbar Tooltips
+
+BOOT_TIME_SCRIPT          = Boot skrip masa
+
+; Drives list items.
+
+VOLUME                    = Cakera
+STATUS                    = Status
+FRAGMENTATION             = Pemecahan
+TOTAL                     = Jumlah ruang
+FREE                      = Ruang bebas
+PERCENT                   = % kosong
+
+; Status messages
+
+STATUS_RUNNING            = Melaksanakan
+STATUS_ANALYSED           = Dianalisis
+STATUS_DEFRAGMENTED       = Didefragmentasi
+STATUS_OPTIMIZED          = Dioptimumkan
+STATUS_DIRTY              = Cakera perlu dibaiki
+
+; Status bar messages.
+
+DIRS                      = direktori
+FILES                     = fail
+FRAGMENTED                = berpecah
+COMPRESSED                = termampat
+
+; About window.
+
+ABOUT_WIN_TITLE           = Mengenai Ultra Defragmenter
+CREDITS                   = &Kredit
+LICENSE                   = &Lesen
+
+; Shutdown confirmation
+
+PLEASE_CONFIRM            = Sila sahkan
+REALLY_SHUTDOWN_WHEN_DONE = Adakah anda benar-benar mahu untuk matikan apabila dilakukan?
+REALLY_HIBERNATE_WHEN_DONE= Adakah anda benar-benar mahu untuk hibernate apabila dilakukan?
+REALLY_LOGOFF_WHEN_DONE   = Adakah anda benar-benar mahu untuk log off apabila dilakukan?
+REALLY_REBOOT_WHEN_DONE   = Adakah anda benar-benar mahu untuk bemula semula apabila dilakukan?
+SECONDS_TILL_SHUTDOWN     = saat sehingga matikan
+SECONDS_TILL_HIBERNATION  = saat sehingga hibernate
+SECONDS_TILL_LOGOFF       = saat sehingga log off
+SECONDS_TILL_REBOOT       = saat sehingga bemula semula
+YES                       = &Ya
+NO                        = &Tidak
+
+; Upgrade dialog
+
+UPGRADE_CAPTION           = Anda boleh menaik taraf saya! ^-^
+UPGRADE_MESSAGE           = memindahkan terdapat untuk dimuat turun!
+
+; A string for the taskbar icon overlay, needed for accessibility.
+
+JOB_IS_RUNNING            = Kerja sedang berjalan
+
+; Strings for system tray icon context menu.
+
+SHOW                      = Show
+HIDE                      = Hide
+
+; Strings for the file fragmentation reports.
+
+FRAGMENTED_FILES_ON       = Fail berpecah pada:
+
+VISIT_HOMEPAGE            = Lawati laman web kami
+VIEW_REPORT_OPTIONS       = Lihat pilihan laporan
+POWERED_BY_LUA            = Dikuasakan oleh Lua
+
+FRAGMENTS                 = Serpihan
+SIZE                      = Saiz
+FILENAME                  = Nama fail
+COMMENT                   = Komen
+
+LOCKED                    = dikunci
+MOVE_FAILED               = pindah gagal
+INVALID                   = tidak sah
+
+; END OF FILE

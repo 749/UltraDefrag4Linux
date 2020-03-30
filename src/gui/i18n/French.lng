@@ -92,7 +92,7 @@ ABOUT                     = À &propos
 
 ; --- --- Debug submenu
 
-OPEN_LOG                  = Afficher le journal des événe&ments
+OPEN_LOG                  = Afficher le journa&l des événements
 REPORT_BUG                = Envoyer un &rapport de bogue
 
 ; --- Toolbar Tooltips
@@ -103,6 +103,7 @@ BOOT_TIME_SCRIPT          = Script lancé au démarrage de Windows
 
 VOLUME                    = Volume
 STATUS                    = État
+FRAGMENTATION             = Fragmentation
 TOTAL                     = Espace total
 FREE                      = Espace libre
 PERCENT                   = Pourcentage libre

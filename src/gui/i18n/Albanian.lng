@@ -1,6 +1,6 @@
 ﻿;------------------------------------------------------------------------------
 ; UltraDefrag GUI Albanian Language Pack.
-; Copyright (C) 2012 Fitim I. HALILI - Gjakovë.
+; Copyright (C) 2012 Fitim I. HALILI.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
@@ -26,21 +26,21 @@ HELP                      = N&dihmë
 
 ANALYSE                   = &Analizimi
 DEFRAGMENT                = &Defragmentimi
-QUICK_OPTIMIZE            = &Shpejtesia e optimizimit
+QUICK_OPTIMIZE            = &Shpejtësia e optimizimit
 FULL_OPTIMIZE             = &Optimizimi i plotë
 OPTIMIZE_MFT              = &Optimizimi MFT
 STOP                      = &Ndalimi
 REPEAT_ACTION             = Për&sërit aksionin
 SKIP_REMOVABLE_MEDIA      = Tejkalo &mediumin e lëvizshëm
 RESCAN_DRIVES             = Rifresko &diskun
-REPAIR_DRIVES             = Repair dri&ves
-WHEN_DONE                 = Përf&undimi...
+REPAIR_DRIVES             = Riparo &diskun
+WHEN_DONE                 = Përf&undimi
 EXIT                      = Da&lja
 
 ; --- --- When done submenu
 
 WHEN_DONE_NONE            = &Asgjë
-WHEN_DONE_EXIT            = Da&lja nga UD
+WHEN_DONE_EXIT            = Da&lja
 WHEN_DONE_STANDBY         = Stan&dby
 WHEN_DONE_HIBERNATE       = &Hibernimi
 WHEN_DONE_LOGOFF          = &Shkyçje
@@ -60,10 +60,10 @@ REPORTS                   = &Raportet
 
 ; --- --- Language submenu
 
-TRANSLATIONS_CHANGE_LOG   = &View change log
-TRANSLATIONS_REPORT       = View translation &report
+TRANSLATIONS_CHANGE_LOG   = &Paraqite ndryshimin
+TRANSLATIONS_REPORT       = Shiko përkthimin &raportin
 TRANSLATIONS_FOLDER       = &Përkthimi
-TRANSLATIONS_SUBMIT       = &Submit current translation
+TRANSLATIONS_SUBMIT       = &Paraqite përkthimin e tanishëm
 
 ; --- --- Graphical interface submenu
 
@@ -80,15 +80,15 @@ SCRIPT                    = &Skripta
 CONTENTS                  = &Përmbajtja
 BEST_PRACTICE             = &Praktika më e mirë
 FAQ                       = &Pyetjet dhe përgjigjet më të shpeshta
-CM_LEGEND                 = Cluster map &legend
-DEBUG                     = De&bug
-CHECK_UPDATE              = Kontrollo për &update
+CM_LEGEND                 = Harta e klasterit &legjenda
+DEBUG                     = Korrigjo
+CHECK_UPDATE              = &Kontrollo për &update
 ABOUT                     = &Për programin
 
 ; --- --- Debug submenu
 
-OPEN_LOG                  = Open &log
-REPORT_BUG                = Send bug &report
+OPEN_LOG                  = &Regjistrohu
+REPORT_BUG                = Dërgo defektin &raportin
 
 ; --- Toolbar Tooltips
 
@@ -98,6 +98,7 @@ BOOT_TIME_SCRIPT          = Skriptimi para kyçjes së kompjuterit
 
 VOLUME                    = Disku
 STATUS                    = Statusi
+FRAGMENTATION             = Copëzim
 TOTAL                     = Hapësira totale
 FREE                      = Hapësira e lirë
 PERCENT                   = % e lirë
@@ -108,14 +109,14 @@ STATUS_RUNNING            = Kryerja
 STATUS_ANALYSED           = Analizimi
 STATUS_DEFRAGMENTED       = Defragmentimi
 STATUS_OPTIMIZED          = Optimizimi
-STATUS_DIRTY              = Disk needs to be repaired
+STATUS_DIRTY              = Diskut i nevojitet riparimi
 
 ; Status bar messages.
 
-DIRS                      = direktoriumi
-FILES                     = fajllat
-FRAGMENTED                = fragmentimi
-COMPRESSED                = kompresimi
+DIRS                      = folderi/direktoriumi
+FILES                     = fajllat/skedarët
+FRAGMENTED                = i fragmentuar
+COMPRESSED                = i kompresuar
 
 ; About window.
 
@@ -139,33 +140,33 @@ NO                        = &Jo
 
 ; Upgrade dialog
 
-UPGRADE_CAPTION           = You can upgrade me ^-^
-UPGRADE_MESSAGE           = release is available for download!
+UPGRADE_CAPTION           = Ju mund të bëni upgrade/përditësim ^-^
+UPGRADE_MESSAGE           = Publikoje shkarkimin në dispozicion!
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 
-JOB_IS_RUNNING            = A job is running
+JOB_IS_RUNNING            = Po punon
 
 ; Strings for system tray icon context menu.
 
-SHOW                      = Show
-HIDE                      = Hide
+SHOW                      = Trego
+HIDE                      = Fshehe
 
 ; Strings for the file fragmentation reports.
 
-FRAGMENTED_FILES_ON       = Fragmented files on
+FRAGMENTED_FILES_ON       = Fajllat e fragmentuar
 
-VISIT_HOMEPAGE            = Visit our Homepage
-VIEW_REPORT_OPTIONS       = View report options
-POWERED_BY_LUA            = Powered by Lua
+VISIT_HOMEPAGE            = Vizitoni Web-faqen tonë
+VIEW_REPORT_OPTIONS       = Shiko opcionet e raportit
+POWERED_BY_LUA            = Mundësuar nga Lua
 
-FRAGMENTS                 = Fragments
-SIZE                      = Size
-FILENAME                  = Filename
-COMMENT                   = Comment
+FRAGMENTS                 = Fragmentet
+SIZE                      = Madhësia
+FILENAME                  = Emri i fajllit
+COMMENT                   = Komenti
 
-LOCKED                    = locked
-MOVE_FAILED               = move failed
-INVALID                   = invalid
+LOCKED                    = i mbyllur
+MOVE_FAILED               = Lëvizje e dështuar
+INVALID                   = invalide/pavlefshme
 
 ; END OF FILE

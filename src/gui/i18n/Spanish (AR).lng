@@ -99,6 +99,7 @@ BOOT_TIME_SCRIPT          = Script para defrag. al inicio de Windows
 
 VOLUME                    = Volumen
 STATUS                    = Estado
+FRAGMENTATION             = Fragmentación
 TOTAL                     = Espacio total
 FREE                      = Espacio libre
 PERCENT                   = % de espacio libre

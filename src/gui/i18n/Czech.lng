@@ -99,6 +99,7 @@ BOOT_TIME_SCRIPT          = Skript při startu OS
 
 VOLUME                    = Jednotka
 STATUS                    = Stav
+FRAGMENTATION             = Roztříštění
 TOTAL                     = Kapacita
 FREE                      = Volné místo
 PERCENT                   = % volného místa

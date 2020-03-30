@@ -148,6 +148,11 @@
  *
  * @par UD_FRAGMENTS_THRESHOLD
  * Exclude all files which have less fragments than the specified number.
+ *
+ * @par UD_FRAGMENTATION_THRESHOLD
+ * Set the fragmentation threshold, in percents. When the disk fragmentation level is below
+ * the specified value, all the disk processing jobs except of the MFT optimization
+ * will be not performed.
  * @latexonly
  * \end{Indent}
  * @endlatexonly
@@ -224,6 +229,11 @@
  * @par process only files with more than 6 fragments
  * @code
  * set UD_FRAGMENTS_THRESHOLD=6
+ * @endcode
+ *
+ * @par process only disks with fragmentation level above 10%
+ * @code
+ * set UD_FRAGMENTATION_THRESHOLD=10%
  * @endcode
  *
  * @par terminate processing after 6 hours and 30 minutes

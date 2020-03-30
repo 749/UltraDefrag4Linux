@@ -29,14 +29,14 @@ HELP                      = Pomoc
 
 ; --- Action Menu
 
-ANALYSE                   = Analiza zawartości
-DEFRAGMENT                = Defragmentacja
+ANALYSE                   = &Analiza zawartości
+DEFRAGMENT                = &Defragmentacja
 QUICK_OPTIMIZE            = Szybka optymalizacja
 FULL_OPTIMIZE             = Pełna optymalizacja
-OPTIMIZE_MFT              = Optymalizacja MFT
+OPTIMIZE_MFT              = &Optymalizacja MFT
 STOP                      = Zatrzymaj
-REPEAT_ACTION             = Powtórzenie działania
-SKIP_REMOVABLE_MEDIA      = Pominięcie dysków przenośnych
+REPEAT_ACTION             = Powtó&rzenie działania
+SKIP_REMOVABLE_MEDIA      = Po&minięcie dysków przenośnych
 RESCAN_DRIVES             = Ponowne skanowanie listy dysków
 REPAIR_DRIVES             = Naprawienie dysków
 WHEN_DONE                 = Po ukończeniu działań
@@ -44,12 +44,12 @@ EXIT                      = Zakończ
 
 ; --- --- When done submenu
 
-WHEN_DONE_NONE            = Nie podejmuj żadnych akcji
+WHEN_DONE_NONE            = &Nie podejmuj żadnych akcji
 WHEN_DONE_EXIT            = Zakończ program
 WHEN_DONE_STANDBY         = Wstrzymaj
-WHEN_DONE_HIBERNATE       = Hibernuj
-WHEN_DONE_LOGOFF          = Wyloguj
-WHEN_DONE_REBOOT          = Uruchom ponownie
+WHEN_DONE_HIBERNATE       = &Hibernuj
+WHEN_DONE_LOGOFF          = Wy&loguj
+WHEN_DONE_REBOOT          = U&ruchom ponownie
 WHEN_DONE_SHUTDOWN        = Wyłącz komputer
 
 ; --- Report Menu
@@ -59,9 +59,9 @@ SHOW_REPORT               = Pokaż raport
 ; --- Settings Menu
 
 LANGUAGE                  = Język
-GRAPHICAL_INTERFACE       = Interfejs graficzny
+GRAPHICAL_INTERFACE       = Interfejs &graficzny
 BOOT_TIME_SCAN            = Skanowanie przy uruchomieniu
-REPORTS                   = Raporty
+REPORTS                   = &Raporty
 
 ; --- --- Language submenu
 
@@ -73,21 +73,21 @@ TRANSLATIONS_SUBMIT       = Wy&ślij aktualne tłumaczenie
 ; --- --- Graphical interface submenu
 
 FONT                      = Czcionka
-OPTIONS                   = Opcje
+OPTIONS                   = &Opcje
 
 ; --- --- Boot time scan submenu
 
 ENABLE                    = Aktywuj
-SCRIPT                    = Skrypt
+SCRIPT                    = &Skrypt
 
 ; --- Help Menu
 
 CONTENTS                  = Zawartość
-BEST_PRACTICE             = Najlepsze praktyki
+BEST_PRACTICE             = Najlepsze &praktyki
 FAQ                       = Najczęściej zadawane pytania
 CM_LEGEND                 = Objaśnienie mapy dysku
 DEBUG                     = De&bugowanie
-CHECK_UPDATE              = Sprawdź aktualizacje
+CHECK_UPDATE              = Sprawdź akt&ualizacje
 ABOUT                     = O UltraDefrag
 
 ; --- --- Debug submenu
@@ -103,6 +103,7 @@ BOOT_TIME_SCRIPT          = Skrypt wykonywany podczas uruchamiania systemu
 
 VOLUME                    = Dysk
 STATUS                    = Stan
+FRAGMENTATION             = Fragmentacja
 TOTAL                     = Całkowite miejsce
 FREE                      = Wolne miejsce
 PERCENT                   = % wolnego
@@ -130,7 +131,7 @@ LICENSE                   = Licencja
 
 ; Shutdown confirmation
 
-PLEASE_CONFIRM            = Proszę o potwierdzenie
+PLEASE_CONFIRM            = Proszę potwierdzić
 REALLY_SHUTDOWN_WHEN_DONE = Wyłączyć komputer po zakończeniu?
 REALLY_HIBERNATE_WHEN_DONE= Zahibernować komputer po zakończeniu?
 REALLY_LOGOFF_WHEN_DONE   = Wylogować po zakończeniu?

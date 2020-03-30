@@ -175,6 +175,10 @@ typedef struct _winx_file_internal_info {
     ULONGLONG ParentDirectoryMftId;
 } winx_file_internal_info;
 
+/*
+* All the file access times are in the standard time format.
+* That is the number of 100-nanosecond intervals since January 1, 1601.
+*/
 typedef struct _winx_file_info {
     struct _winx_file_info *next;      /* pointer to the next item */
     struct _winx_file_info *prev;      /* pointer to the previous item */
@@ -184,6 +188,9 @@ typedef struct _winx_file_info {
     winx_file_disposition disp;        /* information about file fragments and their disposition */
     unsigned long user_defined_flags;  /* combination of flags defined by the caller */
     winx_file_internal_info internal;  /* internal information used by ftw_scan_disk support routines */
+    ULONGLONG creation_time;           /* the file creation time */
+    ULONGLONG last_modification_time;  /* the time of the last file modification */
+    ULONGLONG last_access_time;        /* the time of the last file access */
 } winx_file_info;
 
 typedef int  (*ftw_filter_callback)(winx_file_info *f,void *user_defined_data);
@@ -334,11 +341,18 @@ int winx_print_array_of_strings(char **strings,int line_width,int max_rows,char 
 /* reliable _toupper and _tolower analogs */
 char winx_toupper(char c);
 char winx_tolower(char c);
+/* reliable towupper and towlower analogs */
+wchar_t winx_towupper(wchar_t c);
+wchar_t winx_towlower(wchar_t c);
+/* reliable _wcsupr and _wcslwr analogs */
+wchar_t *winx_wcsupr(wchar_t *s);
+wchar_t *winx_wcslwr(wchar_t *s);
 
 char *winx_strdup(const char *s);
 wchar_t *winx_wcsdup(const wchar_t *s);
-wchar_t *winx_wcsistr(const wchar_t * wcs1,const wchar_t * wcs2);
-char *winx_stristr(const char * s1,const char * s2);
+int winx_wcsicmp(const wchar_t *s1, const wchar_t *s2);
+wchar_t *winx_wcsistr(const wchar_t *s1, const wchar_t *s2);
+char *winx_stristr(const char *s1, const char *s2);
 int winx_wcsmatch(wchar_t *string, wchar_t *mask, int flags);
 char *winx_vsprintf(const char *format,va_list arg);
 char *winx_sprintf(const char *format, ...);

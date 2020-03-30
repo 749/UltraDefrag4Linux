@@ -50,7 +50,7 @@
  */
 
 !define UD_UNINSTALL_REG_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\UltraDefrag"
-!define UD_INSTALL_DIR "$WINDIR\UltraDefrag"
+!define UD_LOG_FILE "$TEMP\UltraDefrag_Install.log"
 
 !if ${ULTRADFGARCH} == 'i386'
 !define ROOTDIR "..\.."
@@ -93,7 +93,16 @@
     !endif
 !endif
 
-InstallDir ${UD_INSTALL_DIR}
+!if ${ULTRADFGARCH} == 'i386'
+InstallDir "$PROGRAMFILES\UltraDefrag"
+!else
+InstallDir "$PROGRAMFILES64\UltraDefrag"
+!endif
+
+InstallDirRegKey HKLM ${UD_UNINSTALL_REG_KEY} "InstallLocation"
+
+Var OldInstallDir
+Var ValidDestDir
 
 OutFile "ultradefrag-${UDVERSION_SUFFIX}.bin.${ULTRADFGARCH}.exe"
 LicenseData "${ROOTDIR}\src\LICENSE.TXT"
@@ -135,7 +144,6 @@ VIAddVersionKey  "FileVersion"     "${ULTRADFGVER}"
 !include "WinVer.nsh"
 !include "x64.nsh"
 !include "MUI.nsh"
-!include "Time.nsh"
 !include "${ROOTDIR}\src\installer\UltraDefrag.nsh"
 !include "${ROOTDIR}\src\installer\LanguageSelector.nsh"
 !include "${ROOTDIR}\src\installer\PresetSections.nsh"
@@ -153,10 +161,13 @@ VIAddVersionKey  "FileVersion"     "${ULTRADFGVER}"
 
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_LICENSE "${ROOTDIR}\src\LICENSE.TXT"
+!define MUI_DIRECTORYPAGE_TEXT_TOP "Only empty folders and folders containing a previous UltraDefrag installation are valid!$\n \
+    For any other folders the $\"Next$\" button will be disabled."
+!insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_COMPONENTS
-;!insertmacro MUI_PAGE_DIRECTORY
 !insertmacro LANG_PAGE
 !insertmacro MUI_PAGE_INSTFILES
+!define MUI_FINISHPAGE_NOAUTOCLOSE
 !insertmacro MUI_PAGE_FINISH
 
 !insertmacro MUI_UNPAGE_WELCOME
@@ -186,7 +197,7 @@ Section "Boot" SecBoot
     SectionIn 1 2
 
     ${InstallBootFiles}
-  
+
 SectionEnd
 
 Section "Console" SecConsole
@@ -194,7 +205,7 @@ Section "Console" SecConsole
     SectionIn 1 2
 
     ${InstallConsoleFiles}
-  
+
 SectionEnd
 
 Section "GUI (Default)" SecGUI
@@ -220,7 +231,7 @@ Section "Context menu handler (requires Console)" SecShellHandler
     SectionIn 1 2
 
     ${InstallShellHandlerFiles}
-  
+
 SectionEnd
 
 SectionGroup /e "Shortcuts (require GUI)" SecShortcuts
@@ -286,6 +297,10 @@ SectionEnd
 
 Function .onInit
 
+    ; remove old log file
+    Delete ${UD_LOG_FILE}
+    ClearErrors
+
     ${CheckAdminRights}
     ${CheckWinVersion}
     ${CheckMutex}
@@ -294,7 +309,10 @@ Function .onInit
     InitPluginsDir
 
     ${DisableX64FSRedirection}
-    StrCpy $INSTDIR ${UD_INSTALL_DIR}
+
+    ReadRegStr $OldInstallDir HKLM ${UD_UNINSTALL_REG_KEY} "InstallLocation"
+    StrCmp $OldInstallDir "" 0 +2
+    StrCpy $OldInstallDir $INSTDIR
 
     ${CollectOldLang}
     ${InitLanguageSelector}
@@ -311,10 +329,6 @@ Function un.onInit
     ${CheckAdminRights}
     ${CheckMutex}
 
-    ${DisableX64FSRedirection}
-    StrCpy $INSTDIR ${UD_INSTALL_DIR}
-    ${EnableX64FSRedirection}
-
 FunctionEnd
 
 ;----------------------------------------------
@@ -322,6 +336,17 @@ FunctionEnd
 Function .onSelChange
 
     ${VerifySelections}
+
+FunctionEnd
+
+;----------------------------------------------
+
+Function .onVerifyInstDir
+
+    ${CheckDestFolder}
+
+    StrCmp $ValidDestDir "1" +2
+    Abort
 
 FunctionEnd
 
@@ -338,7 +363,7 @@ Function .onInstSuccess
     ${UpdateUninstallSizeValue}
 
     ${RegisterInstallationFolder}
-    
+
     ${InitCrashDate}
 
 FunctionEnd

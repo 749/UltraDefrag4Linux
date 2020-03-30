@@ -100,7 +100,7 @@ static int man_listing_terminator(void *user_defined_parameter)
 
 static int list_installed_man_pages(int argc,wchar_t **argv,wchar_t **envp)
 {
-    char windir[MAX_PATH + 1];
+    wchar_t instdir[MAX_PATH + 1];
     char path[MAX_PATH + 1];
     wchar_t wpath[MAX_PATH + 1];
     winx_file_info *file, *filelist;
@@ -111,14 +111,14 @@ static int list_installed_man_pages(int argc,wchar_t **argv,wchar_t **envp)
     if(argc < 1)
         return (-1);
 
-    /* get %winir% path */
-    if(winx_get_windows_directory(windir,MAX_PATH) < 0){
-        winx_printf("\n%ws: cannot get %%windir%% path\n\n",argv[0]);
+    /* get %UD_INSTALL_DIR% path */
+    if(winx_query_env_variable(L"UD_INSTALL_DIR",instdir,MAX_PATH) < 0){
+        winx_printf("\n%ws: cannot get %%ud_install_dir%% path\n\n",argv[0]);
         return (-1);
     }
 
     /* try to get list of installed man pages through winx_ftw call */
-    _snwprintf(wpath,MAX_PATH,L"%hs\\UltraDefrag\\man",windir);
+    _snwprintf(wpath,MAX_PATH,L"%ws\\man",instdir);
     wpath[MAX_PATH] = 0;
     filelist = winx_ftw(wpath,0,NULL,NULL,man_listing_terminator,NULL);
     if(filelist){
@@ -143,7 +143,7 @@ static int list_installed_man_pages(int argc,wchar_t **argv,wchar_t **envp)
         /* cycle through names of existing commands */
         for(i = 0, column = 0; cmd_table[i].cmd_handler != NULL; i++){
             /* build path to the manual page */
-            _snprintf(path,MAX_PATH,"%s\\UltraDefrag\\man\\%ws.man",windir,cmd_table[i].cmd_name);
+            _snprintf(path,MAX_PATH,"%ws\\man\\%ws.man",instdir,cmd_table[i].cmd_name);
             path[MAX_PATH] = 0;
             /* check for the page existence */
             f = winx_fopen(path,"r");
@@ -172,7 +172,7 @@ static int list_installed_man_pages(int argc,wchar_t **argv,wchar_t **envp)
 static int man_handler(int argc,wchar_t **argv,wchar_t **envp)
 {
     wchar_t *type_argv[2];
-    char path[MAX_PATH + 1];
+    wchar_t instdir[MAX_PATH + 1];
     wchar_t wpath[MAX_PATH + 1];
     size_t native_prefix_length;
     
@@ -185,11 +185,11 @@ static int man_handler(int argc,wchar_t **argv,wchar_t **envp)
     }
     
     /* build path to requested manual page */
-    if(winx_get_windows_directory(path,MAX_PATH) < 0){
-        winx_printf("\n%ws: cannot get %%windir%% path\n\n",argv[0]);
+    if(winx_query_env_variable(L"UD_INSTALL_DIR",instdir,MAX_PATH) < 0){
+        winx_printf("\n%ws: cannot get %%ud_install_dir%% path\n\n",argv[0]);
         return (-1);
     }
-    _snwprintf(wpath,MAX_PATH,L"%hs\\UltraDefrag\\man\\%ws.man",path,argv[1]);
+    _snwprintf(wpath,MAX_PATH,L"%ws\\man\\%ws.man",instdir,argv[1]);
     wpath[MAX_PATH] = 0;
 
     /* build argv for type command handler */
@@ -1024,6 +1024,7 @@ int parse_command(wchar_t *cmdline)
     int i, j, n, argc;
     int at_detected = 0;
     int arg_detected;
+    wchar_t *full_cmdline;
     wchar_t *cmdline_copy;
     wchar_t **argv = NULL;
     wchar_t **envp = NULL;
@@ -1051,6 +1052,7 @@ int parse_command(wchar_t *cmdline)
             cmdline[i] != '\n' && cmdline[i] != '\r') break;
         cmdline[i] = 0; /* remove trailing spaces and newlines */
     }
+    full_cmdline = cmdline;
     
     /*
     * Skip @ in the beginning of the line.
@@ -1163,7 +1165,8 @@ int parse_command(wchar_t *cmdline)
     * Handle unknown commands.
     */
     if(cmd_table[i].cmd_handler == NULL){
-        winx_printf("\nUnknown command: %ws!\n\n",argv[0]);
+        winx_printf("\nUnknown command: %ws!\n\n",full_cmdline);
+        DebugPrint("Unknown command: %ws!",full_cmdline);
         winx_heap_free(argv);
         if(envp) winx_heap_free(envp);
         winx_heap_free(cmdline_copy);

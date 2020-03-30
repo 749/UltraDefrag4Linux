@@ -99,6 +99,7 @@ BOOT_TIME_SCRIPT          = Sửa tham số quét khi khởi động
 
 VOLUME                    = Ổ đĩa
 STATUS                    = Trạng thái
+FRAGMENTATION             = Phân mảnh
 TOTAL                     = Tổng dung lượng
 FREE                      = Dung lượng trống
 PERCENT                   = Còn trống %

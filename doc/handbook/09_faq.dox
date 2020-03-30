@@ -26,6 +26,15 @@
  * to remove a previous version.
  * In addition, usually it is not needed to reboot.
  *
+ * <h3>Can I specify a custom installation folder?</h3>
+ * Starting with version 5.1.0 it is supported to specify the install
+ * location. The installer validates the selected location, since only
+ * empty and existing UltraDefrag installation folders are supported.
+ *
+ * <h3>How can I check what went wrong with my silent installation?</h3>
+ * Starting with version 5.1.0 a log file is created at
+ * <b>\%TMP\%\\UltraDefrag_Install.log</b>.
+ *
  * <h1>General Usage</h1>
  * <h3>After defragmentation I see my restore points disappeared, what happens?</h3>
  * This is a normal situation when restore points disappear after an
@@ -40,6 +49,14 @@
  * the past will be available in the next moment. Use backup software
  * instead, Windows already has such a program and there are also lots of
  * 3-rd party programs of such kind.
+ *
+ * <h3>How can I determine the fragmentation percentage of a drive?</h3>
+ * Starting with version 5.1.0 the analysis calculates the fragmentation
+ * percentage.<br/>
+ * It is displayed in the <b>Fragmentation</b> column of the
+ * drive list of the GUI and when you run the command line tool using the
+ * <b>-v</b> command line parameter.<br/>
+ * You can run an analysis of a drive from the Explorer context menu too.
  *
  * <h1>Graphical Interface</h1>
  * <h3>Where can I find a legend of the cluster map colors?</h3>
@@ -124,7 +141,7 @@ HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\BootExecute
  * <b>\%SystemRoot\%\\UltraDefrag_Logs\\{filename}</b>\n
  * The file name is the one from the specified log file path variable.
  *
- * <h3>How many differences are between the Ultra Defragmenter and well known MyDefrag (previously JkDefrag) application?</h3>
+ * <h3>How many differences are between the Ultra Defragmenter and well known MyDefrag (previously JkDefrag)?</h3>
  * Both programs have similar disk analysis algorithms, but defragmentation is done
  * in different ways. While MyDefrag tends to give more control over a
  * files placement, UltraDefrag is designed to be as simple and fast as possible.

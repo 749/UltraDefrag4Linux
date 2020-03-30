@@ -100,6 +100,7 @@ BOOT_TIME_SCRIPT          = "Script" de arranque
 
 VOLUME                    = Disco
 STATUS                    = Estado
+FRAGMENTATION             = Fragmentação
 TOTAL                     = Espaço total
 FREE                      = Espaço livre
 PERCENT                   = % livre

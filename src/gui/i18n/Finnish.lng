@@ -98,6 +98,7 @@ BOOT_TIME_SCRIPT          = Windows-käynnistyksen aikainen suoritus
 
 VOLUME                    = Asema
 STATUS                    = Tilanne
+FRAGMENTATION             = Hajanaisuus
 TOTAL                     = Koko
 FREE                      = Vapaana
 PERCENT                   = Osuus

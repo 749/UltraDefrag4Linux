@@ -36,7 +36,7 @@ int maximized_window = 0;
 int init_maximized_window = 0;
 int skip_removable = TRUE;
 int disable_latest_version_check = 0;
-int user_defined_column_widths[] = {0,0,0,0,0};
+int user_defined_column_widths[] = {0,0,0,0,0,0};
 int list_height = 0;
 int repeat_action = FALSE;
 int show_menu_icons = 1;
@@ -113,11 +113,12 @@ WGX_OPTION internal_options[] = {
     {WGX_CFG_INT,     0, "repeat_action", &repeat_action, (void *)0},
     {WGX_CFG_EMPTY,   0, "", NULL, ""},
 
-    {WGX_CFG_INT,     0, "column1_width", &user_defined_column_widths[0], 0},
-    {WGX_CFG_INT,     0, "column2_width", &user_defined_column_widths[1], 0},
-    {WGX_CFG_INT,     0, "column3_width", &user_defined_column_widths[2], 0},
-    {WGX_CFG_INT,     0, "column4_width", &user_defined_column_widths[3], 0},
-    {WGX_CFG_INT,     0, "column5_width", &user_defined_column_widths[4], 0},
+    {WGX_CFG_INT,     0, "column1_width",  &user_defined_column_widths[0], (void *)C1_DEFAULT_WIDTH},
+    {WGX_CFG_INT,     0, "column2_width",  &user_defined_column_widths[1], (void *)C2_DEFAULT_WIDTH},
+    {WGX_CFG_INT,     0, "column2b_width", &user_defined_column_widths[2], (void *)C3_DEFAULT_WIDTH},
+    {WGX_CFG_INT,     0, "column3_width",  &user_defined_column_widths[3], (void *)C4_DEFAULT_WIDTH},
+    {WGX_CFG_INT,     0, "column4_width",  &user_defined_column_widths[4], (void *)C5_DEFAULT_WIDTH},
+    {WGX_CFG_INT,     0, "column5_width",  &user_defined_column_widths[5], (void *)C6_DEFAULT_WIDTH},
     {WGX_CFG_INT,     0, "list_height", &list_height, (void *)0},
     {WGX_CFG_EMPTY,   0, "", NULL, ""},
 
@@ -138,6 +139,7 @@ void DeleteEnvironmentVariables(void)
     (void)SetEnvironmentVariable("UD_EX_FILTER",NULL);
     (void)SetEnvironmentVariable("UD_FILE_SIZE_THRESHOLD",NULL);
     (void)SetEnvironmentVariable("UD_FRAGMENTS_THRESHOLD",NULL);
+    (void)SetEnvironmentVariable("UD_FRAGMENTATION_THRESHOLD",NULL);
     (void)SetEnvironmentVariable("UD_REFRESH_INTERVAL",NULL);
     (void)SetEnvironmentVariable("UD_DISABLE_REPORTS",NULL);
     (void)SetEnvironmentVariable("UD_DBGPRINT_LEVEL",NULL);
@@ -166,6 +168,7 @@ static void ValidateGUIOptions(void)
 
 void GetPrefs(void)
 {
+    DeleteEnvironmentVariables();
     ValidateGUIOptions();
     WgxGetOptions(".\\options\\guiopts.lua",read_only_options);
     WgxGetOptions(".\\options\\guiopts-internals.lua",internal_options);

@@ -29,6 +29,9 @@ os.shellexec(path, action)
     or equal to 32, and a string describing the error. 
     Read MSDN article on ShellExecute for details.
 
+In addition, os.getenv call has been reimplemented for higher
+reliability and for proper handling of Unicode values.
+
 The lua.build file is included to produce Lua modules for three processor
 architectures (i386, amd64 and ia64) during the automatic UltraDefrag
 build process.

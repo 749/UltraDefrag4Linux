@@ -98,6 +98,7 @@ BOOT_TIME_SCRIPT          = Сценарио во текот на иниција
 
 VOLUME                    = Диск
 STATUS                    = Статус
+FRAGMENTATION             = Фрагментација
 TOTAL                     = Обем
 FREE                      = Слободни простор
 PERCENT                   = % слободни простора

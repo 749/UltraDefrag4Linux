@@ -99,6 +99,7 @@ BOOT_TIME_SCRIPT          = Sāknēšanas laiku skriptu
 
 VOLUME                    = Sējums
 STATUS                    = Statuss
+FRAGMENTATION             = Sadrumstalotība
 TOTAL                     = Kopā
 FREE                      = Brīvs
 PERCENT                   = Procentos

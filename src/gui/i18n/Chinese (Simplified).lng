@@ -101,6 +101,7 @@ BOOT_TIME_SCRIPT          = 系统启动脚本
 
 VOLUME                    = 卷
 STATUS                    = 状态
+FRAGMENTATION             = 碎片
 TOTAL                     = 总空间
 FREE                      = 空闲空间
 PERCENT                   = 空闲率

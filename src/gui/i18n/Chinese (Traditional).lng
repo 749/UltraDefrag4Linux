@@ -101,6 +101,7 @@ BOOT_TIME_SCRIPT          = 開機重組指令碼
 
 VOLUME                    = 磁碟區
 STATUS                    = 狀態
+FRAGMENTATION             = 碎片
 TOTAL                     = 磁碟大小
 FREE                      = 可用空間
 PERCENT                   = 可用空間百分比

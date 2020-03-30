@@ -216,17 +216,17 @@ void __stdcall NtProcessStartup(PPEB Peb)
  */
 static void set_dbg_log(char *name)
 {
-    wchar_t windir[MAX_PATH];
+    wchar_t instdir[MAX_PATH];
     char *logpath = NULL;
     int length;
     wchar_t *unicode_path = NULL;
     
-    if(winx_query_env_variable(L"SystemRoot",windir,MAX_PATH) < 0){
-        winx_printf("\nset_dbg_log: cannot get %%windir%% path\n\n");
+    if(winx_query_env_variable(L"UD_INSTALL_DIR",instdir,MAX_PATH) < 0){
+        winx_printf("\nset_dbg_log: cannot get %%ud_install_dir%% path\n\n");
         return;
     }
     
-    logpath = winx_sprintf("%ws\\UltraDefrag\\logs\\boot-%s.log",windir,name);
+    logpath = winx_sprintf("%ws\\logs\\boot-%s.log",instdir,name);
     if(logpath == NULL){
         winx_printf("\nset_dbg_log: cannot build log path\n\n");
         return;

@@ -5,10 +5,11 @@
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised Mar. 18, 2011 by Joseph S. Maza
-; Revised Aug. 03, 2011 by Francisco Ortega Olivos
-; Revised May  06, 2012 by Javier Valdivieso
-; Revised June 06, 2012 by Daniel Rodríguez
+; Revised Mar 18, 2011 by Joseph S. Maza
+; Revised Aug 03, 2011 by Francisco Ortega Olivos
+; Revised May 06, 2012 by Javier Valdivieso
+; Revised Jun 06, 2012 by Daniel Rodríguez
+; Revised Oct 13, 2012 by El Fiera
 ;------------------------------------------------------------------------------
 
 ; Please keep the header and comments in English and use Latin letters,
@@ -21,87 +22,88 @@
 
 ; Main Menu
 
-ACTION                    = &Acción
-REPORT                    = &Informe
-SETTINGS                  = &Configuración
-HELP                      = Ay&uda
+ACTION                    = Acción
+REPORT                    = Informe
+SETTINGS                  = Configuración
+HELP                      = Ayuda
 
 ; --- Action Menu
 
-ANALYSE                   = &Analizar
-DEFRAGMENT                = &Defragmentar
-QUICK_OPTIMIZE            = &Optimización rápida
-FULL_OPTIMIZE             = Optimización &completa
-OPTIMIZE_MFT              = Optimización de &MFT
-STOP                      = &Detener
-REPEAT_ACTION             = Re&petir acción
-SKIP_REMOVABLE_MEDIA      = Ignorar discos e&xtraíbles
-RESCAN_DRIVES             = &Escanear particiones
-REPAIR_DRIVES             = &Reparar particiones
-WHEN_DONE                 = Al &finalizar...
-EXIT                      = &Salir
+ANALYSE                   = Analizar
+DEFRAGMENT                = Defragmentar
+QUICK_OPTIMIZE            = Optimización Rápida
+FULL_OPTIMIZE             = Optimización Completa
+OPTIMIZE_MFT              = Optimización de MFT
+STOP                      = Detener
+REPEAT_ACTION             = Repetir Acción
+SKIP_REMOVABLE_MEDIA      = Ignorar Discos Extraíbles
+RESCAN_DRIVES             = Escanear Particiones
+REPAIR_DRIVES             = Reparar Particiones
+WHEN_DONE                 = Al Finalizar...
+EXIT                      = Salir
 
 ; --- --- When done submenu
 
-WHEN_DONE_NONE            = &Ninguna acción
-WHEN_DONE_EXIT            = &Salir
-WHEN_DONE_STANDBY         = S&uspender
-WHEN_DONE_HIBERNATE       = &Hibernar
-WHEN_DONE_LOGOFF          = &Cerrar sesión
-WHEN_DONE_REBOOT          = &Reiniciar
-WHEN_DONE_SHUTDOWN        = &Apagar
+WHEN_DONE_NONE            = Ninguna Acción
+WHEN_DONE_EXIT            = Salir
+WHEN_DONE_STANDBY         = Suspender
+WHEN_DONE_HIBERNATE       = Hibernar
+WHEN_DONE_LOGOFF          = Cerrar Sesión
+WHEN_DONE_REBOOT          = Reiniciar
+WHEN_DONE_SHUTDOWN        = Apagar
 
 ; --- Report Menu
 
-SHOW_REPORT               = &Mostrar informe
+SHOW_REPORT               = Mostrar Informe
 
 ; --- Settings Menu
 
-LANGUAGE                  = &Idioma
-GRAPHICAL_INTERFACE       = Interfaz &gráfica
-BOOT_TIME_SCAN            = &Escaneo al arrancar
-REPORTS                   = Infor&mes
+LANGUAGE                  = Idioma
+GRAPHICAL_INTERFACE       = Interfaz Gráfica
+BOOT_TIME_SCAN            = Escaneo al Arrancar
+REPORTS                   = Informes
 
 ; --- --- Language submenu
 
-TRANSLATIONS_CHANGE_LOG   = &Ver lista de cambios
-TRANSLATIONS_REPORT       = Ver &informes de tranducción
-TRANSLATIONS_FOLDER       = &Carpeta de traducciones
-TRANSLATIONS_SUBMIT       = &Enviar traducción actual
+TRANSLATIONS_CHANGE_LOG   = Ver lista de cambios
+TRANSLATIONS_REPORT       = Ver informes de tranducción
+TRANSLATIONS_FOLDER       = Carpeta de traducciones
+TRANSLATIONS_SUBMIT       = Enviar traducción actual
 
 ; --- --- Graphical interface submenu
 
-FONT                      = &Fuente
-OPTIONS                   = &Opciones
+FONT                      = Fuente
+OPTIONS                   = Opciones
 
 ; --- --- Boot time scan submenu
 
-ENABLE                    = &Activar
-SCRIPT                    = &Comandos
+ENABLE                    = Activar
+SCRIPT                    = Comandos
 
 ; --- Help Menu
 
-CONTENTS                  = &Contenidos
-BEST_PRACTICE             = &Procedimientos recomendados
-FAQ                       = Preguntas &frecuentes
-CM_LEGEND                 = &Grupo leyenda del mapa
-DEBUG                     = De&bug
-CHECK_UPDATE              = &Buscar actualizaciones
-ABOUT                     = &Acerca de...
+CONTENTS                  = Contenidos
+BEST_PRACTICE             = Procedimientos Recomendados
+FAQ                       = Preguntas Frecuentes
+CM_LEGEND                 = Grupo leyenda del Mapa
+DEBUG                     = Debug
+CHECK_UPDATE              = Buscar Actualizaciones
+ABOUT                     = Acerca de...
 
 ; --- --- Debug submenu
 
-OPEN_LOG                  = Abrir &log
-REPORT_BUG                = Enviar &informe de fallo
+OPEN_LOG                  = Abrir logo
+REPORT_BUG                = Enviar Informe de Fallo
 
 ; --- Toolbar Tooltips
 
-BOOT_TIME_SCRIPT          = Comandos al inicio
+BOOT_TIME_SCRIPT          = Comandos al Inicio
 
 ; Drives list items.
 
 VOLUME                    = Volumen
 STATUS                    = Estado
+FRAGMENTATION             = Fragmentación
 TOTAL                     = Capacidad
 FREE                      = Espacio libre
 PERCENT                   = % libre
@@ -124,8 +126,8 @@ COMPRESSED                = Comprimidos
 ; About window.
 
 ABOUT_WIN_TITLE           = Acerca de Ultra Defragmenter
-CREDITS                   = &Créditos
-LICENSE                   = &Licencia
+CREDITS                   = Créditos
+LICENSE                   = Licencia
 
 ; Shutdown confirmation
 
@@ -138,8 +140,8 @@ SECONDS_TILL_SHUTDOWN     = Segundos para apagar
 SECONDS_TILL_HIBERNATION  = Segundos para hibernar
 SECONDS_TILL_LOGOFF       = Segundos para cerrar sesión
 SECONDS_TILL_REBOOT       = Segundos para reiniciar
-YES                       = &Sí
-NO                        = &No
+YES                       = Sí
+NO                        = No
 
 ; Upgrade dialog
 

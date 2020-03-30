@@ -45,9 +45,9 @@
 !macro CollectFromRegistry
 
     Push $R1
-    
+
     DetailPrint "Collecting previous selections from registry ..."
-    
+
     ClearErrors
     ReadRegStr $R1 HKLM ${UD_UNINSTALL_REG_KEY} "Var::InstallBoot"
     ${Unless} ${Errors}
@@ -57,7 +57,7 @@
             ${UnselectSection} ${SecBoot}
         ${EndIf}
     ${EndUnless}
-    
+
     ClearErrors
     ReadRegStr $R1 HKLM ${UD_UNINSTALL_REG_KEY} "Var::InstallConsole"
     ${Unless} ${Errors}
@@ -67,7 +67,7 @@
             ${UnselectSection} ${SecConsole}
         ${EndIf}
     ${EndUnless}
-    
+
     ClearErrors
     ReadRegStr $R1 HKLM ${UD_UNINSTALL_REG_KEY} "Var::InstallGUI"
     ${Unless} ${Errors}
@@ -77,7 +77,7 @@
             ${UnselectSection} ${SecGUI}
         ${EndIf}
     ${EndUnless}
-    
+
     ClearErrors
     ReadRegStr $R1 HKLM ${UD_UNINSTALL_REG_KEY} "Var::InstallHelp"
     ${Unless} ${Errors}
@@ -87,7 +87,7 @@
             ${UnselectSection} ${SecHelp}
         ${EndIf}
     ${EndUnless}
-    
+
     ClearErrors
     ReadRegStr $R1 HKLM ${UD_UNINSTALL_REG_KEY} "Var::InstallShellHandler"
     ${Unless} ${Errors}
@@ -97,7 +97,7 @@
             ${UnselectSection} ${SecShellHandler}
         ${EndIf}
     ${EndUnless}
-    
+
     ClearErrors
     ReadRegStr $R1 HKLM ${UD_UNINSTALL_REG_KEY} "Var::InstallUsageTracking"
     ${Unless} ${Errors}
@@ -107,7 +107,7 @@
             ${UnselectSection} ${SecUsageTracking}
         ${EndIf}
     ${EndUnless}
-    
+
     ClearErrors
     ReadRegStr $R1 HKLM ${UD_UNINSTALL_REG_KEY} "Var::InstallStartMenuIcon"
     ${Unless} ${Errors}
@@ -117,7 +117,7 @@
             ${UnselectSection} ${SecStartMenuIcon}
         ${EndIf}
     ${EndUnless}
-    
+
     ClearErrors
     ReadRegStr $R1 HKLM ${UD_UNINSTALL_REG_KEY} "Var::InstallDesktopIcon"
     ${Unless} ${Errors}
@@ -127,7 +127,7 @@
             ${UnselectSection} ${SecDesktopIcon}
         ${EndIf}
     ${EndUnless}
-    
+
     ClearErrors
     ReadRegStr $R1 HKLM ${UD_UNINSTALL_REG_KEY} "Var::InstallQuickLaunchIcon"
     ${Unless} ${Errors}
@@ -137,7 +137,7 @@
             ${UnselectSection} ${SecQuickLaunchIcon}
         ${EndIf}
     ${EndUnless}
-    
+
     Pop $R1
 
 !macroend
@@ -154,22 +154,22 @@
 
     Push $R0
     Push $R1
-    
+
     DetailPrint "Collecting selections from the command line ..."
     ${GetParameters} $R0
-    
+
     ClearErrors
     ${GetOptions} $R0 /FULL= $R1
     ${Unless} ${Errors}
         SetCurInstType 0
     ${EndUnless}
-    
+
     ClearErrors
     ${GetOptions} $R0 /MICRO= $R1
     ${Unless} ${Errors}
         SetCurInstType 1
     ${EndUnless}
-    
+
     ClearErrors
     ${GetOptions} $R0 /ICONS= $R1
     ${Unless} ${Errors}
@@ -179,7 +179,7 @@
             ${UnselectSection} ${SecShortcuts}
         ${EndIf}
     ${EndUnless}
-    
+
     ClearErrors
     ${GetOptions} $R0 /BOOT= $R1
     ${Unless} ${Errors}
@@ -189,7 +189,7 @@
             ${UnselectSection} ${SecBoot}
         ${EndIf}
     ${EndUnless}
-    
+
     ClearErrors
     ${GetOptions} $R0 /CONSOLE= $R1
     ${Unless} ${Errors}
@@ -200,7 +200,7 @@
             ${UnselectSection} ${SecShellHandler}
         ${EndIf}
     ${EndUnless}
-    
+
     ClearErrors
     ${GetOptions} $R0 /GUI= $R1
     ${Unless} ${Errors}
@@ -211,7 +211,7 @@
             ${UnselectSection} ${SecShortcuts}
         ${EndIf}
     ${EndUnless}
-    
+
     ClearErrors
     ${GetOptions} $R0 /HELP= $R1
     ${Unless} ${Errors}
@@ -221,7 +221,7 @@
             ${UnselectSection} ${SecHelp}
         ${EndIf}
     ${EndUnless}
-    
+
     ClearErrors
     ${GetOptions} $R0 /SHELLEXTENSION= $R1
     ${Unless} ${Errors}
@@ -232,7 +232,7 @@
             ${UnselectSection} ${SecShellHandler}
         ${EndIf}
     ${EndUnless}
-    
+
     ClearErrors
     ${GetOptions} $R0 /DISABLE_USAGE_TRACKING= $R1
     ${Unless} ${Errors}
@@ -242,7 +242,7 @@
             ${UnselectSection} ${SecUsageTracking}
         ${EndIf}
     ${EndUnless}
-    
+
     ClearErrors
     ${GetOptions} $R0 /STARTMENUICON= $R1
     ${Unless} ${Errors}
@@ -253,7 +253,7 @@
             ${UnselectSection} ${SecStartMenuIcon}
         ${EndIf}
     ${EndUnless}
-    
+
     ClearErrors
     ${GetOptions} $R0 /DESKTOPICON= $R1
     ${Unless} ${Errors}
@@ -264,7 +264,7 @@
             ${UnselectSection} ${SecDesktopIcon}
         ${EndIf}
     ${EndUnless}
-    
+
     ClearErrors
     ${GetOptions} $R0 /QUICKLAUNCHICON= $R1
     ${Unless} ${Errors}
@@ -275,7 +275,7 @@
             ${UnselectSection} ${SecQuickLaunchIcon}
         ${EndIf}
     ${EndUnless}
-    
+
     ${IfNot} ${SectionIsSelected} ${SecBoot}
     ${AndIfNot} ${SectionIsSelected} ${SecConsole}
     ${AndIfNot} ${SectionIsSelected} ${SecGUI}
@@ -299,9 +299,9 @@
 
     Push $0
     Push $1
-    
+
     DetailPrint "Saving selections to registry ..."
-    
+
     SectionGetFlags ${SecBoot} $0
     IntOp $1 $0 & ${SF_SELECTED}
     WriteRegStr HKLM ${UD_UNINSTALL_REG_KEY} "Var::InstallBoot" $1
@@ -336,14 +336,14 @@
     ${If} $1 == "0"
         ${RemoveShellHandlerFiles}
     ${EndIf}
-    
+
     SectionGetFlags ${SecUsageTracking} $0
     IntOp $1 $0 & ${SF_SELECTED}
     WriteRegStr HKLM ${UD_UNINSTALL_REG_KEY} "Var::InstallUsageTracking" $1
     ${If} $1 == "0"
         ${RemoveUsageTracking}
     ${EndIf}
-    
+
     SectionGetFlags ${SecStartMenuIcon} $0
     IntOp $1 $0 & ${SF_SELECTED}
     WriteRegStr HKLM ${UD_UNINSTALL_REG_KEY} "Var::InstallStartMenuIcon" $1

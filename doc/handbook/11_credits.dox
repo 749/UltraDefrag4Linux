@@ -34,7 +34,7 @@
  *
  * @htmlonly
  * <table style="border:none; margin-left:20px;">
- * <tr><td>• Albanian                     </td><td>-</td><td> Fitim I. HALILI - Gjakovë</td></tr>
+ * <tr><td>• Albanian                     </td><td>-</td><td> Fitim I. HALILI</td></tr>
  * <tr><td>• Arabic                       </td><td>-</td><td> Ahmed Arbaoui</td></tr>
  * <tr><td>                               </td><td>-</td><td> Awadh A Al-Ghaamdi</td></tr>
  * <tr><td>• Belarusian                   </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
@@ -135,6 +135,7 @@
  * <tr><td>• Spanish (MEX)                </td><td>-</td><td> Conrad Flyckt</td></tr>
  * <tr><td>                               </td><td>-</td><td> Felipe Ángel González Báñez</td></tr>
  * <tr><td>                               </td><td>-</td><td> Joseph S. Maza</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Francisco Ortega Olivos</td></tr>
  * <tr><td>• Swedish                      </td><td>-</td><td> Magnus Rostedt</td></tr>
  * <tr><td>                               </td><td>-</td><td> Per-Eric Jenshagen</td></tr>
  * <tr><td>                               </td><td>-</td><td> Christoffer Ekberg</td></tr>
@@ -155,7 +156,7 @@
  *
  * @latexonly
  * \par\begin{Indent}\begin{xtabular}{p{0.4\linewidth}cl}
- * • Albanian                      & - & Fitim I. HALILI - Gjakovë \\
+ * • Albanian                      & - & Fitim I. HALILI \\
  * • Arabic                        & - & Ahmed Arbaoui \\
  *                                 & - & Awadh A Al-Ghaamdi \\
  * • Belarusian                    & - & Dmitri Arkhangelski \\
@@ -256,6 +257,7 @@
  * • Spanish (MEX)                 & - & Conrad Flyckt \\
  *                                 & - & Felipe Ángel González Báñez \\
  *                                 & - & Joseph S. Maza \\
+ *                                 & - & Francisco Ortega Olivos \\
  * • Swedish                       & - & Magnus Rostedt \\
  *                                 & - & Per-Eric Jenshagen \\
  *                                 & - & Christoffer Ekberg \\
@@ -420,13 +422,13 @@
  *
  * <center>***</center>
  *
+ * <b>Maintainer</b>
+ *
+ * - Stefan Pendl   <span class="simple">(stefanpe@users.sourceforge.net)</span>
+ *
  * <b>Chief Architect</b>
  *
  * - Dmitri Arkhangelski <span class="simple">(dmitriar@users.sourceforge.net)</span>
- *
- * <b>Translation Manager</b>
- *
- * - Stefan Pendl   <span class="simple">(stefanpe@users.sourceforge.net)</span>
  *
  * Special thanks for contributions (in alphabetical order):
  *
@@ -516,11 +518,11 @@
  * - Benny Stütz
  * - Connection
  * - Dandy Cheung, Daniel Rodríguez, Dionisios Klonaris
- * - Erwin Dokter
+ * - Erwin Dokter, El Fiera
  * - Fabrizio Marana, Francisco Ortega Olivos, FS
  * - Giulio Fornasar, Gustavo Rezende
  * - Haein Jung, Harald Arnesen
- * - Jan Iemhoff
+ * - Jan Iemhoff, JIFF
  * - Luigi C.
  * - Denis Jeličić
  * - Javier Valdivieso, Joseph S. B. Maza, Joseph S. Maza, José Carlos Taveira de Souza, José Luis Farías

@@ -60,8 +60,8 @@ REPORTS                   = מעלדונג
 
 ; --- --- Language submenu
 
-TRANSLATIONS_CHANGE_LOG   = &View change log
-TRANSLATIONS_REPORT       = View translation &report
+TRANSLATIONS_CHANGE_LOG   = צפה לשנות התחבר
+TRANSLATIONS_REPORT       = הצג את דו"ח תרגום
 TRANSLATIONS_FOLDER       = טעקע פון איבערזעצונג
 TRANSLATIONS_SUBMIT       = פאָרלייגן קראַנט איבערזעצונג
 
@@ -98,6 +98,7 @@ BOOT_TIME_SCRIPT          = סצענאַר פון אָנהייב
 
 VOLUME                    = דיסק
 STATUS                    = מאַצעוו
+FRAGMENTATION             = התנפצות
 TOTAL                     = גאַנץ אָרט
 FREE                      = פֿרייַ אָרט
 PERCENT                   = % פֿרייַ

@@ -78,31 +78,42 @@ void InitVolList(void)
 
     lvc.mask |= LVCF_FMT;
     lvc.fmt = LVCFMT_RIGHT;
-    lvc.pszText =  text = WgxGetResourceString(i18n_table,"TOTAL");
+    lvc.pszText =  text = WgxGetResourceString(i18n_table,"FRAGMENTATION");
     if(text){
         (void)SendMessage(hList,LVM_INSERTCOLUMNW,2,(LRESULT)&lvc);
         free(text);
     } else {
-        lvc.pszText = L"Total";
+        lvc.pszText = L"Fragmentation";
         (void)SendMessage(hList,LVM_INSERTCOLUMNW,2,(LRESULT)&lvc);
+    }
+
+    lvc.mask |= LVCF_FMT;
+    lvc.fmt = LVCFMT_RIGHT;
+    lvc.pszText =  text = WgxGetResourceString(i18n_table,"TOTAL");
+    if(text){
+        (void)SendMessage(hList,LVM_INSERTCOLUMNW,3,(LRESULT)&lvc);
+        free(text);
+    } else {
+        lvc.pszText = L"Total";
+        (void)SendMessage(hList,LVM_INSERTCOLUMNW,3,(LRESULT)&lvc);
     }
 
     lvc.pszText =  text = WgxGetResourceString(i18n_table,"FREE");
     if(text){
-        (void)SendMessage(hList,LVM_INSERTCOLUMNW,3,(LRESULT)&lvc);
+        (void)SendMessage(hList,LVM_INSERTCOLUMNW,4,(LRESULT)&lvc);
         free(text);
     } else {
         lvc.pszText = L"Free";
-        (void)SendMessage(hList,LVM_INSERTCOLUMNW,3,(LRESULT)&lvc);
+        (void)SendMessage(hList,LVM_INSERTCOLUMNW,4,(LRESULT)&lvc);
     }
 
     lvc.pszText =  text = WgxGetResourceString(i18n_table,"PERCENT");
     if(text){
-        (void)SendMessage(hList,LVM_INSERTCOLUMNW,4,(LRESULT)&lvc);
+        (void)SendMessage(hList,LVM_INSERTCOLUMNW,5,(LRESULT)&lvc);
         free(text);
     } else {
         lvc.pszText = L"% free";
-        (void)SendMessage(hList,LVM_INSERTCOLUMNW,4,(LRESULT)&lvc);
+        (void)SendMessage(hList,LVM_INSERTCOLUMNW,5,(LRESULT)&lvc);
     }
 
     OldListWndProc = WgxSafeSubclassWindow(hList,ListWndProc);
@@ -148,7 +159,14 @@ LRESULT CALLBACK ListWndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
  */
 static void AdjustVolListColumns(void)
 {
-    int cw[] = {90,90,110,125,90};
+    int cw[LIST_COLUMNS] = {
+        C1_DEFAULT_WIDTH,
+        C2_DEFAULT_WIDTH,
+        C3_DEFAULT_WIDTH,
+        C4_DEFAULT_WIDTH,
+        C5_DEFAULT_WIDTH,
+        C6_DEFAULT_WIDTH
+    };
     int total_width = 0;
     int i, width;
     RECT rc;
@@ -162,16 +180,18 @@ static void AdjustVolListColumns(void)
         width = 586;
 
     if(user_defined_column_widths[0]){
-        for(i = 0; i < 5; i++)
+        for(i = 0; i < sizeof(cw) / sizeof(int); i++)
             total_width += user_defined_column_widths[i];
-        for(i = 0; i < 5; i++){
+        for(i = 0; i < sizeof(cw) / sizeof(int); i++){
             (void)SendMessage(hList,LVM_SETCOLUMNWIDTH,i,
                 user_defined_column_widths[i] * width / total_width);
         }
     } else {
-        for(i = 0; i < 5; i++){
+        for(i = 0; i < sizeof(cw) / sizeof(int); i++)
+            total_width += cw[i];
+        for(i = 0; i < sizeof(cw) / sizeof(int); i++){
             (void)SendMessage(hList,LVM_SETCOLUMNWIDTH,i,
-                cw[i] * width / 505);
+                cw[i] * width / total_width);
         }
     }
     column_widths_adjusted = 1;
@@ -315,12 +335,12 @@ static void AddCapacityInformation(int index, volume_info *v)
     lvi.iItem = index;
 
     (void)udefrag_bytes_to_hr((ULONGLONG)(v->total_space.QuadPart),2,s,sizeof(s));
-    lvi.iSubItem = 2;
+    lvi.iSubItem = 3;
     lvi.pszText = s;
     (void)SendMessage(hList,LVM_SETITEM,0,(LRESULT)&lvi);
 
     (void)udefrag_bytes_to_hr((ULONGLONG)(v->free_space.QuadPart),2,s,sizeof(s));
-    lvi.iSubItem = 3;
+    lvi.iSubItem = 4;
     lvi.pszText = s;
     (void)SendMessage(hList,LVM_SETITEM,0,(LRESULT)&lvi);
     
@@ -332,7 +352,7 @@ static void AddCapacityInformation(int index, volume_info *v)
         d = (double)(LONGLONG)free / (double)(LONGLONG)total;
     p = (int)(100 * d);
     (void)sprintf(s,"%u %%",p);
-    lvi.iSubItem = 4;
+    lvi.iSubItem = 5;
     lvi.pszText = s;
     (void)SendMessage(hList,LVM_SETITEM,0,(LRESULT)&lvi);
 }
@@ -397,8 +417,26 @@ static void VolListUpdateStatusFieldInternal(int index,volume_processing_job *jo
     }
 
     (void)SendMessage(hList,LVM_SETITEMW,0,(LRESULT)&lviw);
-    if(ProcessCaption)
-        free(ProcessCaption);
+    free(ProcessCaption);
+}
+
+/**
+ * @brief Updates fragmentation percentage in the list.
+ */
+static void VolListUpdateFragmentationFieldInternal(int index,volume_processing_job *job)
+{
+    LV_ITEMW lviw;
+    wchar_t buffer[32];
+    
+    if(job->job_type != NEVER_EXECUTED_JOB){
+        _snwprintf(buffer,sizeof(buffer)/sizeof(wchar_t),L"%5.2lf %%",job->pi.fragmentation);
+        buffer[sizeof(buffer)/sizeof(wchar_t) - 1] = 0;
+        lviw.mask = LVIF_TEXT;
+        lviw.iItem = index;
+        lviw.iSubItem = 2;
+        lviw.pszText = buffer;
+        (void)SendMessage(hList,LVM_SETITEMW,0,(LRESULT)&lviw);
+    }
 }
 
 /**
@@ -422,7 +460,7 @@ void SetVolumeDirtyStatus(int index, volume_info *v)
         else lviw.pszText = L"Disk needs to be repaired";
         lviw.iImage = v->is_removable ? 3 : 2;
         (void)SendMessage(hList,LVM_SETITEMW,0,(LRESULT)&lviw);
-        if(text) free(text);
+        free(text);
     } else {
         lviw.mask = LVIF_IMAGE;
         lviw.iImage = v->is_removable ? 1 : 0;
@@ -457,6 +495,7 @@ static void VolListAddItem(int index, volume_info *v)
 
     job = get_job(v->letter);
     VolListUpdateStatusFieldInternal(index,job);
+    VolListUpdateFragmentationFieldInternal(index,job);
     SetVolumeDirtyStatus(index,v);
     AddCapacityInformation(index,v);
 }
@@ -526,7 +565,7 @@ void VolListGetColumnWidths(void)
     if(column_widths_adjusted == 0)
         return; /* we haven't set widths yet */
 
-    for(i = 0; i < 5; i++){
+    for(i = 0; i < LIST_COLUMNS; i++){
         user_defined_column_widths[i] = \
             (int)(LONG_PTR)SendMessage(hList,LVM_GETCOLUMNWIDTH,i,0);
     }
@@ -599,6 +638,20 @@ void VolListUpdateStatusField(volume_processing_job *job)
     index = get_job_index(job);
     if(index != -1)
         VolListUpdateStatusFieldInternal(index,job);
+}
+
+/**
+ * @brief Updates fragmentation percentage in the list.
+ * @details Decides themselves on which position
+ * in list the job locates.
+ */
+void VolListUpdateFragmentationField(volume_processing_job *job)
+{
+    int index;
+    
+    index = get_job_index(job);
+    if(index != -1)
+        VolListUpdateFragmentationFieldInternal(index,job);
 }
 
 /**

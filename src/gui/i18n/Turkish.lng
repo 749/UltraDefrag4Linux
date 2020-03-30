@@ -100,6 +100,7 @@ BOOT_TIME_SCRIPT          = Çalıştırma Betiğini Düze&nle
 
 VOLUME                    = Birim
 STATUS                    = Durum
+FRAGMENTATION             = Parçalanma
 TOTAL                     = Toplam Alan
 FREE                      = Boş Alan
 PERCENT                   = % Boş

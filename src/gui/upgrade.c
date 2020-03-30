@@ -198,7 +198,7 @@ static wchar_t *GetNewVersionAnnouncement(void)
         if(text) message = text; else message = L"release is available for download!";
         _snwprintf(announcement,MAX_ANNOUNCEMENT_LEN,L"%hs %ws",lv,message);
         announcement[MAX_ANNOUNCEMENT_LEN - 1] = 0;
-        if(text) free(text);
+        free(text);
         
         WgxDbgPrint("GetNewVersionAnnouncement: upgrade to %s\n",lv);
         return announcement;
@@ -231,7 +231,7 @@ DWORD WINAPI CheckForTheNewVersionThreadProc(LPVOID lpParameter)
         if(text) caption = text; else caption = L"You can upgrade me ^-^";
         if(MessageBoxW(hWindow,s,caption,MB_OKCANCEL | MB_ICONINFORMATION) == IDOK)
             (void)WgxShellExecuteW(hWindow,L"open",L"http://ultradefrag.sourceforge.net",NULL,NULL,SW_SHOW);
-        if(text) free(text);
+        free(text);
     }
     
     return 0;

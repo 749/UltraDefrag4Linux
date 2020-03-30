@@ -1,5 +1,47 @@
 ﻿HISTORY
 
+  Version 5.1.0  2012-10-18
+  ------------------------------------------------------------------------------
+    - added fragmentation level display to all the interfaces
+    - added ability to skip the disk processing when fragmentation level
+      is below a specified one (fragmentation_threshold option in GUI;
+      UD_FRAGMENTATION_THRESHOLD environment variable in command line tool
+      and boot time interface)
+    - added settings for file pattern groups to easier exclude or include
+      groups of files (fixes issue #3449331)
+    - bug fix: GUI forced to handle any setting changes reliably
+    - bug fix: filters forced to be case insensitive for all the characters
+      (they worked properly for ANSI characters only)
+    - added ability to specify the installation folder
+    - added log file creation to debug silent installations
+
+    - the following translations were added:
+
+      Malay
+
+    - the following translations were updated:
+
+      Albanian, Arabic, English (GB), French, Indonesian, Italian, Polish,
+      Spanish (ES), Spanish (MEX)
+
+    - Internals: creation_time, last_modification_time, last_access_time
+      members added to the winx_file_info structure
+    - bug fix: winx_wcsistr, winx_wcsmatch, winx_patfind, winx_patcmp 
+      routines forced to work properly for all the characters 
+      (they worked well for ASCII characters only)
+    - bug fix: winx_hr_to_bytes routine forced to convert numbers with
+      leading zeros after the decimal point properly
+    - winx_toupper, winx_tolower, winx_wcsistr, winx_stristr, winx_wcsmatch,
+      winx_patfind, winx_patcmp routines optimized for speed
+    - winx_towupper, winx_towlower, winx_wcsupr, winx_wcslwr, winx_wcsicmp
+      routines added to zenwinx library to be used instead of the fake 
+      Windows routines working properly for ASCII characters only
+    - udefrag_towupper, udefrag_towlower, udefrag_wcsupr, udefrag_wcslwr, 
+      udefrag_wcsicmp routines added to udefrag library for the same reasons
+      as mentioned above
+    - os.setenv, os.getenv Lua routines reimplemented for better reliability
+
+
   Version 5.0.7  2012-09-01
   ------------------------------------------------------------------------------
     - added compatibility with the following software by exclusion their 

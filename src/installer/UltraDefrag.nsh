@@ -36,23 +36,88 @@
 
 Var AtLeastXP
 
+!macro LogAndDisplayAbort _Message
+
+    ${If} ${Silent}
+        Push $R0
+
+        FileOpen $R0 ${UD_LOG_FILE} w
+
+        ${Unless} ${Errors}
+            FileWrite $R0 "$\r$\n"
+            FileWrite $R0 "This file contains information to debug installation problems.$\r$\n"
+            FileWrite $R0 "$\r$\n"
+            FileWrite $R0 "Error Message ..... ${_Message}$\r$\n"
+            FileWrite $R0 "$\r$\n"
+            FileWrite $R0 "Command Line ...... $CMDLINE$\r$\n"
+            FileWrite $R0 "$\r$\n"
+            FileWrite $R0 "Installer Path .... $EXEPATH$\r$\n"
+            FileWrite $R0 "Installer Type .... ${ULTRADFGARCH}$\r$\n"
+            FileWrite $R0 "At least XP ....... $AtLeastXP$\r$\n"
+            FileWrite $R0 "$\r$\n"
+            FileWrite $R0 "Install Dir ....... $INSTDIR$\r$\n"
+            FileWrite $R0 "Output Dir ........ $OUTDIR$\r$\n"
+            FileWrite $R0 "Old Install Dir ... $OldInstallDir$\r$\n"
+            FileWrite $R0 "Windows Dir ....... $WINDIR$\r$\n"
+            FileWrite $R0 "System Dir ........ $SYSDIR$\r$\n"
+            FileWrite $R0 "Plugin Dir ........ $PLUGINSDIR$\r$\n"
+            FileWrite $R0 "Temporary Dir ..... $TEMP$\r$\n"
+            FileWrite $R0 "$\r$\n"
+
+            FileClose $R0
+        ${EndUnless}
+
+        Pop $R0
+    ${EndIf}
+
+    MessageBox MB_OK|MB_ICONSTOP "${_Message}" /SD IDOK
+!macroend
+
+!define LogAndDisplayAbort "!insertmacro LogAndDisplayAbort"
+
+;-----------------------------------------
+
 !macro InitCrashDate
 
-    Push $R0
-    Push $R1
-    
-    ; get current date as UTC
-    ${time::GetLocalTimeUTC} $R0
+    Push $5
+    Push $6
+    Push $7
+    Push $8
+    Push $9
 
-    ; convert current date into seconds since 1.1.1970
-    ${time::MathTime} "second($R0) =" $R1
+    ; get seconds since 1.1.1970 based on the remarks section of RtlTimeToSecondsSince1970 at
+    ; http://msdn.microsoft.com/en-us/library/windows/desktop/ms724928%28v=vs.85%29.aspx
+
+    ; initialize SYSTEMTIME structure with 01.01.1970 00:00:00
+    System::Call "*(&i2 1970,&i2 1,&i2 0,&i2 1,&i2 0,&i2 0,&i2 0,&i2 0) i .r6"
+
+    ; get current date and time in UTC
+    System::Call "*(&i2,&i2,&i2,&i2,&i2,&i2,&i2,&i2) i .r7"
+    System::Call "kernel32::GetSystemTime(i r7) v"
+
+    ; convert SYSTEMTIME to FILETIME
+    System::Call "kernel32::SystemTimeToFileTime(i r6,*l .r8) i"
+    System::Call "kernel32::SystemTimeToFileTime(i r7,*l .r9) i"
+
+    ; calculate seconds
+    System::Int64Op $9 - $8
+    Pop $5
+    System::Int64Op $5 / 10000000
+    Pop $5
+
+    ; cleanup
+    System::Free $7
+    System::Free $6
 
     ; create entry in the crash ini file
-    WriteINIStr "$INSTDIR\crash-info.ini" "LastProcessedEvent" "TimeStamp" $R1
+    WriteINIStr "$INSTDIR\crash-info.ini" "LastProcessedEvent" "TimeStamp" $5
     FlushINI    "$INSTDIR\crash-info.ini"
 
-    Pop $R1
-    Pop $R0
+    Pop $9
+    Pop $8
+    Pop $7
+    Pop $6
+    Pop $5
 
 !macroend
 
@@ -69,7 +134,7 @@ Var AtLeastXP
     Pop $R0
 
     ${If} $R0 != "Admin"
-        MessageBox MB_OK|MB_ICONEXCLAMATION "Administrative rights are needed to install the program!" /SD IDOK
+        ${LogAndDisplayAbort} "Administrative rights are needed to install the program!"
         Abort
     ${EndIf}
 
@@ -95,7 +160,7 @@ Var AtLeastXP
     ${EndIf}
     ${If} $R0 != 0
         System::Call 'kernel32::CloseHandle(i $R0)'
-        MessageBox MB_OK|MB_ICONEXCLAMATION "Ultra Defragmenter is running. Please close it first!" /SD IDOK
+        ${LogAndDisplayAbort} "Ultra Defragmenter is running. Please close it first!"
         Abort
     ${EndIf}
 
@@ -118,7 +183,9 @@ Var AtLeastXP
     ${Unless} ${IsNT}
     ${OrUnless} ${AtLeastWinNT4}
         MessageBox MB_OK|MB_ICONEXCLAMATION \
-        "On Windows 9x and NT 3.x this program is absolutely useless!$\nIf you are running another system then something is corrupt inside it.$\nTherefore we will try to continue." \
+        "On Windows 9x and NT 3.x this program is absolutely useless!$\n \
+        If you are running another system then something is corrupt inside it.$\n \
+        Therefore we will try to continue." \
         /SD IDOK
         ;Abort
         /*
@@ -144,28 +211,25 @@ Var AtLeastXP
     ${Unless} ${Errors}
         ${If} $R0 == "x86"
         ${AndIf} ${ULTRADFGARCH} != "i386"
-            MessageBox MB_OK|MB_ICONEXCLAMATION \
-            "This installer cannot be used on 32-bit Windows!$\n \
-            Download the i386 version from http://ultradefrag.sourceforge.net/" \
-            /SD IDOK
+            ${LogAndDisplayAbort} \
+                "This installer cannot be used on 32-bit Windows!$\n \
+                Download the i386 version from http://ultradefrag.sourceforge.net/"
             Pop $R0
             Abort
         ${EndIf}
         ${If} $R0 == "amd64"
         ${AndIf} ${ULTRADFGARCH} != "amd64"
-            MessageBox MB_OK|MB_ICONEXCLAMATION \
-            "This installer cannot be used on x64 version of Windows!$\n \
-            Download the amd64 version from http://ultradefrag.sourceforge.net/" \
-            /SD IDOK
+            ${LogAndDisplayAbort} \
+                "This installer cannot be used on x64 version of Windows!$\n \
+                Download the amd64 version from http://ultradefrag.sourceforge.net/"
             Pop $R0
             Abort
         ${EndIf}
         ${If} $R0 == "ia64"
         ${AndIf} ${ULTRADFGARCH} != "ia64"
-            MessageBox MB_OK|MB_ICONEXCLAMATION \
-            "This installer cannot be used on IA-64 version of Windows!$\n \
-            Download the ia64 version from http://ultradefrag.sourceforge.net/" \
-            /SD IDOK
+            ${LogAndDisplayAbort} \
+                "This installer cannot be used on IA-64 version of Windows!$\n \
+                Download the ia64 version from http://ultradefrag.sourceforge.net/"
             Pop $R0
             Abort
         ${EndIf}
@@ -179,6 +243,55 @@ Var AtLeastXP
 ;-----------------------------------------
 
 /**
+ * This procedure validates the destination folder
+ * and is only used by the directory page verify callback.
+ * Only empty folders or folders containing an existing
+ * UltraDefrag installation are valid.
+ */
+!macro CheckDestFolder
+
+    StrCpy $ValidDestDir "1"
+
+    ; if $INSTDIR is a ultradefrag directory, let us install there
+    IfFileExists "$INSTDIR\lua5.1a_gui.exe" PathGood
+
+    ; if $INSTDIR is not empty, don't let us install there
+    Push $R1
+    Push $R2
+
+    FindFirst $R1 $R2 "$INSTDIR\*"
+    ${If} $R1 != ""
+        ${If} $R2 != ""
+            ${Do}
+                ${If} $R2 != "."
+                    ${AndIf} $R2 != ".."
+
+                    ${ExitDo}
+                ${EndIf}
+
+                FindNext $R1 $R2
+            ${Loop}
+        ${EndIf}
+
+        FindClose $R1
+    ${EndIf}
+
+    ${If} $R2 != ""
+        StrCpy $ValidDestDir "0"
+    ${EndIf}
+
+    Pop $R2
+    Pop $R1
+
+PathGood:
+
+!macroend
+
+!define CheckDestFolder "!insertmacro CheckDestFolder"
+
+;-----------------------------------------
+
+/**
  * This procedure installs all mandatory files and
  * upgrades already existing configuration files
  * if they are in obsolete format.
@@ -187,6 +300,35 @@ Var AtLeastXP
 
     ${DisableX64FSRedirection}
 
+    ; validate destination folder for silent installation here,
+    ; since the directory page is not displayed in silent mode
+    ${If} ${Silent}
+        ${CheckDestFolder}
+
+        ${If} $ValidDestDir == "0"
+            ${LogAndDisplayAbort} "Destination folder is invalid!"
+            Abort
+        ${EndIf}
+    ${EndIf}
+
+    ; move old installation to new location
+    IfFileExists "$OldInstallDir\*.*" 0 SkipMove
+    StrCmp "$INSTDIR" "$OldInstallDir" SkipMove
+
+    DetailPrint "Moving old installation to new location..."
+    CreateDirectory "$INSTDIR"
+    ClearErrors
+    CopyFiles /SILENT "$OldInstallDir\*" "$INSTDIR"
+    ${If} ${Errors}
+        ${LogAndDisplayAbort} "Cannot move old installation to new location!"
+        Abort
+    ${EndIf}
+
+    SetDetailsPrint textonly
+    RMDir /r "$OldInstallDir"
+    SetDetailsPrint both
+
+SkipMove:
     DetailPrint "Installing core files..."
     SetOutPath "$SYSDIR"
         File "lua5.1a.dll"
@@ -213,8 +355,6 @@ Var AtLeastXP
     ${Else}
         ExecWait '"$INSTDIR\lua5.1a_gui.exe" "$INSTDIR\scripts\upgrade-rptopts.lua" "$INSTDIR"'
     ${EndIf}
-    ; get rid of obsolete files
-    Delete "$INSTDIR\options\udreportopts-custom.lua"
 
     ; install default CSS for file fragmentation reports
     ${If} ${FileExists} "$INSTDIR\scripts\udreport.css"
@@ -224,7 +364,7 @@ Var AtLeastXP
         ${EndUnless}
     ${EndIf}
     File "${ROOTDIR}\src\scripts\udreport.css"
-        
+
     SetOutPath "$SYSDIR"
         File "zenwinx.dll"
         File "udefrag.dll"
@@ -298,9 +438,7 @@ Var AtLeastXP
             * force upgrade to the latest monolithic native
             * defragmenter.
             */
-            MessageBox MB_OK|MB_ICONSTOP \
-            "Cannot update $SYSDIR\defrag_native.exe file!" \
-            /SD IDOK
+            ${LogAndDisplayAbort} "Cannot update $SYSDIR\defrag_native.exe file!"
             ; try to recover the problem
             ExecWait '"$SYSDIR\bootexctrl.exe" /u /s defrag_native'
             ; the second attempt, just for safety
@@ -336,7 +474,7 @@ Var AtLeastXP
             File "${ROOTDIR}\src\installer\ud-boot-time.ini"
         ${EndUnless}
     ${EndUnless}
-  
+
     ${EnableX64FSRedirection}
 
 !macroend
@@ -414,10 +552,10 @@ Var AtLeastXP
     SetOutPath "$INSTDIR"
         Delete "$INSTDIR\ultradefrag.exe"
         File "ultradefrag.exe"
-        
+
     SetOutPath "$INSTDIR\scripts"
         File "${ROOTDIR}\src\scripts\upgrade-guiopts.lua"
-        
+
     DetailPrint "Upgrade GUI preferences..."
     ${If} ${Silent}
         ExecWait '"$INSTDIR\lua5.1a_gui.exe" -s "$INSTDIR\scripts\upgrade-guiopts.lua" "$INSTDIR"'
@@ -485,7 +623,7 @@ Var AtLeastXP
 
     Delete "$INSTDIR\ultradefrag.exe"
     Delete "$INSTDIR\scripts\upgrade-guiopts.lua"
-    
+
     Push $R0
 
     DetailPrint "Unregister file extensions..."
@@ -540,7 +678,7 @@ Var AtLeastXP
     RMDir /r "$INSTDIR\handbook"
 
     SetOutPath "$INSTDIR\handbook"
-        File "${ROOTDIR}\doc\html\handbook\doxy-doc\html\*.*"
+        File "${ROOTDIR}\doc\handbook\doxy-doc\html\*.*"
 
     ${EnableX64FSRedirection}
 
@@ -598,11 +736,11 @@ Var AtLeastXP
     StrCpy $6 "[--- &Defragment folder itself ---]"
     StrCpy $7 "[--- &Defragment root folder itself ---]"
     StrCpy $8 "[--- &Analyze drive with UltraDefrag ---]"
-    StrCpy $9 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -a $\"%1$\""
+    StrCpy $9 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -a -v $\"%1$\""
     StrCpy $R0 "[--- &Optimize drive with UltraDefrag ---]"
-    StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -o $\"%1$\""
+    StrCpy $R1 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -o -v $\"%1$\""
     StrCpy $R2 "[--- &Quickly optimize drive with UltraDefrag ---]"
-    StrCpy $R3 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -q $\"%1$\""
+    StrCpy $R3 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -q -v $\"%1$\""
 
     ${If} $AtLeastXP == "1"
         WriteRegStr HKCR "Drive\shell\udefrag"                         ""     $2
@@ -695,7 +833,7 @@ Var AtLeastXP
 
     ; "Export" our change
     SendMessage ${HWND_BROADCAST} ${WM_SETTINGCHANGE} 0 "STR:Environment" /TIMEOUT=5000
-    
+
     Pop $0
 
 !macroend
@@ -716,7 +854,7 @@ Var AtLeastXP
 
     ; "Export" our change
     SendMessage ${HWND_BROADCAST} ${WM_SETTINGCHANGE} 0 "STR:Environment" /TIMEOUT=5000
-    
+
     Pop $0
 
 !macroend
@@ -864,12 +1002,15 @@ Var AtLeastXP
     RMDir /r "$INSTDIR\portable_${ULTRADFGARCH}_package"
     RMDir /r "$INSTDIR\i18n\gui"
     RMDir /r "$INSTDIR\i18n\gui-config"
-    
+
     Delete "$INSTDIR\i18n\French (FR).lng"
     Delete "$INSTDIR\i18n\Vietnamese (VI).lng"
     Delete "$INSTDIR\i18n\Bosanski.lng"
 
     Delete "$INSTDIR\scripts\udctxhandler.lua"
+
+    Delete "$INSTDIR\options\udreportopts-custom.lua"
+
     Delete "$INSTDIR\dfrg.exe"
     Delete "$INSTDIR\INSTALL.TXT"
     Delete "$INSTDIR\FAQ.TXT"
