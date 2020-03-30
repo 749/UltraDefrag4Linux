@@ -67,7 +67,7 @@
  */
 void MainFrame::InitToolbar()
 {
-    m_toolBar = CreateToolBar();
+    m_toolBar = CreateToolBar(wxTB_FLAT);
     m_toolBar->SetToolBitmapSize(wxSize(g_iconSize,g_iconSize));
 
     UD_MakeToolItem(ID_Analyze         , glass   );

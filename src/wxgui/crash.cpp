@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 //
 //  UltraDefrag - a powerful defragmentation tool for Windows NT.
-//  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+//  Copyright (c) 2007-2016 Dmitri Arkhangelski (dmitriar@gmail.com).
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -163,6 +163,8 @@ LONG WINAPI ExceptionHandler(EXCEPTION_POINTERS* ExceptionInfo)
 {
     DWORD exception_code = ExceptionInfo-> \
         ExceptionRecord->ExceptionCode;
+    void *exception_address = ExceptionInfo-> \
+        ExceptionRecord->ExceptionAddress;
 
     switch(exception_code){
     case EXCEPTION_ACCESS_VIOLATION:
@@ -173,11 +175,14 @@ LONG WINAPI ExceptionHandler(EXCEPTION_POINTERS* ExceptionInfo)
     case EXCEPTION_STACK_OVERFLOW:
     case STATUS_STACK_BUFFER_OVERRUN:
     case EXCEPTION_ARRAY_BOUNDS_EXCEEDED:
+    case EXCEPTION_FLT_DIVIDE_BY_ZERO:
+    case EXCEPTION_INT_DIVIDE_BY_ZERO:
         // handle the most interesting cases
         if(sd){
             // send crash report
             sd->version = SHARED_DATA_VERSION;
             sd->exception_code = exception_code;
+            sd->exception_address = exception_address;
             wcscpy(sd->tracking_id,TRACKING_ID);
             sd->ready = true;
 
@@ -186,12 +191,8 @@ LONG WINAPI ExceptionHandler(EXCEPTION_POINTERS* ExceptionInfo)
         }
         break;
     default:
-        // everything else need no special
-        // treatment as either frame based
-        // handlers will take care about it
-        // or Windows will give up enough
-        // information on crash to easily
-        // identify the problem
+        // pass on everything else
+        // to frame based handlers
         break;
     }
 

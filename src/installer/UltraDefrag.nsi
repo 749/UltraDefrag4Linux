@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2016 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -49,6 +49,12 @@
  * Constants
  */
 
+!define IDC_ARROW  32512 ; default system cursor identifier
+!define IDC_HAND   32649 ; system hand cursor identifier
+!define GCLP_HCURSOR -12 ; index for SetClassLong call
+!define SM_CXSMICON   49 ; index for GetSystemMetrics call
+
+!define UD_DONATION_URL "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=55FLGB3EJTDLS"
 !define UD_UNINSTALL_REG_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\UltraDefrag"
 !define UD_LOG_FILE "$TEMP\UltraDefrag_Install.log"
 
@@ -103,6 +109,9 @@ InstallDirRegKey HKLM ${UD_UNINSTALL_REG_KEY} "InstallLocation"
 
 Var OldInstallDir
 Var ValidDestDir
+Var DonationBtn
+Var BottomText
+Var HWND
 
 OutFile "ultradefrag-${UDVERSION_SUFFIX}.bin.${ULTRADFGARCH}.exe"
 LicenseData "${ROOTDIR}\src\LICENSE.TXT"
@@ -143,7 +152,8 @@ VIAddVersionKey  "FileVersion"     "${ULTRADFGVER}"
 !include "WinMessages.nsh"
 !include "WinVer.nsh"
 !include "x64.nsh"
-!include "MUI.nsh"
+!include "MUI2.nsh"
+!include "WndSubclass.nsh"
 !include "${ROOTDIR}\src\installer\UltraDefrag.nsh"
 !include "${ROOTDIR}\src\installer\PresetSections.nsh"
 
@@ -160,12 +170,17 @@ VIAddVersionKey  "FileVersion"     "${ULTRADFGVER}"
 
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_LICENSE "${ROOTDIR}\src\LICENSE.TXT"
-!define MUI_DIRECTORYPAGE_TEXT_TOP "Only empty folders and folders containing a previous UltraDefrag installation are valid!$\n \
-    For any other folders the $\"Next$\" button will be disabled."
+!define MUI_DIRECTORYPAGE_TEXT_TOP "Only empty folders and folders containing a previous UltraDefrag \
+    installation are valid!$\nFor any other folders the $\"Next$\" button will be disabled."
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_INSTFILES
 !define MUI_FINISHPAGE_NOAUTOCLOSE
+!define MUI_FINISHPAGE_TEXT "$(^NameDA) has been installed on your computer.$\r$\n$\r$\n\
+    You can help the project to move on by a small donation. There's no need to donate \
+    $$100 or more, even a small donation of $$1/$$2 might help."
+!define MUI_PAGE_CUSTOMFUNCTION_PRE .onFinishPageInit
+!define MUI_PAGE_CUSTOMFUNCTION_SHOW .onFinishPageShow
 !insertmacro MUI_PAGE_FINISH
 
 !insertmacro MUI_UNPAGE_WELCOME
@@ -174,7 +189,6 @@ VIAddVersionKey  "FileVersion"     "${ULTRADFGVER}"
 !insertmacro MUI_UNPAGE_FINISH
 
 !insertmacro MUI_LANGUAGE "English"
-!insertmacro MUI_RESERVEFILE_INSTALLOPTIONS
 
 /*
  * Component Sections
@@ -355,6 +369,81 @@ Function .onVerifyInstDir
 
     StrCmp $ValidDestDir "1" +2
     Abort
+
+FunctionEnd
+
+;----------------------------------------------
+
+Function .onFinishPageInit
+
+    File "/oname=$PLUGINSDIR\Paypal_US_btn_donateCC_LG.bmp" \
+        "${ROOTDIR}\src\installer\Paypal_US_btn_donateCC_LG.bmp"
+
+FunctionEnd
+
+Function .WndProc
+
+    ${If} $2 = ${WM_SETCURSOR}
+        Push $R0
+        Push $R1
+        
+        ${If} $1 = $DonationBtn
+            System::Call "user32::LoadCursor(i 0, i ${IDC_HAND}) i.r10"
+        ${Else}
+            System::Call "user32::LoadCursor(i 0, i ${IDC_ARROW}) i.r10"
+        ${EndIf}
+        System::Call "user32::SetClassLong(i $1, i ${GCLP_HCURSOR}, i r10) i.r11"
+        
+        Pop $R1
+        Pop $R0
+    ${EndIf}
+    
+FunctionEnd
+
+Function .onDonationBtnClick
+
+    Pop $HWND
+    ExecShell open ${UD_DONATION_URL}
+
+FunctionEnd
+
+Function .onFinishPageShow
+
+    Push $R0
+    Push $R1
+
+    ; add donation button, centered according to the screen DPI
+    System::Call "user32::GetSystemMetrics(i ${SM_CXSMICON}) i.r10"
+    ${If} $R0 <= 16
+        ${NSD_CreateBitmap} 180u 120u 120 47 ""
+    ${ElseIf} $R0 <= 20
+        ${NSD_CreateBitmap} 186u 123u 120 47 ""
+    ${ElseIf} $R0 <= 24
+        ${NSD_CreateBitmap} 193u 125u 120 47 ""
+    ${Else}
+        ${NSD_CreateBitmap} 200u 127u 120 47 ""
+    ${EndIf}
+    Pop $DonationBtn
+    ${NSD_SetImage} $DonationBtn "$PLUGINSDIR\Paypal_US_btn_donateCC_LG.bmp" $R0
+    ${NSD_OnClick} $DonationBtn .onDonationBtnClick
+    
+    ; add additional controls
+    ${NSD_CreateLabel} 120u 175u 195u 10u "Click Finish to close this wizard."
+    Pop $BottomText
+    SetCtlColors $BottomText "" "${MUI_BGCOLOR}"
+    
+    ; set hand cursor for the donation button
+    ${WndSubclass_Subclass} $DonationBtn .WndProc $R1 $R1
+
+    ; use default arrow for everything else
+    ${WndSubclass_Subclass} $BottomText .WndProc $R1 $R1
+    ${WndSubclass_Subclass} $mui.FinishPage.Image .WndProc $R1 $R1
+    ${WndSubclass_Subclass} $mui.FinishPage.Title .WndProc $R1 $R1
+    ${WndSubclass_Subclass} $mui.FinishPage.Text .WndProc $R1 $R1
+    ${WndSubclass_Subclass} $mui.FinishPage .WndProc $R1 $R1
+
+    Pop $R1
+    Pop $R0
 
 FunctionEnd
 

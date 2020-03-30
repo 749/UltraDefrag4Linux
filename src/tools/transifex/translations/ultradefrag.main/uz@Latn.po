@@ -3,337 +3,337 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Zames Dean <zdci4li@gmail.com>, 2013-2014,2016
+# Sherzod Mamatkulov <softuz@mail.ru>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: ultradefrag\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/p/ultradefrag/bugs/\n"
 "POT-Creation-Date: 2013-07-10 21:44+0200\n"
-"PO-Revision-Date: 2016-02-07 14:03+0000\n"
-"Last-Translator: Zames Dean <zdci4li@gmail.com>\n"
-"Language-Team: Korean (http://www.transifex.com/stefanpendl/ultradefrag/language/ko/)\n"
+"PO-Revision-Date: 2016-02-12 07:00+0000\n"
+"Last-Translator: Sherzod Mamatkulov <softuz@mail.ru>\n"
+"Language-Team: Uzbek (Latin) (http://www.transifex.com/stefanpendl/ultradefrag/language/uz@Latn/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ko\n"
+"Language: uz@Latn\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: about.cpp:77
 msgid "About UltraDefrag"
-msgstr "UltraDefrag 정보"
+msgstr "UltraDefrag haqida"
 
 #: about.cpp:90
 msgid "An open source defragmentation utility."
-msgstr "오픈 소스 조각모음 유틸리티입니다."
+msgstr "Ochiq kodli defragmentatsiya vositasi."
 
 #: about.cpp:92
 msgid "Credits and licenses are listed in the handbook."
-msgstr "제작진과 라이센스는 안내서에 나열되어 있습니다."
+msgstr "Tashakkurlar va litsenziyalar qo‘llanmada ko‘rsatilgan."
 
 #: about.cpp:95
 msgid "UltraDefrag website"
-msgstr "UltraDefrag 웹사이트"
+msgstr "UltraDefrag veb-sayti"
 
 #: i18n.cpp:129
 msgid "&Action"
-msgstr "작업(&A)"
+msgstr "&Amal"
 
 #: i18n.cpp:130
 msgid "&Report"
-msgstr "보고서(&R)"
+msgstr "&Hisobot"
 
 #: i18n.cpp:131
 msgid "&Settings"
-msgstr "설정(&S)"
+msgstr "&Sozlamalar"
 
 #: i18n.cpp:132 i18n.cpp:213
 msgid "&Help"
-msgstr "도움말(&H)"
+msgstr "&Yordam"
 
 #: i18n.cpp:135
 msgid "&Analyze"
-msgstr "분석(&A)"
+msgstr "&Tahlil"
 
 #: i18n.cpp:136
 msgid "&Defragment"
-msgstr "조각모음(&D)"
+msgstr "&Defragmentatsiya"
 
 #: i18n.cpp:137
 msgid "&Quick optimization"
-msgstr "빠른 최적화(&Q)"
+msgstr "Te&zkor optimallash"
 
 #: i18n.cpp:138
 msgid "&Full optimization"
-msgstr "전체 최적화(&F)"
+msgstr "To‘liq &optimallash"
 
 #: i18n.cpp:139
 msgid "&Optimize MFT"
-msgstr "MFT 최적화(&O)"
+msgstr "&MFTni optimallash"
 
 #: i18n.cpp:140 tray.cpp:80
 msgid "Pa&use"
-msgstr "잠시 멈춤(&P)"
+msgstr "&Pauza qilish"
 
 #: i18n.cpp:141
 msgid "&Stop"
-msgstr "멈춤(&S)"
+msgstr "To‘&xtatish"
 
 #: i18n.cpp:142
 msgid "Re&peat action"
-msgstr "작업 반복(&P)"
+msgstr "Amalni ta&krorlash"
 
 #: i18n.cpp:143
 msgid "Skip removable &media"
-msgstr "이동식 디스크 건너뛰기(&M)"
+msgstr "Olinadigan m&ediani tashlab ketish"
 
 #: i18n.cpp:144
 msgid "&Rescan drives"
-msgstr "드라이브 다시 검색(&R)"
+msgstr "&Disklarni qayta tekshirish"
 
 #: i18n.cpp:145
 msgid "Repair dri&ves"
-msgstr "드라이브 복구"
+msgstr "Disklarni t&uzatish"
 
 #: i18n.cpp:146 i18n.cpp:151 tray.cpp:85
 msgid "E&xit"
-msgstr "끝내기(&X)"
+msgstr "&Chiqish"
 
 #: i18n.cpp:149
 msgid "&When done"
-msgstr "작업을 마치면(&W)..."
+msgstr "&Nihoyasiga yetgach"
 
 #: i18n.cpp:150
 msgid "&None"
-msgstr "아무 것도 안 함(&N)"
+msgstr "&Hechnima qilinmasin"
 
 #: i18n.cpp:152
 msgid "Stan&dby"
-msgstr "대기 모드(&D)"
+msgstr "&Kutish rejimiga o‘tilsin"
 
 #: i18n.cpp:153
 msgid "&Hibernate"
-msgstr "최대 절전 모드(&H)"
+msgstr "&Uyqu rejimiga o‘tilsin"
 
 #: i18n.cpp:154
 msgid "&Logoff"
-msgstr "로그오프(&L)"
+msgstr "&Tizimdan chiqilsin"
 
 #: i18n.cpp:155
 msgid "&Reboot"
-msgstr "리부트(&R)"
+msgstr "Kompyuter &o‘chirib-yoqilsin"
 
 #: i18n.cpp:156
 msgid "&Shutdown"
-msgstr "시스템 끄기(&S)"
+msgstr "Kompyuter o‘&chirilsin"
 
 #: i18n.cpp:159
 msgid "&Show report"
-msgstr "보고서 보기(&S)"
+msgstr "Hi&sobot ko‘rsatilsin"
 
 #: i18n.cpp:162
 msgid "&Language"
-msgstr "언어(&L)"
+msgstr "&Interfeys tili"
 
 #: i18n.cpp:163 i18n.cpp:209
 msgid "&Boot time scan"
-msgstr "부트시, 검사(&B)"
+msgstr "Tizimni &yuklash vaqtida tekshirish"
 
 #: i18n.cpp:164
 msgid "&Sorting"
-msgstr "정렬(&S)"
+msgstr "&Saralash"
 
 #: i18n.cpp:165
 msgid "&Reports"
-msgstr "조각화 보고서 옵션(&R)"
+msgstr "&Hisobotlar"
 
 #: i18n.cpp:168
 msgid "&View change log"
-msgstr "변경 로그(기록) 보기(&V)"
+msgstr "&Kiritilgan o‘zgarishlarni ko‘rish"
 
 #: i18n.cpp:169
 msgid "View translation &report"
-msgstr "번역 보고서 보기(&R)"
+msgstr "&Tarjima hisobotini ko‘rish"
 
 #: i18n.cpp:170
 msgid "&Translations folder"
-msgstr "번역 파일 폴더(&T)"
+msgstr "Tarji&malar jildi"
 
 #: i18n.cpp:171
 msgid "&Submit current translation"
-msgstr "현재 번역 제출(&S)"
+msgstr "&Joriy tarjimani yuborish"
 
 #: i18n.cpp:174
 msgid "&Options"
-msgstr "옵션(&O)"
+msgstr "&Opsiyalar"
 
 #: i18n.cpp:177
 msgid "&Enable"
-msgstr "사용(&E)"
+msgstr "&Yoqib qo‘yish"
 
 #: i18n.cpp:178
 msgid "&Script"
-msgstr "스크립트(&S)"
+msgstr "&Skript"
 
 #: i18n.cpp:181
 msgid "By &path"
-msgstr "경로 별로 정렬(&P)"
+msgstr "&Yo‘lagi bo‘yicha"
 
 #: i18n.cpp:182
 msgid "By &size"
-msgstr "크기 별로 정렬(&S)"
+msgstr "&Hajmi bo‘yicha"
 
 #: i18n.cpp:183
 msgid "By &creation time"
-msgstr "만든 시간 별로 정렬(&C)"
+msgstr "Yaratilgan &vaqti bo‘yicha"
 
 #: i18n.cpp:184
 msgid "By last &modification time"
-msgstr "최근 고친 시간 별로 정렬(&M)"
+msgstr "&O‘zgargan vaqti bo‘yicha"
 
 #: i18n.cpp:185
 msgid "By &last access time"
-msgstr "최근 접근 시간 별로 정렬(&L)"
+msgstr "&Oxirgi ochilgan vaqti bo‘yicha"
 
 #: i18n.cpp:186
 msgid "In &ascending order"
-msgstr "오름차순으로 정렬(&A)"
+msgstr "O‘&suvchi tartibda"
 
 #: i18n.cpp:187
 msgid "In &descending order"
-msgstr "내림차순으로 정렬(&D)"
+msgstr "&Kamayuvchi tartibda"
 
 #: i18n.cpp:190
 msgid "&Contents"
-msgstr "도움말 내용(&C)"
+msgstr "&Mundarija"
 
 #: i18n.cpp:191
 msgid "Best &practice"
-msgstr "우수 사례(&P)"
+msgstr "&Misollar"
 
 #: i18n.cpp:192
 msgid "&Frequently asked questions"
-msgstr "질문과 답변(&F)"
+msgstr "&Ko‘p so‘raladigan savollar"
 
 #: i18n.cpp:193
 msgid "Cluster map &legend"
-msgstr "클러스터 맵 설명(&L)"
+msgstr "Klaster &xaritasidagi belgilar"
 
 #: i18n.cpp:196 upgrade.cpp:161
 msgid "&Upgrade"
-msgstr "업그레이드(&U)"
+msgstr "&Yangilash"
 
 #: i18n.cpp:197
 msgid "&Never check"
-msgstr "확인 안 함(&N)"
+msgstr "&Hech qachon tekshirilmasin"
 
 #: i18n.cpp:198
 msgid "Check &stable releases only"
-msgstr "정식 출시만 확인(&S)"
+msgstr "&Faqat barqaror versiyalar tekshirilsin"
 
 #: i18n.cpp:199
 msgid "Check &all releases"
-msgstr "모든 출시 확인(&A)"
+msgstr "&Barcha versiyalar tekshirilsin"
 
 #: i18n.cpp:200
 msgid "&Check now"
-msgstr "지금 확인(&C)"
+msgstr "H&oziroq tekshirish"
 
 #: i18n.cpp:201
 msgid "&About"
-msgstr "정보(&A)"
+msgstr "&Dastur haqida"
 
 #: i18n.cpp:204
 msgid "&Debug"
-msgstr "디버그(&B)"
+msgstr "&Kamchilikni tuzatish (debug)"
 
 #: i18n.cpp:205 utils.cpp:411
 msgid "Open &log"
-msgstr "로그(기록) 열기(&L)"
+msgstr "&Log faylini ochish"
 
 #: i18n.cpp:206
 msgid "Send bug &report"
-msgstr "버그 보고서 보내기(&R)"
+msgstr "Ka&mchilik haqida hisobot yuborish"
 
 #: i18n.cpp:211
 msgid "Boot time script"
-msgstr "부트시 스크립트"
+msgstr "Yuklash paytida ishlatiladigan skript"
 
 #: i18n.cpp:218
 msgid "Drive"
-msgstr "드라이브(볼륨)"
+msgstr "Disk"
 
 #: i18n.cpp:219 i18n.cpp:275
 msgid "Status"
-msgstr "상태"
+msgstr "Holati"
 
 #: i18n.cpp:220
 msgid "Fragmentation"
-msgstr "조각화"
+msgstr "Fragmentatsiya"
 
 #: i18n.cpp:221
 msgid "Total space"
-msgstr "전체 공간"
+msgstr "Jami bo‘shlig‘i"
 
 #: i18n.cpp:222
 msgid "Free space"
-msgstr "여유 공간"
+msgstr "Bo‘sh joyi"
 
 #: i18n.cpp:224
 #, no-c-format
 msgid "% free"
-msgstr "여유 공간 비율"
+msgstr "% bo‘sh"
 
 #: i18n.cpp:267
 msgid "Fragmented files on"
-msgstr "조각난 파일 -"
+msgstr "Bundagi fragmentatsiya bo‘lgan fayllar:"
 
 #: i18n.cpp:268
 msgid "Visit our Homepage"
-msgstr "홈페이지 방문"
+msgstr "Rasmiy saytimizga tashrif buyuring"
 
 #: i18n.cpp:269
 msgid "View report options"
-msgstr "보고서 옵션 보기"
+msgstr "Hisobot opsiyalarini ko‘rish"
 
 #: i18n.cpp:270
 msgid "Powered by Lua"
-msgstr "제공 : Lua"
+msgstr "Lua yordamida tuzilgan"
 
 #: i18n.cpp:271
 msgid "Fragments"
-msgstr "조각 개수"
+msgstr "Fragmentlar"
 
 #: i18n.cpp:272
 msgid "Size"
-msgstr "크기"
+msgstr "Hajmi"
 
 #: i18n.cpp:273
 msgid "Filename"
-msgstr "파일 이름"
+msgstr "Fayl nomi"
 
 #: i18n.cpp:274
 msgid "Comment"
-msgstr "설명"
+msgstr "Sharh"
 
 #: i18n.cpp:276
 msgid "locked"
-msgstr "잠김"
+msgstr "qulflangan"
 
 #: i18n.cpp:277
 msgid "move failed"
-msgstr "옮기기 실패"
+msgstr "ko‘chirib bo‘lmadi"
 
 #: i18n.cpp:278
 msgid "invalid"
-msgstr "잘못됨"
+msgstr "yaroqsiz"
 
 #: shutdown.cpp:100
 msgid "Please confirm"
-msgstr "다시 확인하세요."
+msgstr "Tasdiqlang"
 
 #: shutdown.cpp:107
 msgid "Do you really want to hibernate when done?"
-msgstr "작업을 마치면, 최대 절전 모드를 할까요?"
+msgstr "Haqiqatan ham ish nihoyasiga yetgach, kompyuterni uyqu rejimiga o‘tkazasizmi?"
 
 #. : This expands to "60 seconds until hibernation"
 #. : Make sure that "%lu" is included in the translated string at the correct
@@ -341,11 +341,11 @@ msgstr "작업을 마치면, 최대 절전 모드를 할까요?"
 #: shutdown.cpp:110
 #, c-format
 msgid "%lu seconds until hibernation"
-msgstr "%lu 최대 절전 모드까지 남은 시간(초)"
+msgstr "%lu soniyadan so‘ng uyqu rejimiga o‘tadi"
 
 #: shutdown.cpp:113
 msgid "Do you really want to log off when done?"
-msgstr "작업을 마치면, 로그오프할까요?"
+msgstr "Haqiqatan ham ish nihoyasiga yetgach, tizimdan chiqasizmi?"
 
 #. : This expands to "60 seconds until logoff"
 #. : Make sure that "%lu" is included in the translated string at the correct
@@ -353,11 +353,11 @@ msgstr "작업을 마치면, 로그오프할까요?"
 #: shutdown.cpp:116
 #, c-format
 msgid "%lu seconds until logoff"
-msgstr "%lu 로그오프까지 남은 시간(초)"
+msgstr "%lu soniyadan so‘ng tizimdan chiqiladi"
 
 #: shutdown.cpp:119
 msgid "Do you really want to reboot when done?"
-msgstr "작업을 마치면, 리부트할까요?"
+msgstr "Haqiqatan ham ish nihoyasiga yetgach, kompyuterni o‘chirib-yoqasizmi?"
 
 #. : This expands to "60 seconds until reboot"
 #. : Make sure that "%lu" is included in the translated string at the correct
@@ -365,11 +365,11 @@ msgstr "작업을 마치면, 리부트할까요?"
 #: shutdown.cpp:122
 #, c-format
 msgid "%lu seconds until reboot"
-msgstr "%lu 리부트까지 남은 시간(초)"
+msgstr "%lu soniyadan so‘ng o‘chirib-yoqiladi"
 
 #: shutdown.cpp:125
 msgid "Do you really want to shutdown when done?"
-msgstr "작업을 마치면, 시스템을 끌까요?"
+msgstr "Haqiqatan ham ish nihoyasiga yetgach, kompyuterni o‘chirasizmi?"
 
 #. : This expands to "60 seconds until shutdown"
 #. : Make sure that "%lu" is included in the translated string at the correct
@@ -377,47 +377,47 @@ msgstr "작업을 마치면, 시스템을 끌까요?"
 #: shutdown.cpp:128
 #, c-format
 msgid "%lu seconds until shutdown"
-msgstr "%lu 시스템 끄기까지 남은 시간(초)"
+msgstr "%lu soniyadan so‘ng kompyuter o‘chiriladi"
 
 #: shutdown.cpp:140
 msgid "&Yes"
-msgstr "예(&Y)"
+msgstr "&Ha"
 
 #: shutdown.cpp:141
 msgid "&No"
-msgstr "아니오(&N)"
+msgstr "Y&o‘q"
 
 #: statbar.cpp:92
 msgid "folders"
-msgstr "개 폴더"
+msgstr "jildlar"
 
 #: statbar.cpp:93
 msgid "files"
-msgstr "개 파일"
+msgstr "fayllar"
 
 #: statbar.cpp:94
 msgid "fragmented"
-msgstr "개 조각"
+msgstr "fragmentlangan"
 
 #: statbar.cpp:95
 msgid "compressed"
-msgstr "개 압축"
+msgstr "siqilgan"
 
 #: taskbar.cpp:198
 msgid "The job is paused"
-msgstr "작업을 잠시 멈췄습니다."
+msgstr "Ish pauza qilindi"
 
 #: taskbar.cpp:203
 msgid "The job is running"
-msgstr "작업이 실행 중입니다."
+msgstr "Ish ketmoqda"
 
 #: tray.cpp:70
 msgid "Show"
-msgstr "보이기"
+msgstr "Ko‘rsatish"
 
 #: tray.cpp:72
 msgid "Hide"
-msgstr "감추기"
+msgstr "Yashirish"
 
 #. : This expands to "Release 7.0.0 is available for download!"
 #. : Make sure that "%ls" is included in the translated string at the correct
@@ -425,23 +425,23 @@ msgstr "감추기"
 #: upgrade.cpp:158
 #, c-format
 msgid "Release %ls is available for download!"
-msgstr "출시된 %ls (을)를 다운로드할 수 있습니다!"
+msgstr "%ls versiyasini yuklab olish mumkin!"
 
 #: upgrade.cpp:160
 msgid "You can upgrade me ^-^"
-msgstr "업그레이드할 수 있습니다. ^-^"
+msgstr "Yangilashingiz mumkin ^-^"
 
 #: upgrade.cpp:161 utils.cpp:415
 msgid "&Cancel"
-msgstr "취소(&C)"
+msgstr "&Bekor"
 
 #: utils.cpp:414
 msgid "Error!"
-msgstr "오류!"
+msgstr "Xatolik!"
 
 #: vollist.cpp:328
 msgid "Disk needs to be repaired"
-msgstr "디스크를 복구해야 합니다."
+msgstr "Diskni tuzatish kerak"
 
 #. : Status of the running disk analysis,
 #. : expands to "10 % analyzed".
@@ -450,7 +450,7 @@ msgstr "디스크를 복구해야 합니다."
 #: vollist.cpp:369
 #, c-format
 msgid "%5.2lf %% analyzed"
-msgstr "%5.2lf %% 개 분석됨"
+msgstr "%5.2lf %% tahlil qilindi"
 
 #. : Status of the running disk defragmentation,
 #. : expands to "10 % defragmented, pass 5".
@@ -459,7 +459,7 @@ msgstr "%5.2lf %% 개 분석됨"
 #: vollist.cpp:375
 #, c-format
 msgid "%5.2lf %% defragmented, pass %d"
-msgstr "%5.2lf %% 개 조각남, %d 개 건너뜀"
+msgstr "%5.2lf %% defragmentatsiya qilindi, %d-sikl"
 
 #. : Status of the running disk optimization, expands to
 #. : "10 % optimized, pass 5, 1024 moves total".
@@ -467,12 +467,12 @@ msgstr "%5.2lf %% 개 조각남, %d 개 건너뜀"
 #. : in the translated string at the correct positions.
 #: vollist.cpp:383
 msgid "%5.2lf %% optimized, pass %d, %I64u moves total"
-msgstr "%5.2lf %% 개 최적화됨, %d 개 건너뜀, 총 %I64u 개 옮김"
+msgstr "%5.2lf %% optimallandi, %d-sikl, jami %I64u tasi ko‘chirildi"
 
 #. : Status of the completed disk analysis.
 #: vollist.cpp:390
 msgid "Analyzed"
-msgstr "분석됨"
+msgstr "Tahlil qilindi"
 
 #. : Status of the completed disk defragmentation,
 #. : expands to "Defragmented, in 5 passes".
@@ -481,7 +481,7 @@ msgstr "분석됨"
 #: vollist.cpp:396
 #, c-format
 msgid "Defragmented, in %d passes"
-msgstr "조각모음됨 (%d 회)"
+msgstr "Defragmentatsiya qilindi, %d sikldan so‘ng"
 
 #. : Status of the completed disk optimization, expands to
 #. : "Optimized, in 5 passes, 1024 moves total".
@@ -489,4 +489,4 @@ msgstr "조각모음됨 (%d 회)"
 #. : in the translated string at the correct positions.
 #: vollist.cpp:404
 msgid "Optimized, in %d passes, %I64u moves total"
-msgstr "조각모음됨 (%d 회), 총 %I64u 개 옮김"
+msgstr "Optimallandi, %d sikldan so‘ng, jami %I64u tasi ko‘chirildi"

@@ -7,12 +7,12 @@ includes = { "console", "include", "lua5.1", "udefrag", "zenwinx" }
 
 libs = {
     "kernel32", "user32", "shell32", "msvcrt",
-    "advapi32", "ole32", "uuid", "urlmon"
+    "advapi32", "ole32", "uuid", "urlmon", "version"
 }
 adlibs = { 
     "$(UDEFRAG_LIB_PATH)\\zenwinx", 
     "$(UDEFRAG_LIB_PATH)\\udefrag", 
     "$(UDEFRAG_LIB_PATH)\\lua5.1a", 
-    "$(WXWIDGETS_LIB_PATH)\\wxbase30u"
+    "$(WXWIDGETS_LIB_PATH)\\wxbase31u"
 }
 umentry = "main"

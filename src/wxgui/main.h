@@ -262,6 +262,7 @@ enum {
     wxUD_LANGUAGE_ACOLI,
     wxUD_LANGUAGE_SINHALA_SRI_LANKA,
     wxUD_LANGUAGE_SILESIAN,
+    wxUD_LANGUAGE_BASQUE,
     wxUD_LANGUAGE_LAST          // must always be last in the list
 };
 

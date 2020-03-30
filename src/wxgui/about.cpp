@@ -103,7 +103,7 @@ void MainFrame::OnHelpAbout(wxCommandEvent& WXUNUSED(event))
     version->SetFont(fontBig);
 
     wxStaticText *copyright = new wxStaticText(&dlg,wxID_ANY,
-        wxT("(C) 2007-2015 UltraDefrag development team"));
+        wxT("(C) 2007-2016 UltraDefrag development team"));
     wxStaticText *description = new wxStaticText(&dlg,wxID_ANY,
         _("An open source defragmentation utility."));
     wxStaticText *credits = new wxStaticText(&dlg,wxID_ANY,

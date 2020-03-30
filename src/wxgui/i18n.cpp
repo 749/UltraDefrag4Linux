@@ -90,6 +90,7 @@ void App::ResetLocale()
     UD_LNG(wxUD_LANGUAGE_ACOLI,             "ach"  , 0             , 0              , wxLayout_LeftToRight, "Acoli");
     UD_LNG(wxUD_LANGUAGE_SINHALA_SRI_LANKA, "si_LK", 0             , 0              , wxLayout_LeftToRight, "Sinhala (Sri Lanka)");
     UD_LNG(wxUD_LANGUAGE_SILESIAN,          "szl"  , 0             , 0              , wxLayout_LeftToRight, "Silesian");
+    UD_LNG(wxUD_LANGUAGE_BASQUE,            "eu"   , LANG_BASQUE   , SUBLANG_DEFAULT, wxLayout_LeftToRight, "Basque");
 }
 
 void App::SetLocale(int id)

@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2016 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -64,6 +64,7 @@ typedef struct _udefrag_shared_data {
     int version;
     int ready;
     unsigned int exception_code;
+    void *exception_address;
     wchar_t tracking_id[32];
 } udefrag_shared_data;
 #pragma pack(pop)
@@ -72,7 +73,7 @@ typedef struct _udefrag_shared_data {
 * Don't forget to increment it after
 * any modifications of the structure.
 */
-#define SHARED_DATA_VERSION 0x1
+#define SHARED_DATA_VERSION 0x2
 
 /* don't litter reliability reports by test crashes */
 #ifndef OFFICIAL_RELEASE

@@ -4,7 +4,7 @@
 # 
 # Translators:
 # Ezekiel JB Vegiga <ejbnvegiga@gmail.com>, 2015
-# Joseph Maza <joseph.maza@gmail.com>, 2015
+# Joseph Maza <joseph.maza@gmail.com>, 2015-2016
 # Stefan Pendl <stefanpe@users.sourceforge.net>, 2013
 # Stefan Pendl <stefanpe@users.sourceforge.net>, 2013
 msgid ""
@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: ultradefrag\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/p/ultradefrag/bugs/\n"
 "POT-Creation-Date: 2013-07-10 21:44+0200\n"
-"PO-Revision-Date: 2015-12-17 17:16+0000\n"
+"PO-Revision-Date: 2016-03-24 05:26+0000\n"
 "Last-Translator: Joseph Maza <joseph.maza@gmail.com>\n"
 "Language-Team: Tagalog (http://www.transifex.com/stefanpendl/ultradefrag/language/tl/)\n"
 "MIME-Version: 1.0\n"
@@ -59,15 +59,15 @@ msgstr "&Magsuri"
 
 #: i18n.cpp:136
 msgid "&Defragment"
-msgstr "Mag&buo"
+msgstr "Magbu&o"
 
 #: i18n.cpp:137
 msgid "&Quick optimization"
-msgstr "Magpahusay nang &Mabilis"
+msgstr "Magpahusay &nang Mabilis"
 
 #: i18n.cpp:138
 msgid "&Full optimization"
-msgstr "M&agpahusay nang Buo"
+msgstr "Magpahusay nang &Buo"
 
 #: i18n.cpp:139
 msgid "&Optimize MFT"
@@ -79,7 +79,7 @@ msgstr "&Tigilin"
 
 #: i18n.cpp:141
 msgid "&Stop"
-msgstr "&Ihinto"
+msgstr "I&hinto"
 
 #: i18n.cpp:142
 msgid "Re&peat action"
@@ -87,7 +87,7 @@ msgstr "&Ulitin"
 
 #: i18n.cpp:143
 msgid "Skip removable &media"
-msgstr "Laktawan ang Matatanggal na &Media"
+msgstr "Lakta&wan ang Matatanggal na Media"
 
 #: i18n.cpp:144
 msgid "&Rescan drives"
@@ -103,7 +103,7 @@ msgstr "&Lumabas"
 
 #: i18n.cpp:149
 msgid "&When done"
-msgstr "Sa &Tapusan..."
+msgstr "Kapag tapo&s..."
 
 #: i18n.cpp:150
 msgid "&None"
@@ -131,7 +131,7 @@ msgstr "Magsa&ra"
 
 #: i18n.cpp:159
 msgid "&Show report"
-msgstr "&Ipakita ang Ulat"
+msgstr "Ipakita &ang Ulat"
 
 #: i18n.cpp:162
 msgid "&Language"

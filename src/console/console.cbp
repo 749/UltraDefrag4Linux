@@ -46,7 +46,7 @@
 			<Add library="libzenwinx.dll.a" />
 			<Add library="libudefrag.dll.a" />
 			<Add library="liblua5.1a.a" />
-			<Add library="libwxbase30u.a" />
+			<Add library="libwxbase31u.a" />
 			<Add library="libkernel32.a" />
 			<Add library="libuser32.a" />
 			<Add library="libadvapi32.a" />
@@ -54,6 +54,7 @@
 			<Add library="libole32.a" />
 			<Add library="libuuid.a" />
 			<Add library="liburlmon.a" />
+			<Add library="libversion.a" />
 			<Add directory="../lib" />
 			<Add directory="$(WXWIDGETSDIR)/lib/gcc_libmingw-X86" />
 		</Linker>

@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2016 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -84,6 +84,7 @@ static void send_crash_report()
     }
 
     itrace("exception code: 0x%x",sd->exception_code);
+    itrace("exception address: %p",sd->exception_address);
 
     // return immediately if usage tracking is disabled
     v = winx_getenv(L"UD_DISABLE_USAGE_TRACKING");
@@ -104,10 +105,27 @@ static void send_crash_report()
     random = (rand() << 16) + rand();
     today = (__int64)time(NULL);
 
-    _snwprintf(tracking_path,sizeof(tracking_path) / sizeof(wchar_t),
-        L"/%hs/%ls/0x%x",wxUD_ABOUT_VERSION,sd->tracking_id,
-        sd->exception_code
-    );
+    switch(sd->exception_code){
+    case EXCEPTION_FLT_DIVIDE_BY_ZERO:
+    case EXCEPTION_INT_DIVIDE_BY_ZERO:
+        // division by zero errors will likely occur in the main
+        // executable, so it's good to record the exception address here
+        _snwprintf(tracking_path,sizeof(tracking_path) / sizeof(wchar_t),
+            L"/%hs/%ls/0x%x @ %p",wxUD_ABOUT_VERSION,sd->tracking_id,
+            sd->exception_code,sd->exception_address
+        );
+        break;
+    default:
+        // memory corruption errors might show up anywhere, so the exception
+        // address will likely be meaningless without the name of the module
+        // and its version; nevertheless, memory corruption debugging is too
+        // hard so let's record just the exception code here
+        _snwprintf(tracking_path,sizeof(tracking_path) / sizeof(wchar_t),
+            L"/%hs/%ls/0x%x",wxUD_ABOUT_VERSION,sd->tracking_id,
+            sd->exception_code
+        );
+        break;
+    }
 
     _snwprintf(url,sizeof(url) / sizeof(wchar_t),
         L"http://www.google-analytics.com/__utm.gif?utmwv=4.6.5"

@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Joseph Maza <joseph.maza@gmail.com>, 2013-2015
+# Joseph Maza <joseph.maza@gmail.com>, 2013-2016
 # Stefan Pendl <stefanpe@users.sourceforge.net>, 2013
 # Stefan Pendl <stefanpe@users.sourceforge.net>, 2013
 msgid ""
@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: ultradefrag\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/p/ultradefrag/bugs/\n"
 "POT-Creation-Date: 2013-07-10 21:44+0200\n"
-"PO-Revision-Date: 2015-12-15 16:06+0000\n"
+"PO-Revision-Date: 2016-03-24 04:49+0000\n"
 "Last-Translator: Joseph Maza <joseph.maza@gmail.com>\n"
 "Language-Team: Iloko (http://www.transifex.com/stefanpendl/ultradefrag/language/ilo/)\n"
 "MIME-Version: 1.0\n"
@@ -469,7 +469,7 @@ msgstr "%5.2lf %% ti dinagup, rikos a %d"
 #. : in the translated string at the correct positions.
 #: vollist.cpp:383
 msgid "%5.2lf %% optimized, pass %d, %I64u moves total"
-msgstr "%5.2lf %% ti inkanatad, rikos %d, kadagupanna %I64u a pannakayakar"
+msgstr "%5.2lf %% ti inkanatad, rikos %d, %I64u a panagyakar iti dagup"
 
 #. : Status of the completed disk analysis.
 #: vollist.cpp:390
@@ -491,4 +491,4 @@ msgstr "Dinagup iti %d a rikos"
 #. : in the translated string at the correct positions.
 #: vollist.cpp:404
 msgid "Optimized, in %d passes, %I64u moves total"
-msgstr "Inkanatad iti %d a rikos, kadagupanna %I64u a pannakayakar"
+msgstr "Inkanatad iti %d a rikos, %I64u a panagyakar iti dagup"
