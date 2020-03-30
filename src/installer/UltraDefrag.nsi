@@ -1,7 +1,7 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2011 by Dmitri Arkhangelski (dmitriar@gmail.com).
- *  Copyright (c) 2010-2011 by Stefan Pendl (stefanpe@users.sourceforge.net).
+ *  Copyright (c) 2007-2012 by Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2012 by Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -116,7 +116,7 @@ SetCompressor /SOLID lzma
 VIProductVersion "${ULTRADFGVER}.0"
 VIAddVersionKey  "ProductName"     "Ultra Defragmenter"
 VIAddVersionKey  "CompanyName"     "UltraDefrag Development Team"
-VIAddVersionKey  "LegalCopyright"  "Copyright © 2007-2011 UltraDefrag Development Team"
+VIAddVersionKey  "LegalCopyright"  "Copyright © 2007-2012 UltraDefrag Development Team"
 VIAddVersionKey  "FileDescription" "Ultra Defragmenter Setup"
 VIAddVersionKey  "FileVersion"     "${ULTRADFGVER}"
 

@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2011 by Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2012 by Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -262,9 +262,16 @@ void kb_close(void)
     */
     
     /* stop threads waiting for user input */
-    stop_kb_wait_for_input = 1;
-    while(kb_wait_for_input_threads)
+    stop_kb_wait_for_input = 1; i = 0;
+    /* 3 sec should be enough; otherwise sometimes it hangs */
+    while(kb_wait_for_input_threads && i < 30){
         winx_sleep(STOP_KB_WAIT_INTERVAL);
+        i++;
+    }
+    if(kb_wait_for_input_threads){
+        winx_printf("Keyboards polling terminated forcibly...\n");
+        winx_sleep(2000);
+    }
     
     for(i = 0; i < MAX_NUM_OF_KEYBOARDS; i++){
         if(kb[i].hKbDevice == NULL) break;

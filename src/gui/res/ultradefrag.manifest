@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
- <assemblyIdentity version="5.0.0.0" name="ultradefrag" processorArchitecture="X86" type="win32"/>
+ <assemblyIdentity version="5.0.1.0" name="ultradefrag" processorArchitecture="X86" type="win32"/>
   <description>UltraDefrag GUI</description>
   <dependency>
    <dependentAssembly>

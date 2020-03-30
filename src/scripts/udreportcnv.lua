@@ -2,7 +2,7 @@
 --[[
   udreportcnv.lua - UltraDefrag report converter.
   Converts lua reports to HTML and other formats.
-  Copyright (c) 2008-2011 by Dmitri Arkhangelski (dmitriar@gmail.com).
+  Copyright (c) 2008-2012 by Dmitri Arkhangelski (dmitriar@gmail.com).
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by

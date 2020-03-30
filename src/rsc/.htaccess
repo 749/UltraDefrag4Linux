@@ -1,2 +1,5 @@
 # disable SSI
 Options -IncludesNOEXEC
+
+# redirects
+RedirectMatch seeother /doxy-doc/udefrag-kernel/html/.+\.html http://ultradefrag.sourceforge.net/doxy-doc/udefrag.dll/html/

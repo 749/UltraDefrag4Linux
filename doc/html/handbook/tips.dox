@@ -1,7 +1,7 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2011 by Dmitri Arkhangelski (dmitriar@gmail.com).
- *  Copyright (c) 2010-2011 by Stefan Pendl (stefanpe@users.sourceforge.net).
+ *  Copyright (c) 2007-2012 by Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2012 by Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
  *  under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -39,6 +39,13 @@
  * <h1>Floppy Drives</h1>
  * Floppy drives defragmentation is not recommended, because it
  * always reduces the lifespan of the floppies.
+ *
+ * <h1>Prevent the system from endless boot processing</h1>
+ * To prevent the system from a situation where it is not possible to boot into Windows,
+ * it is best to turn off boot processing at the top of the boot-time-script.
+ * This is done with the <b>boot off</b> command.
+ * The boot processing is still executed, but the next boot will not cause another run
+ * of the boot time interface.
  *
  * <h1>Performance Considerations</h1>
  * <h2>Performance of UltraDefrag from best to worst</h2>

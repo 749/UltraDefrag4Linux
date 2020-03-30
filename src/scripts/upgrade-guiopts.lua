@@ -1,7 +1,7 @@
 #!/usr/local/bin/lua
 --[[
   upgrade-guiopts.lua - script used to upgrade UltraDefrag GUI configuration file.
-  Copyright (c) 2011 by Dmitri Arkhangelski (dmitriar@gmail.com).
+  Copyright (c) 2011-2012 by Dmitri Arkhangelski (dmitriar@gmail.com).
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by

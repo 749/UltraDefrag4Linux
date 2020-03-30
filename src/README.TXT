@@ -1,4 +1,4 @@
-The Ultra Defragmenter Version 5.0.0
+The Ultra Defragmenter Version 5.0.1
 ------------------------------------
 
 UltraDefrag is a powerful disk defragmentation tool for Windows.
@@ -31,7 +31,7 @@ news, etc.  All UltraDefrag related things are available from there.
 Copyright
 ---------
 
-Copyright (c) 2007-2011 UltraDefrag Development Team.
+Copyright (c) 2007-2012 UltraDefrag Development Team.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

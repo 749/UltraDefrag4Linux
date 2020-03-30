@@ -1,7 +1,7 @@
 #!/usr/local/bin/lua
 --[[
   set-doxyfile-project-number.lua - Sets PROJECT_NUMBER field in doxyfile.
-  Copyright (c) 2010-2011 by Dmitri Arkhangelski (dmitriar@gmail.com).
+  Copyright (c) 2010-2012 by Dmitri Arkhangelski (dmitriar@gmail.com).
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by

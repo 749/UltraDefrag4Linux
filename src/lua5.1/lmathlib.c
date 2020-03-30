@@ -23,7 +23,7 @@
 
 /*
 * The following bitwise operations were added especially for UltraDefrag.
-* Copyright (c) 2010-2011 by Dmitri Arkhangelski (dmitriar@gmail.com).
+* Copyright (c) 2010-2012 by Dmitri Arkhangelski (dmitriar@gmail.com).
 *
 * All functions are designed to be used with integer 32-bit numbers.
 */

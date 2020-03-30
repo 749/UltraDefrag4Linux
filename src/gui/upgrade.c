@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2010-2011 by Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2012 by Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -129,8 +129,12 @@ static short *GetNewVersionAnnouncement(void)
 {
     char *lv;
     char *cv = VERSIONINTITLE;
+    char *string;
     int lmj, lmn, li; /* latest version numbers */
     int cmj, cmn, ci; /* current version numbers */
+    int current_version, last_version;
+    int unstable_version = 0;
+    int upgrade_needed = 0;
     int res;
 
     lv = GetLatestVersion();
@@ -147,9 +151,21 @@ static short *GetNewVersionAnnouncement(void)
         WgxDbgPrint("GetNewVersionAnnouncement: the second sscanf call returned %u\n",res);
         return NULL;
     }
+    string = _strdup(cv);
+    if(string){
+        _strlwr(string);
+        if(strstr(string,"alpha")) unstable_version = 1;
+        else if(strstr(string,"beta")) unstable_version = 1;
+        else if(strstr(string,"rc")) unstable_version = 1;
+        free(string);
+    }
     
     /* 5.0.0 > 4.99.99 */
-    if(lmj * 10000 + lmn * 100 + li > cmj * 10000 + cmn * 100 + ci){
+    current_version = cmj * 10000 + cmn * 100 + ci;
+    last_version = lmj * 10000 + lmn * 100 + li;
+    if(last_version > current_version) upgrade_needed = 1;
+    else if(last_version == current_version && unstable_version) upgrade_needed = 1;
+    if(upgrade_needed){
         _snwprintf(announcement,MAX_ANNOUNCEMENT_LEN,L"%hs%ws",
             lv,L" release is available for download!");
         announcement[MAX_ANNOUNCEMENT_LEN - 1] = 0;

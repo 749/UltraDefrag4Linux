@@ -1,5 +1,18 @@
 HISTORY
 
+  Version 5.0.1  2012-01-08
+  ------------------------------------------------------------------------------
+    - few important bugs in disk processing routines were fixed
+    - few bugs in MFT optimizer were fixed
+    - one bug causing boot time interface freeze 
+      after "Good bye..." message was fixed
+    - the following translations were updated:
+
+      Finnish, Indonesian, Italian
+
+    - some additions to the tips, FAQ and GUI sections of the documentation
+
+
   Version 5.0.0  2011-12-31
   ------------------------------------------------------------------------------
     - the following translations were added:

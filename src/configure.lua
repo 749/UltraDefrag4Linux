@@ -1,6 +1,6 @@
 --[[
 This is the Ultra Defragmenter build configurator.
-Copyright (c) 2007-2011 by Dmitri Arkhangelski (dmitriar@gmail.com).
+Copyright (c) 2007-2012 by Dmitri Arkhangelski (dmitriar@gmail.com).
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -163,11 +163,6 @@ if ret == 1 then
     else
         f:write("set RELEASE_STAGE=", stage, "\n")
         f:write("set UDVERSION_SUFFIX=", udver, "-", stage, "\n")
-    end
-    if string.find(stage, "[Rr][Cc]") then
-        f:write("set RELEASE_CANDIDATE=1\n")
-    else
-        f:write("set RELEASE_CANDIDATE=0\n")
     end
     f:write("set WINDDKBASE=", ddkbase, "\n")
     f:write("set WINSDKBASE=", winsdkbase, "\n")
