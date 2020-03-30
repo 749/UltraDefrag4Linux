@@ -1,0 +1,19 @@
+new pre-release:
+1. prepare website (index) and history.txt for pre-release
+2. run build-pre-release.cmd
+3. upload files through sf.net file manager
+4. update website
+5. submit news
+6. close bugs and requests
+7. update language wiki pages
+8. kindly request translation updates from known translators
+
+new release:
+1. update version in readme file
+2. add date to history.txt file
+3. run build-release.cmd
+4. upload files through file manager
+5. update website (+version.ini), handbook, dev docs, zenwinx docs
+6. submit news
+7. close bugs and requests
+8. update project info

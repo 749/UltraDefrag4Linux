@@ -1,0 +1,143 @@
+#
+#         Plain general makefile, for ultradefrag compilations
+#         Host Linux, target Linux 64-bit
+#
+
+HCCL64=hccl64
+TOPL64=toplnx
+ASM86=asm86
+
+# restrict suffixes list to the ones we define
+.SUFFIXES :
+# this list controls the ordering of rule evaluation
+.SUFFIXES : .c .cpp .java .s .asm .o .l .map
+
+# cancel implicit rule for building .c from .l (lex file) :
+%.c : %.l
+
+# cancel implicit rule for building . from .c
+% : %.c
+
+# cancel implicit rule for building . from .s
+% : %.s
+
+INCL=-I/usr/include -I/shared/c-src/include/linux -I../../include
+# use a symbolink link to locate the actual library,
+# eg /usr/lib/gcc/x86_64-redhat-linux/4.1.2
+LIB=/usr/lib/gcclib64
+COPT=-DL8SC -DNOMEMCHK
+GCCOPT=-DL8GC -O2
+
+H= ../../include/compiler.h ../../include/linux.h  ../../include/ultradfgver.h \
+   ../udefrag/udefrag.h \
+   zenwinx.h ntndk.h ntfs.h
+
+O= dbg.o env.o event.o file.o ftw.o ftw_ntfs.o ldr.o list.o lock.o \
+	mem.o misc.o path.o prb.o string.o thread.o time.o volume.o zenwinx.o
+L= dbg.l env.l event.l file.l ftw.l ftw_ntfs.l ldr.l list.l lock.l \
+	mem.l misc.l path.l prb.l string.l thread.l time.l volume.l zenwinx.l
+
+.c.s :
+	$(HCCL64) -A16RS $(COPT) $(INCL) $*.c > $*.s
+
+.cpp.o :
+	gcc $(GCCOPT) -c -o$*.o $*.cpp
+	touch -c $*.o
+
+.c.o :
+	$(HCCL64) -A16RS $(COPT) $(INCL) $*.c | $(TOPL64) -k8 - $*.o
+	touch -c $*.o
+
+.c.l :
+	$(HCCL64) -A16RS $(COPT) $(INCL) $*.c | $(TOPL64) -lvk8 - $*.o > $*.l
+
+.s.l :
+	$(ASM86) -lk8 -mx $*.s
+
+.cpp.s :
+	gcc $(GCCOPT) -S -o$*.s $*.cpp
+
+.s.o :
+	$(ASM86) -lk8 -mx $*.s
+
+.asm.o :
+	$(ASM86) -lk8 -mx $*.asm
+
+.java :
+	gcj -march=k8 --main=$* -o $* $*.java
+
+.o .o. :
+# add -lstdc++ for C++ linking
+	ld  -dynamic-linker /lib64/ld-linux-x86-64.so.2 -s -o $* \
+		/usr/lib64/crt1.o /usr/lib64/crti.o $(LIB)/crtbegin.o \
+		$*.o -lgcc -L$(LIB) -L/usr/lib64 -lc -lm -lpthread \
+		$(LIB)/crtend.o /usr/lib64/crtn.o
+
+.o.map :
+# add -lstdc++ for C++ linking
+	ld  -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o $* -M \
+		/usr/lib64/crt1.o /usr/lib64/crti.o $(LIB)/crtbegin.o \
+		$*.o -lgcc -L$(LIB) -L/usr/lib64 -lc -lm -lpthread \
+		$(LIB)/crtend.o /usr/lib64/crtn.o > $*.map
+
+all : zenwinx.a
+
+dbg.o : $(H) dbg.c
+
+env.o : $(H) env.c
+
+event.o : $(H) event.c
+
+file.o : $(H) file.c
+
+ftw.o : $(H) ftw.c
+
+ftw_ntfs.o : $(H) ftw_ntfs.c
+
+int64.o : $(H) int64.c
+
+keyboard.o : $(H) keyboard.c
+
+keytrans.o : $(H) keytrans.c
+
+ldr.o : $(H) ldr.c
+
+list.o : $(H) list.c
+
+lock.o : $(H) lock.c
+
+mem.o : $(H) mem.c
+
+misc.o : $(H) misc.c
+
+path.o : $(H) path.c
+
+prb.o : $(H) prb.c
+
+privilege.o : $(H) privilege.c
+
+reg.o : $(H) reg.c
+
+stdio.o : $(H) stdio.c
+
+string.o : $(H) string.c
+
+thread.o : $(H) thread.c
+
+time.o : $(H) time.c
+
+volume.o : $(H) volume.c
+
+zenwinx.o : $(H) zenwinx.c
+
+clean :
+	rm -f $(O)
+	rm -f *.s *.asm *.l *.map
+
+lists : $(L)
+	rm -f zenwinx.a
+	ar -rv zenwinx.a $(O)
+
+zenwinx.a : $(O)
+	rm -f zenwinx.a
+	ar -rv zenwinx.a $(O)

@@ -1,0 +1,37 @@
+HEXVIEW(1)          Ultradefrag Development Team           HEXVIEW(1)
+
+NAME
+        hexview - manual page for type v5.0.0
+
+SYNOPSIS
+        hexview [OPTIONS]
+
+DESCRIPTION
+        'hexview' displays the contents of any file using a layout
+        similar to the one of a HEX viewer.
+        In scripting mode the contents are displayed without
+        interruption and in interactive mode they are displayed
+        page-wise.
+
+OPTIONS
+        {file path}
+                display the contents of {file path}
+
+EXAMPLES
+        hexview C:\Temp\MyCustom.cmd
+                display the contents of "C:\Temp\MyCustom.cmd"
+
+                    000000C0: 0a 00 3b 00 20 00 46 00 |   ;   F
+                    000000C8: 72 00 61 00 67 00 6d 00 | r a g m
+                    000000D0: 65 00 6e 00 74 00 65 00 | e n t e
+
+AUTHOR
+        Written by Ultradefrag Development Team
+
+COPYRIGHT
+        Copyright (C) 2010-2011 Ultradefrag Development Team
+        This is free software; see the source for copying conditions.
+        There is NO warranty; not even for MERCHANTABILITY
+        or FITNESS FOR A PARTICULAR PURPOSE.
+
+hexview                       January 2011                          1

@@ -1,0 +1,24 @@
+-- this is the UltraDefrag GUI build options
+
+name        = "ultradefrag"
+target_type = "gui"
+
+src = {
+    "about.c", "i18n.c", "job.c", "main.c", "map.c", "menu.c", "prb.c",
+    "progress.c", "reports.c", "settings.c", "shutdown.c", "statbar.c",
+    "toolbar.c", "upgrade.c", "vollist.c"
+    
+}
+rc = { "ultradefrag.rc" }
+
+libs = {
+    "kernel32", "user32", "gdi32", "comctl32",
+    "shell32", "msvcrt", "comdlg32", "advapi32"
+}
+adlibs = { 
+    "$(UDEFRAG_LIB_PATH)\\udefrag", 
+    "$(UDEFRAG_LIB_PATH)\\lua5.1a", 
+    "$(UDEFRAG_LIB_PATH)\\wgx"
+}
+
+umentry = "winmain"

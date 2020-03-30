@@ -1,0 +1,13 @@
+-- this is the UltraDefrag boot time (native) interface build options
+
+name        = "defrag_native"
+target_type = "native"
+
+src = { "defrag_native.c", "script.c", "commands.c", "udefrag.c" }
+rc = { "defrag_native.rc" }
+
+libs = { "ntdll" }
+adlibs = { 
+    "$(UDEFRAG_LIB_PATH)\\zenwinx",
+    "$(UDEFRAG_LIB_PATH)\\udefrag"
+}

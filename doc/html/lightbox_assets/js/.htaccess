@@ -1,0 +1,5 @@
+# enable expirations
+ExpiresActive On
+# expire java scripts after a month in the client's cache
+ExpiresByType application/javascript A2592000
+ExpiresByType text/javascript A2592000

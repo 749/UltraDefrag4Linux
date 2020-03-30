@@ -1,0 +1,40 @@
+revising an existing translation:
+ 1. open language file in text editor
+ 2. open wiki page and select edit
+ 3. correct any corrupted headers and comments
+ 4. copy part between [[code]] tags and paste into editor
+ 5. save wiki page, if there was something to correct
+ 6. check correct encoding and end-of-line characters
+ 7. save translation
+ 8. update credits and history
+ 9. commit changes
+
+new translation:
+ 1. create new language file in translation folder
+    naming rule is "{English language name} ({region or font}).lng"
+    Example:
+         "Spanish (AR).lng" ....... Argentinian Spanish
+         "Burmese (Padauk).lng" ... Burmese needing Padauk font
+ 2. open wiki page and select edit
+ 3. correct any corrupted headers and comments
+ 4. copy part between [[code]] tags and paste into editor
+ 5. save wiki page, if there was something to correct
+ 6. check correct encoding and end-of-line characters
+ 7. save translation
+ 8. run "src\make-lang-ini.cmd" utility
+ 9. update credits and history
+10. commit changes
+11. add translation to project details at sf.net
+
+    If using Notepad++ select all and use
+    "TextFX => TextFX Edit => Line up multiple lines by (=)
+    to line up the translations automatically.
+
+copyright rules:
+ 1. http://www.gnu.org/prep/maintain/maintain.html#Legally-Significant
+ 2. since language files are quite small, we consider to assign copyright
+    to anyone who contributed more than around ten lines of text
+ 3. any person contributed less than around ten lines of text deserves 
+    to be mentioned however in 'Special thanks' list of the 'Credits and 
+    License' chapter of the UltraDefrag handbook - sure, even a minor
+    improvements help us to move forward in right direction to our target

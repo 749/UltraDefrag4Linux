@@ -1,0 +1,31 @@
+HELP(1)             Ultradefrag Development Team              HELP(1)
+
+NAME
+        help - manual page for help v4.4.0
+
+SYNOPSIS
+        help
+
+DESCRIPTION
+        'help' displays a brief list of all available commands.
+        In scripting mode the list is displayed without
+        interruption and in interactive mode it is displayed
+        page-wise.
+
+OPTIONS
+        none
+
+EXAMPLES
+        help
+                display the list of commands
+        
+AUTHOR
+        Written by Ultradefrag Development Team
+
+COPYRIGHT
+        Copyright (C) 2010-2011 Ultradefrag Development Team
+        This is free software; see the source for copying conditions.
+        There is NO warranty; not even for MERCHANTABILITY
+        or FITNESS FOR A PARTICULAR PURPOSE.
+
+help                        September 2010                          1

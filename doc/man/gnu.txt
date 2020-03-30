@@ -1,0 +1,5 @@
+GNU coding standards:
+    http://www.gnu.org/prep/standards/
+
+Information for maintainers of GNU software:
+    http://www.gnu.org/prep/maintain/

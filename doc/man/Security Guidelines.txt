@@ -1,0 +1,2 @@
+Dynamic-Link Library Security
+    http://msdn.microsoft.com/en-us/library/ff919712%28VS.85%29.aspx

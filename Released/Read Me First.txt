@@ -1,0 +1,9 @@
+This folder contains the entire repository in the state it was released.
+
+This enables applying and releasing small changes, like updating translations
+and minor fixes, without interfering with the main development stream.
+
+A branch of the doc and src folders must be created here after a release
+overwriting the current contents.
+
+Do not make the branch the working copy.

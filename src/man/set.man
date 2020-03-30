@@ -1,0 +1,49 @@
+SET(1)              Ultradefrag Development Team               SET(1)
+
+NAME
+        set - manual page for set v4.4.0
+
+SYNOPSIS
+        set [OPTION]
+
+DESCRIPTION
+        'set' lists, creates, changes and deletes environment
+        variables.
+        The default action is to list all environment variables.
+
+OPTIONS
+        {letter}
+                list all available variables starting with {letter}
+                the case of the variable name will be ignored
+
+        {name}={value}
+                create or change the variable {name} and assign
+                {value} to it
+        
+        {name}=
+                delete the variable {name}
+        
+EXAMPLES
+        set
+                List all environment variables
+        
+        set u
+                List all environment variables starting with 'u'
+        
+        set UD_SIZELIMIT=50Mb
+                Create or change variable 'UD_SIZELIMIT' and assign
+                value '50Mb' to it
+        
+        set UD_EX_FILTER=
+                Delete the variable 'UD_EX_FILTER'
+
+AUTHOR
+        Written by Ultradefrag Development Team
+
+COPYRIGHT
+        Copyright (C) 2010-2011 Ultradefrag Development Team
+        This is free software; see the source for copying conditions.
+        There is NO warranty; not even for MERCHANTABILITY
+        or FITNESS FOR A PARTICULAR PURPOSE.
+
+set                         September 2010                          1

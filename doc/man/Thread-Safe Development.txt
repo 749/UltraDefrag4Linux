@@ -1,0 +1,5 @@
+Writing Reentrant and Thread-Safe Code by IBM
+    http://publib.boulder.ibm.com/infocenter/aix/v6r1/topic/com.ibm.aix.genprogc/doc/genprogc/writing_reentrant_thread_safe_code.htm#writing_reentrant_thread_safe_co
+
+A Short Guide to Mastering Thread-Safety
+    http://www.thinkingparallel.com/2006/10/15/a-short-guide-to-mastering-thread-safety/

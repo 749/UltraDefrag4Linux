@@ -1,0 +1,60 @@
+#
+#         Plain general makefile, for ultradefrag compilations 
+#         Host Linux, target Linux on PowerPc 32-bit
+#
+
+# restrict suffixes list to the ones we define
+.SUFFIXES :
+# this list controls the ordering of rule evaluation
+.SUFFIXES : .c .cpp .java .s .o .l .map
+
+# cancel implicit rule for building .c from .l (lex file) :
+%.c : %.l
+
+# cancel implicit rule for building . from .c
+% : %.c
+
+# cancel implicit rule for building . from .s
+% : %.s
+
+GCC=gcc
+LD=ld
+AR=ar
+INCL=-I$(NTFS) -I/usr/include \
+     -I../include -I../dll/zenwinx
+COPT=-DPPGC=1 -O2
+GCCOPT=-DPPGC=1 -O2
+NTFS=/usr/include/ntfs-3g
+
+H=../include/ultradfgver.h udefrag.h \
+         ../include/compiler.h ../include/linux.h
+
+O=defrag.o map.o options.o
+
+.c.s :
+	$(GCC) $(COPT) $(INCL) -S $*.c
+
+.cpp.o :
+	$(GCC) $(GCCOPT) $(INCL) -c -o$*.o $*.cpp
+
+.c.o :
+	$(GCC) $(GCCOPT) $(INCL) -c -o$*.o $*.c
+
+.cpp.s :
+	$(GCC) $(GCCOPT) $(INCL) -S -o$*.s $*.cpp
+
+all : console.a
+
+defrag.o : $(H) defrag.c
+                
+map.o : $(H) map.c
+                
+options.o : $(H) options.c
+
+clean :
+	rm -f $(O)
+	rm -f *.s *.asm *.l *.map
+
+console.a : $(O)
+	rm -f console.a
+	$(AR) -rv console.a $(O)

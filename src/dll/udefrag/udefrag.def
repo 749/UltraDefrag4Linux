@@ -1,0 +1,17 @@
+LIBRARY udefrag.dll
+
+EXPORTS
+    udefrag_get_vollist
+    udefrag_release_vollist
+    udefrag_get_volume_information
+    udefrag_validate_volume
+    udefrag_bytes_to_hr=winx_bytes_to_hr
+    udefrag_hr_to_bytes=winx_hr_to_bytes
+    udefrag_tolower=winx_tolower
+    udefrag_toupper=winx_toupper
+    udefrag_start_job
+    udefrag_get_default_formatted_results
+    udefrag_release_default_formatted_results
+    udefrag_get_error_description
+    udefrag_set_log_file_path
+    udefrag_init_failed

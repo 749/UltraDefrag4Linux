@@ -1,0 +1,48 @@
+ECHO(1)             Ultradefrag Development Team              ECHO(1)
+
+NAME
+        echo - manual page for echo v4.4.0
+
+SYNOPSIS
+        echo [OPTION]
+        echo.
+
+DESCRIPTION
+        'echo' displays a message, empty line or enables/disables
+        the display of the command line.
+        The default action is to show the status of the command line
+        display.
+
+OPTIONS
+        {message}
+                display {message}
+
+        on/off
+                enable/disable command line display
+        
+        .
+                display an empty line
+        
+EXAMPLES
+        echo
+                show the command line display status
+        
+        echo.
+                display an empty line
+        
+        echo I am here ;-)
+                display 'I am here ;-)'
+        
+        echo off
+                disable command line display
+
+AUTHOR
+        Written by Ultradefrag Development Team
+
+COPYRIGHT
+        Copyright (C) 2010-2011 Ultradefrag Development Team
+        This is free software; see the source for copying conditions.
+        There is NO warranty; not even for MERCHANTABILITY
+        or FITNESS FOR A PARTICULAR PURPOSE.
+
+echo                        September 2010                          1

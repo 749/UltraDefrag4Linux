@@ -1,0 +1,15 @@
+Version Control with Subversion:
+
+    http://svnbook.red-bean.com/en/1.5/svn-book.html
+
+Do not set svn:mime-type property of *.c, *.h, *.cmd files to text/plain.
+Otherwise the online SVN browser http://sourceforge.net/projects/ultradefrag
+will not use colored display for these files.
+
+To get list of all properties set type:
+
+svn proplist -R -v https://ultradefrag.svn.sourceforge.net/svnroot/ultradefrag
+
+To disable auto-props functionality for *.c, *.h and *.cmd files
+in TortoiseSVN client, open Settings -> General -> Edit configuration file
+and comment out an appropriate lines there.

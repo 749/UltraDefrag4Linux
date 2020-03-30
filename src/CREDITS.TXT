@@ -1,0 +1,221 @@
+﻿----------------------------------------
+            --- CREDITS ---
+----------------------------------------
+    ULTRADEFRAG TEAM
+----------------------------------------
+    Main programmer,
+    Project administrator:
+
+        Dmitri Arkhangelski
+
+
+    Translation manager,
+    Programmer,
+    Documentation Writer:
+
+        Stefan Pendl
+
+
+    Boot time defragmentation idea author,
+    Documentation Writer,
+    Scheduler author:
+
+        Justin Dearing
+
+    Linux version
+
+        Jean-Pierre André
+
+
+    Web designer:
+
+        Sayem Chaklader
+
+----------------------------------------
+	Translation Managers:
+----------------------------------------
+
+	Stefan Pendl
+
+	Nagy Zsolt     (in the past)
+	Justin Dearing (in the past)
+
+----------------------------------------
+	Translators:
+----------------------------------------
+    Belarusian         - Dmitri Arkhangelski
+    Bulgarian          - Dmitri Arkhangelski, Stefan Pendl
+    Burmese            - Muhamed Widuya
+    Catalan            - Illes Balears, Stefan Pendl
+    Chinese            - muzuiget, Stefan Pendl
+    Croatian           - Dmitri Arkhangelski, Stefan Pendl
+    Czech              - David Horak, Stefan Pendl
+    Danish             - Patrick Paludan-Müller, Stefan Pendl
+    Dutch              - Wim Kerstens, Stefan Pendl
+    English (GB)       - Andrew Smith
+    English (US)       - Dmitri Arkhangelski
+    Estonian           - Olav Mägi
+    Farsi              - Ali Jafari
+    Filipino (Ilokano) - Joseph S. Maza
+    Filipino (Tagalog) - Stefan Pendl
+    Finnish            - Stefan Pendl
+    French             - Pascal Crozet, Stefan Pendl
+    Galician           - Julio Mojón Fuentes
+    German             - Stefan Geuken, Stefan Pendl
+    Greek              - Konstantinos Kapoukranidis, Stefan Pendl
+    Hindi              - Gaurav Chatterjee
+    Hungarian          - Nagy Zsolt, Stefan Pendl
+    Icelandic          - Stefan Pendl
+    Indonesian         - Imanuel Novian
+    Italian            - Paolo Loggia, Stefan Pendl
+    Japanese           - ao3, Stefan Pendl
+    Korean             - Alex Han, Stefan Pendl
+    Latvian            - Sevelyr, Vladislav Stuzhnev, Stefan Pendl
+    Macedonian         - Dmitri Arkhangelski
+    Norwegian          - Stefan Pendl
+    Polish             - Andrzej Rudnik, Stefan Pendl
+    Portuguese         - Ricardo A. Garcia, Stefan Pendl
+    Portuguese (BR)    - Depeo da Masol, Stefan Pendl
+    Romanian           - Stefan Pendl
+    Russian            - Dmitri Arkhangelski
+    Serbian            - Dmitri Arkhangelski
+    Slovak             - Milan Cerovsky, Dmitri Arkhangelski
+    Slovenian          - Miha Mlakar, Dmitri Arkhangelski
+    Spanish (AR)       - Daniel Testa
+    Spanish (ES)       - txusti
+    Swedish            - Magnus Rostedt, Stefan Pendl
+    Tamil              - Vinod V.
+    Thai               - Pat Taweewat, Stefan Pendl
+    Turkish            - Huseyin Kozan, Stefan Pendl
+    Ukrainian          - Dmitri Arkhangelski
+    Vietnamese (VI)    - Vietnamize Team
+    Yiddish            - Dmitri Arkhangelski
+
+--------------------------------------------------------------------------------
+    Special thanks for strong testing to (in alphabetical order):
+--------------------------------------------------------------------------------
+    Andrei Maksimov
+    Brent Jenkins
+    Fred Schall
+    Jeff Cubillos
+    Kalle Koseck
+    Kerem Gümrükcü
+    Leslie Trenholm
+    Markus Elfring
+    Nagy Zsolt
+    Sachin Kunjikoran
+    Stefan Pendl
+
+--------------------------------------------------------------------------------
+    Special thanks for good suggestions to (in alphabetical order):
+--------------------------------------------------------------------------------
+    Alexander Peter Kowalski - Process priority control.
+    Alexander Vedyakin - Volume type detection improvements.
+                         More effective defragmenting algorithms.
+    Andrei Maksimov    - GUI improvements. A lot of other interesting ideas.
+    Bryan Kirk         - Better GUI appearance (new list of drives).
+                         Autodefrag feature (not implemented yet).
+    Christopher Naegel - Driver loading on Vista problem's partial solution.
+    Craig Oakes        - Hint about case mismatch of configuration dialog help files.
+                         Hint about problem with .lua file open action registration.
+    Dario Raparelli    - NT 4.0 support.
+    Jan Loncik         - x64 native support. Better 'system' filter preset.
+    Jim Laski          - System fonts and visual styles for graphical interface.
+    Kalle Koseck       - The volume analysis speedup.
+    Kerem Gümrükcü     - Manifests for Vista User Account Control (UAC).
+    Leland G. Whitlock - Progress bar. More effective defragmenting algorithms.
+    Markus Elfring     - Strong error handling.
+    Mike Braca         - Reducing driver's memory usage (new cluster map 
+                         internal representation).
+    Nagy Zsolt         - Interesting ideas about translation.
+                         Installer improvements.
+    Parvez Reza        - Various interesting programming tricks.
+    Stefan Pendl       - Boot time defragmenter improvements. Installer improvements.
+                         Thousands of other interesting ideas.
+    Tiago Filipe Silva - Optimization of web images and udsorting.js script.
+    Vasily Smirnov     - FAT directories defragmentation algorithm.
+                         Various important GUI improvements.
+
+--------------------------------------------------------------------------------
+    Special thanks for correcting and updating translations (in alphabetical order):
+--------------------------------------------------------------------------------
+    Áron Hegedüs
+    Şahin Salincakli
+    Ali Jafari
+    Benny Stütz
+    Carlos Rodrigues
+    Christoffer Ekberg
+    Connection
+    Damjan Daljevic
+    Dave MacBlack
+    Denis Jeličić
+    Dmitri Arkhangelski
+    Erwin Dokter
+    Felipe
+    Haein Jung
+    HPJ
+    Inhwan Hwang
+    Jérôme Blum
+    James Bond
+    José Carlos Taveira de Souza
+    José Luis Farías
+    Joseph S. B. Maza
+    jtl
+    Juan C. Mendez Valledor
+    Ken Choy
+    Klaas Nekeman
+    Konstantinos Kapoukranidis
+    Krzysztof Świderski
+    Latino
+    Leo Smulders
+    Marina Louwrier-Johannsen
+    Masao Kajiwara
+    Mathieu Van Weersch
+    Micu Dumitru
+    Patrick Palm
+    Patrick Paludan-Müller
+    Pavel Kinkor
+    Per-Eric Jenshagen
+    Reynald Didier
+    Robert Jr
+    Ryan Ping Chih Ko
+    Sérgio Marques
+    Sherpya
+    SMHA
+    Stefan Pendl
+    Sveinung Heggen
+    Tom Louwrier
+    Tommy He
+    translucens
+    Vedat Odabasioglu
+
+--------------------------------------------------------------------------------
+    Also special thanks to:
+--------------------------------------------------------------------------------
+    Egor Letov (http://www.gr-oborona.ru)
+
+    Mark Russinovich (http://www.sysinternals.com)
+
+    V. Soldatov (http://www.soldatov.net)
+
+    blume1975 (http://free.pages.at/blumetools/)
+
+    ReactOS Team (http://www.reactos.org)
+
+    NSIS developers (http://nsis.sourceforge.net)
+
+    Markus Oberhumer, Laszlo Molnar & John Reiser (http://upx.sf.net)
+
+    MinGW Team (http://www.mingw.org)
+
+    Alexander A. Telyatnikov (http://alter.org.ua/en/)
+
+    Mumtaz Zaheer (http://www.codeproject.com/Members/Mumtaz-Zaheer)
+
+    Giovanni Di Sirio (http://chibios.sourceforge.net/)
+
+    James Brown (http://www.catch22.net/)
+
+-------------------------------------------------------------------------------------
+    Also many thanks to all the people who helped us improve UltraDefrag.
+--------------------------------------------------------------------------------------

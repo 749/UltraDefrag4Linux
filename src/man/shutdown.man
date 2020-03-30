@@ -1,0 +1,28 @@
+SHUTDOWN(1)         Ultradefrag Development Team          SHUTDOWN(1)
+
+NAME
+        shutdown - manual page for shutdown v4.4.0
+
+SYNOPSIS
+        shutdown
+
+DESCRIPTION
+        'shutdown' immediately shuts down your system.
+
+OPTIONS
+        none
+
+EXAMPLES
+        shutdown
+                shut the system down
+        
+AUTHOR
+        Written by Ultradefrag Development Team
+
+COPYRIGHT
+        Copyright (C) 2010-2011 Ultradefrag Development Team
+        This is free software; see the source for copying conditions.
+        There is NO warranty; not even for MERCHANTABILITY
+        or FITNESS FOR A PARTICULAR PURPOSE.
+
+shutdown                    September 2010                          1

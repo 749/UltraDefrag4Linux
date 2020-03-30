@@ -1,0 +1,94 @@
+UDEFRAG(1)          Ultradefrag Development Team           UDEFRAG(1)
+
+NAME
+        udefrag - manual page for udefrag v5.0.0
+
+SYNOPSIS
+        udefrag [OPTION]...
+
+DESCRIPTION
+        'udefrag' lists, analyzes, defragments and optimizes drives.
+        It supports additional configuration through environment
+        variables, to display a full description of them use:
+            'man variables'
+        The default action is to defragment the specified drives.
+
+OPTIONS
+        -l
+                list all available drives excluding removable ones
+                can not be used with any other option
+
+        -la
+                list all available drives including removable ones
+                can not be used with any other option
+
+        -a
+                only analyze the drives
+                can not be used with the '-o' and --quick-optimize
+                option
+
+        -o
+                fully optimize the drives
+                can not be used with the '-a' and '-q' option
+
+        -q, --quick-optimize
+                quick optimize the drives
+                can not be used with the '-a' and '-o' option
+
+        --optimize-mft
+                concatenate the MFT into one single chunk
+
+        -r, --repeat
+                repeat defragmentation or optimization until there is
+                nothing left that can be moved, this will process the
+                disk multiple times in a row
+
+        {drive letter}:
+                one or more drives separated by spaces
+                can be omitted if one of the --all... options is used
+
+        --all
+                perform action for all available drives including
+                removable ones
+
+        --all-fixed
+                perform action for all available drives excluding
+                removable ones
+                if the '--all' option is specified too, this option
+                takes precedence
+
+        {path}
+                one or more paths separated by spaces
+                paths including spaces must be enclosed by double
+                quotes (")
+                only absolute paths are supported
+
+EXAMPLES
+        udefrag C:
+                Defragment drive C:
+
+        udefrag -la
+                List all available drives
+
+        udefrag -a --all-fixed
+                Analyze all drives excluding removable ones
+
+        udefrag -o E: K:
+                optimize drives E: and K:
+
+        udefrag --optimize-mft O: Q:
+                optimize the MFT of drives O: and Q:
+
+        udefrag C:\Windows\WindowsUpdate.log "C:\Program Files"
+                defragment the specified file and folder
+
+AUTHOR
+        Written by Ultradefrag Development Team
+
+COPYRIGHT
+        Copyright (C) 2010-2011 Ultradefrag Development Team
+        This is free software; see the source for copying conditions.
+        There is NO warranty; not even for MERCHANTABILITY
+        or FITNESS FOR A PARTICULAR PURPOSE.
+
+udefrag                        August 2011                          1

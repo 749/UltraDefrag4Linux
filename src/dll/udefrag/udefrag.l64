@@ -1,0 +1,119 @@
+#
+#         Plain general makefile, for ultradefrag compilations
+#         Host Linux, target Linux 64-bit
+#
+
+HCCL64=hccl64
+TOPL64=toplnx
+ASM86=asm86
+
+# restrict suffixes list to the ones we define
+.SUFFIXES :
+# this list controls the ordering of rule evaluation
+.SUFFIXES : .c .cpp .java .s .asm .o .l .map
+
+# cancel implicit rule for building .c from .l (lex file) :
+%.c : %.l
+
+# cancel implicit rule for building . from .c
+% : %.c
+
+# cancel implicit rule for building . from .s
+% : %.s
+
+INCL=-I/usr/include -I/shared/c-src/include/linux -I../../include
+# use a symbolink link to locate the actual library,
+# eg /usr/lib/gcc/x86_64-redhat-linux/4.1.2
+LIB=/usr/lib/gcclib64
+COPT=-DL8SC -DNOMEMCHK
+GCCOPT=-DL8GC -O2
+
+H=udefrag-internals.h udefrag.h \
+   ../../include/compiler.h ../../include/linux.h ../../include/ultradfgver.h \
+   ../zenwinx/zenwinx.h ../zenwinx/ntndk.h
+
+O= analyze.o defrag.o map.o move.o optimize.o options.o \
+	reports.o search.o tasks.o udefrag.o volume.o 
+L= analyze.l defrag.l map.l move.l optimize.l options.l \
+	reports.l search.l tasks.l udefrag.l volume.l 
+
+.c.s :
+	$(HCCL64) -A16RS $(COPT) $(INCL) $*.c > $*.s
+
+.cpp.o :
+	gcc $(GCCOPT) -c -o$*.o $*.cpp
+	touch -c $*.o
+
+.c.o :
+	$(HCCL64) -A16RS $(COPT) $(INCL) $*.c | $(TOPL64) -k8 - $*.o
+	touch -c $*.o
+
+.c.l :
+	$(HCCL64) -A16RS $(COPT) $(INCL) $*.c | $(TOPL64) -lvk8 - $*.o > $*.l
+
+.s.l :
+	$(ASM86) -lk8 -mx $*.s
+
+.cpp.s :
+	gcc $(GCCOPT) -S -o$*.s $*.cpp
+
+.s.o :
+	$(ASM86) -lk8 -mx $*.s
+
+.asm.o :
+	$(ASM86) -lk8 -mx $*.asm
+
+.java :
+	gcj -march=k8 --main=$* -o $* $*.java
+
+.o .o. :
+# add -lstdc++ for C++ linking
+	ld  -dynamic-linker /lib64/ld-linux-x86-64.so.2 -s -o $* \
+		/usr/lib64/crt1.o /usr/lib64/crti.o $(LIB)/crtbegin.o \
+		$*.o -lgcc -L$(LIB) -L/usr/lib64 -lc -lm -lpthread \
+		$(LIB)/crtend.o /usr/lib64/crtn.o
+
+.o.map :
+# add -lstdc++ for C++ linking
+	ld  -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o $* -M \
+		/usr/lib64/crt1.o /usr/lib64/crti.o $(LIB)/crtbegin.o \
+		$*.o -lgcc -L$(LIB) -L/usr/lib64 -lc -lm -lpthread \
+		$(LIB)/crtend.o /usr/lib64/crtn.o > $*.map
+
+all : udefrag.a
+
+analyze.o : $(H) analyze.c
+
+defrag.o : $(H) defrag.c
+
+#int64.o : $(H) int64.c
+
+map.o : $(H) map.c
+
+move.o : $(H) move.c
+
+optimize.o : $(H) optimize.c
+
+options.o : $(H) options.c
+
+reports.o : $(H) reports.c
+
+search.o : $(H) search.c
+
+tasks.o : $(H) tasks.c
+
+udefrag.o : $(H) udefrag.c
+
+volume.o : $(H) volume.c
+
+clean :
+	rm -f $(O)
+	rm -f *.s *.asm *.l *.map
+
+lists : $(L)
+	rm -f udefrag.a
+	ar -rv udefrag.a $(O)
+
+udefrag.a : $(O)
+	rm -f udefrag.a
+	ar -rv udefrag.a $(O)

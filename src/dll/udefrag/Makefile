@@ -1,0 +1,80 @@
+#
+#         Plain general makefile, for ultradefrag compilations 
+#         Host Linux, target Linux on X86-32 or X86-64
+#
+
+# restrict suffixes list to the ones we define
+.SUFFIXES :
+# this list controls the ordering of rule evaluation
+.SUFFIXES : .c .cpp .java .s .o .l .map
+
+# cancel implicit rule for building .c from .l (lex file) :
+%.c : %.l
+
+# cancel implicit rule for building . from .c
+% : %.c
+
+# cancel implicit rule for building . from .s
+% : %.s
+
+GCC=gcc
+LD=ld
+AR=ar
+INCL=-I$(NTFS) -I/usr/include \
+     -I../../include -I../zenwinx
+COPT=-DLXGC=1 -O2
+GCCOPT=-DLXGC=1 -O2
+NTFS=/usr/include/ntfs-3g
+
+H=udefrag-internals.h udefrag.h \
+   ../../include/compiler.h ../../include/linux.h ../../include/ultradfgver.h \
+   ../zenwinx/zenwinx.h ../zenwinx/ntndk.h
+
+O= analyze.o defrag.o map.o move.o optimize.o options.o \
+	reports.o search.o tasks.o udefrag.o volume.o 
+
+.c.s :
+	$(GCC) $(COPT) $(INCL) -S $*.c
+
+.cpp.o :
+	$(GCC) $(GCCOPT) $(INCL) -c $*.cpp
+
+.c.o :
+	$(GCC) $(COPT) $(INCL) -c $*.c
+
+.cpp.s :
+	$(GCC) $(GCCOPT) $(INCL) -S $*.cpp
+
+all : udefrag.a
+
+analyze.o : $(H) analyze.c
+
+defrag.o : $(H) defrag.c
+
+#int64.o : $(H) int64.c
+
+map.o : $(H) map.c
+
+move.o : $(H) move.c
+
+optimize.o : $(H) optimize.c
+
+options.o : $(H) options.c
+
+reports.o : $(H) reports.c
+
+search.o : $(H) search.c
+
+tasks.o : $(H) tasks.c
+
+udefrag.o : $(H) udefrag.c
+
+volume.o : $(H) volume.c
+
+clean :
+	rm -f $(O)
+	rm -f *.s *.asm *.l *.map
+
+udefrag.a : $(O)
+	rm -f udefrag.a
+	$(AR) -rv udefrag.a $(O)

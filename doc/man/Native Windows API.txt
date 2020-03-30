@@ -1,0 +1,17 @@
+Sysinternals Freeware - Inside the Native API
+    http://netcode.cz/img/83/nativeapi.html
+
+Native API function documentation
+    http://undocumented.ntinternals.net/
+
+Listing of the NT Native API  functions
+    http://jedi-apilib.sourceforge.net/native/NativeList.html
+
+Inside Native Applications
+    http://technet.microsoft.com/en-us/sysinternals/bb897447.aspx
+
+Native Windows API Programmierung (German)
+    http://www.ks.uni-freiburg.de/download/studienarbeit/SS07/09-07-napi-jrudolph/NativeAPI-ComputernameChanging.pdf
+
+Windows System Call Table (NT/2000/XP/2003/Vista)
+    http://metasploit.com/users/opcode/syscalls.html

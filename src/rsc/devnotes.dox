@@ -1,0 +1,35 @@
+/*
+ *  UltraDefrag - a powerful defragmentation tool for Windows NT.
+ *  Copyright (c) 2007-2011 by Dmitri Arkhangelski (dmitriar@gmail.com).
+ *
+ *  Permission is granted to copy, distribute and/or modify this document
+ *  under the terms of the GNU Free Documentation License, Version 1.3 or
+ *  any later version published by the Free Software Foundation; with no
+ *  Invariant Sections.
+ */
+
+/**
+ * @page Devnotes Development Notes
+ *
+ * - UltraDefrag contains few modules running during 
+ * the Windows boot process. For this purpose the program utilizes a lot 
+ * of undocumented Windows functions, primary exported by ntdll.dll 
+ * library. Please read carefully comments in the beginning of 
+ * <a href="http://ultradefrag.svn.sourceforge.net/viewvc/ultradefrag/src/dll/zenwinx/ntndk.h?view=markup">/src/dll/zenwinx/ntndk.h</a>
+ * file before use of such functions. They often requires
+ * something unexpected, so without a careful use
+ * they may simply crash your application.
+ *
+ * - When some program uses MessageBox() call it must call also
+ * InitCommonControls() in the beginning of its main() function.
+ * Otherwise it will be not compatible with manifest defining comctl32.dll
+ * dependency for Windows visual styles support. Message boxes will never 
+ * appear on the screen in this case. This undocumented behavior
+ * was discovered on 32-bit XP system.
+ *
+ * - Note that different compilers may use different calling conventions.
+ * While GCC uses __cdecl convention by default, MS C compiler included in DDK
+ * uses __stdcall. This makes impossible to use binaries together while they're 
+ * compiled by these two compilers. UltraDefrag uses no certain convention
+ * to keep the code cleaner.
+ */

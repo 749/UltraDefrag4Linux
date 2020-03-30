@@ -1,0 +1,12 @@
+Microsoft Extensible Firmware Initiative FAT32 File System Specification
+    http://www.microsoft.com/whdc/system/platform/firmware/fatgen.mspx
+
+Universal Disk Format (UDF)
+    http://www.osta.org/specs/index.htm
+
+Default cluster size for NTFS, FAT, and exFAT
+    http://support.microsoft.com/kb/140365/en-us
+
+Description of the exFAT file system driver update package
+    http://support.microsoft.com/kb/955704/en-us
+

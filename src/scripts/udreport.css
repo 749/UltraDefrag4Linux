@@ -1,0 +1,55 @@
+/*
+* This stylesheet controls a default style of UltraDefrag reports.
+* Save your custom stylesheet as udreport-custom.css
+* to ensure that it will not be overwritten on upgrade.
+*/
+
+body {
+    text-align: center;
+}
+
+h3 {
+    font-family: monospace;
+}
+
+a {
+    color: #0000FF;
+}
+
+td {
+    font-family: monospace;
+    font-size: 10pt;
+}
+
+/* ancillary definitions */
+
+.left {
+    text-align: left;
+}
+
+.c, .center {
+    text-align: center;
+}
+
+.right {
+    text-align: right;
+}
+
+.filesize {
+    padding-left: 5pt;
+    padding-right: 5pt;
+    text-align: right;
+}
+
+.file-status {
+    padding-left: 5pt;
+    padding-right: 5pt;
+    text-align: center;
+}
+
+/* table cells with filtered out items (currently not used) */
+
+.f {
+    background-color: #000000;
+    color: #FFFFFF;
+}

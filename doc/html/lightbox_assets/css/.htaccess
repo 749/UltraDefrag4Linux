@@ -1,0 +1,4 @@
+# enable expirations
+ExpiresActive On
+# expire css after a month in the client's cache
+ExpiresByType text/css A2592000

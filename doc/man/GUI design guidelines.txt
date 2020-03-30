@@ -1,0 +1,22 @@
+GUI Design Guideline links from Microsoft:
+
+    Layout:
+        http://msdn.microsoft.com/en-us/library/aa511279.aspx
+
+    Fonts:
+        http://msdn.microsoft.com/en-us/library/aa511282.aspx
+
+    Tool-bars:
+        http://msdn.microsoft.com/en-us/library/aa511500.aspx
+
+    Menus:
+        http://msdn.microsoft.com/en-us/library/aa511502.aspx
+
+    Keyboard:
+        http://msdn.microsoft.com/en-us/library/bb545460.aspx
+
+    Writing High-DPI Win32 Applications:
+        http://msdn.microsoft.com/en-us/library/dd464659(VS.85).aspx
+
+Implementing a splitter bar
+    http://www.catch22.net/tuts/splitter

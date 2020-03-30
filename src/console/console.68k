@@ -1,0 +1,70 @@
+#
+#         Plain general makefile, for ultradefrag 64-bit compilations 
+#
+
+.SUFFIXES : .c .s .ss .o .oo .l .68 .map
+
+HCC=hcc68
+TOP=top68
+CLINK=clink
+CLIB=clibr
+INCL=-I$(NTFS)/replace -I/shared/c-src/palmdev -I$(WINROOT)/lc6 -I../include
+DEFS='-DSTSC;__noalign=;__nopad=;__private=;__huge='
+LIBDIR=/shared/c-src/palmdev
+
+NTFS=/shared/ntfs/ntfslowprof
+
+H=udefrag.h ../include/ultradfgver.h udefrag.h \
+         ../include/compiler.h ../include/linux.h
+
+O=defrag.o map.o options.o
+L=defrag.l map.l options.l
+
+# cancel implicit rule for building .c from .l (lex file) :
+%.c : %.l
+
+# cancel implicit rule for building . from .c
+% : %.c
+
+# cancel implicit rule for building . from .s
+% : %.s
+
+.c.o:
+	$(HCC) $(INCL) -cBS -UX86 $(DEFS) $*.c | $(TOP) - $*.o
+
+.c.l:
+	$(HCC) $(INCL) -cBS -UX86 $(DEFS) $*.c | $(TOP) -lv - $*.o > $*.l
+
+.c.s:
+	$(HCC) $(INCL) -cBS -UX86 $(DEFS) $*.c > $*.s
+
+.c.ss:
+	$(HCC) $(INCL) -cBS -UX86 $(DEFS) $*.c | $(TOP) -vs - $*.ss
+
+
+.oo.68 :
+	$(CLINK) -w -o $*.68 -m $*.map -l $(LIBDIR)syslib $*.oo
+
+.o .o. :
+	echo Please use .prc or .68 suffix for executable files
+
+all console.a : $(O)
+	rm -f console.a
+	$(CLIB) r console.a $(O)
+
+lists : $(L)
+	rm -f console.a
+	$(CLIB) r console.a $(O)
+
+console.68 : $(O)
+	$(CLINK) -w -o console.68 -m console.map -l $(LIBDIR)/syslib $(O)
+
+defrag.o defrag.s defrag.l : $(H) defrag.c
+
+map.o map.s map.l : $(H) map.c
+
+options.o options.s options.l : $(H) options.c
+
+clean :
+	rm -f $(O)
+	rm -f *.s *.asm *.l *.map

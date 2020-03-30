@@ -1,0 +1,39 @@
+LIBRARY wgx.dll
+
+EXPORTS
+    WgxAddAccelerators
+    WgxBuildMenu
+    WgxBuildPopupMenu
+    
+    WgxCreateMenuBitmapMasked
+
+    WgxBuildResourceTable
+    WgxApplyResourceTable
+    WgxSetText
+    WgxGetResourceString
+    WgxDestroyResourceTable
+
+    WgxEnableWindows
+    WgxDisableWindows
+    WgxSetIcon
+    WgxCheckWindowCoordinates
+    WgxCenterWindow
+    WgxSafeSubclassWindow
+    WgxSafeCallWndProc
+
+    WgxShellExecuteW
+
+    WgxCreateFont
+    WgxSetFont
+    WgxDestroyFont
+    WgxSaveFont
+
+    IncreaseGoogleAnalyticsCounter
+    IncreaseGoogleAnalyticsCounterAsynch
+
+    WgxDbgPrint
+    WgxDbgPrintLastError
+    WgxDisplayLastError
+    
+    WgxGetOptions
+    WgxSaveOptions

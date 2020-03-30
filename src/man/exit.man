@@ -1,0 +1,34 @@
+EXIT(1)             Ultradefrag Development Team              EXIT(1)
+
+NAME
+        exit - manual page for exit v4.4.0
+
+SYNOPSIS
+        exit [OPTION]
+
+DESCRIPTION
+        'exit' terminates the session and continues with the Windows
+        boot process.
+        By default the error code zero is returned.
+
+OPTIONS
+        {number}
+                return the specified exit code
+        
+EXAMPLES
+        exit
+                terminate and return '0' as the exit code
+        
+        exit 1
+                terminate and return '1' as the exit code
+        
+AUTHOR
+        Written by Ultradefrag Development Team
+
+COPYRIGHT
+        Copyright (C) 2010-2011 Ultradefrag Development Team
+        This is free software; see the source for copying conditions.
+        There is NO warranty; not even for MERCHANTABILITY
+        or FITNESS FOR A PARTICULAR PURPOSE.
+
+exit                        September 2010                          1

@@ -1,0 +1,86 @@
+#
+#         Plain general makefile, for ultradefrag compilations 
+#         Host Linux, target Linux on ARM 64-bit
+#
+
+# restrict suffixes list to the ones we define
+.SUFFIXES :
+# this list controls the ordering of rule evaluation
+.SUFFIXES : .c .cpp .java .s .o .l .map
+
+# cancel implicit rule for building .c from .l (lex file) :
+%.c : %.l
+
+# cancel implicit rule for building . from .c
+% : %.c
+
+# cancel implicit rule for building . from .s
+% : %.s
+
+GCC=/shared/arm/gcc64/bin/aarch64-linux-gnu-gcc
+LD=/shared/arm/gcc64/bin/aarch64-linux-gnu-ld
+AR=/shared/arm/gcc64/bin/aarch64-linux-gnu-ar
+INCL=-I$(NTFS) -I$(NTFS)/include/ntfs-3g \
+     -I/shared/arm/root/usr/include/aarch64-linux \
+     -I/shared/arm/root/usr/include \
+     -Iinclude
+COPT=-DARGC=1 -O2
+GCCOPT=-DARGC=1 -O2
+LIB1=/shared/arm/gcc64/arch-lib
+LIB2=/shared/arm/gcc64/lib/gcc/aarch64-linux-gnu/4.9
+NTFS=/shared/ntfs/ntfslowprof
+
+A=console.a udefrag.a zenwinx.a wincalls.a
+
+.c.s :
+	$(GCC) $(COPT) $(INCL) -S $*.c
+
+.cpp.o :
+	$(GCC) $(GCCOPT) $(INCL) -c -o$*.o $*.cpp
+
+.c.o :
+	$(GCC) $(GCCOPT) $(INCL) -c -o$*.o $*.c
+
+.cpp.s :
+	$(GCC) $(GCCOPT) $(INCL) -S -o$*.s $*.cpp
+
+.o .o. :
+	$(LD) -dynamic-linker /lib/ld-linux-aarch64.so.1 -o $* \
+		-s $(LIB1)/crt1.o $(LIB1)/crti.o $(LIB2)/crtbegin.o $*.o \
+		-lgcc -L$(LIB2) -L$(LIB1) -lc -lm -lpthread \
+		$(LIB2)/crtend.o $(LIB1)/crtn.o
+
+.o.map :
+	$(LD) -dynamic-linker /lib/ld-linux-aarch64.so.1 -o $* -M \
+		$(LIB1)/crt1.o $(LIB1)/crti.o $(LIB2)/crtbegin.o $*.o \
+		-lgcc -L$(LIB2) -L$(LIB1) -lc -lm -lpthread \
+		$(LIB2)/crtend.o $(LIB1)/crtn.o > $*.map
+
+
+all : udefrag
+
+console.a :
+	cd console; make -f console.a64 console.a
+
+udefrag.a :
+	cd dll/udefrag; make -f udefrag.a64 udefrag.a
+
+zenwinx.a :
+	cd dll/zenwinx; make -f zenwinx.a64 zenwinx.a
+
+wincalls.a :
+	cd wincalls; make -f wincalls.a64 wincalls.a
+
+clean :
+	cd console; make -f console.a64 clean
+	cd dll/udefrag; make -f udefrag.a64 clean
+	cd dll/zenwinx; make -f zenwinx.a64 clean
+	cd wincalls; make -f wincalls.a64 clean
+
+udefrag : $(A)
+	$(LD) -dynamic-linker /lib/ld-linux-aarch64.so.1 -o udefrag -M \
+		$(LIB1)/crt1.o $(LIB1)/crti.o $(LIB2)/crtbegin.o \
+		console/console.a dll/udefrag/udefrag.a dll/zenwinx/zenwinx.a \
+		wincalls/wincalls.a $(NTFS)/libntfs-3g/armlibntfs.a \
+		-lgcc -L$(LIB2) -L$(LIB1) -lc -lm -lpthread -lncurses -ltinfo \
+		$(LIB2)/crtend.o $(LIB1)/crtn.o > udefrag.map

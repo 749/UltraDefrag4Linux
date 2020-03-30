@@ -1,0 +1,73 @@
+VARIABLES(1)        Ultradefrag Development Team         VARIABLES(1)
+
+NAME
+        variables - manual page for variables v5.0.0
+
+SYNOPSIS
+        [VARIABLE]
+
+DESCRIPTION
+        Listing of all variables known by Ultradefrag.
+
+VARIABLES
+        UD_IN_FILTER
+                semicolon separated list of included paths
+
+        UD_EX_FILTER
+                semicolon separated list of excluded paths
+        
+        UD_SIZELIMIT
+                exclude files which exceed this size limit
+                size suffix list: Kb, Mb, Gb, Tb, Pb, Eb
+        
+        UD_FRAGMENTS_THRESHOLD
+                exclude files which lesser fragments
+        
+        UD_TIME_LIMIT
+                space separated list of maximum timeout to terminate
+                processing
+                time suffix list: y, d, h, m, s
+        
+        UD_REFRESH_INTERVAL
+                interval to update the progress in milliseconds
+        
+        UD_DISABLE_REPORTS
+                set to '1' to disable report creation
+        
+        UD_DBGPRINT_LEVEL
+                level of debug information displayed
+                NORMAL (default), DETAILED (to report bugs), PARANOID
+        
+        UD_LOG_FILE_PATH
+                full path to the log file to use for saving debug
+                information
+        
+        UD_DRY_RUN
+                set to '1' to disable moving files physically
+        
+EXAMPLES
+        set UD_IN_FILTER=*windows*;*winnt*;*ntuser*;*pagefile*
+                include only paths, which include one of these words
+        
+        set UD_SIZELIMIT=50Mb
+                process only files below 50 MB in size
+        
+        set UD_FRAGMENTS_THRESHOLD=6
+                process only files with more than '6' fragments
+        
+        set UD_TIME_LIMIT=6h 30m
+                terminate processing after 6 hours and 30 minutes
+        
+        set UD_LOG_FILE_PATH=C:\Windows\Temp\defrag_native.log
+                save debugging information to the specified file
+        
+AUTHOR
+        Written by Ultradefrag Development Team
+
+COPYRIGHT
+        Copyright (C) 2010-2011 Ultradefrag Development Team
+        This is free software; see the source for copying conditions.
+        There is NO warranty; not even for MERCHANTABILITY
+        or FITNESS FOR A PARTICULAR PURPOSE.
+
+variables                    January 2011                           1

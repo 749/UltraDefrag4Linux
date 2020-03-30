@@ -1,0 +1,21 @@
+-- Lua 5.1 DLL build options
+
+name        = "lua5.1a"
+target_type = "dll"
+nativedll   = 0
+
+src = {
+    "lapi.c", "lauxlib.c", "lbaselib.c", "lcode.c", "ldblib.c",
+    "ldebug.c", "ldo.c", "ldump.c", "lfunc.c", "lgc.c", "linit.c",
+    "liolib.c", "llex.c", "lmathlib.c", "lmem.c", "loadlib.c",
+    "lobject.c", "lopcodes.c", "loslib.c", "lparser.c", "lstate.c",
+    "lstring.c", "lstrlib.c", "ltable.c", "ltablib.c", "ltm.c",
+    "lundump.c", "lvm.c", "lzio.c"
+}
+
+deffile  = "lua5.1.def"
+-- we never use __stdcall convention
+mingw_deffile  = "lua5.1.def"
+baseaddr = "0x10000000"
+
+libs = { "msvcrt", "kernel32", "shell32" }

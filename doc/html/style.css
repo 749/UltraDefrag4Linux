@@ -1,0 +1,51 @@
+body {padding:0;margin:0;font:0.74em Arial,sans-serif;line-height:1.5em;background:#fff url(images/bg.gif) repeat-x top;color:#454545}
+a {color:#7a9833;background:inherit;text-decoration:none}
+a:hover {color:#000000;background:inherit;text-decoration:underline}
+p {margin:5px 0}
+h1 {font:bold 1.8em Arial,Sans-Serif;padding:8px 0 4px;margin:0;letter-spacing:-1px}
+h2 {font:bold 1.6em Arial,Sans-Serif;letter-spacing:-1px}
+h3 {padding:4px 0;margin:0}
+ul {margin:0;padding:0;list-style:none}
+img {border:0}
+hr {height:1px;border-style:none;color:#d0d0d0;margin:10px 0;background:#c0c0c0}
+.content {margin:0 auto;width:900px;padding-left:10px;padding-right:10px}
+.screenshots img {margin-left:auto;margin-right:auto;}
+#top {padding-top:0;background:transparent;height:80px}
+#top h1 {font:bold 1.8em Arial,Sans-Serif;padding:20px 0 0;margin:0;letter-spacing:1px;color:#616161}
+#top h2 {font:0.9em Arial,Sans-Serif;letter-spacing:0;color:#868686;margin:0;padding:0}
+#top #icons {float:right;margin:25px 15px 0;padding:0}
+#top #icons img {padding-right:2px;border:0}
+#menu {margin:0;height:34px;padding-top:0}
+#menu li {list-style:none;display:inline;line-height:34px}
+#menu li a {text-decoration:none;margin:0;padding:9px 15px 10px;font-weight:bold;color:#fff}
+#menu li a:hover {color:#fff;background:#616161;margin:0}
+#menu li a.current {background:#616161 url(images/box.gif) no-repeat top left;color:#fff}
+#main {width:900px;margin:0;padding:0}
+#right_side {float:right;width:230px;background:#fff url(images/corner.jpg) no-repeat top right;overflow:hidden}
+#right_side .pad {padding:35px 10px 10px 17px}
+#right_side ul {padding:3px 0 8px}
+#right_side li {line-height:18px;background:#fff;list-style:square;padding-left:0;margin-left:15px;color:#b4e04a}
+#right_side a {background:inherit;text-decoration:none}
+#right_side h3 {color:#949494;font:bold 1.2em Arial,Sans-Serif;margin-top:10px}
+#left_side {background:inherit;margin-bottom:10px;width:650px}
+#left_side .intro {height:90px;background:#616161;color:#fff;overflow:hidden}
+#left_side .intro .pad {padding:18px 0 0}
+#left_side .intro a {color:#b4e04a;text-decoration:none}
+#left_side .intro a:hover {color:#cdff56;text-decoration:underline}
+#left_side .mpart {padding:40px 0 0}
+#left_side h3 {background:inherit;padding:0;margin:0;font:bold 1.4em Arial,Sans-Serif}
+#left_side .mpart h2 {background:url(images/lrline.gif) no-repeat bottom left;height:20px;padding:0;margin:0 0 15px;font:0.9em verdana,Arial,Sans-Serif}
+#left_side p {color:#454545;padding:0;text-align:justify}
+#left_side img {float:left;padding:0 10px 5px 0}
+#left_side blockquote {padding-left:10px;border-left:3px solid #a7cc44;margin:10px 0 10px 25px}
+.date {border-top:1px dotted #ccc;padding:5px 0;margin:10px 0 25px;text-align:right}
+#left_side .rs {float:right;margin:0 10px;border:1px solid #ddd;padding:5px;background:#f5f5f5}
+#left_side ul {list-style-position:inside;margin-left:2px}
+#left_side ul li {list-style-type:square;margin-left:15px}
+#left_side ul ul li {list-style:none;margin-left:10px;list-style-type:lower-alpha;list-style-position:inside}
+#left_side .greybox {border:1px solid #ccc;background:#f5f5f5;width:628px;padding:10px}
+#footer {clear:both;width:900px;margin:0 0 6em;color:#777;background:#fff url(images/rlline.gif) no-repeat top right}
+#footer .right {float:right;text-align:right;background:inherit;padding-top:10px;width:900px}
+#footer a {text-decoration:none;background:#fff}
+input.button {margin:0;font:bold 1em Arial,Sans-serif;background:#FFF url(gradientbg.jpg) repeat-x;padding:2px 3px;color:#333;border:1px solid #DADADA}
+.style1 {font-family: Arial, Helvetica, sans-serif; font-size: x-large; color: #CCCCCC}

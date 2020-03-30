@@ -1,0 +1,324 @@
+﻿/*
+ *  UltraDefrag - a powerful defragmentation tool for Windows NT.
+ *  Copyright (c) 2007-2011 by Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2011 by Stefan Pendl (stefanpe@users.sourceforge.net).
+ *
+ *  Permission is granted to copy, distribute and/or modify this document
+ *  under the terms of the GNU Free Documentation License, Version 1.3 or
+ *  any later version published by the Free Software Foundation; with no
+ *  Invariant Sections.
+ */
+
+/**
+ * @page Credits Credits and License
+ *
+ * <b>Program and Documentation Copyright (c) 2007-2008</b>
+ * 
+ * - Dmitri Arkhangelski <span class="simple">(dmitriar@users.sourceforge.net)</span>
+ * - Justin Dearing      <span class="simple">(zippy1981@users.sourceforge.net)</span>
+ *
+ * <b>Program and Documentation Copyright (c) 2009</b>
+ * 
+ * - Dmitri Arkhangelski <span class="simple">(dmitriar@users.sourceforge.net)</span>
+ *
+ * <b>Program and Documentation Copyright (c) 2010-2011</b>
+ * 
+ * - Dmitri Arkhangelski <span class="simple">(dmitriar@users.sourceforge.net)</span>
+ * - Stefan Pendl        <span class="simple">(stefanpe@users.sourceforge.net)</span>
+ *
+ * <b>Web Design Copyright (c) 2009, 2011</b>
+ *
+ * - Sayem Chaklader     <span class="simple">(gearspec@gmail.com)</span>
+ *
+ * <b>Translations Copyright (c) 2008 - 2011</b>
+ *
+ * @htmlonly
+ * <table style="border:none; margin-left:20px;">
+ * <tr><td>• Belarusian                   </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
+ * <tr><td>• Bulgarian                    </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
+ * <tr><td>• Burmese                      </td><td>-</td><td> Muhamed Widuya</td></tr>
+ * <tr><td>• Catalan                      </td><td>-</td><td> Illes Balears</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Joseph S. B. Maza</td></tr>
+ * <tr><td>                               </td><td>-</td><td> TurboHz</td></tr>
+ * <tr><td>• Chinese (Simplified)         </td><td>-</td><td> muzuiget</td></tr>
+ * <tr><td>                               </td><td>-</td><td> HPJ</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Tommy He</td></tr>
+ * <tr><td>• Chinese (Traditional)        </td><td>-</td><td> muzuiget</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Ryan Ping Chih Ko</td></tr>
+ * <tr><td>                               </td><td>-</td><td> rexx</td></tr>
+ * <tr><td>                               </td><td>-</td><td> James Bond</td></tr>
+ * <tr><td>• Croatian                     </td><td>-</td><td> Denis Jeličić</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
+ * <tr><td>• Czech                        </td><td>-</td><td> David Horák /Dave MacBlack/</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Pavel Kinkor</td></tr>
+ * <tr><td>• Danish                       </td><td>-</td><td> Patrick Paludan-Müller</td></tr>
+ * <tr><td>• Dutch                        </td><td>-</td><td> Wim Kerstens</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Klaas Nekeman</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Tom Louwrier</td></tr>
+ * <tr><td>• English (GB)                 </td><td>-</td><td> Andrew Smith</td></tr>
+ * <tr><td>• English (US)                 </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
+ * <tr><td>• Estonian                     </td><td>-</td><td> Olav Mägi</td></tr>
+ * <tr><td>• Farsi                        </td><td>-</td><td> Ali Jafari</td></tr>
+ * <tr><td>• Filipino (Ilokano)           </td><td>-</td><td> Joseph S. B. Maza</td></tr>
+ * <tr><td>• Filipino (Tagalog)           </td><td>-</td><td> Joseph S. B. Maza</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Stefan Pendl</td></tr>
+ * <tr><td>• Finnish                      </td><td>-</td><td> jtl</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Stefan Pendl</td></tr>
+ * <tr><td>• French                       </td><td>-</td><td> Pascal Crozet</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Jérôme Blum</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Mathieu Van Weersch</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Marina Louwrier-Johannsen</td></tr>
+ * <tr><td>• Galician                     </td><td>-</td><td> Julio Mojón Fuentes</td></tr>
+ * <tr><td>• German                       </td><td>-</td><td> Stefan Geuken</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Stefan Pendl</td></tr>
+ * <tr><td>• Greek                        </td><td>-</td><td> Konstantinos Kapoukranidis</td></tr>
+ * <tr><td>• Hebrew                       </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
+ * <tr><td>• Hindi                        </td><td>-</td><td> Gaurav Chatterjee</td></tr>
+ * <tr><td>• Hungarian                    </td><td>-</td><td> Nagy Zsolt</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Áron Hegedüs</td></tr>
+ * <tr><td>• Icelandic                    </td><td>-</td><td> Stefan Pendl</td></tr>
+ * <tr><td>• Indonesian                   </td><td>-</td><td> Imanuel Novian</td></tr>
+ * <tr><td>• Indonesian (Bahasa Indonesia)</td><td>-</td><td> Taufan Nur Hidayat</td></tr>
+ * <tr><td>• Italian                      </td><td>-</td><td> Paolo Loggia</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Sherpya</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Edoardo Brunetti</td></tr>
+ * <tr><td>• Japanese                     </td><td>-</td><td> ao3</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Masao Kajiwara</td></tr>
+ * <tr><td>• Javanese                     </td><td>-</td><td> Taufan Nur Hidayat</td></tr>
+ * <tr><td>• Korean                       </td><td>-</td><td> Alex Han</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Inhwan Hwang</td></tr>
+ * <tr><td>                               </td><td>-</td><td> 4Li</td></tr>
+ * <tr><td>• Latin                        </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
+ * <tr><td>• Latvian                      </td><td>-</td><td> Sevelyr</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Vladislav Stuzhnev</td></tr>
+ * <tr><td>• Macedonian                   </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
+ * <tr><td>• Norwegian                    </td><td>-</td><td> Sveinung Heggen</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Stefan Pendl</td></tr>
+ * <tr><td>• Polish                       </td><td>-</td><td> Andrzej Rudnik</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Krzysztof Swiderski</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Ireneusz Chorosz</td></tr>
+ * <tr><td>• Portuguese                   </td><td>-</td><td> Ricardo A. Garcia</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Carlos Rodrigues</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Sérgio Marques</td></tr>
+ * <tr><td>• Portuguese (BR)              </td><td>-</td><td> Depeo da Masol</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Felipe</td></tr>
+ * <tr><td>• Romanian                     </td><td>-</td><td> Micu Dumitru</td></tr>
+ * <tr><td>• Russian                      </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
+ * <tr><td>• Serbian                      </td><td>-</td><td> Damjan Daljevic</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
+ * <tr><td>• Slovak                       </td><td>-</td><td> Milan Cerovský</td></tr>
+ * <tr><td>• Slovenian                    </td><td>-</td><td> Miha Mlakar</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
+ * <tr><td>• Spanish (AR)                 </td><td>-</td><td> Daniel Testa</td></tr>
+ * <tr><td>• Spanish (ES)                 </td><td>-</td><td> Txusti</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Juan C. Mendez Valledor</td></tr>
+ * <tr><td>• Spanish (MEX)                </td><td>-</td><td> Conrad Flyckt</td></tr>
+ * <tr><td>• Swedish                      </td><td>-</td><td> Magnus Rostedt</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Per-Eric Jenshagen</td></tr>
+ * <tr><td>• Tamil                        </td><td>-</td><td> Vinod V.</td></tr>
+ * <tr><td>• Thai                         </td><td>-</td><td> Pat Taweewat</td></tr>
+ * <tr><td>• Turkish                      </td><td>-</td><td> Huseyin Kozan</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Vedat Odabasioglu</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Şahin Salincakli</td></tr>
+ * <tr><td>• Ukrainian                    </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
+ * <tr><td>• Vietnamese (VI)              </td><td>-</td><td> Vietnamize Team</td></tr>
+ * <tr><td>• Yiddish                      </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
+ * </table>
+ * @endhtmlonly
+ *
+ * <b>Portions Copyright (c)</b>
+ *
+ * UltraDefrag includes portions of the following open source libraries:
+ * <a href="http://www.lua.org/">Lua</a>, 
+ * <a href="http://www.gnu.org/software/libc/">GNU C Library</a>,
+ * <a href="http://www.stanford.edu/~blp/avl/">GNU libavl</a>. Also 
+ * UltraDefrag includes portions of <a href="http://www.reactos.org/">ReactOS</a> code.
+ *
+ * - Portions Copyright © 1994-2007 Lua.org, PUC-Rio
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in the
+ * Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the
+ * Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+ * KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+ * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+ * PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
+ * OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+ * 
+ * - Portions Copyright (C) 1989,90,91,92,93,94,96,97 Free Software Foundation, Inc.
+ *
+ * The GNU C Library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public License as
+ * published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
+ * 
+ * The GNU C Library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Library General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Library General Public
+ * License along with this program. If not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ * - Portions Copyright (C) 1998, 1999, 2000, 2001, 2002, 2004 Free Software Foundation, Inc.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301 USA.
+ *
+ * - Portions Copyright (C) 2002 ReactOS Team
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ * <b>Chief Architect</b>
+ *
+ * - Dmitri Arkhangelski <span class="simple">(dmitriar@users.sourceforge.net)</span>
+ *
+ * <b>Translation Manager</b>
+ *
+ * - Stefan Pendl   <span class="simple">(stefanpe@users.sourceforge.net)</span>
+ *
+ * Special thanks for contributions (in alphabetical order):
+ *
+ * @htmlonly
+ * <table style="border:none; margin-left:20px;">
+ * <tr><td>• Justin Dearing          </td><td>-</td><td> An initial version of this handbook and other documentation files.</td></tr>
+ * <tr><td>                          </td><td> </td><td> UltraDefrag Scheduler .NET application.</td></tr>
+ * <tr><td>• Tiago Filipe Silva      </td><td>-</td><td> Optimization of web images and udsorting.js script.</td></tr>
+ * </table>
+ * @endhtmlonly
+ *
+ * Special thanks for good suggestions (in alphabetical order):
+ *
+ * @htmlonly
+ * <table style="border:none; margin-left:20px;">
+ * <tr><td>• Alexander Peter Kowalski</td><td>-</td><td> Process priority control (not implemented yet).</td></tr>
+ * <tr><td>• Alexander Vedyakin      </td><td>-</td><td> Disk type detection improvements.</td></tr>
+ * <tr><td>                          </td><td> </td><td> More effective defragmenting algorithms.</td></tr>
+ * <tr><td>• Andrei Maksimov         </td><td>-</td><td> GUI improvements.</td></tr>
+ * <tr><td>                          </td><td> </td><td> A lot of other interesting ideas.</td></tr>
+ * <tr><td>• Bryan Kirk              </td><td>-</td><td> Better GUI appearance (new list of drives).</td></tr>
+ * <tr><td>                          </td><td> </td><td> Autodefrag feature (not implemented yet).</td></tr>
+ * <tr><td>• Christopher Naegel      </td><td>-</td><td> A partial solution for kernel mode driver loading problem on Vista.</td></tr>
+ * <tr><td>• Craig Oakes             </td><td>-</td><td> Hint about case mismatch of configuration dialog help files.</td></tr>
+ * <tr><td>                          </td><td> </td><td> Hint about problem with .lua file open action registration.</td></tr>
+ * <tr><td>• Dario Raparelli         </td><td>-</td><td> NT 4.0 support.</td></tr>
+ * <tr><td>• Jan Loncik              </td><td>-</td><td> x64 native support. Better default values for filters.</td></tr>
+ * <tr><td>• Jim Laski               </td><td>-</td><td> System fonts and visual styles for graphical interface.</td></tr>
+ * <tr><td>• Justin Dearing          </td><td>-</td><td> Boot time defragmentation.</td></tr>
+ * <tr><td>• Kalle Koseck            </td><td>-</td><td> Disk analysis speedup. GUI improvements.</td></tr>
+ * <tr><td>• Kerem Gümrükcü          </td><td>-</td><td> Manifests for Vista User Account Control (UAC).</td></tr>
+ * <tr><td>• Leland G. Whitlock      </td><td>-</td><td> Progress bar. More effective defragmenting algorithms.</td></tr>
+ * <tr><td>• Markus Elfring          </td><td>-</td><td> Strong error handling.</td></tr>
+ * <tr><td>• Mike Braca              </td><td>-</td><td> Reducing driver's memory usage by the new cluster map internal representation.</td></tr>
+ * <tr><td>• Nagy Zsolt              </td><td>-</td><td> Internationalization support. Installer improvements.</td></tr>
+ * <tr><td>• Parvez Reza             </td><td>-</td><td> Various interesting programming tricks.</td></tr>
+ * <tr><td>• Steve Lawrence          </td><td>-</td><td> Shutdown when done option.</td></tr>
+ * <tr><td>• Vasily Smirnov          </td><td>-</td><td> FAT directories defragmentation algorithm.</td></tr>
+ * <tr><td>                          </td><td> </td><td> Various important GUI improvements.</td></tr>
+ * </table>
+ * @endhtmlonly
+ *
+ * Special thanks for correcting and updating translations (in alphabetical order):
+ *
+ * - Benny Stütz
+ * - Christoffer Ekberg
+ * - Connection
+ * - Erwin Dokter
+ * - Francisco Ortega Olivos
+ * - FS
+ * - Gellért Lukács
+ * - Haein Jung
+ * - Harald Arnesen
+ * - Joseph S. B. Maza
+ * - José Carlos Taveira de Souza
+ * - José Luis Farías
+ * - Ken Choy
+ * - Latino
+ * - Leo Smulders
+ * - Massa
+ * - Matej Marton
+ * - Patrick Palm
+ * - Reynald Didier
+ * - Robert Jr
+ * - SMHA
+ * - translucens
+ *
+ * Special thanks for extensive testing (in alphabetical order):
+ *
+ * - Andrei Maksimov
+ * - Brent Jenkins
+ * - Fred Schall
+ * - Jeff Cubillos
+ * - Kalle Koseck
+ * - Kerem Gümrükcü
+ * - Leslie Trenholm
+ * - Markus Elfring
+ * - Nagy Zsolt
+ * - Sachin Kunjikoran
+ * - Stefan Pendl
+ *
+ * Also special thanks is going to:
+ * - <a href="http://www.gr-oborona.ru">Egor Letov</a>
+ * - <a href="http://www.sysinternals.com">Mark Russinovich</a>
+ * - <a href="http://www.soldatov.net">V. Soldatov</a>
+ * - <a href="http://free.pages.at/blumetools/">blume1975</a>
+ * - <a href="http://www.reactos.org">ReactOS Team</a>
+ * - <a href="http://nsis.sourceforge.net">NSIS developers</a>
+ * - <a href="http://upx.sf.net">Markus F.X.J. Oberhumer, László Molnár &  John F. Reiser</a>
+ * - <a href="http://www.mingw.org">MinGW Team</a>
+ * - <a href="http://alter.org.ua/en/">Alexander A. Telyatnikov</a>
+ * - <a href="http://www.codeproject.com/Members/Mumtaz-Zaheer">Mumtaz Zaheer</a>
+ * - <a href="http://chibios.sourceforge.net/">Giovanni Di Sirio</a>
+ * - <a href="http://www.catch22.net/">James Brown</a>
+ * - <a href="http://forum.pellesc.de/index.php?topic=3265.0">timovjl</a>
+ * - <a href="http://www.lokeshdhakar.com/projects/lightbox2/">Lokesh Dhakar</a>
+ *
+ * Also many thanks to all the people who helped us improve UltraDefrag.
+ *
+ * This documentation is licensed under the terms of the @ref FDL.
+ *
+ * The program is licensed under the terms of the @ref GPL.
+ *
+ * <HR>
+ *  <TABLE BORDER="0" STYLE="width: 97%; margin:auto;">
+ *    <TR>
+ *      <TD STYLE="text-align: left; width: 50%;">Previous: @ref ReportingBugs</TD>
+ *      <TD STYLE="text-align: right; width: 50%;">Next: @ref index</TD>
+ *    </TR>
+ *  </TABLE>
+ */

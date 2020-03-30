@@ -1,0 +1,118 @@
+#
+#         Plain general makefile, for ultradefrag 68K compilations
+#
+
+.SUFFIXES : .c .s .ss .o .oo .68 .map
+
+HCC=hcc68
+#TOP=top68
+TOP=/shared/c-src/sozobon/top68
+CLINK=clink
+CLIB=clibr
+INCL=-I$(NTFS)/replace -I/shared/c-src/palmdev -I$(WINROOT)/lc6 -I../../include
+DEFS='-DSTSC;__noalign=;__nopad=;__private=;__huge='
+LIBDIR=/shared/c-src/palmdev
+
+NTFS=/shared/ntfs/ntfslowprof
+
+H= ../../include/compiler.h ../../include/linux.h  ../../include/ultradfgver.h \
+   ../udefrag/udefrag.h \
+   zenwinx.h ntndk.h ntfs.h
+
+O= dbg.o env.o event.o file.o ftw.o ftw_ntfs.o ldr.o list.o lock.o \
+	mem.o misc.o path.o prb.o string.o thread.o time.o volume.o zenwinx.o
+L= dbg.l env.l event.l file.l ftw.l ftw_ntfs.l ldr.l list.l lock.l \
+	mem.l misc.l path.l prb.l string.l thread.l time.l volume.l zenwinx.l
+
+# cancel implicit rule for building .c from .l (lex file) :
+%.c : %.l
+
+# cancel implicit rule for building . from .c
+% : %.c
+
+# cancel implicit rule for building . from .s
+% : %.s
+
+.c.o:
+	$(HCC) $(INCL) -cABS -UX86 $(DEFS) $*.c | $(TOP) - $*.o
+
+.c.l:
+	$(HCC) $(INCL) -cABS -UX86 $(DEFS) $*.c | $(TOP) -lv - $*.o > $*.l
+
+.c.s:
+	$(HCC) $(INCL) -cABS -UX86 $(DEFS) $*.c > $*.s
+
+.c.ss:
+	$(HCC) $(INCL) -ABS -UX86 $(DEFS) $*.c | $(TOP) -vs - $*.ss
+
+
+.oo.68 :
+	$(CLINK) -w -o $*.68 -m $*.map -l $(LIBDIR)syslib $*.oo
+
+.o .o. :
+	echo Please use .prc or .68 suffix for executable files
+
+all : zenwinx.a
+
+zenwinx.a : $(O)
+	rm -f zenwinx.a
+	$(CLIB) r zenwinx.a $(O)
+
+lists : $(L)
+	rm -f zenwinx.a
+	$(CLIB) r zenwinx.a $(O)
+
+zenwinx.68 : $(O)
+	$(CLINK) -w -o zenwinx.68 -m zenwinx.map -l $(LIBDIR)/syslib $(O)
+
+dbg.o dbg.s dbg.l : $(H) dbg.c
+
+env.o env.s env.l : $(H) env.c
+
+event.o event.s event.l : $(H) event.c
+
+file.o file.s file.l : $(H) file.c
+
+ftw.o ftw.s ftw.l : $(H) ftw.c
+
+ftw_ntfs.o ftw_ntfs.s ftw_ntfs.l : $(H) ftw_ntfs.c
+
+int64.o int64.s int64.l : $(H) int64.c
+
+keyboard.o keyboard.s keyboard.l : $(H) keyboard.c
+
+keytrans.o keytrans.s keytrans.l : $(H) keytrans.c
+
+ldr.o ldr.s ldr.l : $(H) ldr.c
+
+list.o list.s list.l : $(H) list.c
+
+lock.o lock.s lock.l : $(H) lock.c
+
+mem.o mem.s mem.l : $(H) mem.c
+
+misc.o misc.s misc.l : $(H) misc.c
+
+path.o path.s path.l : $(H) path.c
+
+prb.o prb.s prb.l : $(H) prb.c
+
+privilege.o privilege.s privilege.l : $(H) privilege.c
+
+reg.o reg.s reg.l : $(H) reg.c
+
+stdio.o stdio.s stdio.l : $(H) stdio.c
+
+string.o string.s string.l : $(H) string.c
+
+thread.o thread.s thread.l : $(H) thread.c
+
+time.o time.s time.l : $(H) time.c
+
+volume.o volume.s volume.l : $(H) volume.c
+
+zenwinx.o zenwinx.s zenwinx.l : $(H) zenwinx.c
+
+clean :
+	rm -f $(O)
+	rm -f *.s *.asm *.l *.map

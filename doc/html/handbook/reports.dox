@@ -1,0 +1,126 @@
+/*
+ *  UltraDefrag - a powerful defragmentation tool for Windows NT.
+ *  Copyright (c) 2007-2011 by Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2011 by Stefan Pendl (stefanpe@users.sourceforge.net).
+ *
+ *  Permission is granted to copy, distribute and/or modify this document
+ *  under the terms of the GNU Free Documentation License, Version 1.3 or
+ *  any later version published by the Free Software Foundation; with no
+ *  Invariant Sections.
+ */
+
+/**
+ * @page Reports File Fragmentation Reports
+ *
+ * Every time you run a disk analysis, defragmentation or
+ * optimization, UltraDefrag produces the file fragmentation
+ * report with a full list of fragmented files located on the
+ * disk.
+ *
+ * UltraDefrag saves file fragmentation reports in the
+ * following two formats: LuaReport and Plain Text. The first
+ * is used to generate HTML reports from. The second 
+ * format is used to ensure that the report will 
+ * be accessible even on machines without any web browser installed.
+ *
+ * UltraDefrag saves all reports to the root directories of
+ * the processed disks. To open LuaReport click the fraglist.luar
+ * file in Explorer or simply click the Report button in the
+ * UltraDefrag GUI after a disk defragmentation/analysis job has
+ * completed. To open the Plain Text report click the fraglist.txt
+ * file in Explorer.
+ *
+ * To distinguish between old and new reports, the date and time is
+ * included in the header of the report.
+ *
+ * When you are opening the LuaReport a single HTML page is
+ * generated and opened in your default web browser. It contains the
+ * list of fragmented files. The meaning of the columns are described below.
+ *
+ * By default, all files are sorted by number of fragments
+ * in descending order. To change the sorting click the column
+ * heading by which to sort the list. Note that it is a slow
+ * process (~350 lines/sec on 1.8GHz CPU). Sorting
+ * implemented in JavaScript is slow, but very reliable.
+ *
+ * Note that files excluded from processing are never treated as fragmented.
+ * Because only files affecting system performance should get our attention.
+ *
+ * <h1>Columns</h1>
+ * <dl>
+ * <dt>Fragments</dt>
+ * <dd>The number of fragments.</dd>
+ * <dt>Filesize</dt>
+ * <dd>The size of the file.</dd>
+ * <dt>Comment</dt>
+ * <dd><b>[OVR]</b> for files above the size threshold, <b>[DIR]</b> for directories and <b>[CMP]</b>
+ * for NTFS compressed files</dd>
+ * <dt>Status</dt>
+ * <dd>This is the reason the file is still fragmented. The following states are displayed:<br/>
+ * <b>locked, move failed</b> (file moving failed), <b>too big</b> (block of free space too small),<br/>
+ * <b>improper state</b> (the file system needs to be checked - run <i>CHKDSK {Driveletter} /F /R</i>)</dd>
+ * <dt>Filename</dt>
+ * <dd>This is the full path of the file.</dd>
+ * </dl>
+ *
+ * <h1>Configuring</h1>
+ * All options related to file fragmentation reports are
+ * contained in the udreportopts.lua file inside the
+ * /options sub-folder of the program's directory.
+ *
+ * To open this file for editing click its icon in Explorer
+ * or simply select <b>Settings => Reports</b> from the
+ * UltraDefrag GUI menu.
+ *
+ * The udreportopts.lua file contains parameter-value pairs
+ * and comments (they are starting with double dashes).
+ * However this file is a real program written in the
+ * <a href="http://www.lua.org/">Lua</a> programming language.
+ *
+ * The following configuration is used by default:
+ *
+@verbatim
+-------------------------------------------------------------------------------
+-- Ultra Defragmenter report options
+-------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+-- All these options were primarily designed to achieve better
+-- compatibility with old web browsers.
+-------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+-- Set enable_sorting to zero if your web browser is too old
+-- and you have error messages about invalid javascript code.
+-------------------------------------------------------------------------------
+enable_sorting = 1
+
+-------------------------------------------------------------------------------
+-- Set this parameter to 1 if you prefer to look at filenames split
+-- into few short lines. If you prefer to use full-screen mode of your
+-- web browser then set this parameter to zero.
+-------------------------------------------------------------------------------
+split_long_names = 0
+
+-------------------------------------------------------------------------------
+-- Set here maximum number of characters per line in filename cells.
+-------------------------------------------------------------------------------
+max_chars_per_line = 50
+
+-------------------------------------------------------------------------------
+-- A web page style can be set through udreport.css style sheet.
+-------------------------------------------------------------------------------
+@endverbatim
+ *
+ * If you have problems editing configuration files, use the
+ * Tools > Folder options > File types menu in Explorer to
+ * associate the lua extension with your preferred text editor. 
+ *
+ * <HR>
+ * <TABLE BORDER="0" STYLE="width: 97%; margin:auto;">
+ * <TR>
+ * <TD STYLE="text-align: left; width: 50%;">Previous: @ref Boot</TD>
+ * <TD STYLE="text-align: right; width: 50%;">Next: @ref Tips</TD>
+ * </TR>
+ * </TABLE>
+ */

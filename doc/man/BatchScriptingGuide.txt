@@ -1,0 +1,8 @@
+Underused features of Windows batch files:
+    http://stackoverflow.com/questions/245395/underused-features-of-windows-batch-files
+
+Windows XP Command Line Syntax
+    http://ss64.com/nt/syntax.html
+
+Rob van der Woude's Scripting Pages
+    http://www.robvanderwoude.com/

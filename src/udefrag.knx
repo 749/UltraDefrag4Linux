@@ -1,0 +1,113 @@
+#
+#         Plain general makefile, for ultradefrag compilations
+#         Host Linux, target Linux 32-bit
+#
+
+HCCLNX=hcclnx
+TOPLNX=toplnx
+ASM86=asm86
+
+# restrict suffixes list to the ones we define
+.SUFFIXES :
+# this list controls the ordering of rule evaluation
+.SUFFIXES : .c .cpp .java .s .o .l .map
+
+# cancel implicit rule for building .c from .l (lex file) :
+%.c : %.l
+
+# cancel implicit rule for building . from .c
+% : %.c
+
+# cancel implicit rule for building . from .s
+% : %.s
+
+NTFS=/home/linux/rpmbuild/ntfs/ntfslow
+
+INCL=-I/usr/include -I/shared/c-src/include/linux -Iinclude
+# use a symbolink link to locate the actual library,
+# eg /usr/lib/gcc/i386-redhat-linux/3.4.2
+#LIB=/usr/lib/gcclib
+LIB1=/shared/knoppix/usr/lib
+LIB2=/shared/knoppix/usr/lib/gcc/i486-linux-gnu/4.1.2
+COPT=-DLXSC -DNOMEMCHK
+GCCOPT=-DLXGC -O2
+
+A=console.a udefrag.a zenwinx.a wincalls.a
+
+.c.s :
+	$(HCCLNX) -A16S $(COPT) $(INCL) $*.c > $*.s
+
+.cpp.o :
+	gcc $(GCCOPT) -c -o$*.o $*.cpp
+
+.c.o :
+	$(HCCLNX) -A16S $(COPT) $(INCL) $*.c | $(TOPLNX) - $*.o
+
+.c.l :
+	$(HCCLNX) -A16S $(COPT) $(INCL) $*.c | $(TOPLNX) -lv - $*.o > $*.l
+
+.cpp.s :
+	gcc $(GCCOPT) -A16S -o$*.s $*.cpp
+
+.s.o :
+	asm32 -lk3 -o$*.o $*.s
+
+.java :
+	gcj -m32 -march=i386 --main=$* -o $* $*.java
+
+.o .o. :
+#	gcc -s -o $*. $*.o
+# add -lstdc++ if any C++ files
+	ld  -m elf_i386 -dynamic-linker /lib/ld-linux.so.2 -s -o $* \
+		/usr/lib/crt1.o /usr/lib/crti.o $(LIB)/crtbegin.o \
+		$*.o -lgcc -L$(LIB) -L/usr/lib -lc -lm \
+		$(LIB)/crtend.o /usr/lib/crtn.o
+
+.o.map :
+#	gcc -s -o $*. -M $*.o
+# add -lstdc++ if any C++ files
+	ld  -m elf_i386 -dynamic-linker /lib/ld-linux.so.2 -o $* -M \
+		/usr/lib/crt1.o /usr/lib/crti.o $(LIB)/crtbegin.o \
+		$*.o -lgcc -L$(LIB) -L/usr/lib -lc -lm \
+		$(LIB)/crtend.o /usr/lib/crtn.o > $*.map
+
+all : udefrag
+
+console.a :
+	cd console; make -f console.knx console.a
+
+udefrag.a :
+	cd dll/udefrag; make -f udefrag.knx udefrag.a
+
+zenwinx.a :
+	cd dll/zenwinx; make -f zenwinx.knx zenwinx.a
+
+wincalls.a :
+	cd wincalls; make -f wincalls.knx wincalls.a
+
+clean :
+	cd console; make -f console.knx clean
+	cd dll/udefrag; make -f udefrag.knx clean
+	cd dll/zenwinx; make -f zenwinx.knx clean
+	cd wincalls; make -f wincalls.knx clean
+
+lists :
+	cd console; make -f console.knx lists
+	cd dll/udefrag; make -f udefrag.knx lists
+	cd dll/zenwinx; make -f zenwinx.knx lists
+	cd wincalls; make -f wincalls.knx lists
+
+udefrag : $(A)
+#	$(LD)  -m elf_i386 -dynamic-linker /lib/ld-linux.so.2 -o udefrag -M \
+#		/usr/lib/crt1.o /usr/lib/crti.o $(LIB)/crtbegin.o \
+#		console/console.a dll/udefrag/udefrag.a dll/zenwinx/zenwinx.a \
+#		wincalls/wincalls.a $(NTFS)/libntfs-3g/libntfs.a \
+#		-lgcc -L$(LIB) -L/usr/lib -lc -lm -lpthread -lncurses \
+#		$(LIB)/crtend.o /usr/lib/crtn.o > udefrag.map
+	ld  -m elf_i386 -dynamic-linker /lib/ld-linux.so.2 -o udefrag -s -M \
+		$(LIB1)/crt1.o $(LIB1)/crti.o $(LIB2)/crtbegin.o \
+		console/console.a dll/udefrag/udefrag.a dll/zenwinx/zenwinx.a \
+		wincalls/wincalls.a $(NTFS)/knoppix-libntfs-3g.a \
+		-L$(LIB2) -L$(LIB1) -lgcc -lc -lm -lpthread -lncurses \
+		/shared/knoppix/lib/ld-linux.so.2 \
+		$(LIB2)/crtend.o $(LIB1)/crtn.o > udefrag.map

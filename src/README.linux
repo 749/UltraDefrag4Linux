@@ -1,0 +1,244 @@
+The Ultra Defragmenter for Linux
+================================
+
+UltraDefrag was originally developed for Windows. Porting to Linux
+implied replacing calls to Windows services by calls to services provided
+by Linux, and specifically using services provided by libntfs-3g, a
+library providing access to NTFS partitions. This work is still in
+progress, but restricted features in terminal mode are available.
+
+For more information on UltraDefrag and ntfs-3g see their respective
+home pages :
+
+	http://ultradefrag.sourceforge.net
+	http://www.tuxera.com/community/ntfs-3g-download/
+
+Copyright (c) 2007-2011 UltraDefrag Development Team.
+Copyright (c) 2011      Jean-Pierre Andre for the Linux version
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+This is an initial version released for tests only. DO NOT USE IT
+ON PARTITIONS WITH VALUABLE DATA, WITHOUT DOING A FULL BACKUP. YOU HAVE
+BEEN WARNED. Only the console mode is supported (no GUI !)
+
+Compiling
+=========
+
+To use UltraDefrag on Linux, you first need to have ntfs-3g installed
+and you need to have the libntfs-3g headers from a matching development
+version.
+
+There is currently no "configure" script to build Makefile's tailored for
+your environment. You may have to build your own "Makefile"s, though the
+standard Makefile's provided will do in most cases, after adapting the
+locations of the header files and shared object of libntfs-3g. Also check
+whether the "compiler.h" header file has appropriate definitions for your
+computer and compiler.
+
+Currently only configurations for X86-32, X86-64, M68k, Sparc and PowerPC
+have been tested on Linux, and a configuration for Windows in 32-bit mode
+has also been tested. Specific Makefiles for the above mentioned test
+configurations may also be a good base for deriving your own.
+
+Usage
+=====
+
+After having successfully compiled, and made a backup of your important
+files, you can start the defragmenter by issuing in a terminal windows the
+command :
+
+		udefrag [options] <device>
+
+Where <device> is an unmounted partition, such as "/dev/sdb1" (quotes
+not required). UltraDefrag will start and display the file is is currently
+defragmenting. After it finishes, a report is stored in the file "fraglist.txt"
+within the defragmented partition. Currently, a single partition may be
+selected, and the options to request or deny specific files are not
+available.
+
+The only options currently available are :
+
+    -f n, --min-fragments=n :
+	Only defragment files with more than n fragments (n being a
+	decimal number)
+    -h, --help :
+	Display basic usage information
+    -m, --show-cluster-map :
+	Display a rough map of used space. The characters displayed show
+	what the space is used for. If the option is not selected, an
+	indication of the file being defragmented is displayed.
+    -n, --dry-run, --do_nothing :
+	Do not make any modification to the file system.
+    -o, --optimize :
+	Optimize volume space (instead of default : defragment files)
+    -s n, --max-size==n :
+	Only defragment files bigger than n bytes (n being a decimal
+	number with an optional suffix K, M, G or T)
+    -t, --trace :
+	Output debugging information to stderr. More information may be
+	obtained by setting the option twice.
+    --map-rows=n :
+	Number of rows to display the cluster map on screen
+    --map-symbols-per-line=n
+	Number of columns to display the cluster map on screen
+
+DO NOT STOP A DEFRAGMENTATION in progress by killing the process or
+shutting down the computer. You may however stop it safely by hitting
+Ctrl-C.
+
+Defragmentation generally creates contiguous free space which provides
+opportunity for further defragmentation, so restarting udefrag may yield
+a better defragmentation.
+
+Developer's corner
+==================
+
+If you want to dig into the code, below are the changes which had to
+be done for porting from Windows. Improvements and bug fixes complying
+with these rules are welcome.
+
+Variables
+=========
+
+The usual types for integers of mandatory sizes defined in windows.h
+(such as SHORT, WORD or ULONG) are defined on Linux with the same size,
+however their endianness is the one generally used in the architecture.
+
+When a variable defined with a mandatory size is to be formatted using
+a printf-type function, it has to be cast to a basic C type to get
+independence from the architecture. A variable defined as ULONG (32 bits)
+is printed wrongly with the format "%lu" on computers using 64 bits for
+an unsigned long. Similarly, sizeof() or strlen() may return 64-bit
+values badly printed with "%u".
+
+Formating a 64-bit integer requires a format "%I64d" or "%lld", so the
+macro LL64 is defined to mean "I64" or "ll" as appropriate. The
+corresponding expression must be cast to 64 bits, typically by as cast
+to ULONGLONG.
+
+Note : make sure that LONGLONG and the QuadPart of a LARGE_INTEGER are
+declared as a 64-bit signed integer and not as a double (as may be the
+case in old winnt.h). As a workaround SLONGLONG has been defined as a
+64-bit signed integer in compiler.h and LARGE_INTEGER has been defined
+accordingly in ntndk.h.
+
+Of course, Ultradefrag is about defragging file systems which have an
+internal little endian data representation (even on big endian computers).
+The types LESHORT, LELONG and LELONGLONG are used to identify integers
+which are little endian on any computer. These types are the same as
+USHORT, ULONG and ULONGLONG on little endian computers. They can be
+assigned and compared for equality provided they have the same size,
+but for other operations they have to be converted to "cpu-endian". A
+few macroes have been defined for these conversions on computer which
+need them.
+
+Character strings
+=================
+
+Windows and Linux usually use different representation of characters.
+
+Windows uses two bytes per character from the basic Unicode set (the
+extended set requiring surrogate pairs is rarely used). The
+less significant byte comes first (little-endian representation),
+so this is the UTF-16LE encoding of Unicode characters. C compiler
+environments define the type wchar_t as a two-byte unsigned integer,
+thus restricting the character set to the basic one, and the L"string"
+constructs mean a sequence of such wchar_t's.
+
+Linux uses one to three bytes per character from the basic Unicode set
+(four bytes for the extended set). This is the UTF-8 encoding. C compiler
+environments define wchar_t as a four-byte signed integer with the
+natural endianness of the CPU used. The L"string" constructs mean
+a sequence of such wchar_t's, not UTF-8 encoded.
+
+In order to maximally share the code between Windows and Linux, and
+minimize translations between representations, we use the following
+conventions :
+
+In most situations, the Unicode characters are encoded according to
+the traditions of each OS : UTF-16LE for Windows, and UTF-8 for Linux.
+The type utf_t defines a unit of storage for such a string : unsigned
+short on Windows, and char for Linux. String litterals must be defined
+by using the macro UTF("string") which translates to a wide character
+string on Windows and to a plain character string on Linux.
+
+Example :
+		const utf_t name[] = UTF("my name");
+Which the C preprocessor translates on Windows as :
+		const w_char name[] = L"my name";
+and on Linux as :
+		const char name[] = "my name";
+
+Similarly usual string functions are described with the prefix utf
+to mean an action on w_chars on Windows and an action on chars on Linux :
+
+utflen()   means   wcslen() or strlen()
+utfchr()           wcschr()    strchr()
+utfrchr()          wcsrchr()   strrchr()
+utfstr()           wcsstr()    strstr()
+utfcpy()           wcscpy()    strcpy()
+utfncpy()          wcsncpy()   strncpy()
+
+Of course, Ultradefrag has to deal with UTF-16LE strings for file names
+and attribute names. In such a situation a character is described by
+the type utf16_t, which is always a two-byte unsigned little endian integer.
+
+An extra set of functions has to be used for these strings : utf16len(),
+utf16chr(), etc. They are defined the same as wcs-type functions on Windows,
+but they have to be developed for Linux, even on little endian computers.
+
+Windows System calls
+====================
+
+Obviously Windows system calls are specific to Windows. When possible
+the needed system calls are emulated on Linux using the same name and
+arguments, either relying on Linux system calls (thread creation, memory
+allocation) or using the ntfs-3g library for NTFS file systems actions.
+
+When this is not possible, code sequences may be skipped or redefined
+through preprocessor commands (#ifdef LINUX).
+
+Volume letters
+==============
+
+Windows generally uses volume letters to designate a specific volume,
+whereas Linux uses device patch. Defining a specific type to mean either
+a volume letter or a device path would cause a lot of modifications to
+the code, so artificial volume letters are kept on Linux and used as
+indexes to an array of volume paths to access to volume when needed.
+This may have to be changed later if code parts are to be linked
+dynamically.
+
+Impact on existing code
+=======================
+
+Each source code file has begin with a #include "compiler.h" to identify
+the target environment and define macroes to be used on Windows or Linux
+for each function implemented according the the OS. The standard include
+file "windows.h" has to made conditional and replaced by "linux.h" to
+import definitions specific to Linux.
+
+Most of the changes to the code are related to character strings. They
+generally have to be defined as utf_t and string functions have to be
+replaced by macroes. Constant wide-strings (L"string") have also to be
+defined through a macro.
+
+Little-endian-only variables are apparently only found in ntfs.h and
+ftw_ntfs.c and need more changes.
+
+Two new source files have to be added for Linux only. The first one
+emulates the Windows system calls, and the second one makes the needed
+calls to the ntfs-3g driver.

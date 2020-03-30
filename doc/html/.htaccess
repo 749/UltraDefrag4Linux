@@ -1,0 +1,5 @@
+ErrorDocument 404 /Error_Pages/404.html
+# enable expirations
+ExpiresActive On
+# expire icon after a month in the client's cache
+ExpiresByType image/ico A2592000

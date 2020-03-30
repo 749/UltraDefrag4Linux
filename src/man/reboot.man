@@ -1,0 +1,28 @@
+REBOOT(1)           Ultradefrag Development Team            REBOOT(1)
+
+NAME
+        reboot - manual page for reboot v4.4.0
+
+SYNOPSIS
+        reboot
+
+DESCRIPTION
+        'reboot' immediately reboots your system.
+
+OPTIONS
+        none
+
+EXAMPLES
+        reboot
+                reboot the system
+        
+AUTHOR
+        Written by Ultradefrag Development Team
+
+COPYRIGHT
+        Copyright (C) 2010-2011 Ultradefrag Development Team
+        This is free software; see the source for copying conditions.
+        There is NO warranty; not even for MERCHANTABILITY
+        or FITNESS FOR A PARTICULAR PURPOSE.
+
+reboot                      September 2010                          1

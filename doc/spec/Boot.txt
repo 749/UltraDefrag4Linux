@@ -1,0 +1,5 @@
+Simple Boot Flag Specification
+    http://www.microsoft.com/whdc/resources/respec/specs/simp_boot.mspx
+
+Inside the Windows Pre-Boot and Boot Environment
+    http://download.microsoft.com/download/5/b/9/5b97017b-e28a-4bae-ba48-174cf47d23cd/cpa051_wh06.ppt

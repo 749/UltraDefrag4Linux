@@ -1,0 +1,21 @@
+-- this is the zenwinx library build options
+
+name        = "zenwinx"
+target_type = "dll"
+nativedll   = 1
+
+src = {
+    "event.c", "keyboard.c", "keytrans.c", "mem.c", "stdio.c",
+    "zenwinx.c", "misc.c", "ldr.c", "thread.c", "privilege.c",
+    "reg.c", "volume.c", "file.c", "env.c", "dbg.c", "time.c", 
+    "int64.c", "list.c", "string.c", "ftw.c", "ftw_ntfs.c",
+    "path.c", "lock.c", "mutex.c", "prb.c"
+}
+rc = { "zenwinx.rc" }
+
+deffile  = "zenwinx.def"
+-- we never use __stdcall convention
+mingw_deffile  = "zenwinx.def"
+baseaddr = "0x01800000"
+
+libs = { "ntdll" }

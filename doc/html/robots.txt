@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: http://ultradefrag.sourceforge.net/sitemap.xml

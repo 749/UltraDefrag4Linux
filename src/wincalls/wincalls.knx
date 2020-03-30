@@ -1,0 +1,98 @@
+#
+#         Plain general makefile, for ultradefrag compilations
+#         Host Linux, target Linux 32-bit
+#
+
+HCCLNX=hcclnx
+TOPLNX=toplnx
+ASM86=asm86
+
+# restrict suffixes list to the ones we define
+.SUFFIXES :
+# this list controls the ordering of rule evaluation
+.SUFFIXES : .c .cpp .java .s .o .l .map
+
+# cancel implicit rule for building .c from .l (lex file) :
+%.c : %.l
+
+# cancel implicit rule for building . from .c
+% : %.c
+
+# cancel implicit rule for building . from .s
+% : %.s
+
+NTFS1=/home/linux/rpmbuild/ntfs/ntfslow/ntfs-3g
+NTFS=/home/linux/rpmbuild/ntfs/ntfslowprof
+
+INCL=-I/usr/include -I/shared/c-src/include/linux -I../include -I../dll/zenwinx \
+	-I$(NTFS) -I$(NTFS)/include/ntfs-3g
+# use a symbolink link to locate the actual library,
+# eg /usr/lib/gcc/i386-redhat-linux/3.4.2
+LIB=/usr/lib/gcclib
+COPT=-DLXSC -DNOMEMCHK
+GCCOPT=-DLXGC -O2
+
+O=wincalls.o ntfs-3g.o curses.o
+L=wincalls.l ntfs-3g.l curses.l
+
+H=../include/linux.h ../include/compiler.h ntfs-3g.h \
+	../dll/zenwinx/ntndk.h ../dll/zenwinx/ntfs.h ../dll/zenwinx/zenwinx.h
+
+.c.s :
+	$(HCCLNX) -A16S $(COPT) $(INCL) $*.c > $*.s
+
+.cpp.o :
+	gcc $(GCCOPT) -c -o$*.o $*.cpp
+
+.c.o :
+	$(HCCLNX) -A16S $(COPT) $(INCL) $*.c | $(TOPLNX) - $*.o
+
+.c.l :
+	$(HCCLNX) -A16S $(COPT) $(INCL) $*.c | $(TOPLNX) -lv - $*.o > $*.l
+
+.cpp.s :
+	gcc $(GCCOPT) -A16S -o$*.s $*.cpp
+
+.s.o :
+	asm32 -lk3 -o$*.o $*.s
+
+.java :
+	gcj -m32 -march=i386 --main=$* -o $* $*.java
+
+.o .o. :
+#	gcc -s -o $*. $*.o
+# add -lstdc++ if any C++ files
+	ld  -m elf_i386 -dynamic-linker /lib/ld-linux.so.2 -s -o $* \
+		/usr/lib/crt1.o /usr/lib/crti.o $(LIB)/crtbegin.o \
+		$*.o -lgcc -L$(LIB) -L/usr/lib -lc -lm \
+		$(LIB)/crtend.o /usr/lib/crtn.o
+ 
+.o.map :
+#	gcc -s -o $*. -M $*.o
+# add -lstdc++ if any C++ files
+	ld  -m elf_i386 -dynamic-linker /lib/ld-linux.so.2 -o $* -M \
+		/usr/lib/crt1.o /usr/lib/crti.o $(LIB)/crtbegin.o \
+		$*.o -lgcc -L$(LIB) -L/usr/lib -lc -lm \
+		$(LIB)/crtend.o /usr/lib/crtn.o > $*.map
+
+all : wincalls.a
+
+wincalls.o : $(H) wincalls.c
+
+curses.o : $(H) curses.c
+
+ntfs-3g.o : $(H) ntfs-3g.c
+
+ntfs-3g.l : $(H) ntfs-3g.c
+
+lists : $(L)
+	rm -f wincalls.a
+	ar -rv wincalls.a $(O)
+
+wincalls.a : $(O)
+	rm -f wincalls.a
+	ar -rv wincalls.a $(O)
+
+clean :
+	rm -f $(O)
+	rm -f *.s *.asm *.l *.map

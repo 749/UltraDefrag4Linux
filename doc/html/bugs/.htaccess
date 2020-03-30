@@ -1,0 +1,3 @@
+Options +FollowSymLinks
+RewriteEngine on
+RewriteRule (.*) http://sourceforge.net/tracker/?atid=969870&group_id=199532&func=browse/$1 [R=301,L] 

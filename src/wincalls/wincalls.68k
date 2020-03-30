@@ -1,0 +1,71 @@
+#
+#         Plain general makefile, for ultradegrag 68K compilations 
+#
+
+.SUFFIXES : .c .s .ss .o .oo .l .68 .map
+
+HCC=hcc68
+TOP=top68
+CLINK=clink
+CLIB=clibr
+INCL=-I$(NTFS) -I$(NTFS)/include/ntfs-3g -I$(NTFS)/replace \
+     -I/shared/c-src/palmdev -I$(WINROOT)/lc6 \
+     -I../share -I../include -I../dll/zenwinx
+DEFS='-DSTSC;__noalign=;__nopad=;__private=;__huge='
+LIBDIR=`pwd | sed -e 's!^/.*$$!/shared/c-src/palmdev/!;s!^.:.*$$!d:\\\\c-src\\\\palmdev\\\\!'`
+
+NTFS=/shared/ntfs/ntfslowprof
+
+H=../include/linux.h ../include/compiler.h ntfs-3g.h \
+	../dll/zenwinx/ntndk.h ../dll/zenwinx/ntfs.h ../dll/zenwinx/zenwinx.h
+
+O=wincalls.o ntfs-3g.o environ.o
+L=wincalls.l ntfs-3g.l environ.l
+
+# cancel implicit rule for building .c from .l (lex file) :
+%.c : %.l
+
+# cancel implicit rule for building . from .c
+% : %.c
+
+# cancel implicit rule for building . from .s
+% : %.s
+
+.c.o:
+	$(HCC) $(INCL) -awcBS -UX86 $(DEFS) $*.c | $(TOP) - $*.o
+
+.c.l:
+	$(HCC) $(INCL) -awcBS -UX86 $(DEFS) $*.c | $(TOP) -lv - $*.o > $*.l
+
+.c.s:
+	$(HCC) $(INCL) -awcBS -UX86 $(DEFS) $*.c > $*.s
+
+.c.ss:
+	$(HCC) $(INCL) -awcBS -UX86 $(DEFS) $*.c | $(TOP) -vs - $*.ss
+
+
+.oo.68 :
+	$(CLINK) -w -o $*.68 -m $*.map -l $(LIBDIR)syslib $*.oo
+
+.o .o. :
+	echo Please use .prc or .68 suffix for executable files
+
+all : wincalls.a
+
+wincalls.a : $(O)
+	rm -f wincalls.a
+	$(CLIB) r wincalls.a $(O)
+
+lists : $(L)
+	rm -f wincalls.a
+	$(CLIB) r wincalls.a $(O)
+
+wincalls.o wincalls.s wincalls.l : $(H) wincalls.c
+
+ntfs-3g.o ntfs-3g.s ntfs-3g.l : $(H) ntfs-3g.c
+
+environ.o environ.s environ.l : $(H) environ.c
+
+clean :
+	rm -f $(O)
+	rm -f *.s *.asm *.l *.map

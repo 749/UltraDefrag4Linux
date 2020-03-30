@@ -1,0 +1,203 @@
+/*
+ *  ZenWINX - WIndows Native eXtended library.
+ *  Copyright (c) 2007-2011 by Dmitri Arkhangelski (dmitriar@gmail.com).
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+/**
+ * @mainpage ZenWINX
+ * @author Dmitri Arkhangelski (dmitriar@users.sourceforge.net).
+ *
+ * <h2>ZenWINX?</h2>
+ * It is a framework for Windows Native applications development.
+ * Such applications are running during the Windows boot process 
+ * in a manner similar to chkdsk. The following native applications
+ * are well known too:
+ * - xmnt2002.exe is a native part of the Partition Magic software
+ * - smss.exe is one of the most important Windows components
+ *   participating in the Windows boot process
+ * 
+ * Using ZenWINX library you may easily create your own native 
+ * application. This library gives you over 100 functions which
+ * highly simplifies the Windows native development. Also it 
+ * contains a Native Development Kit header file with a lot of
+ * definitions required for the native development.
+ * 
+ * ZenWINX is fully compatible with Windows NT 4.0, Windows 2000,
+ * Windows XP, Windows Server 2003, Windows Vista, 
+ * Windows Server 2008, Windows 7 and all of the 64-bit editions
+ * of Windows.
+ *
+ * <h2>Projects</h2>
+ * ZenWINX library is currently used in the following projects:
+ * - <a href="http://ultradefrag.sourceforge.net">UltraDefrag</a> - a little
+ * shell included there allows to defragment hard drives as well as shutdown and 
+ * reboot the computer before the Windows logon.
+ * - <a href="http://hex.pp.ua/nt-native-applications-shell-eng.php">Native shell</a> - 
+ * this little program runs before the Windows logon too. It allows
+ * to navigate through the file system, copy and delete files, display directory
+ * listings and more.
+ *
+ * If you know other projects not listed here, please send me a note and I will
+ * expand the list.
+ *
+ * <h2>Compilation</h2>
+ * Actually at this moment ZenWINX is a part of the 
+ * <a href="http://ultradefrag.sourceforge.net">UltraDefrag</a> 
+ * project. You should therefore download the latest sources of them
+ * to compile ZenWINX library. Detailed information is 
+ * <a href="http://ultradefrag.sourceforge.net/handbook/development.html">here</a>.
+ *
+ * <h2>Reporting bugs</h2>
+ * Please send your bug report directly to the author by email.
+ *
+ * <h2>License</h2>
+ * ZenWINX is a <a href="http://www.gnu.org/copyleft/gpl.html">GPL</a>-
+ * licensed product. Feel free to redistribute it under certain
+ * conditions.
+ *
+ * ZenWINX includes a part of the <a href="http://www.stanford.edu/~blp/avl/">GNU libavl</a>
+ * code licensed under the <a href="http://www.gnu.org/licenses/lgpl.html">GNU Lesser General 
+ * Public License</a>. Also ZenWINX includes keytrans.c file from 
+ * <a href="http://www.reactos.org/">ReactOS</a> source code licensed under the
+ * <a href="http://www.gnu.org/copyleft/gpl.html">GNU General Public License</a>.
+ */
+
+/**
+ * @defgroup BinaryTrees Binary trees
+ * @{
+ */
+/** @} */
+
+/**
+ * @defgroup Console Console
+ * @{
+ */
+/** @} */
+
+/**
+ * @defgroup Debug Debug
+ * @{
+ */
+/** @} */
+
+/**
+ * @defgroup Disks Disks
+ * @{
+ */
+/** @} */
+
+/**
+ * @defgroup Environment Environment
+ * @{
+ */
+/** @} */
+
+/**
+ * @defgroup Events Events
+ * @{
+ */
+/** @} */
+
+/**
+ * @defgroup File File
+ * @{
+ */
+/** @} */
+
+/**
+ * @defgroup Keyboard Keyboard
+ * @{
+ */
+/** @} */
+
+/**
+ * @defgroup Lists Lists
+ * @{
+ */
+/** @} */
+
+/**
+ * @defgroup Loader Loader
+ * @{
+ */
+/** @} */
+
+/**
+ * @defgroup Locks Locks
+ * @{
+ */
+/** @} */
+
+/**
+ * @defgroup Memory Memory
+ * @{
+ */
+/** @} */
+
+/**
+ * @defgroup Miscellaneous Miscellaneous
+ * @{
+ */
+/** @} */
+
+/**
+ * @defgroup Mutexes Mutexes
+ * @{
+ */
+/** @} */
+
+/**
+ * @defgroup Paths Paths
+ * @{
+ */
+/** @} */
+
+/**
+ * @defgroup Privileges Privileges
+ * @{
+ */
+/** @} */
+
+/**
+ * @defgroup Registry Registry
+ * @{
+ */
+/** @} */
+
+/**
+ * @defgroup StartupAndShutdown Startup and shutdown
+ * @{
+ */
+/** @} */
+
+/**
+ * @defgroup String String
+ * @{
+ */
+/** @} */
+
+/**
+ * @defgroup Threads Threads
+ * @{
+ */
+/** @} */
+
+/**
+ * @defgroup Time Time
+ * @{
+ */
+/** @} */

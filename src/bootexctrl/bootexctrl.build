@@ -1,0 +1,10 @@
+-- this is the ultradefag BootExecute Control program build options
+name        = "bootexctrl"
+target_type = "gui"
+
+src = { "bootexctrl.c" }
+rc = { "bootexctrl.rc" }
+
+libs = { "kernel32", "user32", "advapi32", "shell32", "msvcrt", "comctl32" }
+
+umentry = "winmain"

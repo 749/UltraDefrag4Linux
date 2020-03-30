@@ -1,0 +1,216 @@
+/*
+ *  UltraDefrag - a powerful defragmentation tool for Windows NT.
+ *  Copyright (c) 2007-2011 by Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2011 by Stefan Pendl (stefanpe@users.sourceforge.net).
+ *
+ *  Permission is granted to copy, distribute and/or modify this document
+ *  under the terms of the GNU Free Documentation License, Version 1.3 or
+ *  any later version published by the Free Software Foundation; with no
+ *  Invariant Sections.
+ */
+
+/**
+ * @page Introduction Introduction
+ *
+ * <h1>About disk fragmentation</h1>
+ * <h2>What is disk fragmentation</h2>
+ * <a href="http://en.wikipedia.org/wiki/File_system_fragmentation">Disk fragmentation</a>
+ * is generally described as files and free space being divided into separate chunks, which
+ * are scattered around the disk.
+ * This usually happens by deleting, truncating or extending files, which
+ * is done regularly during a files life. File fragmentation increases
+ * time needed for file access, since an additional time is needed to move
+ * drive's head from one file fragment to another. So, it decreases an overall
+ * system performance.
+ *
+ * <h2>How to repair disk fragmentation</h2>
+ * <a href="http://en.wikipedia.org/wiki/Defragmentation">Defragmentation</a>
+ * is the process used to correct disk and file fragmentation by concatenating
+ * the files into one contiguous chunk and consolidating free space.
+ * Disk defragmentaion eliminates the need to move drive's head from one file
+ * fragment to another, so it reduces amount of mechanical work needed to 
+ * access files on disk. So, it speeds things up. 
+ *
+ * <h1>About the software</h1>
+ * UltraDefrag is the first open source disk defragmenter for
+ * Windows which supports defragmentation of locked system files
+ * by running during the Windows boot process. Actually all files
+ * including registry hives and page-file can be defragmented
+ * at Windows boot time.
+ *
+ * Also one of the primary goals of the UltraDefrag design is
+ * doing the job as fast as possible.
+ *
+ * UltraDefrag aims to be also the most reliable and small disk
+ * defragmenter. We're trying to keep a reasonable balance between
+ * algorithms complexity and effectiveness.
+ *
+ * UltraDefrag has the following features:
+ * - system files defragmentation (registry, page-file, ...)
+ * - MFT (master file table) defragmentation (on XP and later systems)
+ * - internal NTFS files defragmentation (on Windows 2000 and later systems)
+ * - ultra fast NTFS analysis
+ * - fast defragmentation algorithm
+ * - effective disk optimization algorithm (two strategies available)
+ * - safety, it can never damage processed files
+ * - simplicity, it can be used without reading the documentation
+ * - ability to defragment single files/directories from the context menu of Explorer
+ * - ability to defragment additional streams attached to NTFS files
+ * - ability to exclude any unimportant files based on flexible filters
+ * - ability to defragment files, which have more fragments than specified by a threshold
+ * - ability to automatically break defragmentation when the specified time interval elapses
+ * - ability to select multiple disks for defragmentation
+ * - well readable HTML reports
+ * - powerful command line interface
+ * - ability to automatically hibernate/shutdown PC after a job is done
+ * - ability to make an automatic effective defragmentation through Windows Task Scheduler
+ * - multilingual graphical interface
+ * - little binaries (less than 500 kb)
+ * - portable version available which requires no installation
+ * - native 64-bit support
+ * - open source code licensed under GPL
+ *
+ * UltraDefrag runs on Windows NT 4.0, Windows 2000, Windows XP,
+ * Windows Server 2003, Windows Vista, Windows Server 2008
+ * and Windows 7, including all 64 bit versions of Windows.
+ * NT 4.0 Alpha is currently not supported. ReactOS and Wine
+ * aren't supported yet, because they have no defragmentation
+ * API implemented at this moment.
+ *
+ * UltraDefrag cannot be used on DOS, Windows 9x, Windows NT 3.51 and Mac OS
+ * since these operating systems provide no defragmentation API.
+ * However, <a href="http://b.andre.pagesperso-orange.fr/advanced-ntfs-3g.html">Linux port of UltraDefrag</a> exists.
+ * It is based on NTFS-3G capabilities.
+ *
+ * <h1>Supported file-systems</h1>
+ * The following file-systems can be defragmented by UltraDefrag:
+ * FAT12/16/32, exFAT and NTFS.
+ *
+ * There are a few system restrictions which apply to disk
+ * defragmentation. Unfortunately UltraDefrag cannot take away
+ * these restrictions:
+ * - Directories on FAT disks cannot be moved. This is a well
+ *   known FAT driver restriction and cannot be fixed.
+ * - The $Bitmap and other internal NTFS files cannot be
+ *   defragmented on Windows versions prior to Windows 2000 and
+ *   to defragment the $MFT file at least Windows XP is needed, because
+ *   the NTFS system driver prevents accessing them.
+ * - The first 16 clusters of MFT cannot be moved on Windows XP and Windows
+ *   Server 2003, this is a file system driver limitation. So, UltraDefrag
+ *   skips $Mft file on these systems, if it contains two fragments only.
+ *   In case of three or more fragments the file will be defragmented
+ *   partially, if possible.
+ * - NTFS disks with a cluster size greater than 4 kilobytes
+ *   cannot be defragmented on Windows NT 4.0 and Windows 2000.
+ * - On Windows NT 4.0 and Windows 2000 NTFS driver cannot move 
+ *   any part of the file - quite complex rules exist to define
+ *   whether a part of the file can be moved or not. Due to the complexity
+ *   of rules, UltraDefrag is not able to process NTFS disks so 
+ *   effectively as it does on Windows XP and later versions of Windows.
+ *
+ * Never try to run UltraDefrag on NTFS v1.2 formatted disks
+ * under Windows NT 4.0, because this may crash your system.
+ * NTFS 1.2 had beta status and an appropriate system driver
+ * was not reliable.
+ *
+ * <h1>Processing algorithms</h1>
+ *
+ * <span style="color: darkred">
+ * Both optimization algorithms ignore any size, name and fragment count filters.
+ * </span>
+ *
+ * <h2>Defragmentation algorithm</h2>
+ * <ol>
+ * <li>The analysis phase scans the whole disk to collect
+ * information about all files and free space.</li>
+ * <li>The defragmentation phase concatenates all fragmented files
+ * into one chunk. Files that can't be moved or are locked are skipped.</li>
+ * <li>The partial defragmentation phase tries to concatenate the
+ * remaining fragmented files into as less pieces as possible.</li>
+ * </ol>
+ *
+ * <h2>Quick optimization algorithm</h2>
+ * <ol>
+ * <li>The analysis phase is the same as for defragmentation.</li>
+ * <li>The next phase moves only fragmented files to the end of the
+ * disk to free space at the beginning of it.</li>
+ * <li>The defragmentation phase is the same as for defragmentation.</li>
+ * <li>The last phase tries to move as much not fragmented files 
+ * to the beginning of the disk to create a big free space at the end.</li>
+ * </ol>
+ *
+ * <h2>Full optimization algorithm</h2>
+ * <ol>
+ * <li>The analysis phase is the same as for defragmentation.</li>
+ * <li>The next phase moves all files, fragmented or not, to the end of the
+ * disk to free space at the beginning of it.</li>
+ * <li>The defragmentation phase is the same as for defragmentation.</li>
+ * <li>The last phase is the same as for quick optimization.</li>
+ * </ol>
+ *
+ * Another advantage of the described optimization algorithms
+ * over more complicated algorithms is their relatively small
+ * processing time.
+ *
+ * Unfortunately the disk optimization algorithm works only
+ * on NTFS disks, because FAT directories are not movable.
+ *
+ * On the other hand, NTFS disks are often logically split
+ * into several parts by files which cannot be moved ($Bitmap and others).
+ * Therefore it may be sometimes impossible to get a very large
+ * continuous free space area for, for instance, pagefile
+ * defragmentation. For such cases there are two workarounds
+ * available:
+ * - Move all files to another disk, reformat the disk and move
+ * all back. This causes the perfect disk optimization.
+ * - Run <a href="http://gparted.sourceforge.net/">GParted</a> or
+ * <a href="http://en.wikipedia.org/wiki/PartitionMagic">Partition
+ * Magic</a> to manually reduce the disk size as much as possible.
+ * This operation will move all files including system files to the
+ * beginning of the disk. After restoring the original size, you
+ * will have a large continuous free space area at the end
+ * of the disk. This space may be used hereafter to
+ * defragment large files.
+ *
+ * Note that UltraDefrag always skips files located directly in MFT
+ * records (these files usually have sizes below 1kb), because they are
+ * actually part of the MFT. Also files which have no content are skipped,
+ * because actually there are no clusters on disk belonging to them.
+ * Additionally, UltraDefrag never tries to defragment files marked as
+ * temporary by applications which created them. Because such files
+ * will be deleted soon, therefore they will not decrease the system performance.
+ *
+ * <h1>Web resources</h1>
+ * The Ultra Defragmenter's home page is at:
+ * http://ultradefrag.sourceforge.net
+ *
+ * Please be sure to visit this site for information,
+ * documentation, tutorials, news, etc. All UltraDefrag
+ * related things are available there.
+ *
+ * For help requests visit our forum:
+ * http://ultradefrag.sourceforge.net/forum
+ *
+ * Please report all problems and bugs via our bug tracker:
+ * http://ultradefrag.sourceforge.net/bugs
+ *
+ * To participate in UltraDefrag translation
+ * visit please <a href="http://ultradefrag.wikispaces.com/">WikiSpaces.com</a>.
+ *
+ * The most recent version of this handbook can be obtained
+ * from the program's <a href="http://ultradefrag.svn.sourceforge.net/viewvc/ultradefrag/doc/html/handbook.tar.gz?view=tar">SVN repository</a>. 
+ * Download the archive, unpack it, run the
+ * <a href="http://www.doxygen.org/">Doxygen</a> tool and
+ * copy all files from the /rsc subdirectory to
+ * /doxy-doc/html. After these steps open /doxy-doc/html/index.html
+ * in your browser to view the latest version of
+ * the documentation.
+ *
+ * <HR>
+ *  <TABLE BORDER="0" STYLE="width: 97%; margin:auto;">
+ *    <TR>
+ *      <TD STYLE="text-align: left; width: 50%;">Previous: @ref index</TD>
+ *      <TD STYLE="text-align: right; width: 50%;">Next: @ref Installation</TD>
+ *    </TR>
+ *  </TABLE>
+ */

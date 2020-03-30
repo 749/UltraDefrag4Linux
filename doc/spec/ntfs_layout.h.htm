@@ -1,0 +1,2634 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+<title>ntfs_layout.h</title>
+<style type="text/css">
+.enscript-comment { font-style: italic; color: rgb(178,34,34); }
+.enscript-header {font-weight: bold; font-size: 2em; }
+.enscript-function-name { font-weight: bold; color: rgb(0,0,255); }
+.enscript-variable-name { font-weight: bold; color: rgb(184,134,11); }
+.enscript-keyword { font-weight: bold; color: rgb(160,32,240); }
+.enscript-reference { font-weight: bold; color: rgb(95,158,160); }
+.enscript-string { font-weight: bold; color: rgb(188,143,143); }
+.enscript-builtin { font-weight: bold; color: rgb(218,112,214); }
+.enscript-type { font-weight: bold; color: rgb(34,139,34); }
+.enscript-highlight { text-decoration: underline; color: 0; }
+</style>
+</head><body id="top">
+<span class="enscript-header"><a name="file1">ntfs_layout.h</a></span>
+<a name="file1"> [</a><a href="http://www.opensource.apple.com/source/ntfs/ntfs-52/kext/ntfs_layout.h?f=text">plain text</a>]<div></div>
+<pre><span class="enscript-comment">/*
+ * ntfs_layout.h - NTFS associated on-disk structures.
+ *
+ * Copyright (c) 2006, 2007 Anton Altaparmakov.  All Rights Reserved.
+ * Portions Copyright (c) 2006, 2007 Apple Inc.  All Rights Reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer. 
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution. 
+ * 3. Neither the name of Apple Inc. ("Apple") nor the names of its
+ *    contributors may be used to endorse or promote products derived from this
+ *    software without specific prior written permission. 
+ *
+ * THIS SOFTWARE IS PROVIDED BY APPLE AND ITS CONTRIBUTORS "AS IS" AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL APPLE OR ITS CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * ALTERNATIVELY, provided that this notice and licensing terms are retained in
+ * full, this file may be redistributed and/or modified under the terms of the
+ * GNU General Public License (GPL) Version 2, in which case the provisions of
+ * that version of the GPL will apply to you instead of the license terms
+ * above.  You can obtain a copy of the GPL Version 2 at
+ * <a href="http://developer.apple.com/opensource/licenses/gpl-2.txt.">http://developer.apple.com/opensource/licenses/gpl-2.txt.</a>
+ */</span>
+
+#<span class="enscript-reference">ifndef</span> <span class="enscript-variable-name">_OSX_NTFS_LAYOUT_H</span>
+#<span class="enscript-reference">define</span> <span class="enscript-variable-name">_OSX_NTFS_LAYOUT_H</span>
+
+#<span class="enscript-reference">include</span> <span class="enscript-string">"ntfs_endian.h"</span>
+#<span class="enscript-reference">include</span> <span class="enscript-string">"ntfs_types.h"</span>
+
+<span class="enscript-comment">/* The NTFS oem_id "NTFS    " */</span>
+#<span class="enscript-reference">define</span> <span class="enscript-variable-name">magicNTFS</span>	const_cpu_to_le64(0x202020205346544eULL)
+
+<span class="enscript-comment">/*
+ * Location of bootsector on partition:
+ *	The standard NTFS_BOOT_SECTOR is on sector 0 of the partition.
+ *	On NT4 and above there is one backup copy of the boot sector to
+ *	be found on the last sector of the partition (not normally accessible
+ *	from within Windows as the bootsector contained number of sectors
+ *	value is one less than the actual value!).
+ *	On versions of NT 3.51 and earlier, the backup copy was located at
+ *	number of sectors/2 (integer divide), i.e. in the middle of the volume.
+ */</span>
+
+<span class="enscript-comment">/*
+ * BIOS parameter block (bpb) structure.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	le16 bytes_per_sector;		<span class="enscript-comment">/* Size of a sector in bytes. */</span>
+	u8  sectors_per_cluster;	<span class="enscript-comment">/* Size of a cluster in sectors. */</span>
+	le16 reserved_sectors;		<span class="enscript-comment">/* zero */</span>
+	u8  fats;			<span class="enscript-comment">/* zero */</span>
+	le16 root_entries;		<span class="enscript-comment">/* zero */</span>
+	le16 sectors;			<span class="enscript-comment">/* zero */</span>
+	u8  media_type;			<span class="enscript-comment">/* 0xf8 = hard disk */</span>
+	le16 sectors_per_fat;		<span class="enscript-comment">/* zero */</span>
+	le16 sectors_per_track;		<span class="enscript-comment">/* irrelevant */</span>
+	le16 heads;			<span class="enscript-comment">/* irrelevant */</span>
+	le32 hidden_sectors;		<span class="enscript-comment">/* zero */</span>
+	le32 large_sectors;		<span class="enscript-comment">/* zero */</span>
+} __attribute__((__packed__)) BIOS_PARAMETER_BLOCK;
+
+<span class="enscript-comment">/*
+ * NTFS boot sector structure.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	u8  jump[3];			<span class="enscript-comment">/* Irrelevant (jump to boot up code).*/</span>
+	le64 oem_id;			<span class="enscript-comment">/* Magic "NTFS    ". */</span>
+	BIOS_PARAMETER_BLOCK bpb;	<span class="enscript-comment">/* See BIOS_PARAMETER_BLOCK. */</span>
+	u8  unused[4];			<span class="enscript-comment">/* zero, NTFS diskedit.exe states that
+					   this is actually:
+						__u8 physical_drive;	// 0x80
+						__u8 current_head;	// zero
+						__u8 extended_boot_signature;
+									// 0x80
+						__u8 unused;		// zero
+					 */</span>
+<span class="enscript-comment">/*0x28*/</span>sle64 number_of_sectors;	<span class="enscript-comment">/* Number of sectors in volume. Gives
+					   maximum volume size of 2^63 sectors.
+					   Assuming standard sector size of 512
+					   bytes, the maximum byte size is
+					   approx. 4.7x10^21 bytes. (-; */</span>
+	sle64 mft_lcn;			<span class="enscript-comment">/* Cluster location of mft data. */</span>
+	sle64 mftmirr_lcn;		<span class="enscript-comment">/* Cluster location of copy of mft. */</span>
+	s8  clusters_per_mft_record;	<span class="enscript-comment">/* Mft record size in clusters. */</span>
+	u8  reserved0[3];		<span class="enscript-comment">/* zero */</span>
+	s8  clusters_per_index_record;	<span class="enscript-comment">/* Index block size in clusters. */</span>
+	u8  reserved1[3];		<span class="enscript-comment">/* zero */</span>
+	le64 volume_serial_number;	<span class="enscript-comment">/* Irrelevant (serial number). */</span>
+	le32 checksum;			<span class="enscript-comment">/* Boot sector checksum. */</span>
+<span class="enscript-comment">/*0x54*/</span>u8  bootstrap[426];		<span class="enscript-comment">/* Irrelevant (boot up code). */</span>
+	le16 end_of_sector_marker;	<span class="enscript-comment">/* End of bootsector magic. Always is
+					   0xaa55 in little endian. */</span>
+<span class="enscript-comment">/* sizeof() = 512 (0x200) bytes */</span>
+} __attribute__((__packed__)) NTFS_BOOT_SECTOR;
+
+<span class="enscript-comment">/*
+ * Magic identifiers present at the beginning of all ntfs record containing
+ * records (like mft records for example).
+ */</span>
+<span class="enscript-type">enum</span> {
+	<span class="enscript-comment">/* Found in $MFT/$DATA. */</span>
+	magic_FILE = const_cpu_to_le32(0x454c4946), <span class="enscript-comment">/* Mft entry. */</span>
+	magic_INDX = const_cpu_to_le32(0x58444e49), <span class="enscript-comment">/* Index buffer. */</span>
+	magic_HOLE = const_cpu_to_le32(0x454c4f48), <span class="enscript-comment">/* ? (NTFS 3.0+?) */</span>
+
+	<span class="enscript-comment">/* Found in $LogFile/$DATA. */</span>
+	magic_RSTR = const_cpu_to_le32(0x52545352), <span class="enscript-comment">/* Restart page. */</span>
+	magic_RCRD = const_cpu_to_le32(0x44524352), <span class="enscript-comment">/* Log record page. */</span>
+
+	<span class="enscript-comment">/* Found in $LogFile/$DATA.  (May be found in $MFT/$DATA, also?) */</span>
+	magic_CHKD = const_cpu_to_le32(0x444b4843), <span class="enscript-comment">/* Modified by chkdsk. */</span>
+
+	<span class="enscript-comment">/* Found in all ntfs record containing records. */</span>
+	magic_BAAD = const_cpu_to_le32(0x44414142), <span class="enscript-comment">/* Failed multi sector
+						       transfer was detected. */</span>
+	<span class="enscript-comment">/*
+	 * Found in $LogFile/$DATA when a page is full of 0xff bytes and is
+	 * thus not initialized.  Page must be initialized before using it.
+	 */</span>
+	magic_empty = const_cpu_to_le32(0xffffffff) <span class="enscript-comment">/* Record is empty. */</span>
+};
+
+<span class="enscript-type">typedef</span> le32 NTFS_RECORD_TYPE;
+
+<span class="enscript-comment">/*
+ * Generic magic comparison macros. Finally found a use for the ## preprocessor
+ * operator! (-8
+ */</span>
+
+<span class="enscript-type">static</span> inline BOOL <span class="enscript-function-name">__ntfs_is_magic</span>(le32 x, NTFS_RECORD_TYPE r)
+{
+	<span class="enscript-keyword">return</span> (x == r);
+}
+#<span class="enscript-reference">define</span> <span class="enscript-function-name">ntfs_is_magic</span>(x, m)	__ntfs_is_magic(x, magic_##m)
+
+<span class="enscript-type">static</span> inline BOOL <span class="enscript-function-name">__ntfs_is_magicp</span>(le32 *p, NTFS_RECORD_TYPE r)
+{
+	<span class="enscript-keyword">return</span> (*p == r);
+}
+#<span class="enscript-reference">define</span> <span class="enscript-function-name">ntfs_is_magicp</span>(p, m)	__ntfs_is_magicp(p, magic_##m)
+
+<span class="enscript-comment">/*
+ * Specialised magic comparison macros for the NTFS_RECORD_TYPEs defined above.
+ */</span>
+#<span class="enscript-reference">define</span> <span class="enscript-function-name">ntfs_is_file_record</span>(x)		( ntfs_is_magic (x, FILE) )
+#<span class="enscript-reference">define</span> <span class="enscript-function-name">ntfs_is_file_recordp</span>(p)		( ntfs_is_magicp(p, FILE) )
+#<span class="enscript-reference">define</span> <span class="enscript-function-name">ntfs_is_mft_record</span>(x)		( ntfs_is_file_record (x) )
+#<span class="enscript-reference">define</span> <span class="enscript-function-name">ntfs_is_mft_recordp</span>(p)		( ntfs_is_file_recordp(p) )
+#<span class="enscript-reference">define</span> <span class="enscript-function-name">ntfs_is_indx_record</span>(x)		( ntfs_is_magic (x, INDX) )
+#<span class="enscript-reference">define</span> <span class="enscript-function-name">ntfs_is_indx_recordp</span>(p)		( ntfs_is_magicp(p, INDX) )
+#<span class="enscript-reference">define</span> <span class="enscript-function-name">ntfs_is_hole_record</span>(x)		( ntfs_is_magic (x, HOLE) )
+#<span class="enscript-reference">define</span> <span class="enscript-function-name">ntfs_is_hole_recordp</span>(p)		( ntfs_is_magicp(p, HOLE) )
+
+#<span class="enscript-reference">define</span> <span class="enscript-function-name">ntfs_is_rstr_record</span>(x)		( ntfs_is_magic (x, RSTR) )
+#<span class="enscript-reference">define</span> <span class="enscript-function-name">ntfs_is_rstr_recordp</span>(p)		( ntfs_is_magicp(p, RSTR) )
+#<span class="enscript-reference">define</span> <span class="enscript-function-name">ntfs_is_rcrd_record</span>(x)		( ntfs_is_magic (x, RCRD) )
+#<span class="enscript-reference">define</span> <span class="enscript-function-name">ntfs_is_rcrd_recordp</span>(p)		( ntfs_is_magicp(p, RCRD) )
+
+#<span class="enscript-reference">define</span> <span class="enscript-function-name">ntfs_is_chkd_record</span>(x)		( ntfs_is_magic (x, CHKD) )
+#<span class="enscript-reference">define</span> <span class="enscript-function-name">ntfs_is_chkd_recordp</span>(p)		( ntfs_is_magicp(p, CHKD) )
+
+#<span class="enscript-reference">define</span> <span class="enscript-function-name">ntfs_is_baad_record</span>(x)		( ntfs_is_magic (x, BAAD) )
+#<span class="enscript-reference">define</span> <span class="enscript-function-name">ntfs_is_baad_recordp</span>(p)		( ntfs_is_magicp(p, BAAD) )
+
+#<span class="enscript-reference">define</span> <span class="enscript-function-name">ntfs_is_empty_record</span>(x)		( ntfs_is_magic (x, empty) )
+#<span class="enscript-reference">define</span> <span class="enscript-function-name">ntfs_is_empty_recordp</span>(p)	( ntfs_is_magicp(p, empty) )
+
+<span class="enscript-comment">/*
+ * The Update Sequence Array (usa) is an array of the le16 values which belong
+ * to the end of each sector protected by the update sequence record in which
+ * this array is contained. Note that the first entry is the Update Sequence
+ * Number (usn), a cyclic counter of how many times the protected record has
+ * been written to disk. The values 0 and -1 (ie. 0xffff) are not used. All
+ * last le16's of each sector have to be equal to the usn (during reading) or
+ * are set to it (during writing). If they are not, an incomplete multi sector
+ * transfer has occurred when the data was written.
+ * The maximum size for the update sequence array is fixed to:
+ *	maximum size = usa_ofs + (usa_count * 2) = 510 bytes
+ * The 510 bytes comes from the fact that the last le16 in the array has to
+ * (obviously) finish before the last le16 of the first 512-byte sector.
+ * This formula can be used as a consistency check in that usa_ofs +
+ * (usa_count * 2) has to be less than or equal to 510.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	NTFS_RECORD_TYPE magic;	<span class="enscript-comment">/* A four-byte magic identifying the record
+				   type and/or status. */</span>
+	le16 usa_ofs;		<span class="enscript-comment">/* Offset to the Update Sequence Array (usa)
+				   from the start of the ntfs record. */</span>
+	le16 usa_count;		<span class="enscript-comment">/* Number of le16 sized entries in the usa
+				   including the Update Sequence Number (usn),
+				   thus the number of fixups is the usa_count
+				   minus 1. */</span>
+} __attribute__((__packed__)) NTFS_RECORD;
+
+<span class="enscript-comment">/*
+ * System files mft record numbers. All these files are always marked as used
+ * in the bitmap attribute of the mft; presumably in order to avoid accidental
+ * allocation for random other mft records. Also, the sequence number for each
+ * of the system files is always equal to their mft record number and it is
+ * never modified.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">enum</span> {
+	FILE_MFT       = 0,	<span class="enscript-comment">/* Master file table (mft). Data attribute
+				   contains the entries and bitmap attribute
+				   records which ones are in use (bit==1). */</span>
+	FILE_MFTMirr   = 1,	<span class="enscript-comment">/* Mft mirror: copy of first four mft records
+				   in data attribute. If cluster size &gt; 4kiB,
+				   copy of first N mft records, with
+					N = cluster_size / mft_record_size. */</span>
+	FILE_LogFile   = 2,	<span class="enscript-comment">/* Journalling log in data attribute. */</span>
+	FILE_Volume    = 3,	<span class="enscript-comment">/* Volume name attribute and volume information
+				   attribute (flags and ntfs version). Windows
+				   refers to this file as volume DASD (Direct
+				   Access Storage Device). */</span>
+	FILE_AttrDef   = 4,	<span class="enscript-comment">/* Array of attribute definitions in data
+				   attribute. */</span>
+	FILE_root      = 5,	<span class="enscript-comment">/* Root directory. */</span>
+	FILE_Bitmap    = 6,	<span class="enscript-comment">/* Allocation bitmap of all clusters (lcns) in
+				   data attribute. */</span>
+	FILE_Boot      = 7,	<span class="enscript-comment">/* Boot sector (always at cluster 0) in data
+				   attribute. */</span>
+	FILE_BadClus   = 8,	<span class="enscript-comment">/* Contains all bad clusters in the non-resident
+				   data attribute. */</span>
+	FILE_Secure    = 9,	<span class="enscript-comment">/* Shared security descriptors in data attribute
+				   and two indexes into the descriptors.
+				   Appeared in Windows 2000. Before that, this
+				   file was named $Quota but was unused. */</span>
+	FILE_UpCase    = 10,	<span class="enscript-comment">/* Uppercase equivalents of all 65536 Unicode
+				   characters in data attribute. */</span>
+	FILE_Extend    = 11,	<span class="enscript-comment">/* Directory containing other system files (eg.
+				   $ObjId, $Quota, $Reparse and $UsnJrnl). This
+				   is new to NTFS3.0. */</span>
+	FILE_reserved12 = 12,	<span class="enscript-comment">/* Reserved for future use (records 12-15). */</span>
+	FILE_reserved13 = 13,
+	FILE_reserved14 = 14,
+	FILE_reserved15 = 15,
+	FILE_first_user = 16,	<span class="enscript-comment">/* First user file, used as test limit for
+				   whether to allow opening a file or not. */</span>
+} NTFS_SYSTEM_FILES;
+
+<span class="enscript-comment">/*
+ * These are the so far known MFT_RECORD_* flags (16-bit) which contain
+ * information about the mft record in which they are present.
+ *
+ * MFT_RECORD_IN_USE is set for all in-use mft records.
+ *
+ * MFT_RECORD_IS_DIRECTORY is set for all directory mft records, i.e. mft
+ * records containing and index with name "$I30" indexing filename attributes.
+ *
+ * MFT_RECORD_IN_EXTEND is set for all system files present in the $Extend
+ * system directory.
+ *
+ * MFT_RECORD_IS_VIEW_INDEX is set for all system files containing one or more
+ * indices with a name other than "$I30".
+ */</span>
+<span class="enscript-type">enum</span> {
+	MFT_RECORD_IN_USE	 = const_cpu_to_le16(0x0001),
+	MFT_RECORD_IS_DIRECTORY	 = const_cpu_to_le16(0x0002),
+	MFT_RECORD_IN_EXTEND	 = const_cpu_to_le16(0x0004),
+	MFT_RECORD_IS_VIEW_INDEX = const_cpu_to_le16(0x0008),
+	MFT_REC_SPACE_FILLER	 = const_cpu_to_le16(0xffff)
+} __attribute__((__packed__));
+
+<span class="enscript-type">typedef</span> le16 MFT_RECORD_FLAGS;
+
+<span class="enscript-comment">/*
+ * mft references (aka file references or file record segment references) are
+ * used whenever a structure needs to refer to a record in the mft.
+ *
+ * A reference consists of a 48-bit index into the mft and a 16-bit sequence
+ * number used to detect stale references.
+ *
+ * For error reporting purposes we treat the 48-bit index as a signed quantity.
+ *
+ * The sequence number is a circular counter (skipping 0) describing how many
+ * times the referenced mft record has been (re)used. This has to match the
+ * sequence number of the mft record being referenced, otherwise the reference
+ * is considered stale and removed (FIXME: only ntfsck or the driver itself?).
+ *
+ * If the sequence number is zero it is assumed that no sequence number
+ * consistency checking should be performed.
+ *
+ * FIXME: The mft zone is defined as the first 12% of the volume. This space is
+ * reserved so that the mft can grow contiguously and hence doesn't become
+ * fragmented. Volume free space includes the empty part of the mft zone and
+ * when the volume's free 88% are used up, the mft zone is shrunk by a factor
+ * of 2, thus making more space available for more files/data. This process is
+ * repeated everytime there is no more free space except for the mft zone until
+ * there really is no more free space.
+ */</span>
+
+<span class="enscript-comment">/*
+ * Typedef the MFT_REF as a 64-bit value for easier handling.
+ * Also define two unpacking macros to get to the reference (MREF) and
+ * sequence number (MSEQNO) respectively.
+ * The _LE versions are to be applied on little endian MFT_REFs.
+ * Note: The _LE versions will return a CPU endian formatted value!
+ */</span>
+#<span class="enscript-reference">define</span> <span class="enscript-variable-name">MFT_REF_MASK_CPU</span> 0x0000ffffffffffffULL
+#<span class="enscript-reference">define</span> <span class="enscript-variable-name">MFT_REF_MASK_LE</span> const_cpu_to_le64(MFT_REF_MASK_CPU)
+
+<span class="enscript-type">typedef</span> u64 MFT_REF;
+<span class="enscript-type">typedef</span> le64 leMFT_REF;
+
+#<span class="enscript-reference">define</span> <span class="enscript-function-name">MK_MREF</span>(m, s)	((MFT_REF)(((MFT_REF)(s) &lt;&lt; 48) |		\
+					((MFT_REF)(m) &amp; MFT_REF_MASK_CPU)))
+#<span class="enscript-reference">define</span> <span class="enscript-function-name">MK_LE_MREF</span>(m, s) cpu_to_le64(MK_MREF(m, s))
+
+#<span class="enscript-reference">define</span> <span class="enscript-function-name">MREF</span>(x)		((ino64_t)((x) &amp; MFT_REF_MASK_CPU))
+#<span class="enscript-reference">define</span> <span class="enscript-function-name">MSEQNO</span>(x)	((u16)(((x) &gt;&gt; 48) &amp; 0xffff))
+#<span class="enscript-reference">define</span> <span class="enscript-function-name">MREF_LE</span>(x)	((ino64_t)(le64_to_cpu(x) &amp; MFT_REF_MASK_CPU))
+#<span class="enscript-reference">define</span> <span class="enscript-function-name">MSEQNO_LE</span>(x)	((u16)((le64_to_cpu(x) &gt;&gt; 48) &amp; 0xffff))
+
+<span class="enscript-comment">/*
+ * The mft record header present at the beginning of every record in the mft.
+ * This is followed by a sequence of variable length attribute records which
+ * is terminated by an attribute of type AT_END which is a truncated attribute
+ * in that it only consists of the attribute type code AT_END and none of the
+ * other members of the attribute structure are present.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+<span class="enscript-comment">/*Ofs*/</span>
+<span class="enscript-comment">/*  0	NTFS_RECORD; -- Unfolded here as gcc doesn't like unnamed structs. */</span>
+	NTFS_RECORD_TYPE magic;	<span class="enscript-comment">/* Usually the magic is "FILE". */</span>
+	le16 usa_ofs;		<span class="enscript-comment">/* See NTFS_RECORD definition above. */</span>
+	le16 usa_count;		<span class="enscript-comment">/* See NTFS_RECORD definition above. */</span>
+
+<span class="enscript-comment">/*  8*/</span>	le64 lsn;		<span class="enscript-comment">/* $LogFile sequence number for this record.
+				   Changed every time the record is modified. */</span>
+<span class="enscript-comment">/* 16*/</span>	le16 sequence_number;	<span class="enscript-comment">/* Number of times this mft record has been
+				   reused. (See description for MFT_REF
+				   above.) NOTE: The increment (skipping zero)
+				   is done when the file is deleted. NOTE: If
+				   this is zero it is left zero. */</span>
+<span class="enscript-comment">/* 18*/</span>	le16 link_count;	<span class="enscript-comment">/* Number of hard links, i.e. the number of
+				   directory entries referencing this record.
+				   NOTE: Only used in mft base records.
+				   NOTE: When deleting a directory entry we
+				   check the link_count and if it is 1 we
+				   delete the file. Otherwise we delete the
+				   FILENAME_ATTR being referenced by the
+				   directory entry from the mft record and
+				   decrement the link_count.
+				   FIXME: Careful with Win32 + DOS names! */</span>
+<span class="enscript-comment">/* 20*/</span>	le16 attrs_offset;	<span class="enscript-comment">/* Byte offset to the first attribute in this
+				   mft record from the start of the mft record.
+				   NOTE: Must be aligned to 8-byte boundary. */</span>
+<span class="enscript-comment">/* 22*/</span>	MFT_RECORD_FLAGS flags;	<span class="enscript-comment">/* Bit array of MFT_RECORD_FLAGS. When a file
+				   is deleted, the MFT_RECORD_IN_USE flag is
+				   set to zero. */</span>
+<span class="enscript-comment">/* 24*/</span>	le32 bytes_in_use;	<span class="enscript-comment">/* Number of bytes used in this mft record.
+				   NOTE: Must be aligned to 8-byte boundary. */</span>
+<span class="enscript-comment">/* 28*/</span>	le32 bytes_allocated;	<span class="enscript-comment">/* Number of bytes allocated for this mft
+				   record. This should be equal to the mft
+				   record size. */</span>
+<span class="enscript-comment">/* 32*/</span>	leMFT_REF base_mft_record;<span class="enscript-comment">/* This is zero for base mft records.
+				   When it is not zero it is a mft reference
+				   pointing to the base mft record to which
+				   this record belongs (this is then used to
+				   locate the attribute list attribute present
+				   in the base record which describes this
+				   extension record and hence might need
+				   modification when the extension record
+				   itself is modified, also locating the
+				   attribute list also means finding the other
+				   potential extents, belonging to the non-base
+				   mft record). */</span>
+<span class="enscript-comment">/* 40*/</span>	le16 next_attr_instance;<span class="enscript-comment">/* The instance number that will be assigned to
+				   the next attribute added to this mft record.
+				   NOTE: Incremented each time after it is used.
+				   NOTE: Every time the mft record is reused
+				   this number is set to zero.  NOTE: The first
+				   instance number is always 0. */</span>
+<span class="enscript-comment">/* The below fields are specific to NTFS 3.1+ (Windows XP and above): */</span>
+<span class="enscript-comment">/* 42*/</span> le16 reserved;		<span class="enscript-comment">/* Reserved/alignment. */</span>
+<span class="enscript-comment">/* 44*/</span> le32 mft_record_number;	<span class="enscript-comment">/* Number of this mft record. */</span>
+<span class="enscript-comment">/* sizeof() = 48 bytes */</span>
+<span class="enscript-comment">/*
+ * When (re)using the mft record, we place the update sequence array at this
+ * offset, i.e. before we start with the attributes.  This also makes sense,
+ * otherwise we could run into problems with the update sequence array
+ * containing in itself the last two bytes of a sector which would mean that
+ * multi sector transfer protection wouldn't work.  As you can't protect data
+ * by overwriting it since you then can't get it back...
+ * When reading we obviously use the data from the ntfs record header.
+ */</span>
+} __attribute__((__packed__)) MFT_RECORD;
+
+<span class="enscript-comment">/* This is the version without the NTFS 3.1+ specific fields. */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+<span class="enscript-comment">/*Ofs*/</span>
+<span class="enscript-comment">/*  0	NTFS_RECORD; -- Unfolded here as gcc doesn't like unnamed structs. */</span>
+	NTFS_RECORD_TYPE magic;	<span class="enscript-comment">/* Usually the magic is "FILE". */</span>
+	le16 usa_ofs;		<span class="enscript-comment">/* See NTFS_RECORD definition above. */</span>
+	le16 usa_count;		<span class="enscript-comment">/* See NTFS_RECORD definition above. */</span>
+
+<span class="enscript-comment">/*  8*/</span>	le64 lsn;		<span class="enscript-comment">/* $LogFile sequence number for this record.
+				   Changed every time the record is modified. */</span>
+<span class="enscript-comment">/* 16*/</span>	le16 sequence_number;	<span class="enscript-comment">/* Number of times this mft record has been
+				   reused. (See description for MFT_REF
+				   above.) NOTE: The increment (skipping zero)
+				   is done when the file is deleted. NOTE: If
+				   this is zero it is left zero. */</span>
+<span class="enscript-comment">/* 18*/</span>	le16 link_count;	<span class="enscript-comment">/* Number of hard links, i.e. the number of
+				   directory entries referencing this record.
+				   NOTE: Only used in mft base records.
+				   NOTE: When deleting a directory entry we
+				   check the link_count and if it is 1 we
+				   delete the file. Otherwise we delete the
+				   FILENAME_ATTR being referenced by the
+				   directory entry from the mft record and
+				   decrement the link_count.
+				   FIXME: Careful with Win32 + DOS names! */</span>
+<span class="enscript-comment">/* 20*/</span>	le16 attrs_offset;	<span class="enscript-comment">/* Byte offset to the first attribute in this
+				   mft record from the start of the mft record.
+				   NOTE: Must be aligned to 8-byte boundary. */</span>
+<span class="enscript-comment">/* 22*/</span>	MFT_RECORD_FLAGS flags;	<span class="enscript-comment">/* Bit array of MFT_RECORD_FLAGS. When a file
+				   is deleted, the MFT_RECORD_IN_USE flag is
+				   set to zero. */</span>
+<span class="enscript-comment">/* 24*/</span>	le32 bytes_in_use;	<span class="enscript-comment">/* Number of bytes used in this mft record.
+				   NOTE: Must be aligned to 8-byte boundary. */</span>
+<span class="enscript-comment">/* 28*/</span>	le32 bytes_allocated;	<span class="enscript-comment">/* Number of bytes allocated for this mft
+				   record. This should be equal to the mft
+				   record size. */</span>
+<span class="enscript-comment">/* 32*/</span>	leMFT_REF base_mft_record;<span class="enscript-comment">/* This is zero for base mft records.
+				   When it is not zero it is a mft reference
+				   pointing to the base mft record to which
+				   this record belongs (this is then used to
+				   locate the attribute list attribute present
+				   in the base record which describes this
+				   extension record and hence might need
+				   modification when the extension record
+				   itself is modified, also locating the
+				   attribute list also means finding the other
+				   potential extents, belonging to the non-base
+				   mft record). */</span>
+<span class="enscript-comment">/* 40*/</span>	le16 next_attr_instance;<span class="enscript-comment">/* The instance number that will be assigned to
+				   the next attribute added to this mft record.
+				   NOTE: Incremented each time after it is used.
+				   NOTE: Every time the mft record is reused
+				   this number is set to zero.  NOTE: The first
+				   instance number is always 0. */</span>
+<span class="enscript-comment">/* sizeof() = 42 bytes */</span>
+<span class="enscript-comment">/*
+ * When (re)using the mft record, we place the update sequence array at this
+ * offset, i.e. before we start with the attributes.  This also makes sense,
+ * otherwise we could run into problems with the update sequence array
+ * containing in itself the last two bytes of a sector which would mean that
+ * multi sector transfer protection wouldn't work.  As you can't protect data
+ * by overwriting it since you then can't get it back...
+ * When reading we obviously use the data from the ntfs record header.
+ */</span>
+} __attribute__((__packed__)) MFT_RECORD_OLD;
+
+<span class="enscript-comment">/*
+ * System defined attributes (32-bit).  Each attribute type has a corresponding
+ * attribute name (Unicode string of maximum 64 character length) as described
+ * by the attribute definitions present in the data attribute of the $AttrDef
+ * system file.  On NTFS 3.0 volumes the names are just as the types are named
+ * in the below defines exchanging AT_ for the dollar sign ($).  If that is not
+ * a revealing choice of symbol I do not know what is... (-;
+ */</span>
+<span class="enscript-type">enum</span> {
+	AT_UNUSED			= const_cpu_to_le32(         0),
+	AT_STANDARD_INFORMATION		= const_cpu_to_le32(      0x10),
+	AT_ATTRIBUTE_LIST		= const_cpu_to_le32(      0x20),
+	AT_FILENAME			= const_cpu_to_le32(      0x30),
+	AT_OBJECT_ID			= const_cpu_to_le32(      0x40),
+	AT_SECURITY_DESCRIPTOR		= const_cpu_to_le32(      0x50),
+	AT_VOLUME_NAME			= const_cpu_to_le32(      0x60),
+	AT_VOLUME_INFORMATION		= const_cpu_to_le32(      0x70),
+	AT_DATA				= const_cpu_to_le32(      0x80),
+	AT_INDEX_ROOT			= const_cpu_to_le32(      0x90),
+	AT_INDEX_ALLOCATION		= const_cpu_to_le32(      0xa0),
+	AT_BITMAP			= const_cpu_to_le32(      0xb0),
+	AT_REPARSE_POINT		= const_cpu_to_le32(      0xc0),
+	AT_EA_INFORMATION		= const_cpu_to_le32(      0xd0),
+	AT_EA				= const_cpu_to_le32(      0xe0),
+	AT_PROPERTY_SET			= const_cpu_to_le32(      0xf0),
+	AT_LOGGED_UTILITY_STREAM	= const_cpu_to_le32(     0x100),
+	AT_FIRST_USER_DEFINED_ATTRIBUTE	= const_cpu_to_le32(    0x1000),
+	AT_END				= const_cpu_to_le32(0xffffffff)
+};
+
+<span class="enscript-type">typedef</span> le32 ATTR_TYPE;
+
+<span class="enscript-comment">/*
+ * The collation rules for sorting views/indexes/etc (32-bit).
+ *
+ * COLLATION_BINARY - Collate by binary compare where the first byte is most
+ *	significant.
+ * COLLATION_UNICODE_STRING - Collate Unicode strings by comparing their binary
+ *	Unicode values, except that when a character can be uppercased, the
+ *	upper case value collates before the lower case one.
+ * COLLATION_FILENAME - Collate filenames as Unicode strings. The collation
+ *	is done very much like COLLATION_UNICODE_STRING. In fact I have no idea
+ *	what the difference is. Perhaps the difference is that filenames
+ *	would treat some special characters in an odd way (see
+ *	unistr.c::ntfs_collate_names() and unistr.c::legal_ansi_char_array[]
+ *	for what I mean but COLLATION_UNICODE_STRING would not give any special
+ *	treatment to any characters at all, but this is speculation.
+ * COLLATION_NTOFS_ULONG - Sorting is done according to ascending le32 key
+ *	values. E.g. used for $SII index in FILE_Secure, which sorts by
+ *	security_id (le32).
+ * COLLATION_NTOFS_SID - Sorting is done according to ascending SID values.
+ *	E.g. used for $O index in FILE_Extend/$Quota.
+ * COLLATION_NTOFS_SECURITY_HASH - Sorting is done first by ascending hash
+ *	values and second by ascending security_id values. E.g. used for $SDH
+ *	index in FILE_Secure.
+ * COLLATION_NTOFS_ULONGS - Sorting is done according to a sequence of ascending
+ *	le32 key values. E.g. used for $O index in FILE_Extend/$ObjId, which
+ *	sorts by object_id (16-byte), by splitting up the object_id in four
+ *	le32 values and using them as individual keys. E.g. take the following
+ *	two security_ids, stored as follows on disk:
+ *		1st: a1 61 65 b7 65 7b d4 11 9e 3d 00 e0 81 10 42 59
+ *		2nd: 38 14 37 d2 d2 f3 d4 11 a5 21 c8 6b 79 b1 97 45
+ *	To compare them, they are split into four le32 values each, like so:
+ *		1st: 0xb76561a1 0x11d47b65 0xe0003d9e 0x59421081
+ *		2nd: 0xd2371438 0x11d4f3d2 0x6bc821a5 0x4597b179
+ *	Now, it is apparent why the 2nd object_id collates after the 1st: the
+ *	first le32 value of the 1st object_id is less than the first le32 of
+ *	the 2nd object_id. If the first le32 values of both object_ids were
+ *	equal then the second le32 values would be compared, etc.
+ */</span>
+<span class="enscript-type">enum</span> {
+	COLLATION_BINARY		= const_cpu_to_le32(0x00),
+	COLLATION_FILENAME		= const_cpu_to_le32(0x01),
+	COLLATION_UNICODE_STRING	= const_cpu_to_le32(0x02),
+	COLLATION_NTOFS_ULONG		= const_cpu_to_le32(0x10),
+	COLLATION_NTOFS_SID		= const_cpu_to_le32(0x11),
+	COLLATION_NTOFS_SECURITY_HASH	= const_cpu_to_le32(0x12),
+	COLLATION_NTOFS_ULONGS		= const_cpu_to_le32(0x13),
+};
+
+<span class="enscript-type">typedef</span> le32 COLLATION_RULE;
+
+<span class="enscript-comment">/*
+ * The flags (32-bit) describing attribute properties in the attribute
+ * definition structure.  FIXME: This information is based on Regis's
+ * information and, according to him, it is not certain and probably
+ * incomplete.  The INDEXABLE flag is fairly certainly correct as only the file
+ * name attribute has this flag set and this is the only attribute indexed in
+ * NT4.
+ */</span>
+<span class="enscript-type">enum</span> {
+	ATTR_DEF_INDEXABLE	= const_cpu_to_le32(0x02), <span class="enscript-comment">/* Attribute can be
+					indexed. */</span>
+	ATTR_DEF_MULTIPLE	= const_cpu_to_le32(0x04), <span class="enscript-comment">/* Attribute type
+					can be present multiple times in the
+					mft records of an inode. */</span>
+	ATTR_DEF_NOT_ZERO	= const_cpu_to_le32(0x08), <span class="enscript-comment">/* Attribute value
+					must contain at least one non-zero
+					byte. */</span>
+	ATTR_DEF_INDEXED_UNIQUE	= const_cpu_to_le32(0x10), <span class="enscript-comment">/* Attribute must be
+					indexed and the attribute value must be
+					unique for the attribute type in all of
+					the mft records of an inode. */</span>
+	ATTR_DEF_NAMED_UNIQUE	= const_cpu_to_le32(0x20), <span class="enscript-comment">/* Attribute must be
+					named and the name must be unique for
+					the attribute type in all of the mft
+					records of an inode. */</span>
+	ATTR_DEF_RESIDENT	= const_cpu_to_le32(0x40), <span class="enscript-comment">/* Attribute must be
+					resident. */</span>
+	ATTR_DEF_ALWAYS_LOG	= const_cpu_to_le32(0x80), <span class="enscript-comment">/* Always log
+					modifications to this attribute,
+					regardless of whether it is resident or
+					non-resident.  Without this, only log
+					modifications if the attribute is
+					resident. */</span>
+};
+
+<span class="enscript-type">typedef</span> le32 ATTR_DEF_FLAGS;
+
+<span class="enscript-comment">/*
+ * The data attribute of FILE_AttrDef contains a sequence of attribute
+ * definitions for the NTFS volume. With this, it is supposed to be safe for an
+ * older NTFS driver to mount a volume containing a newer NTFS version without
+ * damaging it (that's the theory. In practice it's: not damaging it too much).
+ * Entries are sorted by attribute type. The flags describe whether the
+ * attribute can be resident/non-resident and possibly other things, but the
+ * actual bits are unknown.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+<span class="enscript-comment">/*hex ofs*/</span>
+<span class="enscript-comment">/*  0*/</span>	ntfschar name[0x40];		<span class="enscript-comment">/* Unicode name of the attribute. Zero
+					   terminated. */</span>
+<span class="enscript-comment">/* 80*/</span>	ATTR_TYPE type;			<span class="enscript-comment">/* Type of the attribute. */</span>
+<span class="enscript-comment">/* 84*/</span>	le32 display_rule;		<span class="enscript-comment">/* Default display rule.
+					   FIXME: What does it mean? (AIA) */</span>
+<span class="enscript-comment">/* 88*/</span> COLLATION_RULE collation_rule;	<span class="enscript-comment">/* Default collation rule. */</span>
+<span class="enscript-comment">/* 8c*/</span>	ATTR_DEF_FLAGS flags;		<span class="enscript-comment">/* Flags describing the attribute. */</span>
+<span class="enscript-comment">/* 90*/</span>	sle64 min_size;			<span class="enscript-comment">/* Optional minimum attribute size. */</span>
+<span class="enscript-comment">/* 98*/</span>	sle64 max_size;			<span class="enscript-comment">/* Maximum size of attribute. */</span>
+<span class="enscript-comment">/* sizeof() = 0xa0 or 160 bytes */</span>
+} __attribute__((__packed__)) ATTR_DEF;
+
+<span class="enscript-comment">/*
+ * Attribute flags (16-bit).
+ */</span>
+<span class="enscript-type">enum</span> {
+	ATTR_IS_COMPRESSED    = const_cpu_to_le16(0x0001),
+	ATTR_COMPRESSION_MASK = const_cpu_to_le16(0x00ff), <span class="enscript-comment">/* Compression method
+							      mask.  Also, first
+							      illegal value. */</span>
+	ATTR_IS_ENCRYPTED     = const_cpu_to_le16(0x4000),
+	ATTR_IS_SPARSE	      = const_cpu_to_le16(0x8000),
+} __attribute__((__packed__));
+
+<span class="enscript-type">typedef</span> le16 ATTR_FLAGS;
+
+<span class="enscript-comment">/*
+ * Attribute compression.
+ *
+ * Only the data attribute is ever compressed in the current ntfs driver in
+ * Windows. Further, compression is only applied when the data attribute is
+ * non-resident. Finally, to use compression, the maximum allowed cluster size
+ * on a volume is 4kib.
+ *
+ * The compression method is based on independently compressing blocks of X
+ * clusters, where X is determined from the compression_unit value found in the
+ * non-resident attribute record header (more precisely: X = 2^compression_unit
+ * clusters). On Windows NT/2k, X always is 16 clusters (compression_unit = 4).
+ *
+ * There are three different cases of how a compression block of X clusters
+ * can be stored:
+ *
+ *   1) The data in the block is all zero (a sparse block):
+ *	  This is stored as a sparse block in the runlist, i.e. the runlist
+ *	  entry has length = X and lcn = -1. The mapping pairs array actually
+ *	  uses a delta_lcn value length of 0, i.e. delta_lcn is not present at
+ *	  all, which is then interpreted by the driver as lcn = -1.
+ *	  NOTE: Even uncompressed files can be sparse on NTFS 3.0 volumes, then
+ *	  the same principles apply as above, except that the length is not
+ *	  restricted to being any particular value.
+ *
+ *   2) The data in the block is not compressed:
+ *	  This happens when compression doesn't reduce the size of the block
+ *	  in clusters. I.e. if compression has a small effect so that the
+ *	  compressed data still occupies X clusters, then the uncompressed data
+ *	  is stored in the block.
+ *	  This case is recognised by the fact that the runlist entry has
+ *	  length = X and lcn &gt;= 0. The mapping pairs array stores this as
+ *	  normal with a run length of X and some specific delta_lcn, i.e.
+ *	  delta_lcn has to be present.
+ *
+ *   3) The data in the block is compressed:
+ *	  The common case. This case is recognised by the fact that the run
+ *	  list entry has length L &lt; X and lcn &gt;= 0. The mapping pairs array
+ *	  stores this as normal with a run length of X and some specific
+ *	  delta_lcn, i.e. delta_lcn has to be present. This runlist entry is
+ *	  immediately followed by a sparse entry with length = X - L and
+ *	  lcn = -1. The latter entry is to make up the vcn counting to the
+ *	  full compression block size X.
+ *
+ * In fact, life is more complicated because adjacent entries of the same type
+ * can be coalesced. This means that one has to keep track of the number of
+ * clusters handled and work on a basis of X clusters at a time being one
+ * block. An example: if length L &gt; X this means that this particular runlist
+ * entry contains a block of length X and part of one or more blocks of length
+ * L - X. Another example: if length L &lt; X, this does not necessarily mean that
+ * the block is compressed as it might be that the lcn changes inside the block
+ * and hence the following runlist entry describes the continuation of the
+ * potentially compressed block. The block would be compressed if the
+ * following runlist entry describes at least X - L sparse clusters, thus
+ * making up the compression block length as described in point 3 above. (Of
+ * course, there can be several runlist entries with small lengths so that the
+ * sparse entry does not follow the first data containing entry with
+ * length &lt; X.)
+ *
+ * NOTE: At the end of the compressed attribute value, there most likely is not
+ * just the right amount of data to make up a compression block, thus this data
+ * is not even attempted to be compressed. It is just stored as is, unless
+ * the number of clusters it occupies is reduced when compressed in which case
+ * it is stored as a compressed compression block, complete with sparse
+ * clusters at the end.
+ */</span>
+
+<span class="enscript-comment">/*
+ * Flags of resident attributes (8-bit).
+ */</span>
+<span class="enscript-type">enum</span> {
+	RESIDENT_ATTR_IS_INDEXED = 0x01, <span class="enscript-comment">/* Attribute is referenced in an index
+					    (has implications for deleting and
+					    modifying the attribute). */</span>
+} __attribute__((__packed__));
+
+<span class="enscript-type">typedef</span> u8 RESIDENT_ATTR_FLAGS;
+
+<span class="enscript-comment">/*
+ * Attribute record header. Always aligned to 8-byte boundary.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+<span class="enscript-comment">/*Ofs*/</span>
+<span class="enscript-comment">/*  0*/</span>	ATTR_TYPE type;		<span class="enscript-comment">/* The (32-bit) type of the attribute. */</span>
+<span class="enscript-comment">/*  4*/</span>	le32 length;		<span class="enscript-comment">/* Byte size of the resident part of the
+				   attribute (aligned to 8-byte boundary).
+				   Used to get to the next attribute. */</span>
+<span class="enscript-comment">/*  8*/</span>	u8 non_resident;	<span class="enscript-comment">/* If 0, attribute is resident.
+				   If 1, attribute is non-resident. */</span>
+<span class="enscript-comment">/*  9*/</span>	u8 name_length;		<span class="enscript-comment">/* Unicode character size of name of attribute.
+				   0 if unnamed. */</span>
+<span class="enscript-comment">/* 10*/</span>	le16 name_offset;	<span class="enscript-comment">/* If name_length != 0, the byte offset to the
+				   beginning of the name from the attribute
+				   record. Note that the name is stored as a
+				   Unicode string. When creating, place offset
+				   just at the end of the record header. Then,
+				   follow with attribute value or mapping pairs
+				   array, resident and non-resident attributes
+				   respectively, aligning to an 8-byte
+				   boundary. */</span>
+<span class="enscript-comment">/* 12*/</span>	ATTR_FLAGS flags;	<span class="enscript-comment">/* Flags describing the attribute. */</span>
+<span class="enscript-comment">/* 14*/</span>	le16 instance;		<span class="enscript-comment">/* The instance of this attribute record. This
+				   number is unique within this mft record (see
+				   MFT_RECORD/next_attribute_instance notes in
+				   in mft.h for more details). */</span>
+<span class="enscript-comment">/* 16*/</span>	<span class="enscript-type">union</span> {
+		<span class="enscript-comment">/* Resident attributes. */</span>
+		<span class="enscript-type">struct</span> {
+<span class="enscript-comment">/* 16 */</span>		le32 value_length;<span class="enscript-comment">/* Byte size of attribute value. */</span>
+<span class="enscript-comment">/* 20 */</span>		le16 value_offset;<span class="enscript-comment">/* Byte offset of the attribute
+					     value from the start of the
+					     attribute record. When creating,
+					     align to 8-byte boundary if we
+					     have a name present as this might
+					     not have a length of a multiple
+					     of 8-bytes. */</span>
+<span class="enscript-comment">/* 22 */</span>		RESIDENT_ATTR_FLAGS resident_flags; <span class="enscript-comment">/* See above. */</span>
+<span class="enscript-comment">/* 23 */</span>		s8 reservedR;	  <span class="enscript-comment">/* Reserved/alignment to 8-byte
+					     boundary. */</span>
+		} __attribute__((__packed__));
+		<span class="enscript-comment">/* Non-resident attributes. */</span>
+		<span class="enscript-type">struct</span> {
+<span class="enscript-comment">/* 16*/</span>			leVCN lowest_vcn;	<span class="enscript-comment">/* Lowest valid virtual cluster
+				number for this portion of the attribute value
+				or 0 if this is the only extent (usually the
+				case). - Only when an attribute list is used
+				does lowest_vcn != 0 ever occur. */</span>
+<span class="enscript-comment">/* 24*/</span>			leVCN highest_vcn;	<span class="enscript-comment">/* Highest valid vcn of this
+				extent of the attribute value. - Usually there
+				is only one portion, so this usually equals the
+				attribute value size in clusters minus 1.  Can
+				be -1 for zero length files.  Can be 0 for
+				"single extent" attributes. */</span>
+<span class="enscript-comment">/* 32*/</span>			le16 mapping_pairs_offset; <span class="enscript-comment">/* Byte offset from the
+				beginning of the structure to the mapping pairs
+				array which contains the mappings between the
+				vcns and the logical cluster numbers (lcns).
+				When creating, place this at the end of this
+				record header aligned to 8-byte boundary. */</span>
+<span class="enscript-comment">/* 34*/</span>			u8 compression_unit;	<span class="enscript-comment">/* The compression unit
+				expressed as the log to the base 2 of the
+				number of clusters in a compression unit.
+				0 means not compressed.  (This effectively
+				limits the compression unit size to be a power
+				of two clusters.)  WinNT4 only uses a value of
+				4.  Sparse files also have this set to 0 on
+				XPSP2. */</span>
+<span class="enscript-comment">/* 35*/</span>			u8 reservedN[5];	<span class="enscript-comment">/* Align to 8-byte boundary. */</span>
+<span class="enscript-comment">/* The sizes below are only used when lowest_vcn is zero, as otherwise it would
+   be difficult to keep them up-to-date.*/</span>
+<span class="enscript-comment">/* 40*/</span>			sle64 allocated_size;	<span class="enscript-comment">/* Byte size of disk space
+				allocated to hold the attribute value. Always
+				is a multiple of the cluster size. When a file
+				is compressed, this field is a multiple of the
+				compression block size (2^compression_unit) and
+				it represents the logically allocated space
+				rather than the actual on disk usage. For this
+				use the compressed_size (see below). */</span>
+<span class="enscript-comment">/* 48*/</span>			sle64 data_size;	<span class="enscript-comment">/* Byte size of the attribute
+				value. Can be larger than allocated_size if
+				attribute value is compressed or sparse. */</span>
+<span class="enscript-comment">/* 56*/</span>			sle64 initialized_size;	<span class="enscript-comment">/* Byte size of initialized
+				portion of the attribute value. Usually equals
+				data_size. */</span>
+<span class="enscript-comment">/* sizeof(uncompressed attr) = 64*/</span>
+<span class="enscript-comment">/* 64*/</span>			sle64 compressed_size;	<span class="enscript-comment">/* Byte size of the attribute
+				value after compression.  Only present when
+				compressed or sparse.  Always is a multiple of
+				the cluster size.  Represents the actual amount
+				of disk space being used on the disk. */</span>
+<span class="enscript-comment">/* sizeof(compressed attr) = 72*/</span>
+		} __attribute__((__packed__));
+	} __attribute__((__packed__));
+} __attribute__((__packed__)) ATTR_RECORD;
+
+<span class="enscript-type">typedef</span> ATTR_RECORD ATTR_REC;
+
+<span class="enscript-comment">/*
+ * File attribute flags (32-bit) appearing in the file_attributes fields of the
+ * STANDARD_INFORMATION attribute of MFT_RECORDs and the FILENAME_ATTR
+ * attributes of MFT_RECORDs and directory index entries.
+ *
+ * All of the below flags appear in the directory index entries but only some
+ * appear in the STANDARD_INFORMATION attribute.  Unless otherwise stated the
+ * flags appear in all of the above.
+ */</span>
+<span class="enscript-type">enum</span> {
+	FILE_ATTR_READONLY		= const_cpu_to_le32(0x00000001),
+	FILE_ATTR_HIDDEN		= const_cpu_to_le32(0x00000002),
+	FILE_ATTR_SYSTEM		= const_cpu_to_le32(0x00000004),
+	<span class="enscript-comment">/* Old DOS volid. Unused in NT.	= const_cpu_to_le32(0x00000008), */</span>
+
+	FILE_ATTR_DIRECTORY		= const_cpu_to_le32(0x00000010),
+	<span class="enscript-comment">/* Note, FILE_ATTR_DIRECTORY is not considered valid in NT.  It is
+	   reserved for the DOS SUBDIRECTORY flag. */</span>
+	FILE_ATTR_ARCHIVE		= const_cpu_to_le32(0x00000020),
+	<span class="enscript-comment">/* Note, FILE_ATTR_ARCHIVE is only valid/settable on files and not on
+	 * directories which always have the bit cleared. */</span>
+	FILE_ATTR_DEVICE		= const_cpu_to_le32(0x00000040),
+	FILE_ATTR_NORMAL		= const_cpu_to_le32(0x00000080),
+
+	FILE_ATTR_TEMPORARY		= const_cpu_to_le32(0x00000100),
+	FILE_ATTR_SPARSE_FILE		= const_cpu_to_le32(0x00000200),
+	FILE_ATTR_REPARSE_POINT		= const_cpu_to_le32(0x00000400),
+	FILE_ATTR_COMPRESSED		= const_cpu_to_le32(0x00000800),
+
+	FILE_ATTR_OFFLINE		= const_cpu_to_le32(0x00001000),
+	FILE_ATTR_NOT_CONTENT_INDEXED	= const_cpu_to_le32(0x00002000),
+	FILE_ATTR_ENCRYPTED		= const_cpu_to_le32(0x00004000),
+
+	FILE_ATTR_VALID_FLAGS		= const_cpu_to_le32(0x00007fb7),
+	<span class="enscript-comment">/* Note, FILE_ATTR_VALID_FLAGS masks out the old DOS VolId and the
+	   FILE_ATTR_DEVICE and preserves everything else.  This mask is used
+	   to obtain all flags that are valid for reading. */</span>
+	FILE_ATTR_VALID_SET_FLAGS	= const_cpu_to_le32(0x000031a7),
+	<span class="enscript-comment">/* Note, FILE_ATTR_VALID_SET_FLAGS masks out the old DOS VolId, the
+	   F_A_DEVICE, F_A_DIRECTORY, F_A_SPARSE_FILE, F_A_REPARSE_POINT,
+	   F_A_COMPRESSED, and F_A_ENCRYPTED and preserves the rest.  This mask
+	   is used to to obtain all flags that are valid for setting. */</span>
+	<span class="enscript-comment">/*
+	 * The flag FILE_ATTR_DUP_FILENAME_INDEX_PRESENT is present in all
+	 * FILENAME_ATTR attributes but not in the STANDARD_INFORMATION
+	 * attribute of an mft record.
+	 */</span>
+	FILE_ATTR_DUP_FILENAME_INDEX_PRESENT	= const_cpu_to_le32(0x10000000),
+	<span class="enscript-comment">/* Note, this is a copy of the corresponding bit from the mft record,
+	   telling us whether this is a directory or not, i.e. whether it has
+	   an index root attribute or not. */</span>
+	FILE_ATTR_DUP_VIEW_INDEX_PRESENT	= const_cpu_to_le32(0x20000000),
+	<span class="enscript-comment">/* Note, this is a copy of the corresponding bit from the mft record,
+	   telling us whether this file has a view index present (eg. object id
+	   index, quota index, one of the security indexes or the encrypting
+	   filesystem related indexes). */</span>
+};
+
+<span class="enscript-type">typedef</span> le32 FILE_ATTR_FLAGS;
+
+<span class="enscript-comment">/*
+ * NOTE on times in NTFS: All times are in MS standard time format, i.e. they
+ * are the number of 100-nanosecond intervals since 1st January 1601, 00:00:00
+ * universal coordinated time (UTC). (In Linux time starts 1st January 1970,
+ * 00:00:00 UTC and is stored as the number of 1-second intervals since then.)
+ */</span>
+
+<span class="enscript-comment">/*
+ * Attribute: Standard information (0x10).
+ *
+ * NOTE: Always resident.
+ * NOTE: Present in all base file records on a volume.
+ * NOTE: There is conflicting information about the meaning of each of the time
+ *	 fields but the meaning as defined below has been verified to be
+ *	 correct by practical experimentation on Windows NT4 SP6a and is hence
+ *	 assumed to be the one and only correct interpretation.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+<span class="enscript-comment">/*Ofs*/</span>
+<span class="enscript-comment">/*  0*/</span>	sle64 creation_time;		<span class="enscript-comment">/* Time file was created.  Updated when
+					   a filename is changed(?). */</span>
+<span class="enscript-comment">/*  8*/</span>	sle64 last_data_change_time;	<span class="enscript-comment">/* Time the data attribute was last
+					   modified. */</span>
+<span class="enscript-comment">/* 16*/</span>	sle64 last_mft_change_time;	<span class="enscript-comment">/* Time this mft record was last
+					   modified. */</span>
+<span class="enscript-comment">/* 24*/</span>	sle64 last_access_time;		<span class="enscript-comment">/* Approximate time when the file was
+					   last accessed (obviously this is not
+					   updated on read-only volumes). In
+					   Windows this is only updated when
+					   accessed if some time delta has
+					   passed since the last update. Also,
+					   last access times updates can be
+					   disabled altogether for speed. */</span>
+<span class="enscript-comment">/* 32*/</span>	FILE_ATTR_FLAGS file_attributes; <span class="enscript-comment">/* Flags describing the file. */</span>
+<span class="enscript-comment">/* 36*/</span>	<span class="enscript-type">union</span> {
+	<span class="enscript-comment">/* NTFS 1.2 */</span>
+		<span class="enscript-type">struct</span> {
+		<span class="enscript-comment">/* 36*/</span>	u8 reserved12[12];	<span class="enscript-comment">/* Reserved/alignment to 8-byte
+						   boundary. */</span>
+		} __attribute__((__packed__));
+	<span class="enscript-comment">/* sizeof() = 48 bytes */</span>
+	<span class="enscript-comment">/* NTFS 3.x */</span>
+		<span class="enscript-type">struct</span> {
+<span class="enscript-comment">/*
+ * If a volume has been upgraded from a previous NTFS version, then these
+ * fields are present only if the file has been accessed since the upgrade.
+ * Recognize the difference by comparing the length of the resident attribute
+ * value. If it is 48, then the following fields are missing. If it is 72 then
+ * the fields are present. Maybe just check like this:
+ *	if (resident.ValueLength &lt; sizeof(STANDARD_INFORMATION)) {
+ *		Assume NTFS 1.2- format.
+ *		If (volume version is 3.x)
+ *			Upgrade attribute to NTFS 3.x format.
+ *		else
+ *			Use NTFS 1.2- format for access.
+ *	} else
+ *		Use NTFS 3.x format for access.
+ * Only problem is that it might be legal to set the length of the value to
+ * arbitrarily large values thus spoiling this check. - But chkdsk probably
+ * views that as a corruption, assuming that it behaves like this for all
+ * attributes.
+ */</span>
+		<span class="enscript-comment">/* 36*/</span>	le32 maximum_versions;	<span class="enscript-comment">/* Maximum allowed versions for
+				file. Zero if version numbering is disabled. */</span>
+		<span class="enscript-comment">/* 40*/</span>	le32 version_number;	<span class="enscript-comment">/* This file's version (if any).
+				Set to zero if maximum_versions is zero. */</span>
+		<span class="enscript-comment">/* 44*/</span>	le32 class_id;		<span class="enscript-comment">/* Class id from bidirectional
+				class id index (?). */</span>
+		<span class="enscript-comment">/* 48*/</span>	le32 owner_id;		<span class="enscript-comment">/* Owner_id of the user owning
+				the file. Translate via $Q index in FILE_Extend
+				/$Quota to the quota control entry for the user
+				owning the file. Zero if quotas are disabled. */</span>
+		<span class="enscript-comment">/* 52*/</span>	le32 security_id;	<span class="enscript-comment">/* Security_id for the file.
+				Translate via $SII index and $SDS data stream
+				in FILE_Secure to the security descriptor. */</span>
+		<span class="enscript-comment">/* 56*/</span>	le64 quota_charged;	<span class="enscript-comment">/* Byte size of the charge to
+				the quota for all streams of the file. Note: Is
+				zero if quotas are disabled. */</span>
+		<span class="enscript-comment">/* 64*/</span>	leUSN usn;		<span class="enscript-comment">/* Last update sequence number
+				of the file.  This is a direct index into the
+				transaction log file ($UsnJrnl).  It is zero if
+				the usn journal is disabled or this file has
+				not been subject to logging yet.  See usnjrnl.h
+				for details. */</span>
+		} __attribute__((__packed__));
+	<span class="enscript-comment">/* sizeof() = 72 bytes (NTFS 3.x) */</span>
+	} __attribute__((__packed__));
+} __attribute__((__packed__)) STANDARD_INFORMATION;
+
+<span class="enscript-comment">/*
+ * Attribute: Attribute list (0x20).
+ *
+ * - Can be either resident or non-resident.
+ * - Value consists of a sequence of variable length, 8-byte aligned,
+ * ATTR_LIST_ENTRY records.
+ * - The list is not terminated by anything at all! The only way to know when
+ * the end is reached is to keep track of the current offset and compare it to
+ * the attribute value size.
+ * - The attribute list attribute contains one entry for each attribute of
+ * the file in which the list is located, except for the list attribute
+ * itself. The list is sorted: first by attribute type, second by attribute
+ * name (if present), third by instance number. The extents of one
+ * non-resident attribute (if present) immediately follow after the initial
+ * extent. They are ordered by lowest_vcn and have their instace set to zero.
+ * It is not allowed to have two attributes with all sorting keys equal.
+ * - Further restrictions:
+ *	- If not resident, the vcn to lcn mapping array has to fit inside the
+ *	  base mft record.
+ *	- The attribute list attribute value has a maximum size of 256kb. This
+ *	  is imposed by the Windows cache manager.
+ * - Attribute lists are only used when the attributes of mft record do not
+ * fit inside the mft record despite all attributes (that can be made
+ * non-resident) having been made non-resident. This can happen e.g. when:
+ *	- File has a large number of hard links (lots of filename
+ *	  attributes present).
+ *	- The mapping pairs array of some non-resident attribute becomes so
+ *	  large due to fragmentation that it overflows the mft record.
+ *	- The security descriptor is very complex (not applicable to
+ *	  NTFS 3.0 volumes).
+ *	- There are many named streams.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+<span class="enscript-comment">/*Ofs*/</span>
+<span class="enscript-comment">/*  0*/</span>	ATTR_TYPE type;		<span class="enscript-comment">/* Type of referenced attribute. */</span>
+<span class="enscript-comment">/*  4*/</span>	le16 length;		<span class="enscript-comment">/* Byte size of this entry (8-byte aligned). */</span>
+<span class="enscript-comment">/*  6*/</span>	u8 name_length;		<span class="enscript-comment">/* Size in Unicode chars of the name of the
+				   attribute or 0 if unnamed. */</span>
+<span class="enscript-comment">/*  7*/</span>	u8 name_offset;		<span class="enscript-comment">/* Byte offset to beginning of attribute name
+				   (always set this to where the name would
+				   start even if unnamed). */</span>
+<span class="enscript-comment">/*  8*/</span>	leVCN lowest_vcn;	<span class="enscript-comment">/* Lowest virtual cluster number of this portion
+				   of the attribute value. This is usually 0. It
+				   is non-zero for the case where one attribute
+				   does not fit into one mft record and thus
+				   several mft records are allocated to hold
+				   this attribute. In the latter case, each mft
+				   record holds one extent of the attribute and
+				   there is one attribute list entry for each
+				   extent. NOTE: This is DEFINITELY a signed
+				   value! The windows driver uses cmp, followed
+				   by jg when comparing this, thus it treats it
+				   as signed. */</span>
+<span class="enscript-comment">/* 16*/</span>	leMFT_REF mft_reference;<span class="enscript-comment">/* The reference of the mft record holding
+				   the ATTR_RECORD for this portion of the
+				   attribute value. */</span>
+<span class="enscript-comment">/* 24*/</span>	le16 instance;		<span class="enscript-comment">/* If lowest_vcn = 0, the instance of the
+				   attribute being referenced; otherwise 0. */</span>
+<span class="enscript-comment">/* 26*/</span>	ntfschar name[0];	<span class="enscript-comment">/* Use when creating only. When reading use
+				   name_offset to determine the location of the
+				   name. */</span>
+<span class="enscript-comment">/* sizeof() = 26 + (attribute_name_length * 2) bytes */</span>
+} __attribute__((__packed__)) ATTR_LIST_ENTRY;
+
+<span class="enscript-comment">/*
+ * Possible namespaces for filenames in ntfs (8-bit).
+ */</span>
+<span class="enscript-type">enum</span> {
+	FILENAME_POSIX		= 0x00,
+	<span class="enscript-comment">/* This is the largest namespace. It is case sensitive and allows all
+	   Unicode characters except for: '\0' and '/'.  Beware that in
+	   WinNT/2k/2003 by default files which eg have the same name except
+	   for their case will not be distinguished by the standard utilities
+	   and thus a "del filename" will delete both "filename" and "fileName"
+	   without warning.  However if for example Services For Unix (SFU) are
+	   installed and the case sensitive option was enabled at installation
+	   time, then you can create/access/delete such files.
+	   Note that even SFU places restrictions on the filenames beyond the
+	   '\0' and '/' and in particular the following set of characters is
+	   not allowed: '"', '/', '&lt;', '&gt;', '\'.  All other characters,
+	   including the ones no allowed in WIN32 namespace are allowed.
+	   Tested with SFU 3.5 (this is now free) running on Windows XP. */</span>
+	FILENAME_WIN32		= 0x01,
+	<span class="enscript-comment">/* The standard WinNT/2k NTFS long filenames. Case insensitive.  All
+	   Unicode chars except: '\0', '"', '*', '/', ':', '&lt;', '&gt;', '?', '\',
+	   and '|'.  Further, names cannot end with a '.' or a space. */</span>
+	FILENAME_DOS		= 0x02,
+	<span class="enscript-comment">/* The standard DOS filenames (8.3 format). Uppercase only.  All 8-bit
+	   characters greater space, except: '"', '*', '+', ',', '/', ':', ';',
+	   '&lt;', '=', '&gt;', '?', and '\'. */</span>
+	FILENAME_WIN32_AND_DOS	= 0x03,
+	<span class="enscript-comment">/* 3 means that both the Win32 and the DOS filenames are identical and
+	   hence have been saved in this single filename record. */</span>
+} __attribute__((__packed__));
+
+<span class="enscript-type">typedef</span> u8 FILENAME_TYPE_FLAGS;
+
+<span class="enscript-comment">/*
+ * Attribute: Filename (0x30).
+ *
+ * NOTE: Always resident.
+ * NOTE: All fields, except the parent_directory, are only updated when the
+ *	 filename is changed. Until then, they just become out of sync with
+ *	 reality and the more up to date values are present in the standard
+ *	 information attribute.
+ * NOTE: There is conflicting information about the meaning of each of the time
+ *	 fields but the meaning as defined below has been verified to be
+ *	 correct by practical experimentation on Windows NT4 SP6a and is hence
+ *	 assumed to be the one and only correct interpretation.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+<span class="enscript-comment">/*hex ofs*/</span>
+<span class="enscript-comment">/*  0*/</span>	leMFT_REF parent_directory;	<span class="enscript-comment">/* Directory this filename is
+					   referenced from. */</span>
+<span class="enscript-comment">/*  8*/</span>	sle64 creation_time;		<span class="enscript-comment">/* Time file was created. */</span>
+<span class="enscript-comment">/* 10*/</span>	sle64 last_data_change_time;	<span class="enscript-comment">/* Time the data attribute was last
+					   modified. */</span>
+<span class="enscript-comment">/* 18*/</span>	sle64 last_mft_change_time;	<span class="enscript-comment">/* Time this mft record was last
+					   modified. */</span>
+<span class="enscript-comment">/* 20*/</span>	sle64 last_access_time;		<span class="enscript-comment">/* Time this mft record was last
+					   accessed. */</span>
+<span class="enscript-comment">/* 28*/</span>	sle64 allocated_size;		<span class="enscript-comment">/* Byte size of allocated space for the
+					   data attribute. NOTE: Is a multiple
+					   of the cluster size. */</span>
+<span class="enscript-comment">/* 30*/</span>	sle64 data_size;		<span class="enscript-comment">/* Byte size of actual data in data
+					   attribute. */</span>
+<span class="enscript-comment">/* 38*/</span>	FILE_ATTR_FLAGS file_attributes;	<span class="enscript-comment">/* Flags describing the file. */</span>
+<span class="enscript-comment">/* 3c*/</span>	<span class="enscript-type">union</span> {
+	<span class="enscript-comment">/* 3c*/</span>	<span class="enscript-type">struct</span> {
+		<span class="enscript-comment">/* 3c*/</span>	le16 packed_ea_size;	<span class="enscript-comment">/* Size of the buffer needed to
+						   pack the extended attributes
+						   (EAs), if such are present.*/</span>
+		<span class="enscript-comment">/* 3e*/</span>	le16 reserved;		<span class="enscript-comment">/* Reserved for alignment. */</span>
+		} __attribute__((__packed__));
+	<span class="enscript-comment">/* 3c*/</span>	<span class="enscript-type">struct</span> {
+		<span class="enscript-comment">/* 3c*/</span>	le32 reparse_point_tag;	<span class="enscript-comment">/* Type of reparse point,
+						   present only in reparse
+						   points and only if there are
+						   no EAs. */</span>
+		} __attribute__((__packed__));
+	} __attribute__((__packed__));
+<span class="enscript-comment">/* 40*/</span>	u8 filename_length;			<span class="enscript-comment">/* Length of filename in
+						   (Unicode) characters. */</span>
+<span class="enscript-comment">/* 41*/</span>	FILENAME_TYPE_FLAGS filename_type;	<span class="enscript-comment">/* Namespace of the filename. */</span>
+<span class="enscript-comment">/* 42*/</span>	ntfschar filename[0];			<span class="enscript-comment">/* Filename in Unicode. */</span>
+} __attribute__((__packed__)) FILENAME_ATTR;
+
+<span class="enscript-comment">/*
+ * GUID structures store globally unique identifiers (GUID).  A GUID is a
+ * 128-bit value consisting of one group of eight hexadecimal digits, followed
+ * by three groups of four hexadecimal digits each, followed by one group of
+ * twelve hexadecimal digits.  GUIDs are Microsoft's implementation of the
+ * distributed computing environment (DCE) universally unique identifier
+ * (UUID).
+ *
+ * Example of a GUID in string format:
+ *	514AFB70-78F2-400E-82E4-E251889DD21D
+ * And the same as a sequence of bytes on disk in hex:
+ *	70FB4A51F2780E4082E4E251889DD21D
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	le32 data1;	<span class="enscript-comment">/* The first eight hexadecimal digits of the GUID. */</span>
+	le16 data2;	<span class="enscript-comment">/* The first group of four hexadecimal digits. */</span>
+	le16 data3;	<span class="enscript-comment">/* The second group of four hexadecimal digits. */</span>
+	u8 data4[8];	<span class="enscript-comment">/* The first two bytes are the third group of four
+			   hexadecimal digits.  The remaining six bytes are the
+			   final 12 hexadecimal digits. */</span>
+} __attribute__((__packed__)) GUID;
+
+<span class="enscript-comment">/*
+ * FILE_Extend/$ObjId contains an index named $O. This index contains all
+ * object_ids present on the volume as the index keys and the corresponding
+ * mft_record numbers as the index entry data parts. The data part (defined
+ * below) also contains three other object_ids:
+ *	birth_volume_id - object_id of FILE_Volume on which the file was first
+ *			  created. Optional (i.e. can be zero).
+ *	birth_object_id - object_id of file when it was first created. Usually
+ *			  equals the object_id. Optional (i.e. can be zero).
+ *	domain_id	- Reserved (always zero).
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	leMFT_REF mft_reference;<span class="enscript-comment">/* Mft record containing the object_id in
+				   the index entry key. */</span>
+	<span class="enscript-type">union</span> {
+		<span class="enscript-type">struct</span> {
+			GUID birth_volume_id;
+			GUID birth_object_id;
+			GUID domain_id;
+		} __attribute__((__packed__));
+		u8 extended_info[48];
+	} __attribute__((__packed__));
+} __attribute__((__packed__)) OBJ_ID_INDEX_DATA;
+
+<span class="enscript-comment">/*
+ * Attribute: Object id (NTFS 3.0+) (0x40).
+ *
+ * NOTE: Always resident.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	GUID object_id;				<span class="enscript-comment">/* Unique id assigned to the
+						   file.*/</span>
+	<span class="enscript-comment">/* The following fields are optional. The attribute value size is 16
+	   bytes, i.e. sizeof(GUID), if these are not present at all. Note,
+	   the entries can be present but one or more (or all) can be zero
+	   meaning that that particular value(s) is(are) not defined. */</span>
+	<span class="enscript-type">union</span> {
+		<span class="enscript-type">struct</span> {
+			GUID birth_volume_id;	<span class="enscript-comment">/* Unique id of volume on which
+						   the file was first created.*/</span>
+			GUID birth_object_id;	<span class="enscript-comment">/* Unique id of file when it was
+						   first created. */</span>
+			GUID domain_id;		<span class="enscript-comment">/* Reserved, zero. */</span>
+		} __attribute__((__packed__));
+		u8 extended_info[48];
+	} __attribute__((__packed__));
+} __attribute__((__packed__)) OBJECT_ID_ATTR;
+
+<span class="enscript-comment">/*
+ * The pre-defined IDENTIFIER_AUTHORITIES used as SID_IDENTIFIER_AUTHORITY in
+ * the SID structure (see below).
+ */</span>
+<span class="enscript-comment">//typedef enum {					/* SID string prefix. */
+</span><span class="enscript-comment">//	SECURITY_NULL_SID_AUTHORITY	= {0, 0, 0, 0, 0, 0},	/* S-1-0 */
+</span><span class="enscript-comment">//	SECURITY_WORLD_SID_AUTHORITY	= {0, 0, 0, 0, 0, 1},	/* S-1-1 */
+</span><span class="enscript-comment">//	SECURITY_LOCAL_SID_AUTHORITY	= {0, 0, 0, 0, 0, 2},	/* S-1-2 */
+</span><span class="enscript-comment">//	SECURITY_CREATOR_SID_AUTHORITY	= {0, 0, 0, 0, 0, 3},	/* S-1-3 */
+</span><span class="enscript-comment">//	SECURITY_NON_UNIQUE_AUTHORITY	= {0, 0, 0, 0, 0, 4},	/* S-1-4 */
+</span><span class="enscript-comment">//	SECURITY_NT_SID_AUTHORITY	= {0, 0, 0, 0, 0, 5},	/* S-1-5 */
+</span><span class="enscript-comment">//} IDENTIFIER_AUTHORITIES;
+</span>
+<span class="enscript-comment">/*
+ * These relative identifiers (RIDs) are used with the above identifier
+ * authorities to make up universal well-known SIDs.
+ *
+ * Note: The relative identifier (RID) refers to the portion of a SID, which
+ * identifies a user or group in relation to the authority that issued the SID.
+ * For example, the universal well-known SID Creator Owner ID (S-1-3-0) is
+ * made up of the identifier authority SECURITY_CREATOR_SID_AUTHORITY (3) and
+ * the relative identifier SECURITY_CREATOR_OWNER_RID (0).
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">enum</span> {					<span class="enscript-comment">/* Identifier authority. */</span>
+	SECURITY_NULL_RID		  = 0,	<span class="enscript-comment">/* S-1-0 */</span>
+	SECURITY_WORLD_RID		  = 0,	<span class="enscript-comment">/* S-1-1 */</span>
+	SECURITY_LOCAL_RID		  = 0,	<span class="enscript-comment">/* S-1-2 */</span>
+
+	SECURITY_CREATOR_OWNER_RID	  = 0,	<span class="enscript-comment">/* S-1-3 */</span>
+	SECURITY_CREATOR_GROUP_RID	  = 1,	<span class="enscript-comment">/* S-1-3 */</span>
+
+	SECURITY_CREATOR_OWNER_SERVER_RID = 2,	<span class="enscript-comment">/* S-1-3 */</span>
+	SECURITY_CREATOR_GROUP_SERVER_RID = 3,	<span class="enscript-comment">/* S-1-3 */</span>
+
+	SECURITY_DIALUP_RID		  = 1,
+	SECURITY_NETWORK_RID		  = 2,
+	SECURITY_BATCH_RID		  = 3,
+	SECURITY_INTERACTIVE_RID	  = 4,
+	SECURITY_SERVICE_RID		  = 6,
+	SECURITY_ANONYMOUS_LOGON_RID	  = 7,
+	SECURITY_PROXY_RID		  = 8,
+	SECURITY_ENTERPRISE_CONTROLLERS_RID=9,
+	SECURITY_SERVER_LOGON_RID	  = 9,
+	SECURITY_PRINCIPAL_SELF_RID	  = 0xa,
+	SECURITY_AUTHENTICATED_USER_RID	  = 0xb,
+	SECURITY_RESTRICTED_CODE_RID	  = 0xc,
+	SECURITY_TERMINAL_SERVER_RID	  = 0xd,
+
+	SECURITY_LOGON_IDS_RID		  = 5,
+	SECURITY_LOGON_IDS_RID_COUNT	  = 3,
+
+	SECURITY_LOCAL_SYSTEM_RID	  = 0x12,
+
+	SECURITY_NT_NON_UNIQUE		  = 0x15,
+
+	SECURITY_BUILTIN_DOMAIN_RID	  = 0x20,
+
+	<span class="enscript-comment">/*
+	 * Well-known domain relative sub-authority values (RIDs).
+	 */</span>
+
+	<span class="enscript-comment">/* Users. */</span>
+	DOMAIN_USER_RID_ADMIN		  = 0x1f4,
+	DOMAIN_USER_RID_GUEST		  = 0x1f5,
+	DOMAIN_USER_RID_KRBTGT		  = 0x1f6,
+
+	<span class="enscript-comment">/* Groups. */</span>
+	DOMAIN_GROUP_RID_ADMINS		  = 0x200,
+	DOMAIN_GROUP_RID_USERS		  = 0x201,
+	DOMAIN_GROUP_RID_GUESTS		  = 0x202,
+	DOMAIN_GROUP_RID_COMPUTERS	  = 0x203,
+	DOMAIN_GROUP_RID_CONTROLLERS	  = 0x204,
+	DOMAIN_GROUP_RID_CERT_ADMINS	  = 0x205,
+	DOMAIN_GROUP_RID_SCHEMA_ADMINS	  = 0x206,
+	DOMAIN_GROUP_RID_ENTERPRISE_ADMINS= 0x207,
+	DOMAIN_GROUP_RID_POLICY_ADMINS	  = 0x208,
+
+	<span class="enscript-comment">/* Aliases. */</span>
+	DOMAIN_ALIAS_RID_ADMINS		  = 0x220,
+	DOMAIN_ALIAS_RID_USERS		  = 0x221,
+	DOMAIN_ALIAS_RID_GUESTS		  = 0x222,
+	DOMAIN_ALIAS_RID_POWER_USERS	  = 0x223,
+
+	DOMAIN_ALIAS_RID_ACCOUNT_OPS	  = 0x224,
+	DOMAIN_ALIAS_RID_SYSTEM_OPS	  = 0x225,
+	DOMAIN_ALIAS_RID_PRINT_OPS	  = 0x226,
+	DOMAIN_ALIAS_RID_BACKUP_OPS	  = 0x227,
+
+	DOMAIN_ALIAS_RID_REPLICATOR	  = 0x228,
+	DOMAIN_ALIAS_RID_RAS_SERVERS	  = 0x229,
+	DOMAIN_ALIAS_RID_PREW2KCOMPACCESS = 0x22a,
+} RELATIVE_IDENTIFIERS;
+
+<span class="enscript-comment">/*
+ * The universal well-known SIDs:
+ *
+ *	NULL_SID			S-1-0-0
+ *	WORLD_SID			S-1-1-0
+ *	LOCAL_SID			S-1-2-0
+ *	CREATOR_OWNER_SID		S-1-3-0
+ *	CREATOR_GROUP_SID		S-1-3-1
+ *	CREATOR_OWNER_SERVER_SID	S-1-3-2
+ *	CREATOR_GROUP_SERVER_SID	S-1-3-3
+ *
+ *	(Non-unique IDs)		S-1-4
+ *
+ * NT well-known SIDs:
+ *
+ *	NT_AUTHORITY_SID	S-1-5
+ *	DIALUP_SID		S-1-5-1
+ *
+ *	NETWORD_SID		S-1-5-2
+ *	BATCH_SID		S-1-5-3
+ *	INTERACTIVE_SID		S-1-5-4
+ *	SERVICE_SID		S-1-5-6
+ *	ANONYMOUS_LOGON_SID	S-1-5-7		(aka null logon session)
+ *	PROXY_SID		S-1-5-8
+ *	SERVER_LOGON_SID	S-1-5-9		(aka domain controller account)
+ *	SELF_SID		S-1-5-10	(self RID)
+ *	AUTHENTICATED_USER_SID	S-1-5-11
+ *	RESTRICTED_CODE_SID	S-1-5-12	(running restricted code)
+ *	TERMINAL_SERVER_SID	S-1-5-13	(running on terminal server)
+ *
+ *	(Logon IDs)		S-1-5-5-X-Y
+ *
+ *	(NT non-unique IDs)	S-1-5-0x15-...
+ *
+ *	(Built-in domain)	S-1-5-0x20
+ */</span>
+
+<span class="enscript-comment">/*
+ * The SID_IDENTIFIER_AUTHORITY is a 48-bit value used in the SID structure.
+ *
+ * NOTE: This is stored as a big endian number, hence the high_part comes
+ * before the low_part.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">union</span> {
+	<span class="enscript-type">struct</span> {
+		u16 high_part;	<span class="enscript-comment">/* High 16-bits. */</span>
+		u32 low_part;	<span class="enscript-comment">/* Low 32-bits. */</span>
+	} __attribute__((__packed__));
+	u8 value[6];		<span class="enscript-comment">/* Value as individual bytes. */</span>
+} __attribute__((__packed__)) SID_IDENTIFIER_AUTHORITY;
+
+<span class="enscript-comment">/*
+ * The SID structure is a variable-length structure used to uniquely identify
+ * users or groups. SID stands for security identifier.
+ *
+ * The standard textual representation of the SID is of the form:
+ *	S-R-I-S-S...
+ * Where:
+ *    - The first "S" is the literal character 'S' identifying the following
+ *	digits as a SID.
+ *    - R is the revision level of the SID expressed as a sequence of digits
+ *	either in decimal or hexadecimal (if the later, prefixed by "0x").
+ *    - I is the 48-bit identifier_authority, expressed as digits as R above.
+ *    - S... is one or more sub_authority values, expressed as digits as above.
+ *
+ * Example SID; the domain-relative SID of the local Administrators group on
+ * Windows NT/2k:
+ *	S-1-5-32-544
+ * This translates to a SID with:
+ *	revision = 1,
+ *	sub_authority_count = 2,
+ *	identifier_authority = {0,0,0,0,0,5},	// SECURITY_NT_AUTHORITY
+ *	sub_authority[0] = 32,			// SECURITY_BUILTIN_DOMAIN_RID
+ *	sub_authority[1] = 544			// DOMAIN_ALIAS_RID_ADMINS
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	u8 revision;
+	u8 sub_authority_count;
+	SID_IDENTIFIER_AUTHORITY identifier_authority;
+	le32 sub_authority[1];		<span class="enscript-comment">/* At least one sub_authority. */</span>
+} __attribute__((__packed__)) SID;
+
+<span class="enscript-comment">/*
+ * Current constants for SIDs.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">enum</span> {
+	SID_REVISION			=  1,	<span class="enscript-comment">/* Current revision level. */</span>
+	SID_MAX_SUB_AUTHORITIES		= 15,	<span class="enscript-comment">/* Maximum number of those. */</span>
+	SID_RECOMMENDED_SUB_AUTHORITIES	=  1,	<span class="enscript-comment">/* Will change to around 6 in
+						   a future revision. */</span>
+} SID_CONSTANTS;
+
+<span class="enscript-comment">/*
+ * The predefined ACE types (8-bit, see below).
+ */</span>
+<span class="enscript-type">enum</span> {
+	ACCESS_MIN_MS_ACE_TYPE		= 0,
+	ACCESS_ALLOWED_ACE_TYPE		= 0,
+	ACCESS_DENIED_ACE_TYPE		= 1,
+	SYSTEM_AUDIT_ACE_TYPE		= 2,
+	SYSTEM_ALARM_ACE_TYPE		= 3, <span class="enscript-comment">/* Not implemented as of Win2k. */</span>
+	ACCESS_MAX_MS_V2_ACE_TYPE	= 3,
+
+	ACCESS_ALLOWED_COMPOUND_ACE_TYPE= 4,
+	ACCESS_MAX_MS_V3_ACE_TYPE	= 4,
+
+	<span class="enscript-comment">/* The following are Win2k only. */</span>
+	ACCESS_MIN_MS_OBJECT_ACE_TYPE	= 5,
+	ACCESS_ALLOWED_OBJECT_ACE_TYPE	= 5,
+	ACCESS_DENIED_OBJECT_ACE_TYPE	= 6,
+	SYSTEM_AUDIT_OBJECT_ACE_TYPE	= 7,
+	SYSTEM_ALARM_OBJECT_ACE_TYPE	= 8,
+	ACCESS_MAX_MS_OBJECT_ACE_TYPE	= 8,
+
+	ACCESS_MAX_MS_V4_ACE_TYPE	= 8,
+
+	<span class="enscript-comment">/* This one is for WinNT/2k. */</span>
+	ACCESS_MAX_MS_ACE_TYPE		= 8,
+} __attribute__((__packed__));
+
+<span class="enscript-type">typedef</span> u8 ACE_TYPES;
+
+<span class="enscript-comment">/*
+ * The ACE flags (8-bit) for audit and inheritance (see below).
+ *
+ * SUCCESSFUL_ACCESS_ACE_FLAG is only used with system audit and alarm ACE
+ * types to indicate that a message is generated (in Windows!) for successful
+ * accesses.
+ *
+ * FAILED_ACCESS_ACE_FLAG is only used with system audit and alarm ACE types
+ * to indicate that a message is generated (in Windows!) for failed accesses.
+ */</span>
+<span class="enscript-type">enum</span> {
+	<span class="enscript-comment">/* The inheritance flags. */</span>
+	OBJECT_INHERIT_ACE		= 0x01,
+	CONTAINER_INHERIT_ACE		= 0x02,
+	NO_PROPAGATE_INHERIT_ACE	= 0x04,
+	INHERIT_ONLY_ACE		= 0x08,
+	INHERITED_ACE			= 0x10,	<span class="enscript-comment">/* Win2k only. */</span>
+	VALID_INHERIT_FLAGS		= 0x1f,
+
+	<span class="enscript-comment">/* The audit flags. */</span>
+	SUCCESSFUL_ACCESS_ACE_FLAG	= 0x40,
+	FAILED_ACCESS_ACE_FLAG		= 0x80,
+} __attribute__((__packed__));
+
+<span class="enscript-type">typedef</span> u8 ACE_FLAGS;
+
+<span class="enscript-comment">/*
+ * An ACE is an access-control entry in an access-control list (ACL).
+ * An ACE defines access to an object for a specific user or group or defines
+ * the types of access that generate system-administration messages or alarms
+ * for a specific user or group. The user or group is identified by a security
+ * identifier (SID).
+ *
+ * Each ACE starts with an ACE_HEADER structure (aligned on 4-byte boundary),
+ * which specifies the type and size of the ACE. The format of the subsequent
+ * data depends on the ACE type.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+<span class="enscript-comment">/*Ofs*/</span>
+<span class="enscript-comment">/*  0*/</span>	ACE_TYPES type;		<span class="enscript-comment">/* Type of the ACE. */</span>
+<span class="enscript-comment">/*  1*/</span>	ACE_FLAGS flags;	<span class="enscript-comment">/* Flags describing the ACE. */</span>
+<span class="enscript-comment">/*  2*/</span>	le16 size;		<span class="enscript-comment">/* Size in bytes of the ACE. */</span>
+} __attribute__((__packed__)) ACE_HEADER;
+
+<span class="enscript-comment">/*
+ * The access mask (32-bit). Defines the access rights.
+ *
+ * The specific rights (bits 0 to 15).  These depend on the type of the object
+ * being secured by the ACE.
+ */</span>
+<span class="enscript-type">enum</span> {
+	<span class="enscript-comment">/* Specific rights for files and directories are as follows: */</span>
+
+	<span class="enscript-comment">/* Right to read data from the file. (FILE) */</span>
+	FILE_READ_DATA			= const_cpu_to_le32(0x00000001),
+	<span class="enscript-comment">/* Right to list contents of a directory. (DIRECTORY) */</span>
+	FILE_LIST_DIRECTORY		= const_cpu_to_le32(0x00000001),
+
+	<span class="enscript-comment">/* Right to write data to the file. (FILE) */</span>
+	FILE_WRITE_DATA			= const_cpu_to_le32(0x00000002),
+	<span class="enscript-comment">/* Right to create a file in the directory. (DIRECTORY) */</span>
+	FILE_ADD_FILE			= const_cpu_to_le32(0x00000002),
+
+	<span class="enscript-comment">/* Right to append data to the file. (FILE) */</span>
+	FILE_APPEND_DATA		= const_cpu_to_le32(0x00000004),
+	<span class="enscript-comment">/* Right to create a subdirectory. (DIRECTORY) */</span>
+	FILE_ADD_SUBDIRECTORY		= const_cpu_to_le32(0x00000004),
+
+	<span class="enscript-comment">/* Right to read extended attributes. (FILE/DIRECTORY) */</span>
+	FILE_READ_EA			= const_cpu_to_le32(0x00000008),
+
+	<span class="enscript-comment">/* Right to write extended attributes. (FILE/DIRECTORY) */</span>
+	FILE_WRITE_EA			= const_cpu_to_le32(0x00000010),
+
+	<span class="enscript-comment">/* Right to execute a file. (FILE) */</span>
+	FILE_EXECUTE			= const_cpu_to_le32(0x00000020),
+	<span class="enscript-comment">/* Right to traverse the directory. (DIRECTORY) */</span>
+	FILE_TRAVERSE			= const_cpu_to_le32(0x00000020),
+
+	<span class="enscript-comment">/*
+	 * Right to delete a directory and all the files it contains (its
+	 * children), even if the files are read-only. (DIRECTORY)
+	 */</span>
+	FILE_DELETE_CHILD		= const_cpu_to_le32(0x00000040),
+
+	<span class="enscript-comment">/* Right to read file attributes. (FILE/DIRECTORY) */</span>
+	FILE_READ_ATTRIBUTES		= const_cpu_to_le32(0x00000080),
+
+	<span class="enscript-comment">/* Right to change file attributes. (FILE/DIRECTORY) */</span>
+	FILE_WRITE_ATTRIBUTES		= const_cpu_to_le32(0x00000100),
+
+	<span class="enscript-comment">/*
+	 * The standard rights (bits 16 to 23).  These are independent of the
+	 * type of object being secured.
+	 */</span>
+
+	<span class="enscript-comment">/* Right to delete the object. */</span>
+	_DELETE				= const_cpu_to_le32(0x00010000),
+
+	<span class="enscript-comment">/*
+	 * Right to read the information in the object's security descriptor,
+	 * not including the information in the SACL, i.e. right to read the
+	 * security descriptor and owner.
+	 */</span>
+	READ_CONTROL			= const_cpu_to_le32(0x00020000),
+
+	<span class="enscript-comment">/* Right to modify the DACL in the object's security descriptor. */</span>
+	WRITE_DAC			= const_cpu_to_le32(0x00040000),
+
+	<span class="enscript-comment">/* Right to change the owner in the object's security descriptor. */</span>
+	WRITE_OWNER			= const_cpu_to_le32(0x00080000),
+
+	<span class="enscript-comment">/*
+	 * Right to use the object for synchronization.  Enables a process to
+	 * wait until the object is in the signalled state.  Some object types
+	 * do not support this access right.
+	 */</span>
+	SYNCHRONIZE			= const_cpu_to_le32(0x00100000),
+
+	<span class="enscript-comment">/*
+	 * The following STANDARD_RIGHTS_* are combinations of the above for
+	 * convenience and are defined by the Win32 API.
+	 */</span>
+
+	<span class="enscript-comment">/* These are currently defined to READ_CONTROL. */</span>
+	STANDARD_RIGHTS_READ		= const_cpu_to_le32(0x00020000),
+	STANDARD_RIGHTS_WRITE		= const_cpu_to_le32(0x00020000),
+	STANDARD_RIGHTS_EXECUTE		= const_cpu_to_le32(0x00020000),
+
+	<span class="enscript-comment">/* Combines _DELETE, READ_CONTROL, WRITE_DAC, and WRITE_OWNER access. */</span>
+	STANDARD_RIGHTS_REQUIRED	= const_cpu_to_le32(0x000f0000),
+
+	<span class="enscript-comment">/*
+	 * Combines _DELETE, READ_CONTROL, WRITE_DAC, WRITE_OWNER, and
+	 * SYNCHRONIZE access.
+	 */</span>
+	STANDARD_RIGHTS_ALL		= const_cpu_to_le32(0x001f0000),
+
+	<span class="enscript-comment">/*
+	 * The access system ACL and maximum allowed access types (bits 24 to
+	 * 25, bits 26 to 27 are reserved).
+	 */</span>
+	ACCESS_SYSTEM_SECURITY		= const_cpu_to_le32(0x01000000),
+	MAXIMUM_ALLOWED			= const_cpu_to_le32(0x02000000),
+
+	<span class="enscript-comment">/*
+	 * The generic rights (bits 28 to 31).  These map onto the standard and
+	 * specific rights.
+	 */</span>
+
+	<span class="enscript-comment">/* Read, write, and execute access. */</span>
+	GENERIC_ALL			= const_cpu_to_le32(0x10000000),
+
+	<span class="enscript-comment">/* Execute access. */</span>
+	GENERIC_EXECUTE			= const_cpu_to_le32(0x20000000),
+
+	<span class="enscript-comment">/*
+	 * Write access.  For files, this maps onto:
+	 *	FILE_APPEND_DATA | FILE_WRITE_ATTRIBUTES | FILE_WRITE_DATA |
+	 *	FILE_WRITE_EA | STANDARD_RIGHTS_WRITE | SYNCHRONIZE
+	 * For directories, the mapping has the same numerical value.  See
+	 * above for the descriptions of the rights granted.
+	 */</span>
+	GENERIC_WRITE			= const_cpu_to_le32(0x40000000),
+
+	<span class="enscript-comment">/*
+	 * Read access.  For files, this maps onto:
+	 *	FILE_READ_ATTRIBUTES | FILE_READ_DATA | FILE_READ_EA |
+	 *	STANDARD_RIGHTS_READ | SYNCHRONIZE
+	 * For directories, the mapping has the same numberical value.  See
+	 * above for the descriptions of the rights granted.
+	 */</span>
+	GENERIC_READ			= const_cpu_to_le32(0x80000000),
+};
+
+<span class="enscript-type">typedef</span> le32 ACCESS_MASK;
+
+<span class="enscript-comment">/*
+ * The generic mapping array. Used to denote the mapping of each generic
+ * access right to a specific access mask.
+ *
+ * FIXME: What exactly is this and what is it for? (AIA)
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	ACCESS_MASK generic_read;
+	ACCESS_MASK generic_write;
+	ACCESS_MASK generic_execute;
+	ACCESS_MASK generic_all;
+} __attribute__((__packed__)) GENERIC_MAPPING;
+
+<span class="enscript-comment">/*
+ * The predefined ACE type structures are as defined below.
+ */</span>
+
+<span class="enscript-comment">/*
+ * ACCESS_ALLOWED_ACE, ACCESS_DENIED_ACE, SYSTEM_AUDIT_ACE, SYSTEM_ALARM_ACE
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+<span class="enscript-comment">/*  0	ACE_HEADER; -- Unfolded here as gcc doesn't like unnamed structs. */</span>
+	ACE_TYPES type;		<span class="enscript-comment">/* Type of the ACE. */</span>
+	ACE_FLAGS flags;	<span class="enscript-comment">/* Flags describing the ACE. */</span>
+	le16 size;		<span class="enscript-comment">/* Size in bytes of the ACE. */</span>
+<span class="enscript-comment">/*  4*/</span>	ACCESS_MASK mask;	<span class="enscript-comment">/* Access mask associated with the ACE. */</span>
+
+<span class="enscript-comment">/*  8*/</span>	SID sid;		<span class="enscript-comment">/* The SID associated with the ACE. */</span>
+} __attribute__((__packed__)) ACCESS_ALLOWED_ACE, ACCESS_DENIED_ACE,
+			       SYSTEM_AUDIT_ACE, SYSTEM_ALARM_ACE;
+
+<span class="enscript-comment">/*
+ * The object ACE flags (32-bit).
+ */</span>
+<span class="enscript-type">enum</span> {
+	ACE_OBJECT_TYPE_PRESENT			= const_cpu_to_le32(1),
+	ACE_INHERITED_OBJECT_TYPE_PRESENT	= const_cpu_to_le32(2),
+};
+
+<span class="enscript-type">typedef</span> le32 OBJECT_ACE_FLAGS;
+
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+<span class="enscript-comment">/*  0	ACE_HEADER; -- Unfolded here as gcc doesn't like unnamed structs. */</span>
+	ACE_TYPES type;		<span class="enscript-comment">/* Type of the ACE. */</span>
+	ACE_FLAGS flags;	<span class="enscript-comment">/* Flags describing the ACE. */</span>
+	le16 size;		<span class="enscript-comment">/* Size in bytes of the ACE. */</span>
+<span class="enscript-comment">/*  4*/</span>	ACCESS_MASK mask;	<span class="enscript-comment">/* Access mask associated with the ACE. */</span>
+
+<span class="enscript-comment">/*  8*/</span>	OBJECT_ACE_FLAGS object_flags;	<span class="enscript-comment">/* Flags describing the object ACE. */</span>
+<span class="enscript-comment">/* 12*/</span>	GUID object_type;
+<span class="enscript-comment">/* 28*/</span>	GUID inherited_object_type;
+
+<span class="enscript-comment">/* 44*/</span>	SID sid;		<span class="enscript-comment">/* The SID associated with the ACE. */</span>
+} __attribute__((__packed__)) ACCESS_ALLOWED_OBJECT_ACE,
+			       ACCESS_DENIED_OBJECT_ACE,
+			       SYSTEM_AUDIT_OBJECT_ACE,
+			       SYSTEM_ALARM_OBJECT_ACE;
+
+<span class="enscript-comment">/*
+ * An ACL is an access-control list (ACL).
+ * An ACL starts with an ACL header structure, which specifies the size of
+ * the ACL and the number of ACEs it contains. The ACL header is followed by
+ * zero or more access control entries (ACEs). The ACL as well as each ACE
+ * are aligned on 4-byte boundaries.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	u8 revision;	<span class="enscript-comment">/* Revision of this ACL. */</span>
+	u8 alignment1;
+	le16 size;	<span class="enscript-comment">/* Allocated space in bytes for ACL. Includes this
+			   header, the ACEs and the remaining free space. */</span>
+	le16 ace_count;	<span class="enscript-comment">/* Number of ACEs in the ACL. */</span>
+	le16 alignment2;
+<span class="enscript-comment">/* sizeof() = 8 bytes */</span>
+} __attribute__((__packed__)) ACL;
+
+<span class="enscript-comment">/*
+ * Current constants for ACLs.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">enum</span> {
+	<span class="enscript-comment">/* Current revision. */</span>
+	ACL_REVISION		= 2,
+	ACL_REVISION_DS		= 4,
+
+	<span class="enscript-comment">/* History of revisions. */</span>
+	ACL_REVISION1		= 1,
+	MIN_ACL_REVISION	= 2,
+	ACL_REVISION2		= 2,
+	ACL_REVISION3		= 3,
+	ACL_REVISION4		= 4,
+	MAX_ACL_REVISION	= 4,
+} ACL_CONSTANTS;
+
+<span class="enscript-comment">/*
+ * The security descriptor control flags (16-bit).
+ *
+ * SE_OWNER_DEFAULTED - This boolean flag, when set, indicates that the SID
+ *	pointed to by the Owner field was provided by a defaulting mechanism
+ *	rather than explicitly provided by the original provider of the
+ *	security descriptor.  This may affect the treatment of the SID with
+ *	respect to inheritence of an owner.
+ *
+ * SE_GROUP_DEFAULTED - This boolean flag, when set, indicates that the SID in
+ *	the Group field was provided by a defaulting mechanism rather than
+ *	explicitly provided by the original provider of the security
+ *	descriptor.  This may affect the treatment of the SID with respect to
+ *	inheritence of a primary group.
+ *
+ * SE_DACL_PRESENT - This boolean flag, when set, indicates that the security
+ *	descriptor contains a discretionary ACL.  If this flag is set and the
+ *	Dacl field of the SECURITY_DESCRIPTOR is null, then a null ACL is
+ *	explicitly being specified.
+ *
+ * SE_DACL_DEFAULTED - This boolean flag, when set, indicates that the ACL
+ *	pointed to by the Dacl field was provided by a defaulting mechanism
+ *	rather than explicitly provided by the original provider of the
+ *	security descriptor.  This may affect the treatment of the ACL with
+ *	respect to inheritence of an ACL.  This flag is ignored if the
+ *	DaclPresent flag is not set.
+ *
+ * SE_SACL_PRESENT - This boolean flag, when set,  indicates that the security
+ *	descriptor contains a system ACL pointed to by the Sacl field.  If this
+ *	flag is set and the Sacl field of the SECURITY_DESCRIPTOR is null, then
+ *	an empty (but present) ACL is being specified.
+ *
+ * SE_SACL_DEFAULTED - This boolean flag, when set, indicates that the ACL
+ *	pointed to by the Sacl field was provided by a defaulting mechanism
+ *	rather than explicitly provided by the original provider of the
+ *	security descriptor.  This may affect the treatment of the ACL with
+ *	respect to inheritence of an ACL.  This flag is ignored if the
+ *	SaclPresent flag is not set.
+ *
+ * SE_SELF_RELATIVE - This boolean flag, when set, indicates that the security
+ *	descriptor is in self-relative form.  In this form, all fields of the
+ *	security descriptor are contiguous in memory and all pointer fields are
+ *	expressed as offsets from the beginning of the security descriptor.
+ */</span>
+<span class="enscript-type">enum</span> {
+	SE_OWNER_DEFAULTED		= const_cpu_to_le16(0x0001),
+	SE_GROUP_DEFAULTED		= const_cpu_to_le16(0x0002),
+	SE_DACL_PRESENT			= const_cpu_to_le16(0x0004),
+	SE_DACL_DEFAULTED		= const_cpu_to_le16(0x0008),
+
+	SE_SACL_PRESENT			= const_cpu_to_le16(0x0010),
+	SE_SACL_DEFAULTED		= const_cpu_to_le16(0x0020),
+
+	SE_DACL_AUTO_INHERIT_REQ	= const_cpu_to_le16(0x0100),
+	SE_SACL_AUTO_INHERIT_REQ	= const_cpu_to_le16(0x0200),
+	SE_DACL_AUTO_INHERITED		= const_cpu_to_le16(0x0400),
+	SE_SACL_AUTO_INHERITED		= const_cpu_to_le16(0x0800),
+
+	SE_DACL_PROTECTED		= const_cpu_to_le16(0x1000),
+	SE_SACL_PROTECTED		= const_cpu_to_le16(0x2000),
+	SE_RM_CONTROL_VALID		= const_cpu_to_le16(0x4000),
+	SE_SELF_RELATIVE		= const_cpu_to_le16(0x8000)
+} __attribute__((__packed__));
+
+<span class="enscript-type">typedef</span> le16 SECURITY_DESCRIPTOR_CONTROL;
+
+<span class="enscript-comment">/*
+ * Self-relative security descriptor. Contains the owner and group SIDs as well
+ * as the sacl and dacl ACLs inside the security descriptor itself.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	u8 revision;	<span class="enscript-comment">/* Revision level of the security descriptor. */</span>
+	u8 alignment;
+	SECURITY_DESCRIPTOR_CONTROL control; <span class="enscript-comment">/* Flags qualifying the type of
+			   the descriptor as well as the following fields. */</span>
+	le32 owner;	<span class="enscript-comment">/* Byte offset to a SID representing an object's
+			   owner. If this is NULL, no owner SID is present in
+			   the descriptor. */</span>
+	le32 group;	<span class="enscript-comment">/* Byte offset to a SID representing an object's
+			   primary group. If this is NULL, no primary group
+			   SID is present in the descriptor. */</span>
+	le32 sacl;	<span class="enscript-comment">/* Byte offset to a system ACL. Only valid, if
+			   SE_SACL_PRESENT is set in the control field. If
+			   SE_SACL_PRESENT is set but sacl is NULL, a NULL ACL
+			   is specified. */</span>
+	le32 dacl;	<span class="enscript-comment">/* Byte offset to a discretionary ACL. Only valid, if
+			   SE_DACL_PRESENT is set in the control field. If
+			   SE_DACL_PRESENT is set but dacl is NULL, a NULL ACL
+			   (unconditionally granting access) is specified. */</span>
+<span class="enscript-comment">/* sizeof() = 0x14 bytes */</span>
+} __attribute__((__packed__)) SECURITY_DESCRIPTOR_RELATIVE;
+
+<span class="enscript-comment">/*
+ * Absolute security descriptor. Does not contain the owner and group SIDs, nor
+ * the sacl and dacl ACLs inside the security descriptor. Instead, it contains
+ * pointers to these structures in memory. Obviously, absolute security
+ * descriptors are only useful for in memory representations of security
+ * descriptors. On disk, a self-relative security descriptor is used.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	u8 revision;	<span class="enscript-comment">/* Revision level of the security descriptor. */</span>
+	u8 alignment;
+	SECURITY_DESCRIPTOR_CONTROL control;	<span class="enscript-comment">/* Flags qualifying the type of
+			   the descriptor as well as the following fields. */</span>
+	SID *owner;	<span class="enscript-comment">/* Points to a SID representing an object's owner. If
+			   this is NULL, no owner SID is present in the
+			   descriptor. */</span>
+	SID *group;	<span class="enscript-comment">/* Points to a SID representing an object's primary
+			   group. If this is NULL, no primary group SID is
+			   present in the descriptor. */</span>
+	ACL *sacl;	<span class="enscript-comment">/* Points to a system ACL. Only valid, if
+			   SE_SACL_PRESENT is set in the control field. If
+			   SE_SACL_PRESENT is set but sacl is NULL, a NULL ACL
+			   is specified. */</span>
+	ACL *dacl;	<span class="enscript-comment">/* Points to a discretionary ACL. Only valid, if
+			   SE_DACL_PRESENT is set in the control field. If
+			   SE_DACL_PRESENT is set but dacl is NULL, a NULL ACL
+			   (unconditionally granting access) is specified. */</span>
+} __attribute__((__packed__)) SECURITY_DESCRIPTOR;
+
+<span class="enscript-comment">/*
+ * Current constants for security descriptors.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">enum</span> {
+	<span class="enscript-comment">/* Current revision. */</span>
+	SECURITY_DESCRIPTOR_REVISION	= 1,
+	SECURITY_DESCRIPTOR_REVISION1	= 1,
+
+	<span class="enscript-comment">/* The sizes of both the absolute and relative security descriptors is
+	   the same as pointers, at least on ia32 architecture are 32-bit. */</span>
+	SECURITY_DESCRIPTOR_MIN_LENGTH	= <span class="enscript-keyword">sizeof</span>(SECURITY_DESCRIPTOR),
+} SECURITY_DESCRIPTOR_CONSTANTS;
+
+<span class="enscript-comment">/*
+ * Attribute: Security descriptor (0x50). A standard self-relative security
+ * descriptor.
+ *
+ * NOTE: Can be resident or non-resident.
+ * NOTE: Not used in NTFS 3.0+, as security descriptors are stored centrally
+ * in FILE_Secure and the correct descriptor is found using the security_id
+ * from the standard information attribute.
+ */</span>
+<span class="enscript-type">typedef</span> SECURITY_DESCRIPTOR_RELATIVE SECURITY_DESCRIPTOR_ATTR;
+
+<span class="enscript-comment">/*
+ * On NTFS 3.0+, all security descriptors are stored in FILE_Secure. Only one
+ * referenced instance of each unique security descriptor is stored.
+ *
+ * FILE_Secure contains no unnamed data attribute, i.e. it has zero length. It
+ * does, however, contain two indexes ($SDH and $SII) as well as a named data
+ * stream ($SDS).
+ *
+ * Every unique security descriptor is assigned a unique security identifier
+ * (security_id, not to be confused with a SID). The security_id is unique for
+ * the NTFS volume and is used as an index into the $SII index, which maps
+ * security_ids to the security descriptor's storage location within the $SDS
+ * data attribute. The $SII index is sorted by ascending security_id.
+ *
+ * A simple hash is computed from each security descriptor. This hash is used
+ * as an index into the $SDH index, which maps security descriptor hashes to
+ * the security descriptor's storage location within the $SDS data attribute.
+ * The $SDH index is sorted by security descriptor hash and is stored in a B+
+ * tree. When searching $SDH (with the intent of determining whether or not a
+ * new security descriptor is already present in the $SDS data stream), if a
+ * matching hash is found, but the security descriptors do not match, the
+ * search in the $SDH index is continued, searching for a next matching hash.
+ *
+ * When a precise match is found, the security_id coresponding to the security
+ * descriptor in the $SDS attribute is read from the found $SDH index entry and
+ * is stored in the $STANDARD_INFORMATION attribute of the file/directory to
+ * which the security descriptor is being applied. The $STANDARD_INFORMATION
+ * attribute is present in all base mft records (i.e. in all files and
+ * directories).
+ *
+ * If a match is not found, the security descriptor is assigned a new unique
+ * security_id and is added to the $SDS data attribute. Then, entries
+ * referencing the this security descriptor in the $SDS data attribute are
+ * added to the $SDH and $SII indexes.
+ *
+ * Note: Entries are never deleted from FILE_Secure, even if nothing
+ * references an entry any more.  Running chkdsk removes such entries and
+ * compacts the $SDS stream.
+ */</span>
+
+<span class="enscript-comment">/* This header precedes each security descriptor in the $SDS data stream. */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	le32 hash;	  <span class="enscript-comment">/* Hash of the security descriptor. */</span>
+	le32 security_id; <span class="enscript-comment">/* The security_id assigned to the descriptor. */</span>
+	le64 offset;	  <span class="enscript-comment">/* Byte offset of this entry in the $SDS stream. */</span>
+	le32 length;	  <span class="enscript-comment">/* Size in bytes of this entry in $SDS stream. */</span>
+} __attribute__ ((__packed__)) SDS_ENTRY_HEADER;
+
+<span class="enscript-comment">/*
+ * The $SDS data stream contains the security descriptors, aligned on 16-byte
+ * boundaries, sorted by security_id in a B+ tree. Security descriptors cannot
+ * cross 256kib boundaries (this restriction is imposed by the Windows cache
+ * manager). Each security descriptor is contained in a SDS_ENTRY structure.
+ * Also, each security descriptor is stored twice in the $SDS stream with a
+ * fixed offset of 0x40000 bytes (256kib, the Windows cache manager's max size)
+ * between them; i.e. if a SDS_ENTRY specifies an offset of 0x51d0, then the
+ * the first copy of the security descriptor will be at offset 0x51d0 in the
+ * $SDS data stream and the second copy will be at offset 0x451d0.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+<span class="enscript-comment">/*Ofs*/</span>
+<span class="enscript-comment">/*  0	SDS_ENTRY_HEADER; -- Unfolded here as gcc does not like unnamed
+			     structs. */</span>
+	le32 hash;	  <span class="enscript-comment">/* Hash of the security descriptor. */</span>
+	le32 security_id; <span class="enscript-comment">/* The security_id assigned to the descriptor. */</span>
+	le64 offset;	  <span class="enscript-comment">/* Byte offset of this entry in the $SDS stream. */</span>
+	le32 length;	  <span class="enscript-comment">/* Size in bytes of this entry in $SDS stream. */</span>
+<span class="enscript-comment">/* 20*/</span>	SECURITY_DESCRIPTOR_RELATIVE sd; <span class="enscript-comment">/* The self-relative security
+					     descriptor. */</span>
+} __attribute__((__packed__)) SDS_ENTRY;
+
+<span class="enscript-comment">/*
+ * The index entry key used in the $SII index. The collation type is
+ * COLLATION_NTOFS_ULONG.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	le32 security_id; <span class="enscript-comment">/* The security_id assigned to the descriptor. */</span>
+} __attribute__((__packed__)) SII_INDEX_KEY;
+
+<span class="enscript-comment">/*
+ * The index entry data used in the $SII index is simply the security
+ * descriptor header.
+ */</span>
+<span class="enscript-type">typedef</span> SDS_ENTRY_HEADER SII_INDEX_DATA;
+
+<span class="enscript-comment">/*
+ * The index entry key used in the $SDH index. The keys are sorted first by
+ * hash and then by security_id. The collation rule is
+ * COLLATION_NTOFS_SECURITY_HASH.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	le32 hash;	  <span class="enscript-comment">/* Hash of the security descriptor. */</span>
+	le32 security_id; <span class="enscript-comment">/* The security_id assigned to the descriptor. */</span>
+} __attribute__((__packed__)) SDH_INDEX_KEY;
+
+<span class="enscript-comment">/* The index entry data used in the $SDH index. */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	le32 hash;	  <span class="enscript-comment">/* Hash of the security descriptor. */</span>
+	le32 security_id; <span class="enscript-comment">/* The security_id assigned to the descriptor. */</span>
+	le64 offset;	  <span class="enscript-comment">/* Byte offset of this entry in the $SDS stream. */</span>
+	le32 length;	  <span class="enscript-comment">/* Size in bytes of this entry in $SDS stream. */</span>
+	ntfschar magic[2];<span class="enscript-comment">/* Effectively padding, this is always either "II" in
+			     Unicode or zero.  This field is not counted in the
+			     data_length specified by the index entry. */</span>
+} __attribute__ ((__packed__)) SDH_INDEX_DATA;
+
+<span class="enscript-comment">/*
+ * Attribute: Volume name (0x60).
+ *
+ * NOTE: Always resident.
+ * NOTE: Present only in FILE_Volume.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	ntfschar name[0];	<span class="enscript-comment">/* The name of the volume in Unicode. */</span>
+} __attribute__((__packed__)) VOLUME_NAME;
+
+<span class="enscript-comment">/*
+ * Possible flags for the volume (16-bit).
+ *
+ * VOLUME_CHKDSK_APPLIED_FIXES - When this bit is set it means that chkdsk was
+ * run and it applied fixes to the volume and most importantly it means that
+ * the chkdsk has completed, thus we can ignore this bit when mounting.  If the
+ * NTFS driver is expected to do anything then the journal is left in a dirty
+ * state which we detect when parsing the journal later on in the mount
+ * process.
+ */</span>
+<span class="enscript-type">enum</span> {
+	VOLUME_IS_DIRTY			= const_cpu_to_le16(0x0001),
+	VOLUME_RESIZE_LOG_FILE		= const_cpu_to_le16(0x0002),
+	VOLUME_UPGRADE_ON_MOUNT		= const_cpu_to_le16(0x0004),
+	VOLUME_MOUNTED_ON_NT4		= const_cpu_to_le16(0x0008),
+
+	VOLUME_DELETE_USN_UNDERWAY	= const_cpu_to_le16(0x0010),
+	VOLUME_REPAIR_OBJECT_ID		= const_cpu_to_le16(0x0020),
+
+	VOLUME_CHKDSK_APPLIED_FIXES	= const_cpu_to_le16(0x4000),
+	VOLUME_MODIFIED_BY_CHKDSK	= const_cpu_to_le16(0x8000),
+
+	VOLUME_FLAGS_MASK		= const_cpu_to_le16(0xc03f),
+
+	<span class="enscript-comment">/* To make our life easier when checking if we must mount read-only. */</span>
+	VOLUME_MUST_MOUNT_RO_MASK	= const_cpu_to_le16(0x0022),
+} __attribute__((__packed__));
+
+<span class="enscript-type">typedef</span> le16 VOLUME_FLAGS;
+
+<span class="enscript-comment">/*
+ * Attribute: Volume information (0x70).
+ *
+ * NOTE: Always resident.
+ * NOTE: Present only in FILE_Volume.
+ * NOTE: Windows 2000 uses NTFS 3.0 while Windows NT4 service pack 6a uses
+ *	 NTFS 1.2. I haven't personally seen other values yet.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	le64 reserved;		<span class="enscript-comment">/* Not used (yet?). */</span>
+	u8 major_ver;		<span class="enscript-comment">/* Major version of the ntfs format. */</span>
+	u8 minor_ver;		<span class="enscript-comment">/* Minor version of the ntfs format. */</span>
+	VOLUME_FLAGS flags;	<span class="enscript-comment">/* Bit array of VOLUME_* flags. */</span>
+} __attribute__((__packed__)) VOLUME_INFORMATION;
+
+<span class="enscript-comment">/*
+ * Attribute: Data attribute (0x80).
+ *
+ * NOTE: Can be resident or non-resident.
+ *
+ * Data contents of a file (i.e. the unnamed stream) or of a named stream.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	u8 data[0];		<span class="enscript-comment">/* The file's data contents. */</span>
+} __attribute__((__packed__)) DATA_ATTR;
+
+<span class="enscript-comment">/*
+ * Index header flags (8-bit).
+ */</span>
+<span class="enscript-type">enum</span> {
+	<span class="enscript-comment">/*
+	 * When index header is in an index root attribute:
+	 */</span>
+	SMALL_INDEX = 0, <span class="enscript-comment">/* The index is small enough to fit inside the index
+			    root attribute and there is no index allocation
+			    attribute present. */</span>
+	LARGE_INDEX = 1, <span class="enscript-comment">/* The index is too large to fit in the index root
+			    attribute and/or an index allocation attribute is
+			    present. */</span>
+	<span class="enscript-comment">/*
+	 * When index header is in an index block, i.e. is part of index
+	 * allocation attribute:
+	 */</span>
+	LEAF_NODE  = 0, <span class="enscript-comment">/* This is a leaf node, i.e. there are no more nodes
+			   branching off it. */</span>
+	INDEX_NODE = 1, <span class="enscript-comment">/* This node indexes other nodes, i.e. it is not a leaf
+			   node. */</span>
+	NODE_MASK  = 1, <span class="enscript-comment">/* Mask for accessing the *_NODE bits. */</span>
+} __attribute__((__packed__));
+
+<span class="enscript-type">typedef</span> u8 INDEX_HEADER_FLAGS;
+
+<span class="enscript-comment">/*
+ * This is the header for indexes, describing the INDEX_ENTRY records, which
+ * follow the INDEX_HEADER. Together the index header and the index entries
+ * make up a complete index.
+ *
+ * IMPORTANT NOTE: The offset, length and size structure members are counted
+ * relative to the start of the index header structure and not relative to the
+ * start of the index root or index allocation structures themselves.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	le32 entries_offset;		<span class="enscript-comment">/* Byte offset to first INDEX_ENTRY
+					   aligned to 8-byte boundary. */</span>
+	le32 index_length;		<span class="enscript-comment">/* Data size of the index in bytes,
+					   i.e. bytes used from allocated
+					   size, aligned to 8-byte boundary. */</span>
+	le32 allocated_size;		<span class="enscript-comment">/* Byte size of this index (block),
+					   multiple of 8 bytes. */</span>
+	<span class="enscript-comment">/* NOTE: For the index root attribute, the above two numbers are always
+	   equal, as the attribute is resident and it is resized as needed. In
+	   the case of the index allocation attribute the attribute is not
+	   resident and hence the allocated_size is a fixed value and must
+	   equal the index_block_size specified by the INDEX_ROOT attribute
+	   corresponding to the INDEX_ALLOCATION attribute this INDEX_BLOCK
+	   belongs to. */</span>
+	INDEX_HEADER_FLAGS flags;	<span class="enscript-comment">/* Bit field of INDEX_HEADER_FLAGS. */</span>
+	u8 reserved[3];			<span class="enscript-comment">/* Reserved/align to 8-byte boundary. */</span>
+} __attribute__((__packed__)) INDEX_HEADER;
+
+<span class="enscript-comment">/*
+ * Attribute: Index root (0x90).
+ *
+ * NOTE: Always resident.
+ *
+ * This is followed by a sequence of index entries (INDEX_ENTRY structures)
+ * as described by the index header.
+ *
+ * When a directory is small enough to fit inside the index root then this
+ * is the only attribute describing the directory. When the directory is too
+ * large to fit in the index root, on the other hand, two aditional attributes
+ * are present: an index allocation attribute, containing sub-nodes of the B+
+ * directory tree (see below), and a bitmap attribute, describing which virtual
+ * cluster numbers (vcns) in the index allocation attribute are in use by an
+ * index block.
+ *
+ * NOTE: The root directory (FILE_root) contains an entry for itself. Other
+ * dircetories do not contain entries for themselves, though.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	ATTR_TYPE type;			<span class="enscript-comment">/* Type of the indexed attribute.  Is
+					   AT_FILENAME for directories, zero
+					   for view indexes.  No other values
+					   allowed. */</span>
+	COLLATION_RULE collation_rule;	<span class="enscript-comment">/* Collation rule used to sort the
+					   index entries.  If type is
+					   AT_FILENAME, this must be
+					   COLLATION_FILENAME. */</span>
+	le32 index_block_size;		<span class="enscript-comment">/* Size of each index block in bytes (in
+					   the index allocation attribute). */</span>
+	u8 clusters_per_index_block;	<span class="enscript-comment">/* Cluster size of each index block (in
+					   the index allocation attribute), when
+					   an index block is &gt;= than a cluster,
+					   otherwise this will be the log of
+					   the size (like how the encoding of
+					   the mft record size and the index
+					   record size found in the boot sector
+					   work). Has to be a power of 2. */</span>
+	u8 reserved[3];			<span class="enscript-comment">/* Reserved/align to 8-byte boundary. */</span>
+	INDEX_HEADER index;		<span class="enscript-comment">/* Index header describing the
+					   following index entries. */</span>
+} __attribute__((__packed__)) INDEX_ROOT;
+
+<span class="enscript-comment">/*
+ * Attribute: Index allocation (0xa0).
+ *
+ * NOTE: Always non-resident (doesn't make sense to be resident anyway!).
+ *
+ * This is an array of index blocks. Each index block starts with an
+ * INDEX_BLOCK structure containing an index header, followed by a sequence of
+ * index entries (INDEX_ENTRY structures), as described by the INDEX_HEADER.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+<span class="enscript-comment">/*  0	NTFS_RECORD; -- Unfolded here as gcc doesn't like unnamed structs. */</span>
+	NTFS_RECORD_TYPE magic;	<span class="enscript-comment">/* Magic is "INDX". */</span>
+	le16 usa_ofs;		<span class="enscript-comment">/* See NTFS_RECORD definition. */</span>
+	le16 usa_count;		<span class="enscript-comment">/* See NTFS_RECORD definition. */</span>
+
+<span class="enscript-comment">/*  8*/</span>	sle64 lsn;		<span class="enscript-comment">/* $LogFile sequence number of the last
+				   modification of this index block. */</span>
+<span class="enscript-comment">/* 16*/</span>	leVCN index_block_vcn;	<span class="enscript-comment">/* Virtual cluster number of the index block.
+				   If the cluster_size on the volume is &lt;= the
+				   index_block_size of the directory,
+				   index_block_vcn counts in units of clusters,
+				   and in units of sectors otherwise. */</span>
+<span class="enscript-comment">/* 24*/</span>	INDEX_HEADER index;	<span class="enscript-comment">/* Describes the following index entries. */</span>
+<span class="enscript-comment">/* sizeof()= 40 (0x28) bytes */</span>
+<span class="enscript-comment">/*
+ * When creating the index block, we place the update sequence array at this
+ * offset, i.e. before we start with the index entries. This also makes sense,
+ * otherwise we could run into problems with the update sequence array
+ * containing in itself the last two bytes of a sector which would mean that
+ * multi sector transfer protection wouldn't work. As you can't protect data
+ * by overwriting it since you then can't get it back...
+ * When reading use the data from the ntfs record header.
+ */</span>
+} __attribute__((__packed__)) INDEX_BLOCK;
+
+<span class="enscript-type">typedef</span> INDEX_BLOCK INDEX_ALLOCATION;
+
+<span class="enscript-comment">/*
+ * The system file FILE_Extend/$Reparse contains an index named $R listing
+ * all reparse points on the volume. The index entry keys are as defined
+ * below. Note, that there is no index data associated with the index entries.
+ *
+ * The index entries are sorted by the index key file_id. The collation rule is
+ * COLLATION_NTOFS_ULONGS. FIXME: Verify whether the reparse_tag is not the
+ * primary key / is not a key at all. (AIA)
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	le32 reparse_tag;	<span class="enscript-comment">/* Reparse point type (inc. flags). */</span>
+	leMFT_REF file_id;	<span class="enscript-comment">/* Mft record of the file containing the
+				   reparse point attribute. */</span>
+} __attribute__((__packed__)) REPARSE_INDEX_KEY;
+
+<span class="enscript-comment">/*
+ * Quota flags (32-bit).
+ *
+ * The user quota flags.  Names explain meaning.
+ */</span>
+<span class="enscript-type">enum</span> {
+	QUOTA_FLAG_DEFAULT_LIMITS	= const_cpu_to_le32(0x00000001),
+	QUOTA_FLAG_LIMIT_REACHED	= const_cpu_to_le32(0x00000002),
+	QUOTA_FLAG_ID_DELETED		= const_cpu_to_le32(0x00000004),
+
+	QUOTA_FLAG_USER_MASK		= const_cpu_to_le32(0x00000007),
+	<span class="enscript-comment">/* This is a bit mask for the user quota flags. */</span>
+
+	<span class="enscript-comment">/*
+	 * These flags are only present in the quota defaults index entry, i.e.
+	 * in the entry where owner_id = QUOTA_DEFAULTS_ID.
+	 */</span>
+	QUOTA_FLAG_TRACKING_ENABLED	= const_cpu_to_le32(0x00000010),
+	QUOTA_FLAG_ENFORCEMENT_ENABLED	= const_cpu_to_le32(0x00000020),
+	QUOTA_FLAG_TRACKING_REQUESTED	= const_cpu_to_le32(0x00000040),
+	QUOTA_FLAG_LOG_THRESHOLD	= const_cpu_to_le32(0x00000080),
+
+	QUOTA_FLAG_LOG_LIMIT		= const_cpu_to_le32(0x00000100),
+	QUOTA_FLAG_OUT_OF_DATE		= const_cpu_to_le32(0x00000200),
+	QUOTA_FLAG_CORRUPT		= const_cpu_to_le32(0x00000400),
+	QUOTA_FLAG_PENDING_DELETES	= const_cpu_to_le32(0x00000800),
+};
+
+<span class="enscript-type">typedef</span> le32 QUOTA_FLAGS;
+
+<span class="enscript-comment">/*
+ * The system file FILE_Extend/$Quota contains two indexes $O and $Q. Quotas
+ * are on a per volume and per user basis.
+ *
+ * The $Q index contains one entry for each existing user_id on the volume. The
+ * index key is the user_id of the user/group owning this quota control entry,
+ * i.e. the key is the owner_id. The user_id of the owner of a file, i.e. the
+ * owner_id, is found in the standard information attribute. The collation rule
+ * for $Q is COLLATION_NTOFS_ULONG.
+ *
+ * The $O index contains one entry for each user/group who has been assigned
+ * a quota on that volume. The index key holds the SID of the user_id the
+ * entry belongs to, i.e. the owner_id. The collation rule for $O is
+ * COLLATION_NTOFS_SID.
+ *
+ * The $O index entry data is the user_id of the user corresponding to the SID.
+ * This user_id is used as an index into $Q to find the quota control entry
+ * associated with the SID.
+ *
+ * The $Q index entry data is the quota control entry and is defined below.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	le32 version;		<span class="enscript-comment">/* Currently equals 2. */</span>
+	QUOTA_FLAGS flags;	<span class="enscript-comment">/* Flags describing this quota entry. */</span>
+	le64 bytes_used;	<span class="enscript-comment">/* How many bytes of the quota are in use. */</span>
+	sle64 change_time;	<span class="enscript-comment">/* Last time this quota entry was changed. */</span>
+	sle64 threshold;	<span class="enscript-comment">/* Soft quota (-1 if not limited). */</span>
+	sle64 limit;		<span class="enscript-comment">/* Hard quota (-1 if not limited). */</span>
+	sle64 exceeded_time;	<span class="enscript-comment">/* How long the soft quota has been exceeded. */</span>
+	SID sid;		<span class="enscript-comment">/* The SID of the user/object associated with
+				   this quota entry.  Equals zero for the quota
+				   defaults entry (and in fact on a WinXP
+				   volume, it is not present at all). */</span>
+} __attribute__((__packed__)) QUOTA_CONTROL_ENTRY;
+
+<span class="enscript-comment">/*
+ * Predefined owner_id values (32-bit).
+ */</span>
+<span class="enscript-type">enum</span> {
+	QUOTA_INVALID_ID	= const_cpu_to_le32(0x00000000),
+	QUOTA_DEFAULTS_ID	= const_cpu_to_le32(0x00000001),
+	QUOTA_FIRST_USER_ID	= const_cpu_to_le32(0x00000100),
+};
+
+<span class="enscript-comment">/*
+ * Current constants for quota control entries.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">enum</span> {
+	<span class="enscript-comment">/* Current version. */</span>
+	QUOTA_VERSION	= 2,
+} QUOTA_CONTROL_ENTRY_CONSTANTS;
+
+<span class="enscript-comment">/*
+ * Index entry flags (16-bit).
+ */</span>
+<span class="enscript-type">enum</span> {
+	INDEX_ENTRY_NODE = const_cpu_to_le16(1), <span class="enscript-comment">/* This entry contains a
+			sub-node, i.e. a reference to an index block in form of
+			a virtual cluster number (see below). */</span>
+	INDEX_ENTRY_END  = const_cpu_to_le16(2), <span class="enscript-comment">/* This signifies the last
+			entry in an index block.  The index entry does not
+			represent a file but it can point to a sub-node. */</span>
+
+	INDEX_ENTRY_SPACE_FILLER = const_cpu_to_le16(0xffff), <span class="enscript-comment">/* gcc: Force
+			enum bit width to 16-bit. */</span>
+} __attribute__((__packed__));
+
+<span class="enscript-type">typedef</span> le16 INDEX_ENTRY_FLAGS;
+
+<span class="enscript-comment">/*
+ * This the index entry header (see below).
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+<span class="enscript-comment">/*  0*/</span>	<span class="enscript-type">union</span> {
+		<span class="enscript-comment">/* Only valid when INDEX_ENTRY_END is not set. */</span>
+		leMFT_REF indexed_file;	<span class="enscript-comment">/* The mft reference of the file
+					   described by this index entry.  Used
+					   for directory indexes. */</span>
+		<span class="enscript-type">struct</span> { <span class="enscript-comment">/* Used for views/indexes to find the entry's data. */</span>
+			le16 data_offset;	<span class="enscript-comment">/* Data byte offset from this
+						   INDEX_ENTRY. Follows the
+						   index key. */</span>
+			le16 data_length;	<span class="enscript-comment">/* Data length in bytes. */</span>
+			le32 reservedV;		<span class="enscript-comment">/* Reserved (zero). */</span>
+		} __attribute__((__packed__));
+	} __attribute__((__packed__));
+<span class="enscript-comment">/*  8*/</span>	le16 length;		 <span class="enscript-comment">/* Byte size of this index entry, multiple of
+				    8-bytes. */</span>
+<span class="enscript-comment">/* 10*/</span>	le16 key_length;	 <span class="enscript-comment">/* Byte size of the key value, which is in the
+				    index entry. It follows field reserved. Not
+				    multiple of 8-bytes. */</span>
+<span class="enscript-comment">/* 12*/</span>	INDEX_ENTRY_FLAGS flags; <span class="enscript-comment">/* Bit field of INDEX_ENTRY_* flags. */</span>
+<span class="enscript-comment">/* 14*/</span>	le16 reserved;		 <span class="enscript-comment">/* Reserved/align to 8-byte boundary. */</span>
+<span class="enscript-comment">/* sizeof() = 16 bytes */</span>
+} __attribute__((__packed__)) INDEX_ENTRY_HEADER;
+
+<span class="enscript-comment">/*
+ * This is an index entry. A sequence of such entries follows each INDEX_HEADER
+ * structure. Together they make up a complete index. The index follows either
+ * an index root attribute or an index allocation attribute.
+ *
+ * NOTE: Before NTFS 3.0 only filename attributes were indexed.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+<span class="enscript-comment">/*Ofs*/</span>
+<span class="enscript-comment">/*  0	INDEX_ENTRY_HEADER; -- Unfolded here as gcc dislikes unnamed structs. */</span>
+	<span class="enscript-type">union</span> {
+		<span class="enscript-comment">/* Only valid when INDEX_ENTRY_END is not set. */</span>
+		leMFT_REF indexed_file;	<span class="enscript-comment">/* The mft reference of the file
+					   described by this index entry.  Used
+					   for directory indexes. */</span>
+		<span class="enscript-type">struct</span> { <span class="enscript-comment">/* Used for views/indexes to find the entry's data. */</span>
+			le16 data_offset;	<span class="enscript-comment">/* Data byte offset from this
+						   INDEX_ENTRY. Follows the
+						   index key. */</span>
+			le16 data_length;	<span class="enscript-comment">/* Data length in bytes. */</span>
+			le32 reservedV;		<span class="enscript-comment">/* Reserved (zero). */</span>
+		} __attribute__((__packed__));
+	} __attribute__((__packed__));
+	le16 length;		 <span class="enscript-comment">/* Byte size of this index entry, multiple of
+				    8-bytes. */</span>
+	le16 key_length;	 <span class="enscript-comment">/* Byte size of the key value, which is in the
+				    index entry. It follows field reserved. Not
+				    multiple of 8-bytes. */</span>
+	INDEX_ENTRY_FLAGS flags; <span class="enscript-comment">/* Bit field of INDEX_ENTRY_* flags. */</span>
+	le16 reserved;		 <span class="enscript-comment">/* Reserved/align to 8-byte boundary. */</span>
+
+<span class="enscript-comment">/* 16*/</span>	<span class="enscript-type">union</span> {		<span class="enscript-comment">/* The key of the indexed attribute. NOTE: Only present
+			   if INDEX_ENTRY_END bit in flags is not set. NOTE: On
+			   NTFS versions before 3.0 the only valid key is the
+			   FILENAME_ATTR.  On NTFS 3.0+ the following
+			   additional index keys are defined: */</span>
+		FILENAME_ATTR filename;	<span class="enscript-comment">/* $I30 index in directories. */</span>
+		SII_INDEX_KEY sii;	<span class="enscript-comment">/* $SII index in $Secure. */</span>
+		SDH_INDEX_KEY sdh;	<span class="enscript-comment">/* $SDH index in $Secure. */</span>
+		GUID object_id;		<span class="enscript-comment">/* $O index in FILE_Extend/$ObjId: The
+					   object_id of the mft record found in
+					   the data part of the index. */</span>
+		REPARSE_INDEX_KEY reparse;	<span class="enscript-comment">/* $R index in
+						   FILE_Extend/$Reparse. */</span>
+		SID sid;		<span class="enscript-comment">/* $O index in FILE_Extend/$Quota:
+					   SID of the owner of the user_id. */</span>
+		le32 owner_id;		<span class="enscript-comment">/* $Q index in FILE_Extend/$Quota:
+					   user_id of the owner of the quota
+					   control entry in the data part of
+					   the index. */</span>
+	} __attribute__((__packed__)) key;
+	<span class="enscript-comment">/* The (optional) index data is inserted here when creating. */</span>
+	<span class="enscript-comment">// leVCN vcn;	/* If INDEX_ENTRY_NODE bit in flags is set, the last
+</span>	<span class="enscript-comment">//		   eight bytes of this index entry contain the virtual
+</span>	<span class="enscript-comment">//		   cluster number of the index block that holds the
+</span>	<span class="enscript-comment">//		   entries immediately preceding the current entry (the
+</span>	<span class="enscript-comment">//		   vcn references the corresponding cluster in the data
+</span>	<span class="enscript-comment">//		   of the non-resident index allocation attribute). If
+</span>	<span class="enscript-comment">//		   the key_length is zero, then the vcn immediately
+</span>	<span class="enscript-comment">//		   follows the INDEX_ENTRY_HEADER. Regardless of
+</span>	<span class="enscript-comment">//		   key_length, the address of the 8-byte boundary
+</span>	<span class="enscript-comment">//		   alligned vcn of INDEX_ENTRY{_HEADER} *ie is given by
+</span>	<span class="enscript-comment">//		   (char*)ie + le16_to_cpu(ie*)-&gt;length) - sizeof(VCN),
+</span>	<span class="enscript-comment">//		   where sizeof(VCN) can be hardcoded as 8 if wanted. */
+</span>} __attribute__((__packed__)) INDEX_ENTRY;
+
+<span class="enscript-comment">/*
+ * Attribute: Bitmap (0xb0).
+ *
+ * Contains an array of bits (aka a bitfield).
+ *
+ * When used in conjunction with the index allocation attribute, each bit
+ * corresponds to one index block within the index allocation attribute. Thus
+ * the number of bits in the bitmap * index block size / cluster size is the
+ * number of clusters in the index allocation attribute.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	u8 bitmap[0];			<span class="enscript-comment">/* Array of bits. */</span>
+} __attribute__((__packed__)) BITMAP_ATTR;
+
+<span class="enscript-comment">/*
+ * The reparse point tag defines the type of the reparse point. It also
+ * includes several flags, which further describe the reparse point.
+ *
+ * The reparse point tag is an unsigned 32-bit value divided in three parts:
+ *
+ * 1. The least significant 16 bits (i.e. bits 0 to 15) specifiy the type of
+ *    the reparse point.
+ * 2. The 13 bits after this (i.e. bits 16 to 28) are reserved for future use.
+ * 3. The most significant three bits are flags describing the reparse point.
+ *    They are defined as follows:
+ *	bit 29: Name surrogate bit. If set, the filename is an alias for
+ *		another object in the system.
+ *	bit 30: High-latency bit. If set, accessing the first byte of data will
+ *		be slow. (E.g. the data is stored on a tape drive.)
+ *	bit 31: Microsoft bit. If set, the tag is owned by Microsoft. User
+ *		defined tags have to use zero here.
+ *
+ * These are the predefined reparse point tags:
+ */</span>
+<span class="enscript-type">enum</span> {
+	IO_REPARSE_TAG_IS_ALIAS		= const_cpu_to_le32(0x20000000),
+	IO_REPARSE_TAG_IS_HIGH_LATENCY	= const_cpu_to_le32(0x40000000),
+	IO_REPARSE_TAG_IS_MICROSOFT	= const_cpu_to_le32(0x80000000),
+
+	IO_REPARSE_TAG_RESERVED_ZERO	= const_cpu_to_le32(0x00000000),
+	IO_REPARSE_TAG_RESERVED_ONE	= const_cpu_to_le32(0x00000001),
+	IO_REPARSE_TAG_RESERVED_RANGE	= const_cpu_to_le32(0x00000001),
+
+	IO_REPARSE_TAG_NSS		= const_cpu_to_le32(0x68000005),
+	IO_REPARSE_TAG_NSS_RECOVER	= const_cpu_to_le32(0x68000006),
+	IO_REPARSE_TAG_SIS		= const_cpu_to_le32(0x68000007),
+	IO_REPARSE_TAG_DFS		= const_cpu_to_le32(0x68000008),
+
+	IO_REPARSE_TAG_MOUNT_POINT	= const_cpu_to_le32(0x88000003),
+
+	IO_REPARSE_TAG_HSM		= const_cpu_to_le32(0xa8000004),
+
+	IO_REPARSE_TAG_SYMBOLIC_LINK	= const_cpu_to_le32(0xe8000000),
+
+	IO_REPARSE_TAG_VALID_VALUES	= const_cpu_to_le32(0xe000ffff),
+};
+
+<span class="enscript-comment">/*
+ * Attribute: Reparse point (0xc0).
+ *
+ * NOTE: Can be resident or non-resident.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	le32 reparse_tag;		<span class="enscript-comment">/* Reparse point type (inc. flags). */</span>
+	le16 reparse_data_length;	<span class="enscript-comment">/* Byte size of reparse data. */</span>
+	le16 reserved;			<span class="enscript-comment">/* Align to 8-byte boundary. */</span>
+	u8 reparse_data[0];		<span class="enscript-comment">/* Meaning depends on reparse_tag. */</span>
+} __attribute__((__packed__)) REPARSE_POINT;
+
+<span class="enscript-comment">/*
+ * Attribute: Extended attribute (EA) information (0xd0).
+ *
+ * NOTE: Always resident. (Is this true???)
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	le16 ea_length;		<span class="enscript-comment">/* Byte size of the packed extended
+				   attributes. */</span>
+	le16 need_ea_count;	<span class="enscript-comment">/* The number of extended attributes which have
+				   the NEED_EA bit set. */</span>
+	le32 ea_query_length;	<span class="enscript-comment">/* Byte size of the buffer required to query
+				   the extended attributes when calling
+				   ZwQueryEaFile() in Windows NT/2k. I.e. the
+				   byte size of the unpacked extended
+				   attributes. */</span>
+} __attribute__((__packed__)) EA_INFORMATION;
+
+<span class="enscript-comment">/*
+ * Extended attribute flags (8-bit).
+ */</span>
+<span class="enscript-type">enum</span> {
+	NEED_EA	= 0x80		<span class="enscript-comment">/* If set the file to which the EA belongs
+				   cannot be interpreted without understanding
+				   the associates extended attributes. */</span>
+} __attribute__((__packed__));
+
+<span class="enscript-type">typedef</span> u8 EA_FLAGS;
+
+<span class="enscript-comment">/*
+ * Attribute: Extended attribute (EA) (0xe0).
+ *
+ * NOTE: Can be resident or non-resident.
+ *
+ * Like the attribute list and the index buffer list, the EA attribute value is
+ * a sequence of EA_ATTR variable length records.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	le32 next_entry_offset;	<span class="enscript-comment">/* Offset to the next EA_ATTR. */</span>
+	EA_FLAGS flags;		<span class="enscript-comment">/* Flags describing the EA. */</span>
+	u8 ea_name_length;	<span class="enscript-comment">/* Length of the name of the EA in bytes
+				   excluding the '\0' byte terminator. */</span>
+	le16 ea_value_length;	<span class="enscript-comment">/* Byte size of the EA's value. */</span>
+	u8 ea_name[0];		<span class="enscript-comment">/* Name of the EA.  Note this is ASCII, not
+				   Unicode and it is zero terminated. */</span>
+	u8 ea_value[0];		<span class="enscript-comment">/* The value of the EA.  Immediately follows
+				   the name. */</span>
+} __attribute__((__packed__)) EA_ATTR;
+
+<span class="enscript-comment">/*
+ * Attribute: Property set (0xf0).
+ *
+ * Intended to support Native Structure Storage (NSS) - a feature removed from
+ * NTFS 3.0 during beta testing.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	<span class="enscript-comment">/* Irrelevant as feature unused. */</span>
+} __attribute__((__packed__)) PROPERTY_SET;
+
+<span class="enscript-comment">/*
+ * Attribute: Logged utility stream (0x100).
+ *
+ * NOTE: Can be resident or non-resident.
+ *
+ * Operations on this attribute are logged to the journal ($LogFile) like
+ * normal metadata changes.
+ *
+ * Used by the Encrypting File System (EFS). All encrypted files have this
+ * attribute with the name $EFS.
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	<span class="enscript-comment">/* Can be anything the creator chooses. */</span>
+} __attribute__((__packed__)) LOGGED_UTILITY_STREAM;
+
+<span class="enscript-comment">/*
+ * $EFS Data Structure:
+ *
+ * The following information is about the data structures that are contained
+ * inside a logged utility stream (0x100) with a name of "$EFS".
+ *
+ * The stream starts with an instance of EFS_ATTR_HEADER.
+ *
+ * Next, at offsets offset_to_ddf_array and offset_to_drf_array (unless any of
+ * them is 0) there is a EFS_DF_ARRAY_HEADER immediately followed by a sequence
+ * of multiple data decryption/recovery fields.
+ *
+ * Each data decryption/recovery field starts with an EFS_DF_HEADER and the
+ * next one (if it exists) can be found by adding EFS_DF_HEADER-&gt;df_length
+ * bytes to the offset of the beginning of the current EFS_DF_HEADER.
+ *
+ * The data decryption/recovery field contains an EFS_DF_CERTIFICATE_HEADER, a
+ * SID, an optional GUID, an optional container name, a non-optional user name,
+ * and the encrypted FEK.
+ *
+ * Note all the below are best guesses so may have mistakes/inaccuracies.
+ * Corrections/clarifications/additions are always welcome!
+ *
+ * Ntfs.sys takes an EFS value length of &lt;= 0x54 or &gt; 0x40000 to BSOD, i.e. it
+ * is invalid.
+ */</span>
+
+<span class="enscript-comment">/**
+ * struct EFS_ATTR_HEADER - "$EFS" header.
+ *
+ * The header of the Logged utility stream (0x100) attribute named "$EFS".
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+<span class="enscript-comment">/*  0*/</span>	u32 length;		<span class="enscript-comment">/* Length of EFS attribute in bytes. */</span>
+	u32 state;		<span class="enscript-comment">/* Always 0? */</span>
+	u32 version;		<span class="enscript-comment">/* Efs version.  Always 2? */</span>
+	u32 crypto_api_version;	<span class="enscript-comment">/* Always 0? */</span>
+<span class="enscript-comment">/* 16*/</span>	u8 unknown4[16];	<span class="enscript-comment">/* MD5 hash of decrypted FEK? */</span>
+<span class="enscript-comment">/* 32*/</span>	u8 unknown5[16];	<span class="enscript-comment">/* MD5 hash of DDFs? */</span>
+<span class="enscript-comment">/* 48*/</span>	u8 unknown6[16];	<span class="enscript-comment">/* MD5 hash of DRFs? */</span>
+<span class="enscript-comment">/* 64*/</span>	u32 offset_to_ddf_array;<span class="enscript-comment">/* Offset in bytes to the array of data
+				   decryption fields (DDF), see below.  Zero if
+				   no DDFs are present. */</span>
+	u32 offset_to_drf_array;<span class="enscript-comment">/* Offset in bytes to the array of data
+				   recovery fields (DRF), see below.  Zero if
+				   no DRFs are present. */</span>
+	u32 reserved;		<span class="enscript-comment">/* Reserved. */</span>
+} __attribute__((__packed__)) EFS_ATTR_HEADER;
+
+<span class="enscript-comment">/**
+ * struct EFS_DF_ARRAY_HEADER -
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	u32 df_count;		<span class="enscript-comment">/* Number of data decryption/recovery fields in
+				   the array. */</span>
+} __attribute__((__packed__)) EFS_DF_ARRAY_HEADER;
+
+<span class="enscript-comment">/**
+ * struct EFS_DF_HEADER -
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+<span class="enscript-comment">/*  0*/</span>	u32 df_length;		<span class="enscript-comment">/* Length of this data decryption/recovery
+				   field in bytes. */</span>
+	u32 cred_header_offset;	<span class="enscript-comment">/* Offset in bytes to the credential header. */</span>
+	u32 fek_size;		<span class="enscript-comment">/* Size in bytes of the encrypted file
+				   encryption key (FEK). */</span>
+	u32 fek_offset;		<span class="enscript-comment">/* Offset in bytes to the FEK from the start of
+				   the data decryption/recovery field. */</span>
+<span class="enscript-comment">/* 16*/</span>	u32 unknown1;		<span class="enscript-comment">/* always 0?  Might be just padding. */</span>
+} __attribute__((__packed__)) EFS_DF_HEADER;
+
+<span class="enscript-comment">/**
+ * struct EFS_DF_CREDENTIAL_HEADER -
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+<span class="enscript-comment">/*  0*/</span>	u32 cred_length;	<span class="enscript-comment">/* Length of this credential in bytes. */</span>
+	u32 sid_offset;		<span class="enscript-comment">/* Offset in bytes to the user's sid from start
+				   of this structure.  Zero if no sid is
+				   present. */</span>
+<span class="enscript-comment">/*  8*/</span>	u32 type;		<span class="enscript-comment">/* Type of this credential:
+					1 = CryptoAPI container.
+					2 = Unexpected type.
+					3 = Certificate thumbprint.
+					other = Unknown type. */</span>
+	<span class="enscript-type">union</span> {
+		<span class="enscript-comment">/* CryptoAPI container. */</span>
+		<span class="enscript-type">struct</span> {
+<span class="enscript-comment">/* 12*/</span>			u32 container_name_offset;	<span class="enscript-comment">/* Offset in bytes to
+				   the name of the container from start of this
+				   structure (may not be zero). */</span>
+<span class="enscript-comment">/* 16*/</span>			u32 provider_name_offset;	<span class="enscript-comment">/* Offset in bytes to
+				   the name of the provider from start of this
+				   structure (may not be zero). */</span>
+			u32 public_key_blob_offset;	<span class="enscript-comment">/* Offset in bytes to
+				   the public key blob from start of this
+				   structure. */</span>
+<span class="enscript-comment">/* 24*/</span>			u32 public_key_blob_size;	<span class="enscript-comment">/* Size in bytes of
+				   public key blob. */</span>
+		} __attribute__((__packed__)) cryptoapi_container;
+		<span class="enscript-comment">/* Certificate thumbprint. */</span>
+		<span class="enscript-type">struct</span> {
+<span class="enscript-comment">/* 12*/</span>			u32 cert_thumbprint_header_size;	<span class="enscript-comment">/* Size in
+				   bytes of the header of the certificate
+				   thumbprint. */</span>
+<span class="enscript-comment">/* 16*/</span>			u32 cert_thumbprint_header_offset;	<span class="enscript-comment">/* Offset in
+				   bytes to the header of the certificate
+				   thumbprint from start of this structure. */</span>
+			u32 unknown1;	<span class="enscript-comment">/* Always 0?  Might be padding... */</span>
+			u32 unknown2;	<span class="enscript-comment">/* Always 0?  Might be padding... */</span>
+		} __attribute__((__packed__)) certificate_thumbprint;
+	} __attribute__((__packed__)) credential_type;
+} __attribute__((__packed__)) EFS_DF_CREDENTIAL_HEADER;
+
+<span class="enscript-type">typedef</span> EFS_DF_CREDENTIAL_HEADER EFS_DF_CRED_HEADER;
+
+<span class="enscript-comment">/**
+ * struct EFS_DF_CERTIFICATE_THUMBPRINT_HEADER -
+ */</span>
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+<span class="enscript-comment">/*  0*/</span>	u32 thumbprint_offset;		<span class="enscript-comment">/* Offset in bytes to the thumbprint. */</span>
+	u32 thumbprint_size;		<span class="enscript-comment">/* Size of thumbprint in bytes. */</span>
+<span class="enscript-comment">/*  8*/</span>	u32 container_name_offset;	<span class="enscript-comment">/* Offset in bytes to the name of the
+					   container from start of this
+					   structure or 0 if no name present. */</span>
+	u32 provider_name_offset;	<span class="enscript-comment">/* Offset in bytes to the name of the
+					   cryptographic provider from start of
+					   this structure or 0 if no name
+					   present. */</span>
+<span class="enscript-comment">/* 16*/</span>	u32 user_name_offset;		<span class="enscript-comment">/* Offset in bytes to the user name
+					   from start of this structure or 0 if
+					   no user name present.  (This is also
+					   known as lpDisplayInformation.) */</span>
+} __attribute__((__packed__)) EFS_DF_CERTIFICATE_THUMBPRINT_HEADER;
+
+<span class="enscript-type">typedef</span> EFS_DF_CERTIFICATE_THUMBPRINT_HEADER EFS_DF_CERT_THUMBPRINT_HEADER;
+
+#<span class="enscript-reference">define</span> <span class="enscript-variable-name">INTX_SYM_LINK</span> \
+		const_cpu_to_le64(0x014B4E4C78746E49ULL) <span class="enscript-comment">/* "IntxLNK\1" */</span>
+#<span class="enscript-reference">define</span> <span class="enscript-variable-name">INTX_CHAR_DEVICE</span> \
+		const_cpu_to_le64(0x0052484378746E49ULL) <span class="enscript-comment">/* "IntxCHR\0" */</span>
+#<span class="enscript-reference">define</span> <span class="enscript-variable-name">INTX_BLOCK_DEVICE</span> \
+		const_cpu_to_le64(0x004B4C4278746E49ULL) <span class="enscript-comment">/* "IntxBLK\0" */</span>
+
+<span class="enscript-type">typedef</span> u64 INTX_INODE_TYPES;
+
+<span class="enscript-type">typedef</span> <span class="enscript-type">struct</span> {
+	INTX_INODE_TYPES magic;		<span class="enscript-comment">/* Intx inode magic. */</span>
+	<span class="enscript-type">union</span> {
+		<span class="enscript-comment">/* Character and block devices. */</span>
+		<span class="enscript-type">struct</span> {
+			u64 major;	<span class="enscript-comment">/* Major device number. */</span>
+			u64 minor;	<span class="enscript-comment">/* Minor device number. */</span>
+		} __attribute__((__packed__)) device;
+		<span class="enscript-comment">/* Symbolic links. */</span>
+		ntfschar target[0];	<span class="enscript-comment">/* The target of the symbolic link. */</span>
+	} __attribute__((__packed__)) data;
+} __attribute__((__packed__)) INTX_FILE;
+
+#<span class="enscript-reference">endif</span> <span class="enscript-comment">/* !_OSX_NTFS_LAYOUT_H */</span>
+</pre>
+<hr>
+<address>Generated by <a href="http://www.iki.fi/%7Emtr/genscript/">GNU enscript 1.6.4</a>.</address>
+</body></html>

@@ -1,0 +1,38 @@
+TYPE(1)             Ultradefrag Development Team              TYPE(1)
+
+NAME
+        type - manual page for type v4.4.0
+
+SYNOPSIS
+        type [OPTION]
+
+DESCRIPTION
+        'type' displays the contents of any file.
+        The default action is to display the contents of the
+        "ud-boot-time.cmd" command script.
+        In scripting mode the contents are displayed without
+        interruption and in interactive mode they are displayed
+        page-wise.
+
+OPTIONS
+        {file path}
+                display the contents of {file path}
+
+EXAMPLES
+        type
+                display the contents of
+                "%SystemRoot%\System32\ud-boot-time.cmd"
+        
+        type C:\Temp\MyCustom.cmd
+                display the contents of "C:\Temp\MyCustom.cmd"
+
+AUTHOR
+        Written by Ultradefrag Development Team
+
+COPYRIGHT
+        Copyright (C) 2010-2011 Ultradefrag Development Team
+        This is free software; see the source for copying conditions.
+        There is NO warranty; not even for MERCHANTABILITY
+        or FITNESS FOR A PARTICULAR PURPOSE.
+
+type                        September 2010                          1

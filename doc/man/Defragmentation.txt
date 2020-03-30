@@ -1,0 +1,17 @@
+Defragmenting Files
+    http://msdn.microsoft.com/en-us/library/aa363911(VS.85).aspx
+
+Master File Table
+    http://msdn.microsoft.com/en-us/library/aa365230(VS.85).aspx
+
+Improvements in Windows 7
+    http://blogs.msdn.com/b/e7/archive/2009/01/25/disk-defragmentation-background-and-engineering-the-windows-7-improvements.aspx
+
+Inprovements in Windows XP ('Updating Windows 2000 IFS Drivers to Windows XP')
+    http://www.microsoft.com/whdc/archive/2kuptoXP.mspx
+
+Windows XP Professional Resource Kit: Working with File Systems
+    http://technet.microsoft.com/en-us/library/bb457112.aspx
+
+Inside Windows NT Disk Defragmenting
+    http://www.adminko.sk/!Admin/!utils/systernals/systernals/www.sysinternals.com/ntw2k/info/defrag.html

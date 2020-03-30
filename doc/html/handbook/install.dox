@@ -1,0 +1,118 @@
+/*
+ *  UltraDefrag - a powerful defragmentation tool for Windows NT.
+ *  Copyright (c) 2007-2011 by Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2011 by Stefan Pendl (stefanpe@users.sourceforge.net).
+ *
+ *  Permission is granted to copy, distribute and/or modify this document
+ *  under the terms of the GNU Free Documentation License, Version 1.3 or
+ *  any later version published by the Free Software Foundation; with no
+ *  Invariant Sections.
+ */
+
+/**
+ * @page Installation Installation
+ *
+ * To obtain the latest version of the program please visit the 
+ * <a href="http://sourceforge.net/projects/ultradefrag/files/">project's download page</a>.
+ *
+ * There are two different types of packages available for download:
+ * - Full-featured installer, which installs all of the program features,
+ * but require installation therefore cannot be used directly from USB sticks.
+ * - Portable package. Download it, unpack it and use without an installation. 
+ * Copy it on an USB stick and you will be able to use UltraDefrag everywhere by simply
+ * running it from there. Note that boot time defragmenter is missing from the portable 
+ * packages, but all other features are included. 
+ * You can find more information about portable applications
+ * <a href="http://en.wikipedia.org/wiki/Portable_application">here</a>.
+ *
+ * The installer allows installing the <b>UltraDefrag Micro Edition</b> too, which is a lightweight version
+ * of the program containing only the command line tool and the boot time defragmenter.
+ * It is intended to be used from the console only.
+ * 
+ * <span style="color: darkred">
+ * You must have a 64-bit version of Windows to run the 64-bit versions of the program.
+ * </span>
+ *
+ * <span style="color: darkred">
+ * The IA-64 version was never tested by the authors. 
+ * It requires the Intel Itanium processor and an appropriate 64-bit edition of Windows.
+ * </span>
+ *
+ * <span style="color: darkred">
+ * You must be an administrator to install and run UltraDefrag.
+ * </span>
+ *
+ * Note that UltraDefrag installs into the Windows directory. This is by design,
+ * because it highly simplifies the program development.
+ * Moreover, it is impossible to run the boot time defragmenter without having its
+ * files inside the System32 directory.
+ *
+ * To expand usage statistics gathering by the website UltraDefrag sends also
+ * requests to the <a href="http://www.google.com/analytics/">Google Analytics</a> 
+ * service during startup. It takes no negative effect on security - many thousands
+ * of websites around the world use the same service to gather basic statistics
+ * of use. However, the UltraDefrag usage tracking can be turned off during an 
+ * installation.
+ *
+ * <h1>Silent Installation</h1>
+ * UltraDefrag can be installed in silent mode by adding the <b>/S</b> switch to the installer's command line
+ * at the command prompt. In this case no dialogs will be shown and the program will be installed 
+ * to the hard drive completely with all the features enabled. 
+ *
+ * The following additional command line switches are supported:
+ * <dl>
+ * <dt>/LANG</dt>
+ * <dd>Select the language to be installed. For example, 
+ * use <b>/LANG="German"</b> to install the German language pack.<br/>
+ * Valid language names can be found at the 
+ * <a href="http://ultradefrag.wikispaces.com/Translations+v5.0.0">Translation Wiki</a></dd>
+ * <dt>/FULL=1</dt>
+ * <dd>Install the full edition, which includes all components and icons.</dd>
+ * <dt>/MICRO=1</dt>
+ * <dd>Install the micro edition, which includes only the core components and the shell extension.</dd>
+ * <dt>/ICONS=(0|1)</dt>
+ * <dd>Install or remove all shortcut icons. Example: <b>/ICONS=0</b> removes all icons.</dd>
+ * <dt>/BOOT=(0|1)</dt>
+ * <dd>Install or remove the boot components. Example: <b>/BOOT=1</b> installs the boot components.</dd>
+ * <dt>/CONSOLE=(0|1)</dt>
+ * <dd>Install or remove the console components. Example: <b>/CONSOLE=1</b> installs the console components.</dd>
+ * <dt>/GUI=(0|1)</dt>
+ * <dd>Install or remove the GUI components. Example: <b>/GUI=1</b> installs the GUI components.</dd>
+ * <dt>/HELP=(0|1)</dt>
+ * <dd>Install or remove the documentation. Example: <b>/HELP=0</b> removes the documentation.</dd>
+ * <dt>/SHELLEXTENSION=(0|1)</dt>
+ * <dd>Install or remove the Explorer context menu handler.
+ * Example: <b>/SHELLEXTENSION=0</b> removes the Explorer context menu handler.<br/>
+ * Installing the context menu handler forces the console interface it depends on to be installed.</dd>
+ * <dt>/DISABLE_USAGE_TRACKING=(0|1)</dt>
+ * <dd>Enable or disable web based usage tracking. Example: <b>/DISABLE_USAGE_TRACKING=1</b> disables usage tracking.</dd>
+ * <dt>/STARTMENUICON=(0|1)</dt>
+ * <dd>Install or remove the start menu icon. Example: <b>/STARTMENUICON=1</b> installs the start menu icon.<br/>
+ * Installing the start menu icon forces the GUI interface it depends on to be installed.</dd>
+ * <dt>/DESKTOPICON=(0|1)</dt>
+ * <dd>Install or remove the desktop icon. Example: <b>/DESKTOPICON=0</b> removes the desktop icon.<br/>
+ * Installing the desktop icon forces the GUI interface it depends on to be installed.</dd>
+ * <dt>/QUICKLAUNCHICON=(0|1)</dt>
+ * <dd>Install or remove the quick launch icon. Example: <b>/QUICKLAUNCHICON=1</b> installs the quick launch icon.<br/>
+ * Installing the quick launch icon forces the GUI interface it depends on to be installed.</dd>
+ * </dl>
+ * Example command line to silently install the full edition in "Burmese (Padauk)" with only the start menu icon:
+ * @code
+ * ultradefrag.bin.x86 /S /LANG="Burmese (Padauk)" /FULL=1 /ICONS=0 /STARTMENUICON=1
+ * @endcode
+ * To check the result of the command line switches omit the <b>/S</b> switch,
+ * which opens the interactive installer and allows checking the selections
+ * on the component page.
+ *
+ * There is also a silent mode for the uninstaller program.
+ * At the command prompt type <b>\%windir\%\\UltraDefrag\\uninstall.exe /S</b>
+ * to remove the program from the hard drive automatically without any graphical dialogs.
+ *
+ * <HR>
+ *  <TABLE BORDER="0" STYLE="width: 97%; margin:auto;">
+ *    <TR>
+ *      <TD STYLE="text-align: left; width: 50%;">Previous: @ref Introduction</TD>
+ *      <TD STYLE="text-align: right; width: 50%;">Next: @ref Console</TD>
+ *    </TR>
+ *  </TABLE>
+ */

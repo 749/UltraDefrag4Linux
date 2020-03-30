@@ -1,0 +1,61 @@
+/*
+ *  UltraDefrag - a powerful defragmentation tool for Windows NT.
+ *  Copyright (c) 2007-2011 by Dmitri Arkhangelski (dmitriar@gmail.com).
+ *
+ *  Permission is granted to copy, distribute and/or modify this document
+ *  under the terms of the GNU Free Documentation License, Version 1.3 or
+ *  any later version published by the Free Software Foundation; with no
+ *  Invariant Sections.
+ */
+
+/**
+ * @mainpage Ultra Defragmenter
+ * <dl class="author">
+ * <dt>Authors:</dt>
+ * <dd>Dmitri Arkhangelski (dmitriar@users.sourceforge.net),\n
+ *     Stefan Pendl (stefanpe@users.sourceforge.net).</dd>
+ * </dl>
+ *
+ * <h2>Introduction</h2>
+ * This document contains technical information about the Ultra
+ * Defragmenter. Compilation instructions, internal interfaces 
+ * and other aspects of the development.
+ *
+ * The main target of UltraDefrag development is reaching the highest
+ * level of reliability. Another target, good set of functions, is reached yet.
+ *
+ * <h2>Related pages</h2>
+ * - @ref Compilation
+ * - @ref Design
+ * - @ref Devnotes
+ *
+ * <h2>Technical reference</h2>
+ * - <a href="../udefrag.dll/html/index.html">Udefrag.dll Library</a>
+ * - <a href="http://zenwinx.sourceforge.net/">ZenWINX Library</a>
+ * - <a href="../wgx/html/index.html">Windows GUI Extended (WGX) Library</a>
+ *
+ * <h2>Links</h2>
+ * - <a href="https://ultradefrag.svn.sourceforge.net/svnroot/ultradefrag/">SVN repository base address</a>
+ * - <a href="http://ultradefrag.svn.sourceforge.net/viewvc/ultradefrag/">SVN repository browser</a>
+ * - <a href="http://www.ohloh.net/p/UltraDefrag">UltraDefrag development statistics on Ohloh.net</a>
+ * - <a href="http://www.koders.com/info.aspx?c=ProjectInfo&pid=VTYF93C32MAWVGA46C4FQHE1AG">UltraDefrag on Koders.com (obsolete)</a>
+ *
+ * <h2>License</h2>
+ * UltraDefrag is a <a href="GPL.html">GPL</a>-
+ * licensed product. Feel free to redistribute it under certain
+ * conditions.
+ *
+ * UltraDefrag includes portions of a few open source libraries 
+ * (<a href="http://www.lua.org/">Lua</a>, 
+ * <a href="http://www.gnu.org/software/libc/">GNU C Library</a>,
+ * <a href="http://www.stanford.edu/~blp/avl/">GNU libavl</a>)
+ * as well as portions of <a href="http://www.reactos.org/">ReactOS</a> source code.
+ * Most of these libraries are not distributed under the terms of the GPL, but
+ * rather some other free, GPL-compatible license. For detailed information 
+ * read the `Credits and License' chapter of the UltraDefrag Handbook. You 
+ * should have received a copy of it along with this program; if not, go to
+ * http://ultradefrag.sourceforge.net/handbook/Credits.html
+ *
+ * This document is licensed under the terms of the 
+ * <a href="FDL.html">GNU Free Documentation License</a>.
+ */

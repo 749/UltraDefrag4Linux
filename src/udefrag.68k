@@ -1,0 +1,83 @@
+#
+#         Plain general makefile, for ultradefrag 64-bit compilations 
+#
+
+HCC=hcc68
+TOP=top68
+CLINK=clink
+ASM86=asm86
+LIBDIR=/shared/c-src/palmdev
+
+# restrict suffixes list to the ones we define
+.SUFFIXES :
+# this list controls the ordering of rule evaluation
+.SUFFIXES : .c .cpp .java .s .asm .o .l .map
+
+# cancel implicit rule for building .c from .l (lex file) :
+%.c : %.l
+
+# cancel implicit rule for building . from .c
+% : %.c
+
+# cancel implicit rule for building . from .s
+% : %.s
+
+NTFS=/shared/ntfs/ntfslowprof
+
+A=console.a udefrag.a zenwinx.a wincalls.a libntfs-3g.a
+
+DC=console
+DD=dll/udefrag
+DZ=dll/zenwinx
+DW=wincalls
+
+OC=$(DC)/defrag.o $(DC)/map.o $(DC)/options.o
+OD=$(DD)/analyze.o $(DD)/defrag.o $(DD)/map.o $(DD)/move.o $(DD)/optimize.o $(DD)/options.o \
+	$(DD)/reports.o $(DD)/tasks.o $(DD)/udefrag.o $(DD)/volume.o
+OZ=$(DZ)/dbg.o $(DZ)/env.o $(DZ)/event.o $(DZ)/file.o $(DZ)/ftw.o $(DZ)/ftw_ntfs.o $(DZ)/keyboard.o $(DZ)/keytrans.o \
+	$(DZ)/ldr.o $(DZ)/list.o $(DZ)/lock.o $(DZ)/mem.o $(DZ)/misc.o $(DZ)/path.o $(DZ)/privilege.o $(DZ)/reg.o \
+	$(DZ)/stdio.o $(DZ)/string.o $(DZ)/thread.o $(DZ)/time.o $(DZ)/volume.o $(DZ)/zenwinx.o
+OW=$(DW)/wincalls.o $(DW)/ntfs-3g.o $(DW)/environ.o
+ON=acls.o attrib.o attrlist.o bitmap.o bootsect.o cache.o collate.o \
+	compat.o compress.o debug.o ea.o efs.o dir.o index.o inode.o \
+	lcnalloc.o logfile.o logging.o mft.o misc.o mst.o object_id.o \
+	reparse.o runlist.o security.o unistr.o volume.o xattrs.o
+
+all : udefrag
+
+console.a :
+	cd console; make -f console.68k console.a
+
+udefrag.a :
+	cd dll/udefrag; make -f udefrag.68k udefrag.a
+
+zenwinx.a :
+	cd dll/zenwinx; make -f zenwinx.68k zenwinx.a
+
+wincalls.a :
+	cd wincalls; make -f wincalls.68k wincalls.a
+
+libntfs-3g.a :
+	cd $(NTFS)/libntfs-3g; cp -pu $(ON) /shared/ntfs/acls/ultradefrag-5.0.0AB.7/src
+
+lists :
+	cd console; make -f console.68k lists
+	cd dll/udefrag; make -f udefrag.68k lists
+	cd dll/zenwinx; make -f zenwinx.68k lists
+	cd wincalls; make -f wincalls.68k lists
+
+clean :
+	cd console; make -f console.68k clean
+	cd dll/udefrag; make -f udefrag.68k clean
+	cd dll/zenwinx; make -f zenwinx.68k clean
+	cd wincalls; make -f wincalls.68k clean
+
+#udefrag udefrag.68 : $(A)
+#	$(CLINK) -nw -o udefrag.68 -m udefrag.map -l $(LIBDIR)/syslib \
+#	$(OC) $(DD)/udefrag.a $(DD)/reports.o \
+#	$(DZ)/zenwinx.a $(DZ)/ftw_ntfs.o $(DW)/wincalls.a $(ON)
+#	/shared/c-src/ultradefrag/src/clink.sh
+
+udefrag udefrag.68 : $(A)
+	$(CLINK) -nw -o udefrag.68 -m udefrag.map -l $(LIBDIR)/syslib \
+	$(OC) $(DD)/udefrag.a $(DZ)/zenwinx.a $(DW)/wincalls.a $(ON)

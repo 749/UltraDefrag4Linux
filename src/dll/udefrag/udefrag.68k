@@ -1,0 +1,96 @@
+#
+#         Plain general makefile, for ultradefrag 68K compilations
+#
+
+.SUFFIXES : .c .s .ss .o .oo .l .68 .map
+
+HCC=hcc68
+TOP=top68
+CLINK=clink
+CLIB=clibr
+INCL=-I$(NTFS)/replace  -I/shared/c-src/palmdev -I$(WINROOT)/lc6 -I../../include
+DEFS='-DSTSC;__noalign=;__nopad=;__private=;__huge='
+LIBDIR=/shared/c-src/palmdev
+
+NTFS=/shared/ntfs/ntfslowprof
+
+H=udefrag-internals.h udefrag.h \
+   ../../include/compiler.h ../../include/linux.h ../../include/ultradfgver.h \
+   ../zenwinx/zenwinx.h ../zenwinx/ntndk.h
+
+# long code references in reports.o
+#O= analyze.o defrag.o map.o move.o optimize.o options.o \
+#	reports.o tasks.o udefrag.o volume.o 
+O= analyze.o defrag.o map.o move.o optimize.o options.o \
+	search.o tasks.o udefrag.o volume.o 
+L= analyze.l defrag.l map.l move.l optimize.l options.l \
+	search.l tasks.l udefrag.l volume.l 
+
+# cancel implicit rule for building .c from .l (lex file) :
+%.c : %.l
+
+# cancel implicit rule for building . from .c
+% : %.c
+
+# cancel implicit rule for building . from .s
+% : %.s
+
+.c.o:
+	$(HCC) $(INCL) -cABS -UX86 $(DEFS) $*.c | $(TOP) - $*.o
+
+.c.l:
+	$(HCC) $(INCL) -cABS -UX86 $(DEFS) $*.c | $(TOP) -lv - $*.o > $*.l
+
+.c.s:
+	$(HCC) $(INCL) -cABS -UX86 $(DEFS) $*.c > $*.s
+
+.c.ss:
+	$(HCC) $(INCL) -cABS -UX86 $(DEFS) $*.c | $(TOP) -vs - $*.ss
+
+
+.oo.68 :
+	$(CLINK) -w -o $*.68 -m $*.map -l $(LIBDIR)syslib $*.oo
+
+.o .o. :
+	echo Please use .prc or .68 suffix for executable files
+
+all : udefrag.a
+
+udefrag.a : $(O) reports.o
+	rm -f udefrag.a
+	$(CLIB) r udefrag.a $(O) reports.o
+
+lists : $(L) reports.l
+	rm -f udefrag.a
+	$(CLIB) r udefrag.a $(O) reports.o
+
+udefrag.68 : $(O)
+	$(CLINK) -w -o udefrag.68 -m udefrag.map -l $(LIBDIR)/syslib $(O)
+
+analyze.o analyze.s analyze.l : $(H) analyze.c
+
+defrag.o defrag.s defrag.l : $(H) defrag.c
+
+#int64.o #int64.s #int64.l : $(H) int64.c
+
+map.o map.s map.l : $(H) map.c
+
+move.o move.s move.l : $(H) move.c
+
+optimize.o optimize.s optimize.l : $(H) optimize.c
+
+options.o options.s options.l : $(H) options.c
+
+reports.o reports.s reports.l : $(H) reports.c
+
+search.o search.s search.l : $(H) search.c
+
+tasks.o tasks.s tasks.l : $(H) tasks.c
+
+udefrag.o udefrag.s udefrag.l : $(H) udefrag.c
+
+volume.o volume.s volume.l : $(H) volume.c
+
+clean :
+	rm -f $(O) reports.o
+	rm -f *.s *.asm *.l *.map
