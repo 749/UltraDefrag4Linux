@@ -24,6 +24,7 @@
  * @{
  */
 
+#include "ntndk.h"
 #include "zenwinx.h"
 
 /**
@@ -98,7 +99,7 @@ int winx_time2str(ULONGLONG time,char *buffer,int size)
     if(buffer == NULL || size <= 0)
         return 0;
 
-    t = (ULONG)time; /* because w2k has no _aulldvrm() call in ntdll.dll */
+    t = (ULONG)time;
     y = t / (3600 * 24 * 356);
     t = t % (3600 * 24 * 356);
     d = t / (3600 * 24);

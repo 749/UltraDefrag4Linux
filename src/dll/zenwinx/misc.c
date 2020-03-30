@@ -24,6 +24,7 @@
  * @{
  */
 
+#include "ntndk.h"
 #include "zenwinx.h"
 
 /**
@@ -50,11 +51,6 @@ void winx_sleep(int msec)
 /**
  * @brief Returns the version of Windows.
  * @return major_version_number * 10 + minor_version_number.
- * @note
- * - Works fine on NT 4.0 and later systems. Otherwise always returns 40.
- * - Useless on Windows 9x. Though, the complete zenwinx library is useless
- * there since there are many required calls missing in ntdll library 
- * on windows 9x.
  * @par Example:
  * @code 
  * if(winx_get_os_version() >= WINDOWS_XP){
@@ -64,17 +60,12 @@ void winx_sleep(int msec)
  */
 int winx_get_os_version(void)
 {
-    typedef NTSTATUS (__stdcall *RTLGETVERSION_PROC)(OSVERSIONINFOW *version_info);
-    RTLGETVERSION_PROC pRtlGetVersion;
-    OSVERSIONINFOW ver;
+    OSVERSIONINFOW v;
     
-    ver.dwOSVersionInfoSize = sizeof(OSVERSIONINFOW);
+    v.dwOSVersionInfoSize = sizeof(v);
+    RtlGetVersion(&v);
 
-    pRtlGetVersion = (RTLGETVERSION_PROC)winx_get_proc_address(L"ntdll.dll","RtlGetVersion");
-    if(pRtlGetVersion == NULL) return 40;
-    /* it seems to be impossible for it to fail */
-    (void)pRtlGetVersion(&ver);
-    return (ver.dwMajorVersion * 10 + ver.dwMinorVersion);
+    return (v.dwMajorVersion * 10 + v.dwMinorVersion);
 }
 
 /**
@@ -91,13 +82,11 @@ wchar_t *winx_get_windows_directory(void)
 {
     wchar_t *windir;
     wchar_t *path = NULL;
-    int size, result;
 
     windir = winx_getenv(L"SystemRoot");
     if(windir){
-        winx_swprintf(path,size,result,L"\\??\\%ws",windir);
-        if(path == NULL)
-            mtrace();
+        path = winx_swprintf(L"\\??\\%ws",windir);
+        if(path == NULL) mtrace();
         winx_free(windir);
     }
     return path;
@@ -135,7 +124,7 @@ int winx_query_symbolic_link(wchar_t *name, wchar_t *buffer, int length)
     }
     us.Buffer = buffer;
     us.Length = 0;
-    us.MaximumLength = length * sizeof(wchar_t);
+    us.MaximumLength = (USHORT)(length * sizeof(wchar_t));
     size = 0;
     status = NtQuerySymbolicLinkObject(hLink,&us,&size);
     (void)NtClose(hLink);

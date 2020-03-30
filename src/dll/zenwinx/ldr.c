@@ -24,6 +24,7 @@
  * @{
  */
 
+#include "ntndk.h"
 #include "zenwinx.h"
 
 /**
@@ -55,8 +56,7 @@ void *winx_get_proc_address(wchar_t *libname,char *funcname)
     RtlInitAnsiString(&as,funcname);
     status = LdrGetProcedureAddress(base_addr,&as,0,&proc_addr);
     if(!NT_SUCCESS(status)){
-        if(strcmp(funcname,"RtlGetVersion")) /* reduce amount of debugging output on NT4 */
-            etrace("cannot get address of %s: %x",funcname,(UINT)status);
+        etrace("cannot get address of %s: %x",funcname,(UINT)status);
         return NULL;
     }
     return proc_addr;

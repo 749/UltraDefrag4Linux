@@ -34,7 +34,7 @@ PROJECT_NAME           = "UltraDefrag Handbook"
 # This could be handy for archiving the generated documentation or
 # if some version control system is used.
 
-PROJECT_NUMBER         = 6.1.0
+PROJECT_NUMBER         = 7.0.0
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer
@@ -734,7 +734,8 @@ EXAMPLE_RECURSIVE      = YES
 # directories that contain image that are included in the documentation (see
 # the \image command).
 
-IMAGE_PATH             = ./rsc
+IMAGE_PATH             = ./rsc \
+                         ../../src/wxgui/res/16x16
 
 # The INPUT_FILTER tag can be used to specify a program that doxygen should
 # invoke to filter for each input file. Doxygen will invoke the filter program
@@ -940,7 +941,8 @@ HTML_EXTRA_STYLESHEET  = ./rsc/custom_doxygen.css
 # files. In the HTML_STYLESHEET file, use the file name only. Also note that
 # the files will be copied as-is; there are no commands or markers available.
 
-HTML_EXTRA_FILES       = ./rsc/sflogo.gif
+HTML_EXTRA_FILES       = ./rsc/sflogo.gif \
+                         ./rsc/languages.png
 
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output.
 # Doxygen will adjust the colors in the style sheet and background images
@@ -1358,33 +1360,34 @@ LATEX_FOOTER           = ./rsc/custom_footer.tex
 # Note that the files will be copied as-is; there are no commands or markers
 # available.
 
-LATEX_EXTRA_FILES      = ./rsc/About.png \
-                         ./rsc/Analysis.png \
-                         ./rsc/BestPractice.png \
-                         ./rsc/Blank.png \
-                         ./rsc/BootTimeScan.png \
-                         ./rsc/BootTimeScript.png \
+LATEX_EXTRA_FILES      = ./rsc/Blank.png \
                          ./rsc/Compressed.png \
-                         ./rsc/Defragment.png \
                          ./rsc/Directory.png \
                          ./rsc/fixed.png \
                          ./rsc/Fragmented.png \
                          ./rsc/FreeSpace.png \
-                         ./rsc/FullOptimize.png \
-                         ./rsc/Help.png \
+                         ./rsc/languages.png \
                          ./rsc/MFTzone.png \
                          ./rsc/NotFragmented.png \
-                         ./rsc/OptimizeMFT.png \
-                         ./rsc/Options.png \
-                         ./rsc/Pause.png \
-                         ./rsc/QuickOptimize.png \
                          ./rsc/removable.png \
-                         ./rsc/Repeat.png \
-                         ./rsc/Report.png \
-                         ./rsc/Stop.png \
                          ./rsc/System.png \
                          ./rsc/UnusedBlock.png \
-                         ./rsc/custom_doxygen.sty
+                         ./rsc/custom_doxygen.sty \
+                         ../../src/wxgui/res/24x24/defrag.png \
+                         ../../src/wxgui/res/24x24/full.png \
+                         ../../src/wxgui/res/24x24/gear.png \
+                         ../../src/wxgui/res/24x24/glass.png \
+                         ../../src/wxgui/res/24x24/help.png \
+                         ../../src/wxgui/res/24x24/light.png \
+                         ../../src/wxgui/res/24x24/mft.png \
+                         ../../src/wxgui/res/24x24/pause.png \
+                         ../../src/wxgui/res/24x24/quick.png \
+                         ../../src/wxgui/res/24x24/repeat.png \
+                         ../../src/wxgui/res/24x24/report.png \
+                         ../../src/wxgui/res/24x24/script.png \
+                         ../../src/wxgui/res/24x24/star.png \
+                         ../../src/wxgui/res/24x24/stop.png \
+                         ../../src/wxgui/res/24x24/terminal.png
 
 # If the PDF_HYPERLINKS tag is set to YES, the LaTeX that is generated
 # is prepared for conversion to pdf (using ps2pdf). The pdf file will

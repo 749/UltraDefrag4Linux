@@ -34,6 +34,7 @@
  * @{
  */
 
+#include "ntndk.h"
 #include "zenwinx.h"
 
 /*
@@ -142,12 +143,11 @@ int winx_dbg_init(void)
     UNICODE_STRING us;
     OBJECT_ATTRIBUTES oa;
     NTSTATUS status;
-    int size, result;
 
     if(!hListSynchEvent){
         /* attach PID to lock the current process only */
         id = (unsigned int)(DWORD_PTR)(NtCurrentTeb()->ClientId.UniqueProcess);
-        winx_swprintf(name,size,result,L"\\winx_dbg_list_lock_%u",id);
+        name = winx_swprintf(L"\\winx_dbg_list_lock_%u",id);
         if(name == NULL) return (-1);
         
         RtlInitUnicodeString(&us,name);
@@ -162,7 +162,7 @@ int winx_dbg_init(void)
     if(!hLogSynchEvent){
         /* attach PID to lock the current process only */
         id = (unsigned int)(DWORD_PTR)(NtCurrentTeb()->ClientId.UniqueProcess);
-        winx_swprintf(name,size,result,L"\\winx_dbg_log_lock_%u",id);
+        name = winx_swprintf(L"\\winx_dbg_log_lock_%u",id);
         if(name == NULL){
             NtCloseSafe(hListSynchEvent);
             return (-1);
@@ -477,7 +477,7 @@ static void remove_crlf(char *s)
  * - Not all system API set the last status code.
  * Use strace macro to catch the status for sure.
  */
-void winx_dbg_print(int flags,char *format, ...)
+void winx_dbg_print(int flags, const char *format, ...)
 {
     char *msg = NULL;
     char *err_msg = NULL;
@@ -584,7 +584,7 @@ no_description:
  * @param[in] format the format string.
  * @param[in] ... the parameters.
  */
-void winx_dbg_print_header(char ch, int width, char *format, ...)
+void winx_dbg_print_header(char ch, int width, const char *format, ...)
 {
     va_list arg;
     char *string;
@@ -712,6 +712,7 @@ void winx_flush_dbg_log(int flags)
                     /* add a proper newline characters */
                     (void)winx_fwrite(crlf,sizeof(char),2,f);
                 }
+                winx_free(log_entry->buffer);
             }
             if(log_entry->next == old_dbg_log) break;
         }

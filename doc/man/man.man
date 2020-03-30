@@ -1,0 +1,38 @@
+MAN(1)             Ultradefrag Boot Time Commands              MAN(1)
+
+NAME
+        man - manual page for man v7.0.0
+
+SYNOPSIS
+        man [OPTION]
+
+DESCRIPTION
+        'man' displays the manual page for the specified command.
+        The default action is to list all available manual pages.
+        In scripting mode the manuals are displayed without
+        interruption, in interactive mode they are displayed
+        page-wise.
+
+OPTIONS
+        {command}
+                display the manual page for {command}
+
+EXAMPLES
+        man
+                list all available manual pages
+
+        man udefrag
+                display the manual page for the udefrag command
+
+AUTHOR
+        Written by UltraDefrag Development Team.
+
+COPYRIGHT
+        Copyright (C) 2010-2015 UltraDefrag Development Team
+        This is free software. You may redistribute copies of
+        it under the terms of the GNU General Public License
+        <http://www.gnu.org/licenses/gpl.html>. There is NO
+        warranty; not even for MERCHANTABILITY or FITNESS
+        FOR A PARTICULAR PURPOSE.
+
+man                           April 2015                            1

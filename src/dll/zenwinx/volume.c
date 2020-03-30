@@ -24,6 +24,7 @@
  * @{
  */
 
+#include "ntndk.h"
 #include "zenwinx.h"
 
 /**
@@ -76,7 +77,7 @@ int winx_get_drive_type(char letter)
     /* The additional checks for DFS were suggested by Stefan Pendl (pendl2megabit@yahoo.de). */
     /* DFS shares have DRIVE_NO_ROOT_DIR type though they are actually remote. */
 
-    letter = winx_toupper(letter); /* possibly required for w2k */
+    letter = winx_toupper(letter);
     if(letter < 'A' || letter > 'Z'){
         etrace("invalid letter %c",letter);
         return (-1);
@@ -95,7 +96,7 @@ int winx_get_drive_type(char letter)
     if(wcsstr(link_target,L"Floppy"))
         return DRIVE_REMOVABLE;
     
-    /* try to define exactly which type has the specified drive (w2k+) */
+    /* try to define exactly which type has the specified drive */
     RtlZeroMemory(&pdi,sizeof(PROCESS_DEVICEMAP_INFORMATION));
     status = NtQueryInformationProcess(NtCurrentProcess(),
                     ProcessDeviceMap,&pdi,
@@ -114,16 +115,11 @@ int winx_get_drive_type(char letter)
         if(drive_type != DRIVE_NO_ROOT_DIR)
             return drive_type;
     } else {
-        if(status != STATUS_INVALID_INFO_CLASS){ /* exclude common NT4 error code */
-            /* exclude common NT4 Terminal Server Edition error code */
-            if(status != STATUS_INFO_LENGTH_MISMATCH){
-                strace(status,"cannot get device map");
-                return (-1);
-            }
-        }
+        strace(status,"cannot get device map");
+        return (-1);
     }
     
-    /* try to define exactly again which type has the specified drive (nt4+) */
+    /* try to define exactly again which type has the specified drive */
     /* note that the drive motor can be powered on during this check */
     hRoot = OpenRootDirectory(letter);
     if(hRoot == NULL)

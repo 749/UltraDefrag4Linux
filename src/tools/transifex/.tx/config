@@ -1,0 +1,8 @@
+[main]
+host = https://www.transifex.com
+
+[ultradefrag.main]
+file_filter = translations\ultradefrag.main\<lang>.po
+source_file = translations\ultradefrag.main\en_US.po
+source_lang = en_US
+

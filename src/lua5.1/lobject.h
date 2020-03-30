@@ -1,5 +1,5 @@
 /*
-** $Id: lobject.h 3600 2013-01-01 05:53:56Z dmitriar $
+** $Id: lobject.h,v 2.20 2006/01/18 11:37:34 roberto Exp $
 ** Type definitions for Lua objects
 ** See Copyright Notice in lua.h
 */
@@ -355,7 +355,7 @@ typedef struct Table {
 #define lmod(s,size) \
 	(check_exp((size&(size-1))==0, (cast(int, (s) & ((size)-1)))))
 
-#if defined(USE_WINDDK) || defined (USE_WINSDK)
+#if defined (USE_WINSDK)
 #define twoto(x)	(1i64<<(x))
 #else
 #define twoto(x)    (size_t)(1<<(x))

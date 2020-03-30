@@ -1,0 +1,23 @@
+REBOOT(1)          UltraDefrag Boot Time Commands           REBOOT(1)
+
+NAME
+        reboot - manual page for reboot v7.0.0
+
+SYNOPSIS
+        reboot
+
+DESCRIPTION
+        'reboot' immediately reboots the computer.
+
+AUTHOR
+        Written by UltraDefrag Development Team.
+
+COPYRIGHT
+        Copyright (C) 2010-2015 UltraDefrag Development Team
+        This is free software. You may redistribute copies of
+        it under the terms of the GNU General Public License
+        <http://www.gnu.org/licenses/gpl.html>. There is NO
+        warranty; not even for MERCHANTABILITY or FITNESS
+        FOR A PARTICULAR PURPOSE.
+
+reboot                        April 2015                            1

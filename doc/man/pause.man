@@ -1,0 +1,36 @@
+PAUSE(1)           UltraDefrag Boot Time Commands            PAUSE(1)
+
+NAME
+        pause - manual page for pause v7.0.0
+
+SYNOPSIS
+        pause [OPTION]
+
+DESCRIPTION
+        'pause' halts execution for the specified
+        time interval or till a key is pressed.
+
+OPTIONS
+        {timeout}
+                halt execution for the specified 
+                number of milliseconds
+
+EXAMPLES
+        pause
+                halt execution till a key is pressed
+
+        pause 1000
+                halt execution for one second
+
+AUTHOR
+        Written by UltraDefrag Development Team.
+
+COPYRIGHT
+        Copyright (C) 2010-2015 UltraDefrag Development Team
+        This is free software. You may redistribute copies of
+        it under the terms of the GNU General Public License
+        <http://www.gnu.org/licenses/gpl.html>. There is NO
+        warranty; not even for MERCHANTABILITY or FITNESS
+        FOR A PARTICULAR PURPOSE.
+
+pause                         April 2015                            1

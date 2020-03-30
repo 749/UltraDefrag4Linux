@@ -49,9 +49,13 @@
  * <a href="http://en.wikipedia.org/wiki/Backup_and_Restore">backup</a>
  * software instead for serious purposes.
  *
- * <h3>How to adjust optimization to imitate v5 one?</h3>
- * Unset all filters and set the <b>optimizer_file_size_threshold</b>
- * parameter to <b>15 EB</b>.
+ * <h3>How to move everything to the beginning of the disk?</h3>
+ * Optimization of big files and fragments is pretty useless, but
+ * if you like it (or need for partition shrinking) you can easily do it.
+ * Just unset all filters, set the <b>fragment_size_threshold</b> parameter
+ * to <b>0</b> and the <b>optimizer_file_size_threshold</b> parameter to 
+ * <b>15 EB</b>. This way UltraDefrag will move all files and fragments,
+ * regardless of their size, to the beginning of the disk.
  *
  * <h1>Graphical interface</h1>
  * <h3>When will the cluster map become interactive, so I'll be able to know where

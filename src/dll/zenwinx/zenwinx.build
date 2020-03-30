@@ -1,4 +1,4 @@
--- this is the zenwinx library build options
+-- zenwinx library build options
 name        = "zenwinx"
 target_type = "dll"
 nativedll   = 1
@@ -7,4 +7,3 @@ nativedll   = 1
 includes = { "include", "zenwinx" }
 
 libs = { "ntdll" }
-baseaddr = "0x01800000"

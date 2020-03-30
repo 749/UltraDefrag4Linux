@@ -33,7 +33,7 @@
  * - scheduled defragmentation (using Windows Task Scheduler)
  * - automatic termination when specified time interval elapses
  * - automatic hibernation or shutdown after the job completion
- * - small size of installers (about 1 MB)
+ * - small size of installers (about 2 MB)
  * - availability of portable packages requiring no installation
  * - full support of 64-bit editions of Windows
  * - granted permission to freely use and redistribute the program
@@ -48,16 +48,8 @@
  *
  * UltraDefrag can be used on Windows XP, Windows Server 2003, 
  * Windows Vista, Windows Server 2008, Windows 7 and Windows 8.
- *
  * Elder versions of the program (prior to v7) can be used on
  * Windows NT 4.0 and Windows 2000 as well, with some limitations.
- * On both those systems UltraDefrag cannot optimize master file
- * tables and FAT directories, cannot defragment files partially
- * and cannot handle NTFS disks with clusters larger than 4 KB.
- * On Windows NT 4.0 the program cannot defragment NTFS metafiles
- * and directories as well, and cannot accept short paths on the
- * command line (like C:\\PROGRA~1\\SOMEFI~1.TXT).
- *
  * Additionally <a href="http://jp-andre.pagesperso-orange.fr/advanced-ntfs-3g.html">UltraDefrag for Linux</a>
  * exists which is an independent port of the program based on NTFS-3G capabilities.
  *
@@ -118,8 +110,8 @@
  *
  * <h1>Web resources</h1>
  *
- * Visit <a href="http://ultradefrag.sourceforge.net/">UltraDefrag website</a>
- * for more information.
+ * Recent news and updates can be found at <a href="http://ultradefrag.sourceforge.net/">UltraDefrag website</a>.
+ * Also you can find us at <a href="http://www.facebook.com/ultradefrag/">Facebook</a>.
  *
  * @htmlonly
  * <HR>

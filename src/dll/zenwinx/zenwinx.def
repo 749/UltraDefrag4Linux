@@ -118,6 +118,7 @@ EXPORTS
     winx_stristr
     winx_str2time
     winx_sub_volume_region
+    winx_swprintf
     winx_time2str
     winx_tolower
     winx_toupper
@@ -128,6 +129,7 @@ EXPORTS
     winx_vflush
     winx_vopen
     winx_vsprintf
+    winx_vswprintf
     winx_wcsdup
     winx_wcsicmp
     winx_wcsistr

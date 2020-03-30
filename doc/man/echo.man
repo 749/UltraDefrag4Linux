@@ -1,0 +1,49 @@
+ECHO(1)            UltraDefrag Boot Time Commands             ECHO(1)
+
+NAME
+        echo - manual page for echo v7.0.0
+
+SYNOPSIS
+        echo [OPTION]
+        echo.
+
+DESCRIPTION
+        'echo' displays a message, an empty line or enables/disables
+        the command line display. The default action is to show the
+        current status of the command line display.
+
+OPTIONS
+        {message}
+                display {message}
+
+        on/off
+                enable/disable the command line display
+
+        .
+                display an empty line
+
+EXAMPLES
+        echo
+                show the command line display status
+
+        echo.
+                display an empty line
+
+        echo I am here ;-)
+                display 'I am here ;-)'
+
+        echo off
+                disable the command line display
+
+AUTHOR
+        Written by UltraDefrag Development Team.
+
+COPYRIGHT
+        Copyright (C) 2010-2015 UltraDefrag Development Team
+        This is free software. You may redistribute copies of
+        it under the terms of the GNU General Public License
+        <http://www.gnu.org/licenses/gpl.html>. There is NO
+        warranty; not even for MERCHANTABILITY or FITNESS
+        FOR A PARTICULAR PURPOSE.
+
+echo                          April 2015                            1

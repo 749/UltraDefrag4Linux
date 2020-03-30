@@ -36,6 +36,7 @@
  * @{
  */
 
+#include "ntndk.h"
 #include "zenwinx.h"
 
 typedef struct _SCANTOASCII {

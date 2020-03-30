@@ -279,23 +279,13 @@ free_color_b = $free_color_b
 seconds_for_shutdown_rejection = $seconds_for_shutdown_rejection
 
 -------------------------------------------------------------------------------
--- Set it to 1 to disable automatic checks for available upgrades on startup.
+-- The following options have been retired:
+--
+--   • disable_latest_version_check - use the "Help > Upgrade" menu instead
+--   • restore_default_window_size  - remove the width and height parameters
+--     from the {installation folder}\gui.ini file manually to restore
+--     the default window size on the next startup
 -------------------------------------------------------------------------------
-
-disable_latest_version_check = $disable_latest_version_check
-
--------------------------------------------------------------------------------
--- Set it to zero to disable scaling of GUI
--- controls according to the screen DPI settings.
--------------------------------------------------------------------------------
-
-scale_by_dpi = $scale_by_dpi
-
--------------------------------------------------------------------------------
--- Set it to 1 to restore the default window size on the next startup.
--------------------------------------------------------------------------------
-
-restore_default_window_size = $restore_default_window_size
 
 -------------------------------------------------------------------------------
 -- File fragmentation reports
@@ -383,6 +373,21 @@ os.setenv("UD_DBGPRINT_LEVEL",dbgprint_level)
 os.setenv("UD_LOG_FILE_PATH",log_file_path)
 os.setenv("UD_DRY_RUN",dry_run)
 
+-- GUI specific variables
+os.setenv("UD_SECONDS_FOR_SHUTDOWN_REJECTION",seconds_for_shutdown_rejection)
+os.setenv("UD_SHOW_MENU_ICONS",show_menu_icons)
+os.setenv("UD_SHOW_TASKBAR_ICON_OVERLAY",show_taskbar_icon_overlay)
+os.setenv("UD_SHOW_PROGRESS_IN_TASKBAR",show_progress_in_taskbar)
+os.setenv("UD_MINIMIZE_TO_SYSTEM_TRAY",minimize_to_system_tray)
+os.setenv("UD_MAP_BLOCK_SIZE",map_block_size)
+os.setenv("UD_GRID_LINE_WIDTH",grid_line_width)
+os.setenv("UD_GRID_COLOR_R",grid_color_r)
+os.setenv("UD_GRID_COLOR_G",grid_color_g)
+os.setenv("UD_GRID_COLOR_B",grid_color_b)
+os.setenv("UD_FREE_COLOR_R",free_color_r)
+os.setenv("UD_FREE_COLOR_G",free_color_g)
+os.setenv("UD_FREE_COLOR_B",free_color_b)
+
 -------------------------------------------------------------------------------
 -- END OF FILE
 -------------------------------------------------------------------------------
@@ -453,9 +458,6 @@ function get_preferences()
     free_color_r = 255
     free_color_g = 255
     free_color_b = 255
-    disable_latest_version_check = 0
-    scale_by_dpi = 1
-    restore_default_window_size = 0
     
     produce_html_report = 1
     produce_plain_text_report = 0
@@ -500,7 +502,7 @@ end
 -- THE MAIN CODE STARTS HERE
 -- current version of configuration file
 -- 0 - 99 for v5; 100 - 199 for v6; 200+ for v7
-current_version = 116
+current_version = 202
 shellex_options = ""
 _G_copy = {}
 

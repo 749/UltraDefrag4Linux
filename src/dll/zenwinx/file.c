@@ -24,6 +24,7 @@
  * @{
  */
 
+#include "ntndk.h"
 #include "zenwinx.h"
 
 /**
@@ -95,7 +96,7 @@ WINX_FILE *winx_fopen(const wchar_t *filename,const char *mode)
         NtClose(hFile);
         return NULL;
     }
-
+    
     f->hFile = hFile;
     f->roffset.QuadPart = 0;
     f->woffset.QuadPart = 0;
@@ -564,7 +565,7 @@ NTSTATUS winx_defrag_fopen(winx_file_info *f,int action,HANDLE *phandle)
     int win_version = winx_get_os_version();
     ACCESS_MASK access_rights = SYNCHRONIZE;
     ULONG flags = FILE_SYNCHRONOUS_IO_NONALERT;
-    int length, i;
+    int i, length;
     char volume_letter;
     wchar_t *path;
     wchar_t buffer[MAX_PATH + 1];
@@ -592,34 +593,14 @@ NTSTATUS winx_defrag_fopen(winx_file_info *f,int action,HANDLE *phandle)
         flags |= FILE_OPEN_REPARSE_POINT;
     }
 
-    /*
-    * All files except of internal NTFS files
-    * can be successfully opened with FILE_GENERIC_READ | SYNCHRONIZE
-    * access rights on all of the supported versions of Windows.
-    * To open internal NTFS files including $mft, we use more restricted rights.
-    */
-    if(win_version <= WINDOWS_2K){
-        /* on Windows NT and Windows 2000 */
-        if(is_encrypted(f)){
-            /* encrypted files may require read access */
-            access_rights |= FILE_GENERIC_READ;
-        } else {
-            /*
-            * All other files can be successfully opened with a single
-            * SYNCHRONIZE access. More advanced FILE_GENERIC_READ
-            * rights may prevent opening of internal NTFS files on w2k.
-            */
-        }
-    } else if(win_version == WINDOWS_XP || win_version == WINDOWS_2K3){
-        /* On Windows XP and Windows Server 2003 */
+    if(win_version < WINDOWS_VISTA){
         /*
         * All files can be opened with a single SYNCHRONIZE access.
         * More advanced FILE_GENERIC_READ rights prevent opening
         * of $mft file as well as other internal NTFS files.
         * http://forum.sysinternals.com/topic23950.html
         */
-    } else if(win_version >= WINDOWS_VISTA){
-        /* On Windows Vista and Windows 7 */
+    } else {
         /*
         * $Mft may require more advanced rights, 
         * than a single SYNCHRONIZE.
@@ -644,7 +625,7 @@ NTSTATUS winx_defrag_fopen(winx_file_info *f,int action,HANDLE *phandle)
     * http://msdn.microsoft.com/en-us/library/windows/desktop/aa363911(v=vs.85).aspx
     */
     path = f->path;
-    length = wcslen(f->path);
+    length = (int)wcslen(f->path);
     if(length >= 9){ /* to ensure that we have at least \??\X:\$x */
         if(f->path[7] == '$'){
             volume_letter = (char)f->path[4];

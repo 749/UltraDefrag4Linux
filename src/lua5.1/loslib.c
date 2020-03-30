@@ -1,5 +1,5 @@
 /*
-** $Id: loslib.c 3600 2013-01-01 05:53:56Z dmitriar $
+** $Id: loslib.c,v 1.20 2006/09/19 13:57:08 roberto Exp $
 ** Standard Operating System library
 ** See Copyright Notice in lua.h
 */
@@ -14,10 +14,6 @@
 
 #include <windows.h>
 #include <shellapi.h>
-
-#ifndef USE_WINDDK
-#define LONG_PTR LONG
-#endif
 
 #include <errno.h>
 #include <locale.h>
@@ -38,6 +34,7 @@
 #else
 #define ULONG_PTR unsigned long
 #endif
+#define LONG_PTR LONG
 
 static HINSTANCE (WINAPI *func_ShellExecuteA)(HWND,LPCSTR,LPCSTR,LPCSTR,LPCSTR,INT);
 
@@ -63,7 +60,7 @@ static int os_execute (lua_State *L) {
 
 /* converts UTF-8 string to UTF-16 string, returns also Win32 error */
 static wchar_t *convert_to_utf16(const char *utf8_string,int *error) {
-  int length = strlen(utf8_string);
+  int length = (int)strlen(utf8_string);
   wchar_t *utf16_string = malloc((length + 1) * 2);
   if(utf16_string == NULL){
     *error = ERROR_NOT_ENOUGH_MEMORY;
@@ -79,7 +76,7 @@ static wchar_t *convert_to_utf16(const char *utf8_string,int *error) {
 
 /* converts UTF-16 string to UTF-8 string, returns also Win32 error */
 static char *convert_to_utf8(const wchar_t *utf16_string,int *error) {
-  int length = wcslen(utf16_string);
+  int length = (int)wcslen(utf16_string);
   char *utf8_string = malloc((length + 1) * 2);
   if(utf8_string == NULL){
     *error = ERROR_NOT_ENOUGH_MEMORY;

@@ -286,22 +286,6 @@ static int pmain (lua_State *L) {
   return 0;
 }
 
-
-BOOL CALLBACK EmptyDlgProc (HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-  switch(msg){
-  case WM_INITDIALOG:
-    /* kill our window before showing them :) */
-    (void)EndDialog(hWnd,1);
-    return FALSE;
-  case WM_CLOSE:
-    /* this code - for extraordinary cases */
-    (void)EndDialog(hWnd,1);
-     return TRUE;
-  }
-  return FALSE;
-}
-
 int __cdecl main (int argc, char **argv) {
   int i, status;
   struct Smain s;
@@ -313,13 +297,6 @@ int __cdecl main (int argc, char **argv) {
   * the application manifest.
   */
   InitCommonControls();
-
-  /*
-  * To disable sand glass on the cursor
-  * we must show a window on startup.
-  */
-  (void)DialogBox((HINSTANCE)GetModuleHandle(NULL),
-    MAKEINTRESOURCE(100),NULL,(DLGPROC)EmptyDlgProc);
 
   /* check for silent mode */
   for(i = 0; i < argc; i++){

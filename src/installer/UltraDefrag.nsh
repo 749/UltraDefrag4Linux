@@ -86,54 +86,6 @@
 
 ;-----------------------------------------
 
-!macro InitCrashDate
-
-    Push $5
-    Push $6
-    Push $7
-    Push $8
-    Push $9
-
-    ; get seconds since 1.1.1970 based on the remarks section of RtlTimeToSecondsSince1970 at
-    ; http://msdn.microsoft.com/en-us/library/windows/desktop/ms724928%28v=vs.85%29.aspx
-
-    ; initialize SYSTEMTIME structure with 01.01.1970 00:00:00
-    System::Call "*(&i2 1970,&i2 1,&i2 0,&i2 1,&i2 0,&i2 0,&i2 0,&i2 0) i .r6"
-
-    ; get current date and time in UTC
-    System::Call "*(&i2,&i2,&i2,&i2,&i2,&i2,&i2,&i2) i .r7"
-    System::Call "kernel32::GetSystemTime(i r7) v"
-
-    ; convert SYSTEMTIME to FILETIME
-    System::Call "kernel32::SystemTimeToFileTime(i r6,*l .r8) i"
-    System::Call "kernel32::SystemTimeToFileTime(i r7,*l .r9) i"
-
-    ; calculate seconds
-    System::Int64Op $9 - $8
-    Pop $5
-    System::Int64Op $5 / 10000000
-    Pop $5
-
-    ; cleanup
-    System::Free $7
-    System::Free $6
-
-    ; create entry in the crash ini file
-    WriteINIStr "$INSTDIR\crash-info.ini" "LastProcessedEvent" "TimeStamp" $5
-    FlushINI    "$INSTDIR\crash-info.ini"
-
-    Pop $9
-    Pop $8
-    Pop $7
-    Pop $6
-    Pop $5
-
-!macroend
-
-!define InitCrashDate "!insertmacro InitCrashDate"
-
-;-----------------------------------------
-
 !macro CheckAdminRights
 
     Push $R0
@@ -190,10 +142,11 @@
         Abort
     ${EndIf}
 
-    ; we only support Windows NT4 and above
-    ${IfNot} ${AtLeastWinNT4}
+    ; we only support Windows XP and above
+    ${IfNot} ${AtLeastWinXP}
         ${LogAndDisplayAbort} \
-            "This program cannot be used on Windows versions below NT4!"
+            "This program cannot be used on Windows versions below XP!$\n \
+            Download UltraDefrag v6 for Windows NT 4.0 and Windows 2000."
         Abort
     ${EndIf}
 
@@ -338,8 +291,8 @@ SkipMove:
         File "lua5.1a.dll"
         File "zenwinx.dll"
         File "udefrag.dll"
-        File "wgx.dll"
         File /oname=hibernate4win.exe "hibernate.exe"
+        File "udefrag-dbg.exe"
 
     SetOutPath "$INSTDIR"
         File "${ROOTDIR}\src\HISTORY.TXT"
@@ -356,14 +309,6 @@ SkipMove:
     DetailPrint "Upgrade configuration files..."
     ; ensure that target directory exists
     CreateDirectory "$INSTDIR\options"
-    Push $R1
-    ClearErrors
-    FileOpen $R1 "$INSTDIR\options\readme.txt" w
-    ${Unless} ${Errors}
-        FileWrite $R1 "This folder contains internal configuration files only.$\r$\n"
-        FileClose $R1
-    ${EndUnless}
-    Pop $R1
     ${If} ${Silent}
         ExecWait '"$INSTDIR\lua5.1a_gui.exe" -s "$INSTDIR\scripts\upgrade-options.lua" "$INSTDIR"'
     ${Else}
@@ -410,9 +355,9 @@ SkipMove:
 
     Delete "$SYSDIR\zenwinx.dll"
     Delete "$SYSDIR\udefrag.dll"
-    Delete "$SYSDIR\wgx.dll"
     Delete "$SYSDIR\lua5.1a.dll"
     Delete "$SYSDIR\hibernate4win.exe"
+    Delete "$SYSDIR\udefrag-dbg.exe"
 
     DetailPrint "Deregister .luar file extension..."
     DeleteRegKey HKCR "LuaReport"
@@ -457,7 +402,7 @@ SkipMove:
 
     DetailPrint "Installing boot interface..."
     SetOutPath "$INSTDIR\man"
-    File "${ROOTDIR}\src\man\*.*"
+    File "${ROOTDIR}\doc\man\*.*"
 
     SetOutPath "$SYSDIR"
     File "${ROOTDIR}\src\installer\boot-config.cmd"
@@ -549,13 +494,19 @@ SkipMove:
     ${DisableX64FSRedirection}
 
     DetailPrint "Installing GUI interface..."
-    SetOutPath "$INSTDIR\i18n"
-        File /nonfatal "${ROOTDIR}\src\gui\i18n\*.lng"
-        File /nonfatal "${ROOTDIR}\src\gui\i18n\*.template"
+    SetOutPath "$INSTDIR"
+        File /nonfatal /r /x *.pot /x *.header /x *.svn "${ROOTDIR}\src\wxgui\locale"
+
+    SetOutPath "$INSTDIR\po"
+        File /nonfatal "${ROOTDIR}\src\tools\transifex\translations\ultradefrag.main\*.po"
+        File /nonfatal "${ROOTDIR}\src\wxgui\locale\*.pot"
 
     SetOutPath "$INSTDIR"
         Delete "$INSTDIR\ultradefrag.exe"
         File "ultradefrag.exe"
+
+    DetailPrint "Update report translation..."
+    ExecWait '"$INSTDIR\ultradefrag.exe" --setup'
 
     Push $R0
     Push $0
@@ -585,18 +536,6 @@ SkipMove:
         ${EndIf}
     ${EndIf}
 
-    ClearErrors
-    ReadRegStr $R0 HKCR ".lng" ""
-    ${If} ${Errors}
-        WriteRegStr HKCR ".lng" "" "LanguagePack"
-        WriteRegStr HKCR "LanguagePack" "" "Language Pack"
-        WriteRegStr HKCR "LanguagePack\shell\open" "" "Open"
-        WriteRegStr HKCR "LanguagePack\DefaultIcon" "" "shell32.dll,0"
-        WriteRegStr HKCR "LanguagePack\shell\open\command" "" "notepad.exe %1"
-
-        WriteRegStr HKLM ${UD_UNINSTALL_REG_KEY} "Registered.lng" "1"
-    ${EndIf}
-
     Pop $0
     Pop $R0
 
@@ -613,7 +552,8 @@ SkipMove:
     ${DisableX64FSRedirection}
 
     DetailPrint "Removing GUI interface..."
-    RMDir /r "$INSTDIR\i18n"
+    RMDir /r "$INSTDIR\locale"
+    RMDir /r "$INSTDIR\po"
 
     Delete "$INSTDIR\ultradefrag.exe"
 
@@ -640,16 +580,6 @@ SkipMove:
                 DeleteRegKey HKCR "$R0\shell\Edit"
                 DeleteRegValue HKLM ${UD_UNINSTALL_REG_KEY} "Registered.lua.edit"
             ${EndUnless}
-        ${EndIf}
-    ${EndUnless}
-
-    ClearErrors
-    ReadRegStr $R0 HKLM ${UD_UNINSTALL_REG_KEY} "Registered.lng"
-    ${Unless} ${Errors}
-        ${If} $R0 == "1"
-            DeleteRegKey HKCR "LanguagePack"
-            DeleteRegKey HKCR ".lng"
-            DeleteRegValue HKLM ${UD_UNINSTALL_REG_KEY} "Registered.lng"
         ${EndIf}
     ${EndUnless}
 
@@ -1041,27 +971,18 @@ SkipMove:
     Delete "$SYSDIR\lua5.1a_gui.exe"
     Delete "$SYSDIR\udctxhandler.cmd"
     Delete "$SYSDIR\udctxhandler.vbs"
+    Delete "$SYSDIR\wgx.dll"
 
     RMDir /r "$INSTDIR\doc"
-    RMDir /r "$INSTDIR\presets"
+    RMDir /r "$INSTDIR\i18n"
     RMDir /r "$INSTDIR\logs"
+    RMDir /r "$INSTDIR\options"
     RMDir /r "$INSTDIR\portable_${ULTRADFGARCH}_package"
-    RMDir /r "$INSTDIR\i18n\gui"
-    RMDir /r "$INSTDIR\i18n\gui-config"
-
-    Delete "$INSTDIR\i18n\French (FR).lng"
-    Delete "$INSTDIR\i18n\Vietnamese (VI).lng"
-    Delete "$INSTDIR\i18n\Bosanski.lng"
+    RMDir /r "$INSTDIR\presets"
 
     Delete "$INSTDIR\scripts\udctxhandler.lua"
     Delete "$INSTDIR\scripts\upgrade-guiopts.lua"
     Delete "$INSTDIR\scripts\upgrade-rptopts.lua"
-
-    Delete "$INSTDIR\options\guiopts.lua"
-    Delete "$INSTDIR\options\guiopts.lua.old"
-    Delete "$INSTDIR\options\udreportopts.lua"
-    Delete "$INSTDIR\options\udreportopts.lua.old"
-    Delete "$INSTDIR\options\udreportopts-custom.lua"
 
     Delete "$INSTDIR\dfrg.exe"
     Delete "$INSTDIR\CREDITS.TXT"
@@ -1080,9 +1001,14 @@ SkipMove:
     Delete "$INSTDIR\*.lng"
     Delete "$INSTDIR\udefrag-gui-config.exe"
     Delete "$INSTDIR\LanguageSelector.exe"
+    Delete "$INSTDIR\lang.ini"
+    Delete "$INSTDIR\wxultradefrag.exe"
 
     Delete "$INSTDIR\shellex.ico"
     Delete "$INSTDIR\shellex-folder.ico"
+
+    Delete "$INSTDIR\crash-info.ini"
+    Delete "$INSTDIR\crash-info.log"
 
     ; remove shortcuts of any previous version of the program
     SetShellVarContext all
@@ -1098,6 +1024,17 @@ SkipMove:
     DeleteRegKey HKLM "SYSTEM\ControlSet001\Enum\Root\LEGACY_ULTRADFG"
     DeleteRegKey HKLM "SYSTEM\ControlSet002\Enum\Root\LEGACY_ULTRADFG"
     DeleteRegKey HKLM "SYSTEM\ControlSet003\Enum\Root\LEGACY_ULTRADFG"
+
+    ; remove obsolete file associations
+    ClearErrors
+    ReadRegStr $R0 HKLM ${UD_UNINSTALL_REG_KEY} "Registered.lng"
+    ${Unless} ${Errors}
+        ${If} $R0 == "1"
+            DeleteRegKey HKCR "LanguagePack"
+            DeleteRegKey HKCR ".lng"
+            DeleteRegValue HKLM ${UD_UNINSTALL_REG_KEY} "Registered.lng"
+        ${EndIf}
+    ${EndUnless}
 
 !macroend
 

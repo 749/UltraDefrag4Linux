@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -145,7 +145,6 @@ VIAddVersionKey  "FileVersion"     "${ULTRADFGVER}"
 !include "x64.nsh"
 !include "MUI.nsh"
 !include "${ROOTDIR}\src\installer\UltraDefrag.nsh"
-!include "${ROOTDIR}\src\installer\LanguageSelector.nsh"
 !include "${ROOTDIR}\src\installer\PresetSections.nsh"
 
 /*
@@ -165,7 +164,6 @@ VIAddVersionKey  "FileVersion"     "${ULTRADFGVER}"
     For any other folders the $\"Next$\" button will be disabled."
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_COMPONENTS
-!insertmacro LANG_PAGE
 !insertmacro MUI_PAGE_INSTFILES
 !define MUI_FINISHPAGE_NOAUTOCLOSE
 !insertmacro MUI_PAGE_FINISH
@@ -327,9 +325,6 @@ Function .onInit
     StrCmp $OldInstallDir "" 0 +2
     StrCpy $OldInstallDir $INSTDIR
 
-    ${CollectOldLang}
-    ${InitLanguageSelector}
-
     ${CollectFromRegistry}
     ${ParseCommandLine}
 
@@ -370,8 +365,6 @@ Function .onInstSuccess
     ${PreserveInRegistry}
 
     ${RegisterInstallationFolder}
-
-    ${InitCrashDate}
 
 FunctionEnd
 

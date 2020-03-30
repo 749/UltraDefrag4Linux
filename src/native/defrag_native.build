@@ -1,4 +1,4 @@
--- this is the UltraDefrag boot time (native) interface build options
+-- UltraDefrag boot time interface build options
 name        = "defrag_native"
 target_type = "native"
 
@@ -10,7 +10,3 @@ adlibs = {
     "$(UDEFRAG_LIB_PATH)\\zenwinx",
     "$(UDEFRAG_LIB_PATH)\\udefrag"
 }
-
-function mingw_project_rules()
-    output_dir = "../obj/native"
-end

@@ -1,0 +1,23 @@
+BOOT-ON(1)         UltraDefrag Boot Time Commands          BOOT-ON(1)
+
+NAME
+        boot-on - manual page for boot-on v7.0.0
+
+SYNOPSIS
+        boot-on
+
+DESCRIPTION
+        'boot-on' turns the boot time defragmenter on.
+
+AUTHOR
+        Written by UltraDefrag Development Team.
+
+COPYRIGHT
+        Copyright (C) 2010-2015 UltraDefrag Development Team
+        This is free software. You may redistribute copies of
+        it under the terms of the GNU General Public License
+        <http://www.gnu.org/licenses/gpl.html>. There is NO
+        warranty; not even for MERCHANTABILITY or FITNESS
+        FOR A PARTICULAR PURPOSE.
+
+boot-on                       April 2015                            1

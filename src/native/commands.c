@@ -330,7 +330,7 @@ static int type_handler(int argc,wchar_t **argv,wchar_t **envp)
     } else {
         length = 0;
         for(i = 1; i < argc; i++)
-            length += wcslen(argv[i]) + 1;
+            length += (int)wcslen(argv[i]) + 1;
         filename = winx_malloc(length * sizeof(wchar_t));
         filename[0] = 0;
         for(i = 1; i < argc; i++){
@@ -420,7 +420,7 @@ static int hexview_handler(int argc,wchar_t **argv,wchar_t **envp)
     /* build the native path to the file */
     length = 0;
     for(i = 1; i < argc; i++)
-        length += wcslen(argv[i]) + 1;
+        length += (int)wcslen(argv[i]) + 1;
     filename = winx_malloc(length * sizeof(wchar_t));
     filename[0] = 0;
     for(i = 1; i < argc; i++){
@@ -456,7 +456,7 @@ static int hexview_handler(int argc,wchar_t **argv,wchar_t **envp)
     offset = 0x0;
     while(filesize){
         bytes_to_read = min(SCREEN_BUFFER_SIZE,filesize);
-        result = winx_fread(buffer,sizeof(char),bytes_to_read,f);
+        result = (int)winx_fread(buffer,sizeof(char),bytes_to_read,f);
         if(result != bytes_to_read && winx_fsize(f) == size){
             winx_printf("\n%ws: cannot read %ws\n\n",argv[0],path);
             winx_fclose(f);
@@ -549,7 +549,7 @@ static int list_environment_variables(int argc,wchar_t **argv,wchar_t **envp)
     for(i = 0, j = 0; i < n; i++){
         if(filter_strings && winx_wcsistr(envp[i],argv[1]) != (wchar_t *)envp[i])
             continue;
-        length = wcslen(envp[i]);
+        length = (int)wcslen(envp[i]);
         strings[j] = winx_malloc((length + 1) * sizeof(char));
         (void)_snprintf(strings[j],length + 1,"%ws",envp[i]);
         strings[j][length] = 0;
@@ -600,7 +600,7 @@ static int set_handler(int argc,wchar_t **argv,wchar_t **envp)
             return list_environment_variables(argc,argv,envp);
         }
         /* calculate name and value lengths */
-        n = wcslen(argv[1]);
+        n = (int)wcslen(argv[1]);
         for(i = 0; i < n; i++){
             if(argv[1][i] == '='){
                 name_length = i;
@@ -615,13 +615,13 @@ static int set_handler(int argc,wchar_t **argv,wchar_t **envp)
         }
         /* append all remaining parts of the value string */
         for(i = 2; i < argc; i++)
-            value_length += 1 + wcslen(argv[i]);
+            value_length += 1 + (int)wcslen(argv[i]);
         /* allocate memory */
         name = winx_malloc((name_length + 1) * sizeof(wchar_t));
         if(value_length)
             value = winx_malloc((value_length + 1) * sizeof(wchar_t));
         /* extract name and value */
-        n = wcslen(argv[1]);
+        n = (int)wcslen(argv[1]);
         for(i = 0; i < n; i++){
             if(argv[1][i] == '=') break;
             name[i] = argv[1][i];
@@ -841,7 +841,7 @@ static int call_handler(int argc,wchar_t **argv,wchar_t **envp)
     } else {
         length = 0;
         for(i = 1; i < argc; i++)
-            length += wcslen(argv[i]) + 1;
+            length += (int)wcslen(argv[i]) + 1;
         filename = winx_malloc(length * sizeof(wchar_t));
         filename[0] = 0;
         for(i = 1; i < argc; i++){
@@ -1001,7 +1001,7 @@ int parse_command(wchar_t *cmdline)
     */
     while(*cmdline == 0x20 || *cmdline == '\t')
         cmdline ++; /* skip leading spaces */
-    n = wcslen(cmdline);
+    n = (int)wcslen(cmdline);
     for(i = n - 1; i >= 0; i--){
         if(cmdline[i] != 0x20 && cmdline[i] != '\t' && \
             cmdline[i] != '\n' && cmdline[i] != '\r') break;
@@ -1035,7 +1035,7 @@ int parse_command(wchar_t *cmdline)
     if(cmdline_copy == NULL)
         return (-1);
     /* b. replace all spaces by zeros */
-    n = wcslen(cmdline_copy);
+    n = (int)wcslen(cmdline_copy);
     argc = 1;
     for(i = 0; i < n; i++){
         if(cmdline_copy[i] == 0x20 || cmdline_copy[i] == '\t'){
@@ -1069,7 +1069,7 @@ int parse_command(wchar_t *cmdline)
                 for(n = 0; ; n++){
                     /* empty line indicates the end of environment */
                     if(string[0] == 0) break;
-                    length = wcslen(string);
+                    length = (int)wcslen(string);
                     string += length + 1;
                 }
                 if(n > 0){
@@ -1080,7 +1080,7 @@ int parse_command(wchar_t *cmdline)
                         /* empty line indicates the end of environment */
                         if(string[0] == 0) break;
                         envp[i] = string;
-                        length = wcslen(string);
+                        length = (int)wcslen(string);
                         string += length + 1;
                     }
                 }

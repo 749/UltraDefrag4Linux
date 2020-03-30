@@ -1,13 +1,10 @@
--- this is the ultradefag BootExecute Control program build options
+-- BootExecute Control build options
 name        = "bootexctrl"
 target_type = "gui"
 
 -- list of directories containing headers the program relies on
-includes = { "include", "lua5.1", "wgx" }
+includes = { "include", "lua5.1", "zenwinx" }
 
 libs = { "kernel32", "user32", "advapi32", "shell32", "msvcrt", "comctl32" }
-adlibs = { 
-    "$(UDEFRAG_LIB_PATH)\\udefrag",
-    "$(UDEFRAG_LIB_PATH)\\wgx"
-}
-umentry = "winmain"
+adlibs = { "$(UDEFRAG_LIB_PATH)\\zenwinx" }
+umentry = "main"

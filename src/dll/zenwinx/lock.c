@@ -26,6 +26,7 @@
  * @{
  */
 
+#include "ntndk.h"
 #include "zenwinx.h"
 
 /*
@@ -43,13 +44,12 @@
 winx_spin_lock *winx_init_spin_lock(char *name)
 {
     wchar_t *fullname;
-    int size, result;
     unsigned int id;
     winx_spin_lock *sl;
     
     /* attach PID to lock the current process only */
     id = (unsigned int)(DWORD_PTR)(NtCurrentTeb()->ClientId.UniqueProcess);
-    winx_swprintf(fullname,size,result,L"\\%hs_%u",name,id);
+    fullname = winx_swprintf(L"\\%hs_%u",name,id);
     if(fullname == NULL){
         etrace("not enough memory for %s",name);
         return NULL;

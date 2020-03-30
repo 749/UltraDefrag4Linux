@@ -21,6 +21,7 @@
  *  UltraDefrag boot time (native) interface resources description.
  */
 
+#include <windows.h>
 #include "../include/version.h"
 
 VS_VERSION_INFO VERSIONINFO

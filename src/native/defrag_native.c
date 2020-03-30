@@ -70,7 +70,7 @@ static int native_app_init(void)
     (void)NtInitializeRegistry(0);
 #endif
 
-    if(udefrag_init_library() < 0) return (-1);
+    if(winx_init_library() < 0) return (-1);
     winx_set_killer(out_of_memory_handler);
     
     /* start initial logging */
@@ -216,7 +216,7 @@ static void set_dbg_log(char *name)
 {
     wchar_t *instdir;
     wchar_t *path = NULL;
-    int size, result;
+    int result;
 
     instdir = winx_getenv(L"UD_INSTALL_DIR");
     if(instdir == NULL){
@@ -224,9 +224,7 @@ static void set_dbg_log(char *name)
         return;
     }
     
-    winx_swprintf(path,size,result,
-        L"%ws\\logs\\boot-%hs.log",
-        instdir,name);
+    path = winx_swprintf(L"%ws\\logs\\boot-%hs.log",instdir,name);
     winx_free(instdir);
     if(path == NULL){
         winx_printf("\nset_dbg_log: cannot build log path\n\n");

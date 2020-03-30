@@ -36,10 +36,7 @@ The lua.build file is included to produce Lua modules for three processor
 architectures (i386, amd64 and ia64) during the automatic UltraDefrag
 build process.
 
-Note: Lua produced by Windows DDK isn't compatible with standard Lua package,
-because there are used __stdcall calling conventions instead of __cdecl.
-This is a well known DDK bug - it is not compatible with ANSI C Standard.
-Due to this reason, all the compiled binaries have the 'a' suffix in their names.
+Note: Lua compiled for UltraDefrag has the 'a' suffix in names of its binaries.
 We believe that it will prevent overwrite of standard Lua binaries if they are
 present on a target system.
 

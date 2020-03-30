@@ -1,0 +1,38 @@
+HEXVIEW(1)         UltraDefrag Boot Time Commands          HEXVIEW(1)
+
+NAME
+        hexview - manual page for hexview v7.0.0
+
+SYNOPSIS
+        hexview [OPTIONS]
+
+DESCRIPTION
+        'hexview' displays a file using a HEX viewer layout.
+        In scripting mode it will be displayed without
+        interruption, in interactive mode it will be
+        displayed page-wise.
+
+OPTIONS
+        {file path}
+                display the contents of {file path}
+
+EXAMPLES
+        hexview C:\Temp\MyCustom.cmd
+                display the contents of "C:\Temp\MyCustom.cmd"
+
+                    000000C0: 0a 00 3b 00 20 00 46 00 |   ;   F
+                    000000C8: 72 00 61 00 67 00 6d 00 | r a g m
+                    000000D0: 65 00 6e 00 74 00 65 00 | e n t e
+
+AUTHOR
+        Written by UltraDefrag Development Team.
+
+COPYRIGHT
+        Copyright (C) 2010-2015 UltraDefrag Development Team
+        This is free software. You may redistribute copies of
+        it under the terms of the GNU General Public License
+        <http://www.gnu.org/licenses/gpl.html>. There is NO
+        warranty; not even for MERCHANTABILITY or FITNESS
+        FOR A PARTICULAR PURPOSE.
+
+hexview                       April 2015                            1

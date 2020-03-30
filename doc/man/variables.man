@@ -1,0 +1,112 @@
+VARIABLES(1)       UltraDefrag Boot Time Variables       VARIABLES(1)
+
+NAME
+        variables - manual page for variables v7.0.0
+
+SYNOPSIS
+        [VARIABLE]
+
+DESCRIPTION
+        Listing of all variables known by UltraDefrag.
+
+VARIABLES
+        UD_IN_FILTER
+                semicolon separated list of included paths
+
+        UD_EX_FILTER
+                semicolon separated list of excluded paths
+
+        UD_FRAGMENT_SIZE_THRESHOLD
+                eliminate only fragments smaller than specified;
+                size suffixes: KB, MB, GB, TB, PB, EB
+
+        UD_FILE_SIZE_THRESHOLD
+                exclude all files larger than specified;
+                size suffixes: KB, MB, GB, TB, PB, EB
+
+        UD_OPTIMIZER_FILE_SIZE_THRESHOLD
+                in optimization exclude all
+                files larger than specified;
+                size suffixes: KB, MB, GB, TB, PB, EB;
+                the default value is 20MB
+
+        UD_FRAGMENTS_THRESHOLD
+                exclude files having less fragments than specified
+
+        UD_SORTING
+                set sorting criteria for the disk optimization:
+                PATH (default), SIZE, C_TIME (creation time),
+                M_TIME (last modification time),
+                A_TIME (last access time)
+
+        UD_SORTING_ORDER
+                set sorting order for the disk optimization:
+                ASC (ascending, default) or DESC (descending)
+
+        UD_FRAGMENTATION_THRESHOLD
+                cancel all tasks except of the MFT optimization
+                when the disk fragmentation level is below than
+                specified
+
+        UD_TIME_LIMIT
+                terminate the job automatically when
+                the specified time interval elapses;
+                time suffixes: y, d, h, m, s
+
+        UD_REFRESH_INTERVAL
+                the progress refresh interval in milliseconds;
+                the default value is 100
+
+        UD_DISABLE_REPORTS
+                set it to '1' to disable generation of the file
+                fragmentation reports
+
+        UD_DBGPRINT_LEVEL
+                set amount of debugging output: NORMAL (default),
+                DETAILED (for troubleshooting), PARANOID
+
+        UD_LOG_FILE_PATH
+                set log file path (including file name)
+                to redirect debugging output to a file
+
+        UD_DRY_RUN
+                set it to '1' to avoid physical movements of files,
+                i.e. to simulate the disk processing
+
+        DATE
+                expands to the current date in the format YYYY-MM-DD
+
+        TIME
+                expands to the current time in the format HH-MM
+
+EXAMPLES
+        set UD_IN_FILTER=*windows*;*winnt*;*ntuser*;*pagefile*
+                include only paths which include one of these words
+
+        set UD_FRAGMENT_SIZE_THRESHOLD=20MB
+                eliminate fragments smaller than 20MB only
+
+        set UD_FILE_SIZE_THRESHOLD=50MB
+                process only files smaller than 50MB
+
+        set UD_FRAGMENTS_THRESHOLD=6
+                process only files with more than 6 fragments
+
+        set UD_TIME_LIMIT=6h 30m
+                terminate processing after 6 hours and 30 minutes
+
+        set UD_LOG_FILE_PATH=C:\Windows\Temp\defrag_native.log
+                save debugging information to the specified file
+
+AUTHOR
+        Written by UltraDefrag Development Team.
+
+COPYRIGHT
+        Copyright (C) 2010-2015 UltraDefrag Development Team
+        This is free software. You may redistribute copies of
+        it under the terms of the GNU General Public License
+        <http://www.gnu.org/licenses/gpl.html>. There is NO
+        warranty; not even for MERCHANTABILITY or FITNESS
+        FOR A PARTICULAR PURPOSE.
+
+variables                     April 2015                            1

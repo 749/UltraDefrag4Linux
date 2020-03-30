@@ -78,9 +78,6 @@
  * @par /DISABLE_USAGE_TRACKING=(1|0)
  * Enable or disable the usage tracking mentioned above.
  *
- * @par /LANG={Language}
- * Select language for the graphical interface.
- *
  * @par /D={Installation Folder}
  * Set the installation folder.
  * It must be the last parameter used in the command line and must not contain any quotes, even if the path contains spaces.
@@ -106,9 +103,6 @@
  * <div class="line"><span class="comment">:: change the installation folder</span></div>
  * <div class="line"><span class="keyword">ultradefrag-7.0.0.bin.i386.exe</span> /S /D=H:\Software\UltraDefrag</div>
  * <div class="line"></div>
- * <div class="line"><span class="comment">:: select Burmese language for the graphical interface</span></div>
- * <div class="line"><span class="keyword">ultradefrag-7.0.0.bin.i386.exe</span> /S /LANG="Burmese (Padauk)"</div>
- * <div class="line"></div>
  * <div class="line"><span class="comment">:: uninstall the program silently</span></div>
  * <div class="line">%UD_INSTALL_DIR%\<span class="keyword">uninstall.exe</span> /S</div>
  * </div>
@@ -127,9 +121,6 @@
  *
  * \rem{:: change the installation folder}
  * \cmd{ultradefrag-7.0.0.bin.i386.exe} /S /D=H:\(\backslash\)Software\(\backslash\)UltraDefrag
- *
- * \rem{:: select Burmese language for the graphical interface}
- * \cmd{ultradefrag-7.0.0.bin.i386.exe} /S /LANG="Burmese (Padauk)"
  *
  * \rem{:: uninstall the program silently}
  * %UD\_INSTALL\_DIR%\(\backslash\)\cmd{uninstall.exe} /S

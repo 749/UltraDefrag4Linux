@@ -25,6 +25,7 @@
  * @{
  */
 
+#include "ntndk.h"
 #include "zenwinx.h"
 
 /**
@@ -42,7 +43,7 @@ void winx_path_remove_extension(wchar_t *path)
 
     if(!path) return;
     
-    for(i = wcslen(path) - 1; i >= 0; i--){
+    for(i = (int)wcslen(path) - 1; i >= 0; i--){
         if(path[i] == '\\')
             return; /* filename contains no dot */
         if(path[i] == '.' && i){
@@ -84,7 +85,7 @@ void winx_path_extract_filename(wchar_t *path)
     
     if(!path) return;
     
-    n = wcslen(path);
+    n = (int)wcslen(path);
     if(!n) return;
     
     for(i = n - 1; i >= 0; i--){
@@ -145,7 +146,7 @@ int winx_create_path(wchar_t *path)
     /*wchar_t rootdir[] = L"\\??\\X:\\";*/
     winx_volume_information v;
     wchar_t *p;
-    unsigned int n;
+    size_t n;
     
     if(path == NULL)
         return (-1);

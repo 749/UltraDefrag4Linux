@@ -17,31 +17,25 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/*
-* Windows NT Native Development Kit.
-* The main header file.
-*/
+/**
+ * @brief The main header file of the Windows Native Development Kit.
+ * @note
+ * - This file contains only definitions of routines and structures
+ *   which have been tested during the UltraDefrag development.
+ *   Everything else is not included because we cannot guarantee that
+ *   we know correct definitions of all that undocumented stuff.
+ * - This file also replaces the standard winioctl.h header.
+ */
 
 #ifndef _NTNDK_H_
 #define _NTNDK_H_
 
-/* Note: this file also replaces standard winioctl.h header. */
-
 /*
 * Extremely important notes for the 64-bit compilation.
 *
-* 1. The following function prototype causes wrong compiled code:
-*    NTSTATUS    NTAPI    NtCreateEvent(PHANDLE,ACCESS_MASK,const OBJECT_ATTRIBUTES *,BOOLEAN,BOOLEAN);
-*
-*    Right prototype does not contain BOOLEAN keywords:
-*    NTSTATUS    NTAPI    NtCreateEvent(PHANDLE,ACCESS_MASK,const OBJECT_ATTRIBUTES *,SIZE_T,SIZE_T);
-*
-*    http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=519510
-*
-*    Always use SIZE_T type for all unknown parameters of the native calls,
-*    because actually we don't know, how long they are. SIZE_T type
-*    represents a whole register on all platforms, therefore it is safe for
-*    system calls prototyping.
+* 1. Always use SIZE_T type for all the unknown parameters of the native calls,
+*    since it represents a whole processor register on all the platforms,
+*    therefore is safe for system calls prototyping.
 *
 * 2. Always fill output buffer with zeros before the following system calls:
 *    NtDeviceIoControlFile        (?)
@@ -66,16 +60,19 @@
 *    }
 *
 *    If you wait only in case when STATUS_PENDING is returned, NtWriteFile()
-*    returns immediately and than, when memory allocated for IoStatusBlock() is 
+*    returns immediately and then, when memory allocated for IoStatusBlock() is 
 *    reallocated for something else, Windows might decide to write there. Therefore 
 *    the stack will be corrupted.
 *
 *    http://blogs.msdn.com/johnsheehan/archive/2007/12/19/when-idle-threads-bugcheck.aspx
 *
-* 4. When you are using _vsnprintf() don't forget to fill the buffer 
-*    passed as the first parameter by zeros before the call. Otherwise
-*    it will fail.
+* 4. When you are using _vsnprintf() and _vsnwprintf() don't forget to fill the buffer 
+*    passed as the first parameter by zeros before the call. Otherwise it will fail.
 */
+
+// =======================================================================
+//                            Declarations
+// =======================================================================
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
@@ -87,52 +84,59 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-/* define base types */
-#if defined(_WIN64)
-#define ULONG_PTR unsigned __int64
-#else
-#define ULONG_PTR unsigned long
-#endif
-
-typedef int BOOL;
-typedef const char *PCSZ;
-
-#ifndef USE_WINDDK
-#ifndef USE_WINSDK
-#if !defined(__MINGW_EXTENSION)
-#define LONG_PTR  signed long*
-typedef ULONG_PTR KAFFINITY;
-typedef KAFFINITY *PKAFFINITY;
-#endif
-
-typedef ULONG (NTAPI *PTHREAD_START_ROUTINE)(PVOID Parameter);
-#endif /* USE_WINSDK */
-#endif /* USE_WINDDK */
-
-#ifndef NOMINMAX
 #ifndef max
 #define max(a,b) ((a)>(b)?(a):(b))
 #endif
 #ifndef min
 #define min(a,b) ((a)<(b)?(a):(b))
 #endif
+
+#ifndef TAG
+#define TAG(A, B, C, D) (ULONG)(((A)<<0) + ((B)<<8) + ((C)<<16) + ((D)<<24))
 #endif
 
-#if defined(__GNUC__)
-ULONGLONG __stdcall _aulldiv(ULONGLONG n, ULONGLONG d);
-ULONGLONG __stdcall _alldiv(ULONGLONG n, ULONGLONG d);
-ULONGLONG __stdcall _aullrem(ULONGLONG u, ULONGLONG v);
+#if defined(_WIN64)
+#define ULONG_PTR unsigned __int64
+#else
+#define ULONG_PTR unsigned long
 #endif
 
-/* define status codes */
-/* ifndef directives are used to prevent warnings when gcc on mingw is used */
+#ifndef USE_WINSDK
+#if !defined(__MINGW_EXTENSION)
+#define LONG_PTR  signed long*
+typedef ULONG_PTR KAFFINITY;
+typedef KAFFINITY *PKAFFINITY;
+#endif
+typedef ULONG (NTAPI *PTHREAD_START_ROUTINE)(PVOID Parameter);
+#endif /* USE_WINSDK */
+
+typedef int BOOL;
+typedef const char *PCSZ;
 typedef LONG NTSTATUS;
+typedef LPOSVERSIONINFOW PRTL_OSVERSIONINFOW;
+
+#define DEVICE_TYPE DWORD
+
+// =======================================================================
+//                             Constants
+// =======================================================================
+
+#ifndef HEAP_ZERO_MEMORY
+#define HEAP_ZERO_MEMORY  0x00000008
+#endif
+
+#define MAX_WAIT_INTERVAL (-0x7FFFFFFFFFFFFFFFLL)
+
+/* ifndef directives are used to prevent warnings when mingw is used */
 #define STATUS_SUCCESS                ((NTSTATUS)0x00000000)
 #ifndef STATUS_TIMEOUT
 #define STATUS_TIMEOUT                ((NTSTATUS)0x00000102)
 #endif
 #ifndef STATUS_PENDING
 #define STATUS_PENDING                ((NTSTATUS)0x00000103)
+#endif
+#ifndef STATUS_BUFFER_OVERFLOW
+#define STATUS_BUFFER_OVERFLOW        ((NTSTATUS)0x80000005)
 #endif
 #ifndef STATUS_NO_MORE_FILES
 #define STATUS_NO_MORE_FILES          ((NTSTATUS)0x80000006)
@@ -193,11 +197,97 @@ typedef LONG NTSTATUS;
 #define STATUS_SHARING_VIOLATION      ((NTSTATUS)0xC0000043)
 #endif
 
-#define MAX_WAIT_INTERVAL (-0x7FFFFFFFFFFFFFFFLL)
+/* DEVICE_OBJECT.Characteristics */
+#define FILE_REMOVABLE_MEDIA            0x00000001
+#define FILE_READ_ONLY_DEVICE           0x00000002
+#define FILE_FLOPPY_DISKETTE            0x00000004
+#define FILE_WRITE_ONCE_MEDIA           0x00000008
+#define FILE_REMOTE_DEVICE              0x00000010
+#define FILE_DEVICE_IS_MOUNTED          0x00000020
+#define FILE_VIRTUAL_VOLUME             0x00000040
+#define FILE_AUTOGENERATED_DEVICE_NAME  0x00000080
+#define FILE_DEVICE_SECURE_OPEN         0x00000100
 
-/* define base nt structures */
-typedef struct _STRING
-{
+#ifndef FILE_DEVICE_FILE_SYSTEM
+#define FILE_DEVICE_FILE_SYSTEM         0x00000009
+#endif
+
+#define DIRECTORY_QUERY                 0x0001
+#define DIRECTORY_TRAVERSE              0x0002
+#define DIRECTORY_CREATE_OBJECT         0x0004
+#define DIRECTORY_CREATE_SUBDIRECTORY   0x0008
+#define DIRECTORY_ALL_ACCESS            (STANDARD_RIGHTS_REQUIRED | 0xF)
+
+#define SYMBOLIC_LINK_QUERY             0x0001
+#define SYMBOLIC_LINK_ALL_ACCESS        (STANDARD_RIGHTS_REQUIRED | 0x1)
+
+#ifndef FILE_OPEN
+#define FILE_OPEN                       1
+#endif
+#ifndef FILE_CREATE
+#define FILE_CREATE                     2
+#endif
+#ifndef FILE_OPEN_IF
+#define FILE_OPEN_IF                    3
+#endif
+#ifndef FILE_OVERWRITE
+#define FILE_OVERWRITE                  4
+#endif
+#ifndef FILE_OVERWRITE_IF
+#define FILE_OVERWRITE_IF               5
+#endif
+
+#define FILE_SYNCHRONOUS_IO_NONALERT    0x00000020
+#define FILE_OPEN_FOR_BACKUP_INTENT     0x00004000
+#define FILE_NON_DIRECTORY_FILE         0x00000040
+/* Windows 7 and later */
+#define FILE_DISALLOW_EXCLUSIVE         0x00020000
+
+#ifndef FILE_NO_INTERMEDIATE_BUFFERING
+#define FILE_NO_INTERMEDIATE_BUFFERING  0x00000008
+#endif
+#ifndef FILE_OPEN_REPARSE_POINT
+#define FILE_OPEN_REPARSE_POINT         0x00200000
+#endif
+
+#define FILE_DIRECTORY_FILE             0x00000001
+#define FILE_RESERVE_OPFILTER           0x00100000
+
+#ifndef FILE_WRITE_THROUGH
+#define FILE_WRITE_THROUGH              0x00000002
+#endif
+
+#define RTL_REGISTRY_ABSOLUTE     0   // Path is a full path
+#define RTL_REGISTRY_SERVICES     1   // \Registry\Machine\System\CurrentControlSet\Services
+#define RTL_REGISTRY_CONTROL      2   // \Registry\Machine\System\CurrentControlSet\Control
+#define RTL_REGISTRY_WINDOWS_NT   3   // \Registry\Machine\Software\Microsoft\Windows NT\CurrentVersion
+#define RTL_REGISTRY_DEVICEMAP    4   // \Registry\Machine\Hardware\DeviceMap
+#define RTL_REGISTRY_USER         5   // \Registry\User\CurrentUser
+#define RTL_REGISTRY_MAXIMUM      6
+#define RTL_REGISTRY_HANDLE       0x40000000    // Low order bits are registry handle
+#define RTL_REGISTRY_OPTIONAL     0x80000000    // Indicates the key node is optional
+
+typedef enum _EVENT_TYPE {
+  NotificationEvent,
+  SynchronizationEvent
+} EVENT_TYPE, *PEVENT_TYPE;
+
+typedef enum _SECTION_INHERIT {
+    ViewShare = 1,
+    ViewUnmap = 2
+} SECTION_INHERIT;
+
+typedef enum _SHUTDOWN_ACTION {
+    ShutdownNoReboot,
+    ShutdownReboot,
+    ShutdownPowerOff
+} SHUTDOWN_ACTION;
+
+// =======================================================================
+//                            Structures
+// =======================================================================
+
+typedef struct _STRING {
     USHORT Length;
     USHORT MaximumLength;
     PCHAR Buffer;
@@ -247,7 +337,6 @@ typedef struct _IO_STATUS_BLOCK {
         NTSTATUS Status;
         PVOID Pointer;
     };
-
     ULONG_PTR Information;
 } IO_STATUS_BLOCK, *PIO_STATUS_BLOCK;
 
@@ -258,27 +347,515 @@ typedef struct _IO_STATUS_BLOCK32 {
 } IO_STATUS_BLOCK32, *PIO_STATUS_BLOCK32;
 #endif
 
-typedef VOID(*PIO_APC_ROUTINE) (
-                PVOID ApcContext,
-                PIO_STATUS_BLOCK IoStatusBlock,
-                ULONG Reserved
-            );
+typedef VOID (*PIO_APC_ROUTINE)(PVOID ApcContext,
+    PIO_STATUS_BLOCK IoStatusBlock,ULONG Reserved);
 
-/* additional nt structures */
-typedef struct _CURDIR
-{
+typedef struct _CURDIR {
     UNICODE_STRING DosPath;
     PVOID Handle;
 } CURDIR, *PCURDIR;
 
-#ifndef HEAP_ZERO_MEMORY
-#define HEAP_ZERO_MEMORY  0x00000008 // winnt
-#endif
+typedef struct RTL_DRIVE_LETTER_CURDIR {
+    USHORT              Flags;
+    USHORT              Length;
+    ULONG               TimeStamp;
+    UNICODE_STRING      DosPath;
+} RTL_DRIVE_LETTER_CURDIR, *PRTL_DRIVE_LETTER_CURDIR;
+
+typedef struct _RTL_USER_PROCESS_PARAMETERS {
+    ULONG               AllocationSize;
+    ULONG               Size;
+    ULONG               Flags;
+    ULONG               DebugFlags;
+    HANDLE              ConsoleHandle;
+    ULONG               ConsoleFlags;
+    HANDLE              hStdInput;
+    HANDLE              hStdOutput;
+    HANDLE              hStdError;
+    CURDIR              CurrentDirectory;
+    UNICODE_STRING      DllPath;
+    UNICODE_STRING      ImagePathName;
+    UNICODE_STRING      CommandLine;
+    PWSTR               Environment;
+    ULONG               dwX;
+    ULONG               dwY;
+    ULONG               dwXSize;
+    ULONG               dwYSize;
+    ULONG               dwXCountChars;
+    ULONG               dwYCountChars;
+    ULONG               dwFillAttribute;
+    ULONG               dwFlags;
+    ULONG               wShowWindow;
+    UNICODE_STRING      WindowTitle;
+    UNICODE_STRING      Desktop;
+    UNICODE_STRING      ShellInfo;
+    UNICODE_STRING      RuntimeInfo;
+    RTL_DRIVE_LETTER_CURDIR DLCurrentDirectory[0x20];
+} RTL_USER_PROCESS_PARAMETERS, *PRTL_USER_PROCESS_PARAMETERS;
+
+typedef struct tagRTL_BITMAP {
+    ULONG  SizeOfBitMap; /* Number of bits in the bitmap */
+    PULONG Buffer; /* Bitmap data, assumed sized to a DWORD boundary */
+} RTL_BITMAP, *PRTL_BITMAP;
+
+typedef struct _PEB_LDR_DATA {
+    ULONG               Length;
+    BOOLEAN             Initialized;
+    PVOID               SsHandle;
+    LIST_ENTRY          InLoadOrderModuleList;
+    LIST_ENTRY          InMemoryOrderModuleList;
+    LIST_ENTRY          InInitializationOrderModuleList;
+} PEB_LDR_DATA, *PPEB_LDR_DATA;
+
+typedef struct _CLIENT_ID {
+    HANDLE UniqueProcess;
+    HANDLE UniqueThread;
+} CLIENT_ID, *PCLIENT_ID;
+
+typedef struct _GDI_TEB_BATCH {
+    ULONG  Offset;
+    HANDLE HDC;
+    ULONG  Buffer[0x136];
+} GDI_TEB_BATCH;
+
+/***********************************************************************
+ * PEB data structure
+ */
+typedef struct _PEB {
+    BOOLEAN                      InheritedAddressSpace;             /*  00 */
+    BOOLEAN                      ReadImageFileExecOptions;          /*  01 */
+    BOOLEAN                      BeingDebugged;                     /*  02 */
+    BOOLEAN                      SpareBool;                         /*  03 */
+    HANDLE                       Mutant;                            /*  04 */
+    HMODULE                      ImageBaseAddress;                  /*  08 */
+    PPEB_LDR_DATA                LdrData;                           /*  0c */
+    RTL_USER_PROCESS_PARAMETERS *ProcessParameters;                 /*  10 */
+    PVOID                        SubSystemData;                     /*  14 */
+    HANDLE                       ProcessHeap;                       /*  18 */
+    PRTL_CRITICAL_SECTION        FastPebLock;                       /*  1c */
+    PVOID /*PPEBLOCKROUTINE*/    FastPebLockRoutine;                /*  20 */
+    PVOID /*PPEBLOCKROUTINE*/    FastPebUnlockRoutine;              /*  24 */
+    ULONG                        EnvironmentUpdateCount;            /*  28 */
+    PVOID                        KernelCallbackTable;               /*  2c */
+    PVOID                        EventLogSection;                   /*  30 */
+    PVOID                        EventLog;                          /*  34 */
+    PVOID /*PPEB_FREE_BLOCK*/    FreeList;                          /*  38 */
+    ULONG                        TlsExpansionCounter;               /*  3c */
+    PRTL_BITMAP                  TlsBitmap;                         /*  40 */
+    ULONG                        TlsBitmapBits[2];                  /*  44 */
+    PVOID                        ReadOnlySharedMemoryBase;          /*  4c */
+    PVOID                        ReadOnlySharedMemoryHeap;          /*  50 */
+    PVOID                       *ReadOnlyStaticServerData;          /*  54 */
+    PVOID                        AnsiCodePageData;                  /*  58 */
+    PVOID                        OemCodePageData;                   /*  5c */
+    PVOID                        UnicodeCaseTableData;              /*  60 */
+    ULONG                        NumberOfProcessors;                /*  64 */
+    ULONG                        NtGlobalFlag;                      /*  68 */
+    BYTE                         Spare2[4];                         /*  6c */
+    LARGE_INTEGER                CriticalSectionTimeout;            /*  70 */
+    ULONG                        HeapSegmentReserve;                /*  78 */
+    ULONG                        HeapSegmentCommit;                 /*  7c */
+    ULONG                        HeapDeCommitTotalFreeThreshold;    /*  80 */
+    ULONG                        HeapDeCommitFreeBlockThreshold;    /*  84 */
+    ULONG                        NumberOfHeaps;                     /*  88 */
+    ULONG                        MaximumNumberOfHeaps;              /*  8c */
+    PVOID                       *ProcessHeaps;                      /*  90 */
+    PVOID                        GdiSharedHandleTable;              /*  94 */
+    PVOID                        ProcessStarterHelper;              /*  98 */
+    PVOID                        GdiDCAttributeList;                /*  9c */
+    PVOID                        LoaderLock;                        /*  a0 */
+    ULONG                        OSMajorVersion;                    /*  a4 */
+    ULONG                        OSMinorVersion;                    /*  a8 */
+    ULONG                        OSBuildNumber;                     /*  ac */
+    ULONG                        OSPlatformId;                      /*  b0 */
+    ULONG                        ImageSubSystem;                    /*  b4 */
+    ULONG                        ImageSubSystemMajorVersion;        /*  b8 */
+    ULONG                        ImageSubSystemMinorVersion;        /*  bc */
+    ULONG                        ImageProcessAffinityMask;          /*  c0 */
+    ULONG                        GdiHandleBuffer[34];               /*  c4 */
+    ULONG                        PostProcessInitRoutine;            /* 14c */
+    PRTL_BITMAP                  TlsExpansionBitmap;                /* 150 */
+    ULONG                        TlsExpansionBitmapBits[32];        /* 154 */
+    ULONG                        SessionId;                         /* 1d4 */
+} PEB, *PPEB;
+
+/***********************************************************************
+ * TEB data structure
+ */
+typedef struct _TEB {
+    NT_TIB          Tib;                        /* 000 */
+    PVOID           EnvironmentPointer;         /* 01c */
+    CLIENT_ID       ClientId;                   /* 020 */
+    PVOID           ActiveRpcHandle;            /* 028 */
+    PVOID           ThreadLocalStoragePointer;  /* 02c */
+    PPEB            Peb;                        /* 030 */
+    ULONG           LastErrorValue;             /* 034 */
+    ULONG           CountOfOwnedCriticalSections;/* 038 */
+    PVOID           CsrClientThread;            /* 03c */
+    PVOID           Win32ThreadInfo;            /* 040 */
+    ULONG           Win32ClientInfo[31];        /* 044 used for user32 private data in Wine */
+    PVOID           WOW32Reserved;              /* 0c0 */
+    ULONG           CurrentLocale;              /* 0c4 */
+    ULONG           FpSoftwareStatusRegister;   /* 0c8 */
+    PVOID           SystemReserved1[54];        /* 0cc used for kernel32 private data in Wine */
+    PVOID           Spare1;                     /* 1a4 */
+    LONG            ExceptionCode;              /* 1a8 */
+    BYTE            SpareBytes1[40];            /* 1ac */
+    PVOID           SystemReserved2[10];        /* 1d4 used for ntdll private data in Wine */
+    GDI_TEB_BATCH   GdiTebBatch;                /* 1fc */
+    ULONG           gdiRgn;                     /* 6dc */
+    ULONG           gdiPen;                     /* 6e0 */
+    ULONG           gdiBrush;                   /* 6e4 */
+    CLIENT_ID       RealClientId;               /* 6e8 */
+    HANDLE          GdiCachedProcessHandle;     /* 6f0 */
+    ULONG           GdiClientPID;               /* 6f4 */
+    ULONG           GdiClientTID;               /* 6f8 */
+    PVOID           GdiThreadLocaleInfo;        /* 6fc */
+    PVOID           UserReserved[5];            /* 700 */
+    PVOID           glDispachTable[280];        /* 714 */
+    ULONG           glReserved1[26];            /* b74 */
+    PVOID           glReserved2;                /* bdc */
+    PVOID           glSectionInfo;              /* be0 */
+    PVOID           glSection;                  /* be4 */
+    PVOID           glTable;                    /* be8 */
+    PVOID           glCurrentRC;                /* bec */
+    PVOID           glContext;                  /* bf0 */
+    ULONG           LastStatusValue;            /* bf4 */
+    UNICODE_STRING  StaticUnicodeString;        /* bf8 used by advapi32 */
+    WCHAR           StaticUnicodeBuffer[261];   /* c00 used by advapi32 */
+    PVOID           DeallocationStack;          /* e0c */
+    PVOID           TlsSlots[64];               /* e10 */
+    LIST_ENTRY      TlsLinks;                   /* f10 */
+    PVOID           Vdm;                        /* f18 */
+    PVOID           ReservedForNtRpc;           /* f1c */
+    PVOID           DbgSsReserved[2];           /* f20 */
+    ULONG           HardErrorDisabled;          /* f28 */
+    PVOID           Instrumentation[16];        /* f2c */
+    PVOID           WinSockData;                /* f6c */
+    ULONG           GdiBatchCount;              /* f70 */
+    ULONG           Spare2;                     /* f74 */
+    ULONG           Spare3;                     /* f78 */
+    ULONG           Spare4;                     /* f7c */
+    PVOID           ReservedForOle;             /* f80 */
+    ULONG           WaitingOnLoaderLock;        /* f84 */
+    PVOID           Reserved5[3];               /* f88 */
+    PVOID          *TlsExpansionSlots;          /* f94 */
+} TEB, *PTEB;
+
+#define NtCurrentProcess() ((HANDLE)-1)
+#define NtCurrentThread() ((HANDLE)-2)
+/*
+* NtCurrentTeb() is imported from ntdll.dll if we use ms c compiler.
+* Otherwise (on mingw) this is inline function, defined in one of the
+* mingw headers.
+*/
+
+typedef NTSTATUS (NTAPI *PRTL_QUERY_REGISTRY_ROUTINE)(
+    IN PWSTR ValueName,
+    IN ULONG ValueType,
+    IN PVOID ValueData,
+    IN ULONG ValueLength,
+    IN PVOID Context,
+    IN PVOID EntryContext
+);
+
+typedef struct _RTL_QUERY_REGISTRY_TABLE {
+    PRTL_QUERY_REGISTRY_ROUTINE QueryRoutine;
+    ULONG Flags;
+    PWSTR Name;
+    PVOID EntryContext;
+    ULONG DefaultType;
+    PVOID DefaultData;
+    ULONG DefaultLength;
+} RTL_QUERY_REGISTRY_TABLE, *PRTL_QUERY_REGISTRY_TABLE;
+
+/* Based on http://www.osronline.com/showthread.cfm?link=185567 */
+typedef struct {
+    DWORD dwSize;              /* the size of the structure, in bytes; 12 on NT 5.1, 32 on NT 6.1 */
+    DWORD NtProductType;       /* NtProductWinNt, NtProductLanManNt, NtProductServer */
+    UCHAR RecoveryFlag;        /* Defines whether "Time to display recovery options when needed" is checked or not. */
+    UCHAR RecoveryMenuTimeout; /* Timeout, in seconds, of the recovery menu. */
+    UCHAR BootSuccessFlag;     /* Set to 1 on successful boot. */
+    UCHAR OrderlyShutdownFlag; /* Set to 1 on orderly shutdown. */
+} BOOT_STATUS_DATA, *PBOOT_STATUS_DATA;
+
+typedef struct _TIME_FIELDS {
+    short Year;        // range [1601...]
+    short Month;       // range [1..12]
+    short Day;         // range [1..31]
+    short Hour;        // range [0..23]
+    short Minute;      // range [0..59]
+    short Second;      // range [0..59]
+    short Milliseconds;// range [0..999]
+    short Weekday;     // range [0..6] == [Sunday..Saturday]
+} TIME_FIELDS;
+typedef TIME_FIELDS *PTIME_FIELDS;
+
+typedef struct _KBD_RECORD {
+    WORD    wVirtualScanCode;
+    DWORD   dwControlKeyState;
+    UCHAR   AsciiChar;
+    BOOL    bKeyDown;
+} KBD_RECORD, *PKBD_RECORD;
 
 typedef struct _RTL_HEAP_DEFINITION {
     ULONG Length; /* = sizeof(RTL_HEAP_DEFINITION) */
     ULONG Unknown[11];
 } RTL_HEAP_DEFINITION, *PRTL_HEAP_DEFINITION;
+
+// ===========================================================================
+//  Replacement for winioctl.h which has encumbering ntfs related definitions
+// ===========================================================================
+
+#define DEVICE_TYPE DWORD
+
+#define FILE_DEVICE_BEEP                0x00000001
+#define FILE_DEVICE_CD_ROM              0x00000002
+#define FILE_DEVICE_CD_ROM_FILE_SYSTEM  0x00000003
+#define FILE_DEVICE_CONTROLLER          0x00000004
+#define FILE_DEVICE_DATALINK            0x00000005
+#define FILE_DEVICE_DFS                 0x00000006
+#define FILE_DEVICE_DISK                0x00000007
+#define FILE_DEVICE_DISK_FILE_SYSTEM    0x00000008
+#define FILE_DEVICE_FILE_SYSTEM         0x00000009
+#define FILE_DEVICE_INPORT_PORT         0x0000000a
+#define FILE_DEVICE_KEYBOARD            0x0000000b
+#define FILE_DEVICE_MAILSLOT            0x0000000c
+#define FILE_DEVICE_MIDI_IN             0x0000000d
+#define FILE_DEVICE_MIDI_OUT            0x0000000e
+#define FILE_DEVICE_MOUSE               0x0000000f
+#define FILE_DEVICE_MULTI_UNC_PROVIDER  0x00000010
+#define FILE_DEVICE_NAMED_PIPE          0x00000011
+#define FILE_DEVICE_NETWORK             0x00000012
+#define FILE_DEVICE_NETWORK_BROWSER     0x00000013
+#define FILE_DEVICE_NETWORK_FILE_SYSTEM 0x00000014
+#define FILE_DEVICE_NULL                0x00000015
+#define FILE_DEVICE_PARALLEL_PORT       0x00000016
+#define FILE_DEVICE_PHYSICAL_NETCARD    0x00000017
+#define FILE_DEVICE_PRINTER             0x00000018
+#define FILE_DEVICE_SCANNER             0x00000019
+#define FILE_DEVICE_SERIAL_MOUSE_PORT   0x0000001a
+#define FILE_DEVICE_SERIAL_PORT         0x0000001b
+#define FILE_DEVICE_SCREEN              0x0000001c
+#define FILE_DEVICE_SOUND               0x0000001d
+#define FILE_DEVICE_STREAMS             0x0000001e
+#define FILE_DEVICE_TAPE                0x0000001f
+#define FILE_DEVICE_TAPE_FILE_SYSTEM    0x00000020
+#define FILE_DEVICE_TRANSPORT           0x00000021
+#define FILE_DEVICE_UNKNOWN             0x00000022
+#define FILE_DEVICE_VIDEO               0x00000023
+#define FILE_DEVICE_VIRTUAL_DISK        0x00000024
+#define FILE_DEVICE_WAVE_IN             0x00000025
+#define FILE_DEVICE_WAVE_OUT            0x00000026
+#define FILE_DEVICE_8042_PORT           0x00000027
+#define FILE_DEVICE_NETWORK_REDIRECTOR  0x00000028
+#define FILE_DEVICE_BATTERY             0x00000029
+#define FILE_DEVICE_BUS_EXTENDER        0x0000002a
+#define FILE_DEVICE_MODEM               0x0000002b
+#define FILE_DEVICE_VDM                 0x0000002c
+#define FILE_DEVICE_MASS_STORAGE        0x0000002d
+#define FILE_DEVICE_SMB                 0x0000002e
+#define FILE_DEVICE_KS                  0x0000002f
+#define FILE_DEVICE_CHANGER             0x00000030
+#define FILE_DEVICE_SMARTCARD           0x00000031
+#define FILE_DEVICE_ACPI                0x00000032
+#define FILE_DEVICE_DVD                 0x00000033
+#define FILE_DEVICE_FULLSCREEN_VIDEO    0x00000034
+#define FILE_DEVICE_DFS_FILE_SYSTEM     0x00000035
+#define FILE_DEVICE_DFS_VOLUME          0x00000036
+#define FILE_DEVICE_SERENUM             0x00000037
+#define FILE_DEVICE_TERMSRV             0x00000038
+#define FILE_DEVICE_KSEC                0x00000039
+#define FILE_DEVICE_FIPS                0x0000003A
+#define FILE_DEVICE_INFINIBAND          0x0000003B
+
+#define CTL_CODE( DeviceType, Function, Method, Access ) (                 \
+    ((DeviceType) << 16) | ((Access) << 14) | ((Function) << 2) | (Method) \
+)
+
+#define METHOD_BUFFERED                 0
+#define METHOD_IN_DIRECT                1
+#define METHOD_OUT_DIRECT               2
+#define METHOD_NEITHER                  3
+
+#define FILE_ANY_ACCESS                 0
+#define FILE_SPECIAL_ACCESS             (FILE_ANY_ACCESS)
+#define FILE_READ_ACCESS                ( 0x0001 )    // file & pipe
+#define FILE_WRITE_ACCESS               ( 0x0002 )    // file & pipe
+
+
+//
+// NtDeviceIoControlFile IoControlCode values for the keyboard device.
+//
+// Warning:  Remember that the low two bits of the code specify how the
+//           buffers are passed to the driver!
+//
+
+#define IOCTL_KEYBOARD_QUERY_ATTRIBUTES      CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0000, METHOD_BUFFERED, FILE_ANY_ACCESS)
+#define IOCTL_KEYBOARD_SET_TYPEMATIC         CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0001, METHOD_BUFFERED, FILE_ANY_ACCESS)
+#define IOCTL_KEYBOARD_SET_INDICATORS        CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0002, METHOD_BUFFERED, FILE_ANY_ACCESS)
+#define IOCTL_KEYBOARD_QUERY_TYPEMATIC       CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0008, METHOD_BUFFERED, FILE_ANY_ACCESS)
+#define IOCTL_KEYBOARD_QUERY_INDICATORS      CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0010, METHOD_BUFFERED, FILE_ANY_ACCESS)
+#define IOCTL_KEYBOARD_QUERY_INDICATOR_TRANSLATION   CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0020, METHOD_BUFFERED, FILE_ANY_ACCESS)
+#define IOCTL_KEYBOARD_INSERT_DATA           CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0040, METHOD_BUFFERED, FILE_ANY_ACCESS)
+
+//
+// These Device IO control query/set IME status to keyboard hardware.
+//
+#define IOCTL_KEYBOARD_QUERY_IME_STATUS      CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0400, METHOD_BUFFERED, FILE_ANY_ACCESS)
+#define IOCTL_KEYBOARD_SET_IME_STATUS        CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0401, METHOD_BUFFERED, FILE_ANY_ACCESS)
+
+//
+// Define the keyboard indicators.
+//
+
+#define KEYBOARD_LED_INJECTED     0x8000 //Used by Terminal Server
+#define KEYBOARD_SHADOW           0x4000 //Used by Terminal Server
+//#if defined(FE_SB) || defined(WINDOWS_FE) || defined(DBCS)
+#define KEYBOARD_KANA_LOCK_ON     8 // Japanese keyboard
+//#endif // defined(FE_SB) || defined(WINDOWS_FE) || defined(DBCS)
+#define KEYBOARD_CAPS_LOCK_ON     4
+#define KEYBOARD_NUM_LOCK_ON      2
+#define KEYBOARD_SCROLL_LOCK_ON   1
+
+#define FSCTL_GET_NTFS_VOLUME_DATA      CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 25, METHOD_BUFFERED, FILE_ANY_ACCESS) // NTFS_VOLUME_DATA_BUFFER
+#define FSCTL_GET_NTFS_FILE_RECORD      CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 26, METHOD_BUFFERED, FILE_ANY_ACCESS) // NTFS_FILE_RECORD_INPUT_BUFFER, NTFS_FILE_RECORD_OUTPUT_BUFFER
+#define FSCTL_GET_VOLUME_BITMAP         CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 27, METHOD_NEITHER,  FILE_ANY_ACCESS) // STARTING_LCN_INPUT_BUFFER, VOLUME_BITMAP_BUFFER
+#define FSCTL_GET_RETRIEVAL_POINTERS    CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 28, METHOD_NEITHER,  FILE_ANY_ACCESS) // STARTING_VCN_INPUT_BUFFER, RETRIEVAL_POINTERS_BUFFER
+#define FSCTL_MOVE_FILE                 CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 29, METHOD_BUFFERED, FILE_SPECIAL_ACCESS) // MOVE_FILE_DATA,
+#define FSCTL_IS_VOLUME_DIRTY           CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 30, METHOD_BUFFERED, FILE_ANY_ACCESS)
+
+#define VOLUME_IS_DIRTY  1
+
+#define IOCTL_DISK_BASE                 FILE_DEVICE_DISK
+#define IOCTL_DISK_GET_DRIVE_GEOMETRY   CTL_CODE(IOCTL_DISK_BASE, 0x0000, METHOD_BUFFERED, FILE_ANY_ACCESS)
+#define IOCTL_DISK_GET_PARTITION_INFO   CTL_CODE(IOCTL_DISK_BASE, 0x0001, METHOD_BUFFERED, FILE_READ_ACCESS)
+
+typedef enum _FILE_INFORMATION_CLASS {
+    FileDirectoryInformation = 1,
+    FileFullDirectoryInformation,
+    FileBothDirectoryInformation,
+    FileBasicInformation,
+    FileStandardInformation,
+    FileInternalInformation,
+    FileEaInformation,
+    FileAccessInformation,
+    FileNameInformation,
+    FileRenameInformation,
+    FileLinkInformation,
+    FileNamesInformation,
+    FileDispositionInformation,
+    FilePositionInformation,
+    FileFullEaInformation,
+    FileModeInformation,
+    FileAlignmentInformation,
+    FileAllInformation,
+    FileAllocationInformation,
+    FileEndOfFileInformation,
+    FileAlternateNameInformation,
+    FileStreamInformation,
+    FilePipeInformation,
+    FilePipeLocalInformation,
+    FilePipeRemoteInformation,
+    FileMailslotQueryInformation,
+    FileMailslotSetInformation,
+    FileCompressionInformation,
+    FileObjectIdInformation,
+    FileCompletionInformation,
+    FileMoveClusterInformation,
+    FileQuotaInformation,
+    FileReparsePointInformation,
+    FileNetworkOpenInformation,
+    FileAttributeTagInformation,
+    FileTrackingInformation,
+    FileMaximumInformation
+} FILE_INFORMATION_CLASS, *PFILE_INFORMATION_CLASS;
+
+typedef struct _FILE_BASIC_INFORMATION {
+    LARGE_INTEGER CreationTime;
+    LARGE_INTEGER LastAccessTime;
+    LARGE_INTEGER LastWriteTime;
+    LARGE_INTEGER ChangeTime;
+    ULONG FileAttributes;
+} FILE_BASIC_INFORMATION, *PFILE_BASIC_INFORMATION;
+
+typedef struct _FILE_STANDARD_INFORMATION {
+    LARGE_INTEGER AllocationSize;
+    LARGE_INTEGER EndOfFile;
+    ULONG NumberOfLinks;
+    BOOLEAN DeletePending;
+    BOOLEAN Directory;
+} FILE_STANDARD_INFORMATION, *PFILE_STANDARD_INFORMATION;
+
+typedef struct _FILE_BOTH_DIRECTORY_INFORMATION {
+    ULONG               NextEntryOffset;
+    ULONG               FileIndex;
+    LARGE_INTEGER       CreationTime;
+    LARGE_INTEGER       LastAccessTime;
+    LARGE_INTEGER       LastWriteTime;
+    LARGE_INTEGER       ChangeTime;
+    LARGE_INTEGER       EndOfFile;
+    /*
+    * The next field may hold zero for 3.99 GB files on FAT32
+    * volumes with 32k cluster size (tested on 32-bit XP SP1).
+    */
+    LARGE_INTEGER       AllocationSize;
+    ULONG               FileAttributes;
+    ULONG               FileNameLength;
+    ULONG               EaSize;
+    CHAR                ShortNameLength;
+    WCHAR               ShortName[12];
+    WCHAR               FileName[ANYSIZE_ARRAY];
+} FILE_BOTH_DIRECTORY_INFORMATION, *PFILE_BOTH_DIRECTORY_INFORMATION,
+  FILE_BOTH_DIR_INFORMATION, *PFILE_BOTH_DIR_INFORMATION;
+
+typedef struct _PARTITION_INFORMATION {
+    LARGE_INTEGER StartingOffset;
+    LARGE_INTEGER PartitionLength;
+    DWORD HiddenSectors;
+    DWORD PartitionNumber;
+    BYTE  PartitionType;
+    BOOLEAN BootIndicator;
+    BOOLEAN RecognizedPartition;
+    BOOLEAN RewritePartition;
+} PARTITION_INFORMATION, *PPARTITION_INFORMATION;
+
+typedef enum _MEDIA_TYPE {
+  Unknown, 
+  F5_1Pt2_512, 
+  F3_1Pt44_512, 
+  F3_2Pt88_512, 
+  F3_20Pt8_512, 
+  F3_720_512, 
+  F5_360_512, 
+  F5_320_512, 
+  F5_320_1024, 
+  F5_180_512, 
+  F5_160_512, 
+  RemovableMedia, 
+  FixedMedia, 
+  F3_120M_512, 
+  F3_640_512, 
+  F5_640_512, 
+  F5_720_512, 
+  F3_1Pt2_512, 
+  F3_1Pt23_1024, 
+  F5_1Pt23_1024, 
+  F3_128Mb_512, 
+  F3_230Mb_512, 
+  F8_256_128, 
+  F3_200Mb_512, 
+  F3_240M_512, 
+  F3_32M_512
+} MEDIA_TYPE;
+
+typedef struct _DISK_GEOMETRY {
+    LARGE_INTEGER Cylinders;
+    MEDIA_TYPE MediaType;
+    DWORD TracksPerCylinder;
+    DWORD SectorsPerTrack;
+    DWORD BytesPerSector;
+} DISK_GEOMETRY;
 
 typedef enum _SYSTEM_INFORMATION_CLASS {
     SystemBasicInformation = 0,
@@ -430,23 +1007,83 @@ typedef struct _SYSTEM_PERFORMANCE_INFORMATION
     ULONG SystemCalls;
 } SYSTEM_PERFORMANCE_INFORMATION, *PSYSTEM_PERFORMANCE_INFORMATION;
 
-#define DEVICE_TYPE DWORD
+typedef enum _KEY_INFORMATION_CLASS { 
+    KeyBasicInformation           = 0,
+    KeyNodeInformation            = 1,
+    KeyFullInformation            = 2,
+    KeyNameInformation            = 3,
+    KeyCachedInformation          = 4,
+    KeyFlagsInformation           = 5,
+    KeyVirtualizationInformation  = 6,
+    KeyHandleTagsInformation      = 7,
+    MaxKeyInfoClass               = 8
+} KEY_INFORMATION_CLASS;
 
-/* DEVICE_OBJECT.Characteristics */
+typedef struct _KEY_FULL_INFORMATION {
+    LARGE_INTEGER LastWriteTime;
+    ULONG         TitleIndex;
+    ULONG         ClassOffset;
+    ULONG         ClassLength;
+    ULONG         SubKeys;
+    ULONG         MaxNameLen;
+    ULONG         MaxClassLen;
+    ULONG         Values;
+    ULONG         MaxValueNameLen;
+    ULONG         MaxValueDataLen;
+    WCHAR         Class[1];
+} KEY_FULL_INFORMATION, *PKEY_FULL_INFORMATION;
 
-#define FILE_REMOVABLE_MEDIA            0x00000001
-#define FILE_READ_ONLY_DEVICE           0x00000002
-#define FILE_FLOPPY_DISKETTE            0x00000004
-#define FILE_WRITE_ONCE_MEDIA           0x00000008
-#define FILE_REMOTE_DEVICE              0x00000010
-#define FILE_DEVICE_IS_MOUNTED          0x00000020
-#define FILE_VIRTUAL_VOLUME             0x00000040
-#define FILE_AUTOGENERATED_DEVICE_NAME  0x00000080
-#define FILE_DEVICE_SECURE_OPEN         0x00000100
+typedef enum _KEY_VALUE_INFORMATION_CLASS
+{
+    KeyValueBasicInformation,
+    KeyValueFullInformation,
+    KeyValuePartialInformation,
+    KeyValueFullInformationAlign64,
+    KeyValuePartialInformationAlign64
+} KEY_VALUE_INFORMATION_CLASS;
 
-#ifndef FILE_DEVICE_FILE_SYSTEM
-#define FILE_DEVICE_FILE_SYSTEM           0x00000009
-#endif
+typedef struct _KEY_VALUE_FULL_INFORMATION {
+    ULONG TitleIndex;
+    ULONG Type;
+    ULONG DataOffset;
+    ULONG DataLength;
+    ULONG NameLength;
+    WCHAR Name[1];
+} KEY_VALUE_FULL_INFORMATION, *PKEY_VALUE_FULL_INFORMATION;
+
+typedef struct _KEY_VALUE_PARTIAL_INFORMATION
+{
+    ULONG TitleIndex;
+    ULONG Type;
+    ULONG DataLength;
+    UCHAR Data[1];
+} KEY_VALUE_PARTIAL_INFORMATION, *PKEY_VALUE_PARTIAL_INFORMATION;
+
+typedef enum _FSINFOCLASS {
+    FileFsVolumeInformation = 1,
+    FileFsLabelInformation,
+    FileFsSizeInformation,
+    FileFsDeviceInformation,
+    FileFsAttributeInformation,
+    FileFsControlInformation,
+    FileFsFullSizeInformation,
+    FileFsObjectIdInformation,
+    FileFsMaximumInformation
+} FS_INFORMATION_CLASS, *PFS_INFORMATION_CLASS;
+
+typedef struct _FILE_FS_SIZE_INFORMATION {
+    LARGE_INTEGER   TotalAllocationUnits;
+    LARGE_INTEGER   AvailableAllocationUnits;
+    ULONG           SectorsPerAllocationUnit;
+    ULONG           BytesPerSector;
+} FILE_FS_SIZE_INFORMATION, *PFILE_FS_SIZE_INFORMATION;
+
+typedef struct _FILE_FS_ATTRIBUTE_INFORMATION {
+    ULONG   FileSystemAttributes;
+    ULONG   MaximumComponentNameLength;
+    ULONG   FileSystemNameLength;
+    WCHAR   FileSystemName[1];
+} FILE_FS_ATTRIBUTE_INFORMATION, *PFILE_FS_ATTRIBUTE_INFORMATION;
 
 typedef struct _FILE_FS_VOLUME_INFORMATION {
     LARGE_INTEGER VolumeCreationTime;
@@ -460,18 +1097,6 @@ typedef struct _FILE_FS_DEVICE_INFORMATION {
   DEVICE_TYPE  DeviceType;
   ULONG  Characteristics;
 } FILE_FS_DEVICE_INFORMATION, *PFILE_FS_DEVICE_INFORMATION;
-
-typedef enum _FSINFOCLASS {
-    FileFsVolumeInformation = 1,
-    FileFsLabelInformation,
-    FileFsSizeInformation,
-    FileFsDeviceInformation,
-    FileFsAttributeInformation,
-    FileFsControlInformation,
-    FileFsFullSizeInformation,
-    FileFsObjectIdInformation,
-    FileFsMaximumInformation
-} FS_INFORMATION_CLASS, *PFS_INFORMATION_CLASS;
 
 typedef enum _PROCESSINFOCLASS {
     ProcessBasicInformation = 0,
@@ -510,339 +1135,6 @@ typedef enum _PROCESSINFOCLASS {
     MaxProcessInfoClass
 } PROCESSINFOCLASS, PROCESS_INFORMATION_CLASS;
 
-#define DIRECTORY_QUERY (0x0001)
-#define DIRECTORY_TRAVERSE (0x0002)
-#define DIRECTORY_CREATE_OBJECT (0x0004)
-#define DIRECTORY_CREATE_SUBDIRECTORY (0x0008)
-#define DIRECTORY_ALL_ACCESS (STANDARD_RIGHTS_REQUIRED | 0xF)
-
-#define SYMBOLIC_LINK_QUERY       0x0001
-#define SYMBOLIC_LINK_ALL_ACCESS  (STANDARD_RIGHTS_REQUIRED | 0x1)
-
-#ifndef FILE_OPEN
-#define FILE_OPEN                       1
-#endif
-#ifndef FILE_CREATE
-#define FILE_CREATE                     2
-#endif
-#ifndef FILE_OPEN_IF
-#define FILE_OPEN_IF                    3
-#endif
-#ifndef FILE_OVERWRITE
-#define FILE_OVERWRITE                  4
-#endif
-#ifndef FILE_OVERWRITE_IF
-#define FILE_OVERWRITE_IF               5
-#endif
-
-#define FILE_SYNCHRONOUS_IO_NONALERT    0x00000020
-#define FILE_OPEN_FOR_BACKUP_INTENT     0x00004000
-#define FILE_NON_DIRECTORY_FILE         0x00000040
-/* Windows 7 and later */
-#define FILE_DISALLOW_EXCLUSIVE         0x00020000
-
-#ifndef FILE_NO_INTERMEDIATE_BUFFERING
-#define FILE_NO_INTERMEDIATE_BUFFERING  0x00000008
-#endif
-#ifndef FILE_OPEN_REPARSE_POINT
-#define FILE_OPEN_REPARSE_POINT         0x00200000
-#endif
-
-typedef struct RTL_DRIVE_LETTER_CURDIR
-{
-    USHORT              Flags;
-    USHORT              Length;
-    ULONG               TimeStamp;
-    UNICODE_STRING      DosPath;
-} RTL_DRIVE_LETTER_CURDIR, *PRTL_DRIVE_LETTER_CURDIR;
-
-typedef struct _RTL_USER_PROCESS_PARAMETERS
-{
-    ULONG               AllocationSize;
-    ULONG               Size;
-    ULONG               Flags;
-    ULONG               DebugFlags;
-    HANDLE              ConsoleHandle;
-    ULONG               ConsoleFlags;
-    HANDLE              hStdInput;
-    HANDLE              hStdOutput;
-    HANDLE              hStdError;
-    CURDIR              CurrentDirectory;
-    UNICODE_STRING      DllPath;
-    UNICODE_STRING      ImagePathName;
-    UNICODE_STRING      CommandLine;
-    PWSTR               Environment;
-    ULONG               dwX;
-    ULONG               dwY;
-    ULONG               dwXSize;
-    ULONG               dwYSize;
-    ULONG               dwXCountChars;
-    ULONG               dwYCountChars;
-    ULONG               dwFillAttribute;
-    ULONG               dwFlags;
-    ULONG               wShowWindow;
-    UNICODE_STRING      WindowTitle;
-    UNICODE_STRING      Desktop;
-    UNICODE_STRING      ShellInfo;
-    UNICODE_STRING      RuntimeInfo;
-    RTL_DRIVE_LETTER_CURDIR DLCurrentDirectory[0x20];
-} RTL_USER_PROCESS_PARAMETERS, *PRTL_USER_PROCESS_PARAMETERS;
-
-typedef struct tagRTL_BITMAP {
-    ULONG  SizeOfBitMap; /* Number of bits in the bitmap */
-    PULONG Buffer; /* Bitmap data, assumed sized to a DWORD boundary */
-} RTL_BITMAP, *PRTL_BITMAP;
-
-typedef struct _PEB_LDR_DATA
-{
-    ULONG               Length;
-    BOOLEAN             Initialized;
-    PVOID               SsHandle;
-    LIST_ENTRY          InLoadOrderModuleList;
-    LIST_ENTRY          InMemoryOrderModuleList;
-    LIST_ENTRY          InInitializationOrderModuleList;
-} PEB_LDR_DATA, *PPEB_LDR_DATA;
-
-typedef struct _CLIENT_ID
-{
-    HANDLE UniqueProcess;
-    HANDLE UniqueThread;
-} CLIENT_ID, *PCLIENT_ID;
-
-typedef struct _GDI_TEB_BATCH
-{
-    ULONG  Offset;
-    HANDLE HDC;
-    ULONG  Buffer[0x136];
-} GDI_TEB_BATCH;
-
-/***********************************************************************
- * PEB data structure
- */
-typedef struct _PEB
-{
-    BOOLEAN                      InheritedAddressSpace;             /*  00 */
-    BOOLEAN                      ReadImageFileExecOptions;          /*  01 */
-    BOOLEAN                      BeingDebugged;                     /*  02 */
-    BOOLEAN                      SpareBool;                         /*  03 */
-    HANDLE                       Mutant;                            /*  04 */
-    HMODULE                      ImageBaseAddress;                  /*  08 */
-    PPEB_LDR_DATA                LdrData;                           /*  0c */
-    RTL_USER_PROCESS_PARAMETERS *ProcessParameters;                 /*  10 */
-    PVOID                        SubSystemData;                     /*  14 */
-    HANDLE                       ProcessHeap;                       /*  18 */
-    PRTL_CRITICAL_SECTION        FastPebLock;                       /*  1c */
-    PVOID /*PPEBLOCKROUTINE*/    FastPebLockRoutine;                /*  20 */
-    PVOID /*PPEBLOCKROUTINE*/    FastPebUnlockRoutine;              /*  24 */
-    ULONG                        EnvironmentUpdateCount;            /*  28 */
-    PVOID                        KernelCallbackTable;               /*  2c */
-    PVOID                        EventLogSection;                   /*  30 */
-    PVOID                        EventLog;                          /*  34 */
-    PVOID /*PPEB_FREE_BLOCK*/    FreeList;                          /*  38 */
-    ULONG                        TlsExpansionCounter;               /*  3c */
-    PRTL_BITMAP                  TlsBitmap;                         /*  40 */
-    ULONG                        TlsBitmapBits[2];                  /*  44 */
-    PVOID                        ReadOnlySharedMemoryBase;          /*  4c */
-    PVOID                        ReadOnlySharedMemoryHeap;          /*  50 */
-    PVOID                       *ReadOnlyStaticServerData;          /*  54 */
-    PVOID                        AnsiCodePageData;                  /*  58 */
-    PVOID                        OemCodePageData;                   /*  5c */
-    PVOID                        UnicodeCaseTableData;              /*  60 */
-    ULONG                        NumberOfProcessors;                /*  64 */
-    ULONG                        NtGlobalFlag;                      /*  68 */
-    BYTE                         Spare2[4];                         /*  6c */
-    LARGE_INTEGER                CriticalSectionTimeout;            /*  70 */
-    ULONG                        HeapSegmentReserve;                /*  78 */
-    ULONG                        HeapSegmentCommit;                 /*  7c */
-    ULONG                        HeapDeCommitTotalFreeThreshold;    /*  80 */
-    ULONG                        HeapDeCommitFreeBlockThreshold;    /*  84 */
-    ULONG                        NumberOfHeaps;                     /*  88 */
-    ULONG                        MaximumNumberOfHeaps;              /*  8c */
-    PVOID                       *ProcessHeaps;                      /*  90 */
-    PVOID                        GdiSharedHandleTable;              /*  94 */
-    PVOID                        ProcessStarterHelper;              /*  98 */
-    PVOID                        GdiDCAttributeList;                /*  9c */
-    PVOID                        LoaderLock;                        /*  a0 */
-    ULONG                        OSMajorVersion;                    /*  a4 */
-    ULONG                        OSMinorVersion;                    /*  a8 */
-    ULONG                        OSBuildNumber;                     /*  ac */
-    ULONG                        OSPlatformId;                      /*  b0 */
-    ULONG                        ImageSubSystem;                    /*  b4 */
-    ULONG                        ImageSubSystemMajorVersion;        /*  b8 */
-    ULONG                        ImageSubSystemMinorVersion;        /*  bc */
-    ULONG                        ImageProcessAffinityMask;          /*  c0 */
-    ULONG                        GdiHandleBuffer[34];               /*  c4 */
-    ULONG                        PostProcessInitRoutine;            /* 14c */
-    PRTL_BITMAP                  TlsExpansionBitmap;                /* 150 */
-    ULONG                        TlsExpansionBitmapBits[32];        /* 154 */
-    ULONG                        SessionId;                         /* 1d4 */
-} PEB, *PPEB;
-
-/***********************************************************************
- * TEB data structure
- */
-typedef struct _TEB
-{
-    NT_TIB          Tib;                        /* 000 */
-    PVOID           EnvironmentPointer;         /* 01c */
-    CLIENT_ID       ClientId;                   /* 020 */
-    PVOID           ActiveRpcHandle;            /* 028 */
-    PVOID           ThreadLocalStoragePointer;  /* 02c */
-    PPEB            Peb;                        /* 030 */
-    ULONG           LastErrorValue;             /* 034 */
-    ULONG           CountOfOwnedCriticalSections;/* 038 */
-    PVOID           CsrClientThread;            /* 03c */
-    PVOID           Win32ThreadInfo;            /* 040 */
-    ULONG           Win32ClientInfo[31];        /* 044 used for user32 private data in Wine */
-    PVOID           WOW32Reserved;              /* 0c0 */
-    ULONG           CurrentLocale;              /* 0c4 */
-    ULONG           FpSoftwareStatusRegister;   /* 0c8 */
-    PVOID           SystemReserved1[54];        /* 0cc used for kernel32 private data in Wine */
-    PVOID           Spare1;                     /* 1a4 */
-    LONG            ExceptionCode;              /* 1a8 */
-    BYTE            SpareBytes1[40];            /* 1ac */
-    PVOID           SystemReserved2[10];        /* 1d4 used for ntdll private data in Wine */
-    GDI_TEB_BATCH   GdiTebBatch;                /* 1fc */
-    ULONG           gdiRgn;                     /* 6dc */
-    ULONG           gdiPen;                     /* 6e0 */
-    ULONG           gdiBrush;                   /* 6e4 */
-    CLIENT_ID       RealClientId;               /* 6e8 */
-    HANDLE          GdiCachedProcessHandle;     /* 6f0 */
-    ULONG           GdiClientPID;               /* 6f4 */
-    ULONG           GdiClientTID;               /* 6f8 */
-    PVOID           GdiThreadLocaleInfo;        /* 6fc */
-    PVOID           UserReserved[5];            /* 700 */
-    PVOID           glDispachTable[280];        /* 714 */
-    ULONG           glReserved1[26];            /* b74 */
-    PVOID           glReserved2;                /* bdc */
-    PVOID           glSectionInfo;              /* be0 */
-    PVOID           glSection;                  /* be4 */
-    PVOID           glTable;                    /* be8 */
-    PVOID           glCurrentRC;                /* bec */
-    PVOID           glContext;                  /* bf0 */
-    ULONG           LastStatusValue;            /* bf4 */
-    UNICODE_STRING  StaticUnicodeString;        /* bf8 used by advapi32 */
-    WCHAR           StaticUnicodeBuffer[261];   /* c00 used by advapi32 */
-    PVOID           DeallocationStack;          /* e0c */
-    PVOID           TlsSlots[64];               /* e10 */
-    LIST_ENTRY      TlsLinks;                   /* f10 */
-    PVOID           Vdm;                        /* f18 */
-    PVOID           ReservedForNtRpc;           /* f1c */
-    PVOID           DbgSsReserved[2];           /* f20 */
-    ULONG           HardErrorDisabled;          /* f28 */
-    PVOID           Instrumentation[16];        /* f2c */
-    PVOID           WinSockData;                /* f6c */
-    ULONG           GdiBatchCount;              /* f70 */
-    ULONG           Spare2;                     /* f74 */
-    ULONG           Spare3;                     /* f78 */
-    ULONG           Spare4;                     /* f7c */
-    PVOID           ReservedForOle;             /* f80 */
-    ULONG           WaitingOnLoaderLock;        /* f84 */
-    PVOID           Reserved5[3];               /* f88 */
-    PVOID          *TlsExpansionSlots;          /* f94 */
-} TEB, *PTEB;
-
-#define NtCurrentProcess() ((HANDLE)-1)
-#define NtCurrentThread() ((HANDLE)-2)
-/*
-* NtCurrentTeb() is imported from ntdll.dll if we use ms c compiler.
-* Otherwise (on mingw) this is inline function, defined in one of the
-* mingw headers.
-*/
-
-#define SE_ASSIGNPRIMARYTOKEN_PRIVILEGE  0x3
-#define SE_AUDIT_PRIVILEGE               0x15
-#define SE_BACKUP_PRIVILEGE              0x11
-#define SE_CREATE_PAGEFILE_PRIVILEGE     0x0f
-#define SE_CREATE_PERMANENT_PRIVILEGE    0x10
-#define SE_CREATE_TOKEN_PRIVILEGE        0x2
-#define SE_DEBUG_PRIVILEGE               0x14
-#define SE_IMPERSONATE_PRIVILEGE
-#define SE_INC_BASE_PRIORITY_PRIVILEGE   0x0e
-#define SE_INCREASE_QUOTA_PRIVILEGE      0x5
-#define SE_LOAD_DRIVER_PRIVILEGE         0x0a
-#define SE_LOCK_MEMORY_PRIVILEGE         0x4
-#define SE_MANAGE_VOLUME_PRIVILEGE       0x1c
-#define SE_PROF_SINGLE_PROCESS_PRIVILEGE 0x0d
-#define SE_RESTORE_PRIVILEGE             0x12
-#define SE_SECURITY_PRIVILEGE            0x8
-#define SE_SHUTDOWN_PRIVILEGE            0x13
-#define SE_SYSTEM_PROFILE_PRIVILEGE      0x0b
-#define SE_SYSTEMTIME_PRIVILEGE          0x0c
-#define SE_TAKE_OWNERSHIP_PRIVILEGE      0x9
-#define SE_TCB_PRIVILEGE                 0x7
-
-typedef enum _SHUTDOWN_ACTION
-{
-    ShutdownNoReboot,
-    ShutdownReboot,
-    ShutdownPowerOff
-} SHUTDOWN_ACTION;
-
-typedef struct _KEY_FULL_INFORMATION {
-    LARGE_INTEGER LastWriteTime;
-    ULONG         TitleIndex;
-    ULONG         ClassOffset;
-    ULONG         ClassLength;
-    ULONG         SubKeys;
-    ULONG         MaxNameLen;
-    ULONG         MaxClassLen;
-    ULONG         Values;
-    ULONG         MaxValueNameLen;
-    ULONG         MaxValueDataLen;
-    WCHAR         Class[1];
-} KEY_FULL_INFORMATION, *PKEY_FULL_INFORMATION;
-
-typedef struct _KEY_VALUE_FULL_INFORMATION {
-    ULONG TitleIndex;
-    ULONG Type;
-    ULONG DataOffset;
-    ULONG DataLength;
-    ULONG NameLength;
-    WCHAR Name[1];
-} KEY_VALUE_FULL_INFORMATION, *PKEY_VALUE_FULL_INFORMATION;
-
-typedef struct _KEY_VALUE_PARTIAL_INFORMATION
-{
-    ULONG TitleIndex;
-    ULONG Type;
-    ULONG DataLength;
-    UCHAR Data[1];
-} KEY_VALUE_PARTIAL_INFORMATION, *PKEY_VALUE_PARTIAL_INFORMATION;
-
-typedef enum _KEY_INFORMATION_CLASS { 
-    KeyBasicInformation           = 0,
-    KeyNodeInformation            = 1,
-    KeyFullInformation            = 2,
-    KeyNameInformation            = 3,
-    KeyCachedInformation          = 4,
-    KeyFlagsInformation           = 5,
-    KeyVirtualizationInformation  = 6,
-    KeyHandleTagsInformation      = 7,
-    MaxKeyInfoClass               = 8
-} KEY_INFORMATION_CLASS;
-
-typedef enum _KEY_VALUE_INFORMATION_CLASS
-{
-    KeyValueBasicInformation,
-    KeyValueFullInformation,
-    KeyValuePartialInformation,
-    KeyValueFullInformationAlign64,
-    KeyValuePartialInformationAlign64
-} KEY_VALUE_INFORMATION_CLASS;
-
-typedef enum _EVENT_TYPE {
-  NotificationEvent,
-  SynchronizationEvent
-} EVENT_TYPE, *PEVENT_TYPE;
-
-#define FILE_DIRECTORY_FILE     0x00000001
-#define FILE_RESERVE_OPFILTER   0x00100000
-
-#ifndef FILE_WRITE_THROUGH
-#define FILE_WRITE_THROUGH      0x00000002
-#endif
-
 /*
 * DriveMap member must be declared as unsigned int
 * and alignment must be equal to 1, otherwise it fails
@@ -872,30 +1164,80 @@ typedef struct _PROCESS_BASIC_INFORMATION {
 } PROCESS_BASIC_INFORMATION, *PPROCESS_BASIC_INFORMATION;
 #pragma pack(pop)
 
-typedef struct _FILE_FS_SIZE_INFORMATION {
-    LARGE_INTEGER   TotalAllocationUnits;
-    LARGE_INTEGER   AvailableAllocationUnits;
-    ULONG           SectorsPerAllocationUnit;
-    ULONG           BytesPerSector;
-} FILE_FS_SIZE_INFORMATION, *PFILE_FS_SIZE_INFORMATION;
+/*
+* This is the correct definition for the data
+* structure that is passed in to FSCTL_MOVE_FILE.
+*/
+#ifndef _WIN64
+typedef struct {
+     HANDLE            FileHandle; 
+     ULONG             Reserved;   
+     LARGE_INTEGER     StartVcn; 
+     LARGE_INTEGER     TargetLcn;
+     ULONG             NumVcns; 
+     ULONG             Reserved1;    
+} MOVEFILE_DESCRIPTOR, *PMOVEFILE_DESCRIPTOR;
+#else
+typedef struct {
+     HANDLE            FileHandle; 
+     LARGE_INTEGER     StartVcn; 
+     LARGE_INTEGER     TargetLcn;
+     ULONGLONG         NumVcns; 
+} MOVEFILE_DESCRIPTOR, *PMOVEFILE_DESCRIPTOR;
+#endif
 
-typedef struct _FILE_FS_ATTRIBUTE_INFORMATION {
-    ULONG   FileSystemAttributes;
-    ULONG   MaximumComponentNameLength;
-    ULONG   FileSystemNameLength;
-    WCHAR   FileSystemName[1];
-} FILE_FS_ATTRIBUTE_INFORMATION, *PFILE_FS_ATTRIBUTE_INFORMATION;
+/*
+* This is the definition for a VCN/LCN (virtual cluster/logical cluster)
+* mapping pair that is returned in the buffer passed to FSCTL_GET_RETRIEVAL_POINTERS.
+*/
+typedef struct {
+    ULONGLONG            Vcn;
+    ULONGLONG            Lcn;
+} MAPPING_PAIR, *PMAPPING_PAIR;
 
-typedef struct _KBD_RECORD {
-    WORD    wVirtualScanCode;
-    DWORD    dwControlKeyState;
-    UCHAR    AsciiChar;
-    BOOL    bKeyDown;
-} KBD_RECORD, *PKBD_RECORD;
+/*
+* This is the definition for the buffer that FSCTL_GET_RETRIEVAL_POINTERS
+* returns. It consists of a header followed by mapping pairs.
+*/
+typedef struct {
+    ULONG                NumberOfPairs;
+    ULONGLONG            StartVcn;
+    MAPPING_PAIR         Pair[1];
+} GET_RETRIEVAL_DESCRIPTOR, *PGET_RETRIEVAL_DESCRIPTOR;
 
-typedef LPOSVERSIONINFOW PRTL_OSVERSIONINFOW;
+/*
+* This is the definition of the buffer that FSCTL_GET_VOLUME_BITMAP
+* returns. It consists of a header followed by the actual bitmap data.
+*/
+typedef struct {
+    ULONGLONG            StartLcn;
+    ULONGLONG            ClustersToEndOfVol;
+    UCHAR                Map[1];
+} BITMAP_DESCRIPTOR, *PBITMAP_DESCRIPTOR; 
 
-/* keyboard related structures */
+#pragma pack(push, 1)
+/*
+* This is the definition for the data structure
+* that is passed in to FSCTL_GET_NTFS_VOLUME_DATA.
+*/
+typedef struct _NTFS_DATA {
+    LARGE_INTEGER VolumeSerialNumber;
+    LARGE_INTEGER NumberSectors;
+    LARGE_INTEGER TotalClusters;
+    LARGE_INTEGER FreeClusters;
+    LARGE_INTEGER TotalReserved;
+    ULONG BytesPerSector;
+    ULONG BytesPerCluster;
+    ULONG BytesPerFileRecordSegment;
+    ULONG ClustersPerFileRecordSegment;
+    LARGE_INTEGER MftValidDataLength;
+    LARGE_INTEGER MftStartLcn;
+    LARGE_INTEGER Mft2StartLcn;
+    LARGE_INTEGER MftZoneStart;
+    LARGE_INTEGER MftZoneEnd;
+} NTFS_DATA, *PNTFS_DATA;
+#pragma pack(pop)
+
 /* KEYBOARD_INPUT_DATA.Flags constants */
 #define KEY_MAKE     0
 #define KEY_BREAK    1
@@ -915,305 +1257,10 @@ typedef struct _KEYBOARD_INDICATOR_PARAMETERS {
   USHORT  LedFlags;
 } KEYBOARD_INDICATOR_PARAMETERS, *PKEYBOARD_INDICATOR_PARAMETERS;
 
-/* replacement for winioctl.h which has encumbering ntfs related definitions */
-#define DEVICE_TYPE DWORD
+// =======================================================================
+//                            Prototypes
+// =======================================================================
 
-#define FILE_DEVICE_BEEP                0x00000001
-#define FILE_DEVICE_CD_ROM              0x00000002
-#define FILE_DEVICE_CD_ROM_FILE_SYSTEM  0x00000003
-#define FILE_DEVICE_CONTROLLER          0x00000004
-#define FILE_DEVICE_DATALINK            0x00000005
-#define FILE_DEVICE_DFS                 0x00000006
-#define FILE_DEVICE_DISK                0x00000007
-#define FILE_DEVICE_DISK_FILE_SYSTEM    0x00000008
-#define FILE_DEVICE_FILE_SYSTEM         0x00000009
-#define FILE_DEVICE_INPORT_PORT         0x0000000a
-#define FILE_DEVICE_KEYBOARD            0x0000000b
-#define FILE_DEVICE_MAILSLOT            0x0000000c
-#define FILE_DEVICE_MIDI_IN             0x0000000d
-#define FILE_DEVICE_MIDI_OUT            0x0000000e
-#define FILE_DEVICE_MOUSE               0x0000000f
-#define FILE_DEVICE_MULTI_UNC_PROVIDER  0x00000010
-#define FILE_DEVICE_NAMED_PIPE          0x00000011
-#define FILE_DEVICE_NETWORK             0x00000012
-#define FILE_DEVICE_NETWORK_BROWSER     0x00000013
-#define FILE_DEVICE_NETWORK_FILE_SYSTEM 0x00000014
-#define FILE_DEVICE_NULL                0x00000015
-#define FILE_DEVICE_PARALLEL_PORT       0x00000016
-#define FILE_DEVICE_PHYSICAL_NETCARD    0x00000017
-#define FILE_DEVICE_PRINTER             0x00000018
-#define FILE_DEVICE_SCANNER             0x00000019
-#define FILE_DEVICE_SERIAL_MOUSE_PORT   0x0000001a
-#define FILE_DEVICE_SERIAL_PORT         0x0000001b
-#define FILE_DEVICE_SCREEN              0x0000001c
-#define FILE_DEVICE_SOUND               0x0000001d
-#define FILE_DEVICE_STREAMS             0x0000001e
-#define FILE_DEVICE_TAPE                0x0000001f
-#define FILE_DEVICE_TAPE_FILE_SYSTEM    0x00000020
-#define FILE_DEVICE_TRANSPORT           0x00000021
-#define FILE_DEVICE_UNKNOWN             0x00000022
-#define FILE_DEVICE_VIDEO               0x00000023
-#define FILE_DEVICE_VIRTUAL_DISK        0x00000024
-#define FILE_DEVICE_WAVE_IN             0x00000025
-#define FILE_DEVICE_WAVE_OUT            0x00000026
-#define FILE_DEVICE_8042_PORT           0x00000027
-#define FILE_DEVICE_NETWORK_REDIRECTOR  0x00000028
-#define FILE_DEVICE_BATTERY             0x00000029
-#define FILE_DEVICE_BUS_EXTENDER        0x0000002a
-#define FILE_DEVICE_MODEM               0x0000002b
-#define FILE_DEVICE_VDM                 0x0000002c
-#define FILE_DEVICE_MASS_STORAGE        0x0000002d
-#define FILE_DEVICE_SMB                 0x0000002e
-#define FILE_DEVICE_KS                  0x0000002f
-#define FILE_DEVICE_CHANGER             0x00000030
-#define FILE_DEVICE_SMARTCARD           0x00000031
-#define FILE_DEVICE_ACPI                0x00000032
-#define FILE_DEVICE_DVD                 0x00000033
-#define FILE_DEVICE_FULLSCREEN_VIDEO    0x00000034
-#define FILE_DEVICE_DFS_FILE_SYSTEM     0x00000035
-#define FILE_DEVICE_DFS_VOLUME          0x00000036
-#define FILE_DEVICE_SERENUM             0x00000037
-#define FILE_DEVICE_TERMSRV             0x00000038
-#define FILE_DEVICE_KSEC                0x00000039
-#define FILE_DEVICE_FIPS                0x0000003A
-#define FILE_DEVICE_INFINIBAND          0x0000003B
-
-#define CTL_CODE( DeviceType, Function, Method, Access ) (                 \
-    ((DeviceType) << 16) | ((Access) << 14) | ((Function) << 2) | (Method) \
-)
-
-#define METHOD_BUFFERED                 0
-#define METHOD_IN_DIRECT                1
-#define METHOD_OUT_DIRECT               2
-#define METHOD_NEITHER                  3
-
-#define FILE_ANY_ACCESS                 0
-#define FILE_SPECIAL_ACCESS             (FILE_ANY_ACCESS)
-#define FILE_READ_ACCESS                ( 0x0001 )    // file & pipe
-#define FILE_WRITE_ACCESS               ( 0x0002 )    // file & pipe
-
-
-//
-// NtDeviceIoControlFile IoControlCode values for the keyboard device.
-//
-// Warning:  Remember that the low two bits of the code specify how the
-//           buffers are passed to the driver!
-//
-
-#define IOCTL_KEYBOARD_QUERY_ATTRIBUTES      CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0000, METHOD_BUFFERED, FILE_ANY_ACCESS)
-#define IOCTL_KEYBOARD_SET_TYPEMATIC         CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0001, METHOD_BUFFERED, FILE_ANY_ACCESS)
-#define IOCTL_KEYBOARD_SET_INDICATORS        CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0002, METHOD_BUFFERED, FILE_ANY_ACCESS)
-#define IOCTL_KEYBOARD_QUERY_TYPEMATIC       CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0008, METHOD_BUFFERED, FILE_ANY_ACCESS)
-#define IOCTL_KEYBOARD_QUERY_INDICATORS      CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0010, METHOD_BUFFERED, FILE_ANY_ACCESS)
-#define IOCTL_KEYBOARD_QUERY_INDICATOR_TRANSLATION   CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0020, METHOD_BUFFERED, FILE_ANY_ACCESS)
-#define IOCTL_KEYBOARD_INSERT_DATA           CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0040, METHOD_BUFFERED, FILE_ANY_ACCESS)
-
-//
-// These Device IO control query/set IME status to keyboard hardware.
-//
-#define IOCTL_KEYBOARD_QUERY_IME_STATUS      CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0400, METHOD_BUFFERED, FILE_ANY_ACCESS)
-#define IOCTL_KEYBOARD_SET_IME_STATUS        CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0401, METHOD_BUFFERED, FILE_ANY_ACCESS)
-
-//
-// Define the keyboard indicators.
-//
-
-#define KEYBOARD_LED_INJECTED     0x8000 //Used by Terminal Server
-#define KEYBOARD_SHADOW           0x4000 //Used by Terminal Server
-//#if defined(FE_SB) || defined(WINDOWS_FE) || defined(DBCS)
-#define KEYBOARD_KANA_LOCK_ON     8 // Japanese keyboard
-//#endif // defined(FE_SB) || defined(WINDOWS_FE) || defined(DBCS)
-#define KEYBOARD_CAPS_LOCK_ON     4
-#define KEYBOARD_NUM_LOCK_ON      2
-#define KEYBOARD_SCROLL_LOCK_ON   1
-
-#define FSCTL_GET_NTFS_VOLUME_DATA      CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 25, METHOD_BUFFERED, FILE_ANY_ACCESS) // NTFS_VOLUME_DATA_BUFFER
-#define FSCTL_GET_NTFS_FILE_RECORD      CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 26, METHOD_BUFFERED, FILE_ANY_ACCESS) // NTFS_FILE_RECORD_INPUT_BUFFER, NTFS_FILE_RECORD_OUTPUT_BUFFER
-#define FSCTL_GET_VOLUME_BITMAP         CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 27, METHOD_NEITHER,  FILE_ANY_ACCESS) // STARTING_LCN_INPUT_BUFFER, VOLUME_BITMAP_BUFFER
-#define FSCTL_GET_RETRIEVAL_POINTERS    CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 28, METHOD_NEITHER,  FILE_ANY_ACCESS) // STARTING_VCN_INPUT_BUFFER, RETRIEVAL_POINTERS_BUFFER
-#define FSCTL_MOVE_FILE                 CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 29, METHOD_BUFFERED, FILE_SPECIAL_ACCESS) // MOVE_FILE_DATA,
-#define FSCTL_IS_VOLUME_DIRTY           CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 30, METHOD_BUFFERED, FILE_ANY_ACCESS)
-
-#define VOLUME_IS_DIRTY  1
-
-typedef struct _PARTITION_INFORMATION {
-    LARGE_INTEGER StartingOffset;
-    LARGE_INTEGER PartitionLength;
-    DWORD HiddenSectors;
-    DWORD PartitionNumber;
-    BYTE  PartitionType;
-    BOOLEAN BootIndicator;
-    BOOLEAN RecognizedPartition;
-    BOOLEAN RewritePartition;
-} PARTITION_INFORMATION, *PPARTITION_INFORMATION;
-
-typedef enum _MEDIA_TYPE
-{
-  Unknown, 
-  F5_1Pt2_512, 
-  F3_1Pt44_512, 
-  F3_2Pt88_512, 
-  F3_20Pt8_512, 
-  F3_720_512, 
-  F5_360_512, 
-  F5_320_512, 
-  F5_320_1024, 
-  F5_180_512, 
-  F5_160_512, 
-  RemovableMedia, 
-  FixedMedia, 
-  F3_120M_512, 
-  F3_640_512, 
-  F5_640_512, 
-  F5_720_512, 
-  F3_1Pt2_512, 
-  F3_1Pt23_1024, 
-  F5_1Pt23_1024, 
-  F3_128Mb_512, 
-  F3_230Mb_512, 
-  F8_256_128, 
-  F3_200Mb_512, 
-  F3_240M_512, 
-  F3_32M_512
-} MEDIA_TYPE;
-
-typedef struct _DISK_GEOMETRY {
-    LARGE_INTEGER Cylinders;
-    MEDIA_TYPE MediaType;
-    DWORD TracksPerCylinder;
-    DWORD SectorsPerTrack;
-    DWORD BytesPerSector;
-} DISK_GEOMETRY;
-
-#define IOCTL_DISK_BASE                 FILE_DEVICE_DISK
-#define IOCTL_DISK_GET_DRIVE_GEOMETRY   CTL_CODE(IOCTL_DISK_BASE, 0x0000, METHOD_BUFFERED, FILE_ANY_ACCESS)
-#define IOCTL_DISK_GET_PARTITION_INFO   CTL_CODE(IOCTL_DISK_BASE, 0x0001, METHOD_BUFFERED, FILE_READ_ACCESS)
-
-typedef enum _FILE_INFORMATION_CLASS {
-    FileDirectoryInformation = 1,
-    FileFullDirectoryInformation,
-    FileBothDirectoryInformation,
-    FileBasicInformation,
-    FileStandardInformation,
-    FileInternalInformation,
-    FileEaInformation,
-    FileAccessInformation,
-    FileNameInformation,
-    FileRenameInformation,
-    FileLinkInformation,
-    FileNamesInformation,
-    FileDispositionInformation,
-    FilePositionInformation,
-    FileFullEaInformation,
-    FileModeInformation,
-    FileAlignmentInformation,
-    FileAllInformation,
-    FileAllocationInformation,
-    FileEndOfFileInformation,
-    FileAlternateNameInformation,
-    FileStreamInformation,
-    FilePipeInformation,
-    FilePipeLocalInformation,
-    FilePipeRemoteInformation,
-    FileMailslotQueryInformation,
-    FileMailslotSetInformation,
-    FileCompressionInformation,
-    FileObjectIdInformation,
-    FileCompletionInformation,
-    FileMoveClusterInformation,
-    FileQuotaInformation,
-    FileReparsePointInformation,
-    FileNetworkOpenInformation,
-    FileAttributeTagInformation,
-    FileTrackingInformation,
-    FileMaximumInformation
-} FILE_INFORMATION_CLASS, *PFILE_INFORMATION_CLASS;
-
-typedef struct _FILE_BASIC_INFORMATION {
-    LARGE_INTEGER CreationTime;
-    LARGE_INTEGER LastAccessTime;
-    LARGE_INTEGER LastWriteTime;
-    LARGE_INTEGER ChangeTime;
-    ULONG FileAttributes;
-} FILE_BASIC_INFORMATION, *PFILE_BASIC_INFORMATION;
-
-typedef struct _FILE_STANDARD_INFORMATION {
-    LARGE_INTEGER AllocationSize;
-    LARGE_INTEGER EndOfFile;
-    ULONG NumberOfLinks;
-    BOOLEAN DeletePending;
-    BOOLEAN Directory;
-} FILE_STANDARD_INFORMATION, *PFILE_STANDARD_INFORMATION;
-
-typedef struct _FILE_BOTH_DIRECTORY_INFORMATION {
-    ULONG               NextEntryOffset;
-    ULONG               FileIndex;
-    LARGE_INTEGER       CreationTime;
-    LARGE_INTEGER       LastAccessTime;
-    LARGE_INTEGER       LastWriteTime;
-    LARGE_INTEGER       ChangeTime;
-    LARGE_INTEGER       EndOfFile;
-    /*
-    * The next field may hold zero for 3.99 GB files on FAT32
-    * volumes with 32k cluster size (tested on 32-bit XP SP1).
-    */
-    LARGE_INTEGER       AllocationSize;
-    ULONG               FileAttributes;
-    ULONG               FileNameLength;
-    ULONG               EaSize;
-    CHAR                ShortNameLength;
-    WCHAR               ShortName[12];
-    WCHAR               FileName[ANYSIZE_ARRAY];
-} FILE_BOTH_DIRECTORY_INFORMATION, *PFILE_BOTH_DIRECTORY_INFORMATION,
-  FILE_BOTH_DIR_INFORMATION, *PFILE_BOTH_DIR_INFORMATION;
-
-typedef enum _SECTION_INHERIT {
-    ViewShare = 1,
-    ViewUnmap = 2
-} SECTION_INHERIT;
-
-typedef struct _TIME_FIELDS {
-    short Year;        // range [1601...]
-    short Month;       // range [1..12]
-    short Day;         // range [1..31]
-    short Hour;        // range [0..23]
-    short Minute;      // range [0..59]
-    short Second;      // range [0..59]
-    short Milliseconds;// range [0..999]
-    short Weekday;     // range [0..6] == [Sunday..Saturday]
-} TIME_FIELDS;
-typedef TIME_FIELDS *PTIME_FIELDS;
-
-typedef NTSTATUS (NTAPI *PRTL_QUERY_REGISTRY_ROUTINE)(
-    IN PWSTR ValueName,
-    IN ULONG ValueType,
-    IN PVOID ValueData,
-    IN ULONG ValueLength,
-    IN PVOID Context,
-    IN PVOID EntryContext
-);
-
-#define RTL_REGISTRY_ABSOLUTE     0   // Path is a full path
-#define RTL_REGISTRY_SERVICES     1   // \Registry\Machine\System\CurrentControlSet\Services
-#define RTL_REGISTRY_CONTROL      2   // \Registry\Machine\System\CurrentControlSet\Control
-#define RTL_REGISTRY_WINDOWS_NT   3   // \Registry\Machine\Software\Microsoft\Windows NT\CurrentVersion
-#define RTL_REGISTRY_DEVICEMAP    4   // \Registry\Machine\Hardware\DeviceMap
-#define RTL_REGISTRY_USER         5   // \Registry\User\CurrentUser
-#define RTL_REGISTRY_MAXIMUM      6
-#define RTL_REGISTRY_HANDLE       0x40000000    // Low order bits are registry handle
-#define RTL_REGISTRY_OPTIONAL     0x80000000    // Indicates the key node is optional
-
-typedef struct _RTL_QUERY_REGISTRY_TABLE {
-    PRTL_QUERY_REGISTRY_ROUTINE QueryRoutine;
-    ULONG Flags;
-    PWSTR Name;
-    PVOID EntryContext;
-    ULONG DefaultType;
-    PVOID DefaultData;
-    ULONG DefaultLength;
-} RTL_QUERY_REGISTRY_TABLE, *PRTL_QUERY_REGISTRY_TABLE;
-
-/* native functions prototypes */
 NTSTATUS    NTAPI    NtAdjustPrivilegesToken(HANDLE,SIZE_T,PTOKEN_PRIVILEGES,SIZE_T,PTOKEN_PRIVILEGES,PDWORD);
 NTSTATUS    NTAPI    NtAllocateVirtualMemory(HANDLE,PVOID*,SIZE_T,SIZE_T *,SIZE_T,SIZE_T);
 NTSTATUS    NTAPI    NtCancelIoFile(HANDLE,PIO_STATUS_BLOCK);
@@ -1277,6 +1324,7 @@ NTSTATUS    NTAPI    RtlFindMessage(PVOID BaseAddress,ULONG Type,ULONG Language,
 VOID        NTAPI    RtlFreeAnsiString(PANSI_STRING);
 BOOLEAN     NTAPI    RtlFreeHeap(HANDLE,SIZE_T,PVOID);
 VOID        NTAPI    RtlFreeUnicodeString(PUNICODE_STRING);
+NTSTATUS    NTAPI    RtlGetVersion(OSVERSIONINFOW *);
 VOID        NTAPI    RtlInitAnsiString(PANSI_STRING,PCSZ);
 VOID        NTAPI    RtlInitUnicodeString(PUNICODE_STRING,PCWSTR);
 PRTL_USER_PROCESS_PARAMETERS NTAPI RtlNormalizeProcessParams(RTL_USER_PROCESS_PARAMETERS*);
@@ -1296,94 +1344,10 @@ NTSTATUS    NTAPI    LdrGetProcedureAddress(PVOID,PANSI_STRING,SIZE_T,PVOID *);
 NTSTATUS    NTAPI    ZwQuerySystemInformation(IN SYSTEM_INFORMATION_CLASS,PVOID,SIZE_T,PULONG);
 NTSTATUS    NTAPI    ZwTerminateThread(HANDLE,NTSTATUS);
 
-/*
-* This is the definition for the data structure that is passed in to
-* FSCTL_MOVE_FILE
-*/
-#ifndef _WIN64
-typedef struct {
-     HANDLE            FileHandle; 
-     ULONG             Reserved;   
-     LARGE_INTEGER     StartVcn; 
-     LARGE_INTEGER     TargetLcn;
-     ULONG             NumVcns; 
-     ULONG             Reserved1;    
-} MOVEFILE_DESCRIPTOR, *PMOVEFILE_DESCRIPTOR;
-#else
-typedef struct {
-     HANDLE            FileHandle; 
-     LARGE_INTEGER     StartVcn; 
-     LARGE_INTEGER     TargetLcn;
-     ULONGLONG         NumVcns; 
-} MOVEFILE_DESCRIPTOR, *PMOVEFILE_DESCRIPTOR;
+#if defined(__GNUC__)
+ULONGLONG __stdcall _aulldiv(ULONGLONG n, ULONGLONG d);
+ULONGLONG __stdcall _alldiv(ULONGLONG n, ULONGLONG d);
+ULONGLONG __stdcall _aullrem(ULONGLONG u, ULONGLONG v);
 #endif
-
-/* This is the definition for a VCN/LCN (virtual cluster/logical cluster)
- * mapping pair that is returned in the buffer passed to 
- * FSCTL_GET_RETRIEVAL_POINTERS
- */
-typedef struct {
-    ULONGLONG            Vcn;
-    ULONGLONG            Lcn;
-} MAPPING_PAIR, *PMAPPING_PAIR;
-
-/* This is the definition for the buffer that FSCTL_GET_RETRIEVAL_POINTERS
- * returns. It consists of a header followed by mapping pairs
- */
-typedef struct {
-    ULONG                NumberOfPairs;
-    ULONGLONG            StartVcn;
-    MAPPING_PAIR         Pair[1];
-} GET_RETRIEVAL_DESCRIPTOR, *PGET_RETRIEVAL_DESCRIPTOR;
-
-/* This is the definition of the buffer that FSCTL_GET_VOLUME_BITMAP
- * returns. It consists of a header followed by the actual bitmap data
- */
-typedef struct {
-    ULONGLONG            StartLcn;
-    ULONGLONG            ClustersToEndOfVol;
-    UCHAR                Map[1];
-} BITMAP_DESCRIPTOR, *PBITMAP_DESCRIPTOR; 
-
-#pragma pack(push, 1)
-/*
-* This is the definition for the data structure
-* that is passed in to FSCTL_GET_NTFS_VOLUME_DATA.
-*/
-typedef struct _NTFS_DATA {
-    LARGE_INTEGER VolumeSerialNumber;
-    LARGE_INTEGER NumberSectors;
-    LARGE_INTEGER TotalClusters;
-    LARGE_INTEGER FreeClusters;
-    LARGE_INTEGER TotalReserved;
-    ULONG BytesPerSector;
-    ULONG BytesPerCluster;
-    ULONG BytesPerFileRecordSegment;
-    ULONG ClustersPerFileRecordSegment;
-    LARGE_INTEGER MftValidDataLength;
-    LARGE_INTEGER MftStartLcn;
-    LARGE_INTEGER Mft2StartLcn;
-    LARGE_INTEGER MftZoneStart;
-    LARGE_INTEGER MftZoneEnd;
-} NTFS_DATA, *PNTFS_DATA;
-#pragma pack(pop)
-
-#ifndef TAG
-#define TAG(A, B, C, D) (ULONG)(((A)<<0) + ((B)<<8) + ((C)<<16) + ((D)<<24))
-#endif
-
-#ifndef STATUS_BUFFER_OVERFLOW
-#define STATUS_BUFFER_OVERFLOW    ((NTSTATUS)0x80000005)
-#endif
-
-/* Based on http://www.osronline.com/showthread.cfm?link=185567 */
-typedef struct {
-    DWORD dwSize;              /* the size of the structure, in bytes; 12 on NT 5.1, 32 on NT 6.1 */
-    DWORD NtProductType;       /* NtProductWinNt, NtProductLanManNt, NtProductServer */
-    UCHAR RecoveryFlag;        /* Defines whether "Time to display recovery options when needed" is checked or not. */
-    UCHAR RecoveryMenuTimeout; /* Timeout, in seconds, of the recovery menu. */
-    UCHAR BootSuccessFlag;     /* Set to 1 on successful boot. */
-    UCHAR OrderlyShutdownFlag; /* Set to 1 on orderly shutdown. */
-} BOOT_STATUS_DATA, *PBOOT_STATUS_DATA;
 
 #endif /* _NTNDK_H_ */

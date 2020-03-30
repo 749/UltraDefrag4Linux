@@ -24,6 +24,7 @@
  * @{
  */
 
+#include "ntndk.h"
 #include "zenwinx.h"
 
 #define INTERNAL_BUFFER_SIZE 2048
@@ -121,7 +122,7 @@ int winx_printf(const char *format, ...)
         string = winx_vsprintf(format,arg);
         if(string){
             winx_print(string);
-            result = strlen(string);
+            result = (int)strlen(string);
             winx_free(string);
         }
         va_end(arg);
@@ -292,7 +293,7 @@ static void winx_add_history_entry(winx_history *h,char *string)
     
     entry->string = winx_strdup(string);
     if(entry->string == NULL){
-        length = strlen(string) + 1;
+        length = (int)strlen(string) + 1;
         etrace("cannot allocate %u bytes of memory",length);
         winx_printf("\nCannot allocate %u bytes of memory for %s()!\n",length,__FUNCTION__);
         winx_list_remove((list_entry **)(void *)&h->head,(list_entry *)entry);
@@ -326,9 +327,8 @@ int winx_prompt(char *prompt,char *string,int n,winx_history *h)
     KEYBOARD_INPUT_DATA kbd;
     KBD_RECORD kbd_rec;
     char *buffer;
-    int buffer_length;
     char format[16];
-    int i, ch, line_length;
+    int i, ch, line_length, buffer_length;
     int history_listed_to_the_last_entry = 0;
 
     if(!string){
@@ -341,7 +341,7 @@ int winx_prompt(char *prompt,char *string,int n,winx_history *h)
     }
     
     if(!prompt) prompt = "";
-    buffer_length = strlen(prompt) + n;
+    buffer_length = (int)strlen(prompt) + n;
     buffer = winx_malloc(buffer_length);
     
     winx_printf("%s",prompt);
@@ -362,7 +362,7 @@ int winx_prompt(char *prompt,char *string,int n,winx_history *h)
             */
             if(ch == 0x08 || kbd_rec.wVirtualScanCode == 0x1 || \
               kbd_rec.wVirtualScanCode == 0x48 || kbd_rec.wVirtualScanCode == 0x50){
-                line_length = strlen(prompt) + strlen(string);
+                line_length = (int)strlen(prompt) + (int)strlen(string);
                 /* handle escape key */
                 if(kbd_rec.wVirtualScanCode == 0x1){
                     /* truncate the string if escape pressed */
@@ -397,7 +397,7 @@ int winx_prompt(char *prompt,char *string,int n,winx_history *h)
                             if(h->current->string){
                                 RtlZeroMemory(string,n);
                                 strcpy(string,h->current->string);
-                                i = strlen(string);
+                                i = (int)strlen(string);
                             }
                         } else if(kbd_rec.wVirtualScanCode == 0x50){
                             /* list history forward */
@@ -406,7 +406,7 @@ int winx_prompt(char *prompt,char *string,int n,winx_history *h)
                                 if(h->current->string){
                                     RtlZeroMemory(string,n);
                                     strcpy(string,h->current->string);
-                                    i = strlen(string);
+                                    i = (int)strlen(string);
                                 }
                                 if(h->current == h->head->prev)
                                     history_listed_to_the_last_entry = 1;
@@ -431,7 +431,7 @@ int winx_prompt(char *prompt,char *string,int n,winx_history *h)
                 * redraw the prompt again to set carriage position
                 * exactly behind the string printed
                 */
-                line_length = strlen(prompt) + strlen(string);
+                line_length = (int)strlen(prompt) + (int)strlen(string);
                 _snprintf(format,sizeof(format),"\r%%-%us",line_length);
                 format[sizeof(format) - 1] = 0;
                 winx_printf(format,buffer);
@@ -536,7 +536,7 @@ static int print_line(char *line_buffer,
 int winx_print_strings(char **strings,int line_width,
     int max_rows,char *prompt,int divide_to_pages)
 {
-    int i, j, k, index, length;
+    int i, j, k, length, index;
     char *line_buffer, *second_buffer;
     int n, r;
     int rows_printed;
@@ -576,7 +576,7 @@ int winx_print_strings(char **strings,int line_width,
     for(i = 0; strings[i] != NULL; i++){
         line_buffer[0] = 0;
         index = 0;
-        length = strlen(strings[i]);
+        length = (int)strlen(strings[i]);
         for(j = 0; j < length; j++){
             /* handle \n, \r, \r\n, \n\r sequencies */
             n = r = 0;
@@ -637,7 +637,7 @@ int winx_print_strings(char **strings,int line_width,
                     if(print_line(line_buffer,prompt,max_rows,&rows_printed,0))
                         goto cleanup;
                     strcpy(line_buffer,second_buffer);
-                    index = strlen(line_buffer);
+                    index = (int)strlen(line_buffer);
                 } else {
                     if(print_line(line_buffer,prompt,max_rows,&rows_printed,0))
                         goto cleanup;

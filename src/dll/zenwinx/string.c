@@ -24,6 +24,7 @@
  * @{
  */
 
+#include "ntndk.h"
 #include "zenwinx.h"
 #include <math.h> /* for pow function */
 
@@ -154,7 +155,7 @@ char *winx_strdup(const char *s)
     if(s == NULL)
         return NULL;
     
-    length = strlen(s);
+    length = (int)strlen(s);
     cp = winx_tmalloc((length + 1) * sizeof(char));
     if(cp) strcpy(cp,s);
     return cp;
@@ -171,7 +172,7 @@ wchar_t *winx_wcsdup(const wchar_t *s)
     if(s == NULL)
         return NULL;
     
-    length = wcslen(s);
+    length = (int)wcslen(s);
     cp = winx_tmalloc((length + 1) * sizeof(wchar_t));
     if(cp) wcscpy(cp,s);
     return cp;
@@ -419,6 +420,62 @@ char *winx_sprintf(const char *format, ...)
     if(format){
         va_start(arg,format);
         return winx_vsprintf(format,arg);
+    }
+    
+    return NULL;
+}
+
+/**
+ * @brief A robust and flexible alternative to _vsnwprintf.
+ * @param[in] format the format specification.
+ * @param[in] arg pointer to the list of arguments.
+ * @return Pointer to the formatted string, NULL
+ * indicates failure. The string must be deallocated
+ * by winx_free after its use.
+ * @note Optimized for speed, can allocate more memory than needed.
+ */
+wchar_t *winx_vswprintf(const wchar_t *format,va_list arg)
+{
+    wchar_t *buffer;
+    int size;
+    int result;
+    
+    if(format == NULL)
+        return NULL;
+    
+    /* set the initial buffer size */
+    size = WINX_VSPRINTF_BUFFER_SIZE;
+    do {
+        buffer = winx_tmalloc(size * sizeof(wchar_t));
+        if(!buffer) break;
+        memset(buffer,0,size * sizeof(wchar_t)); /* needed for _vsnwprintf */
+        result = _vsnwprintf(buffer,size,format,arg);
+        if(result != -1 && result != size)
+            return buffer;
+        /* buffer is too small; try to allocate two times larger */
+        winx_free(buffer);
+        size <<= 1;
+    } while(size > 0);
+    
+    return NULL;
+}
+
+/**
+ * @brief A robust and flexible alternative to _snwprintf.
+ * @param[in] format the format specification.
+ * @param[in] ... the arguments.
+ * @return Pointer to the formatted string, NULL
+ * indicates failure. The string must be deallocated
+ * by winx_free after its use.
+ * @note Optimized for speed, can allocate more memory than needed.
+ */
+wchar_t *winx_swprintf(const wchar_t *format, ...)
+{
+    va_list arg;
+    
+    if(format){
+        va_start(arg,format);
+        return winx_vswprintf(format,arg);
     }
     
     return NULL;

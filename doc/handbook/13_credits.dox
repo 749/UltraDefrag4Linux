@@ -1,0 +1,758 @@
+﻿/*
+ *  UltraDefrag - a powerful defragmentation tool for Windows NT.
+ *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
+ *
+ *  Permission is granted to copy, distribute and/or modify this document
+ *  under the terms of the GNU Free Documentation License, Version 1.3 or
+ *  any later version published by the Free Software Foundation; with no
+ *  Invariant Sections.
+ */
+
+/**
+ * @page Credits Credits and License
+ *
+ * <b>Program and Documentation Copyright &copy; 2007-2008</b>
+ * 
+ * - Dmitri Arkhangelski <span class="simple">\<dmitriar@users.sourceforge.net\></span>
+ * - Justin Dearing      <span class="simple">\<zippy1981@users.sourceforge.net\></span>
+ *
+ * <b>Program and Documentation Copyright &copy; 2009, 2015</b>
+ * 
+ * - Dmitri Arkhangelski <span class="simple">\<dmitriar@users.sourceforge.net\></span>
+ *
+ * <b>Program and Documentation Copyright &copy; 2010-2014</b>
+ * 
+ * - Dmitri Arkhangelski <span class="simple">\<dmitriar@users.sourceforge.net\></span>
+ * - Stefan Pendl        <span class="simple">\<stefanpe@users.sourceforge.net\></span>
+ *
+ * <b>Web Design Copyright &copy; 2009, 2011</b>
+ *
+ * - Sayem Chaklader     <span class="simple">\<gearspec@gmail.com\></span>
+ *
+ * <b>Translations Copyright &copy; 2008-2015</b>
+ *
+ * @htmlonly
+ * <table style="border:none; margin-left:25px;">
+ * <tr><td>• Albanian                     </td><td>-</td><td> Fitim I. Halili</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Skender Mustafi</td></tr>
+ * <tr><td>• Arabic                       </td><td>-</td><td> Ahmed Arbaoui</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Awadh A Al-Ghaamdi</td></tr>
+ * <tr><td>• Armenian                     </td><td>-</td><td> MrEgho</td></tr>
+ * <tr><td>• Belarusian                   </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
+ * <tr><td>• Bengali                      </td><td>-</td><td> Sayem Chaklader</td></tr>
+ * <tr><td>• Bosanski                     </td><td>-</td><td> Timur Ljubunčić</td></tr>
+ * <tr><td>• Bulgarian                    </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Georgi Dimov</td></tr>
+ * <tr><td>• Burmese (Padauk)             </td><td>-</td><td> Muhammed Widuya</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Pyae Sone</td></tr>
+ * <tr><td>• Catalan                      </td><td>-</td><td> Illes Balears</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Joseph S. Maza</td></tr>
+ * <tr><td>                               </td><td>-</td><td> jmontane</td></tr>
+ * <tr><td>• Chinese (Simplified)         </td><td>-</td><td> muzuiget</td></tr>
+ * <tr><td>                               </td><td>-</td><td> HPJ</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Tommy He</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Elita Alutee</td></tr>
+ * <tr><td>                               </td><td>-</td><td> All UltraDefrag Fans</td></tr>
+ * <tr><td>                               </td><td>-</td><td> wwj402</td></tr>
+ * <tr><td>                               </td><td>-</td><td> YF</td></tr>
+ * <tr><td>• Chinese (Traditional)        </td><td>-</td><td> muzuiget</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Ryan Ping Chih Ko</td></tr>
+ * <tr><td>                               </td><td>-</td><td> rexx</td></tr>
+ * <tr><td>                               </td><td>-</td><td> James Bond</td></tr>
+ * <tr><td>                               </td><td>-</td><td> PasserBy</td></tr>
+ * <tr><td>• Croatian                     </td><td>-</td><td> Denis Jeličić</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Mladen Ivošević</td></tr>
+ * <tr><td>                               </td><td>-</td><td> streger</td></tr>
+ * <tr><td>• Czech                        </td><td>-</td><td> David Horák /Dave MacBlack/</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Pavel Kinkor</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Jiří Vírava</td></tr>
+ * <tr><td>• Danish                       </td><td>-</td><td> Patrick Paludan-Müller</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Jens Erik Graversgaard</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Jens Hyllegaard</td></tr>
+ * <tr><td>• Dutch                        </td><td>-</td><td> Wim Kerstens</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Klaas Nekeman</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Tom Louwrier</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Evert Blankestijn</td></tr>
+ * <tr><td>• English (GB)                 </td><td>-</td><td> Andrew Smith</td></tr>
+ * <tr><td>• English (US)                 </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
+ * <tr><td>• Estonian                     </td><td>-</td><td> Olav Mägi</td></tr>
+ * <tr><td>• Farsi                        </td><td>-</td><td> Ali Jafari</td></tr>
+ * <tr><td>                               </td><td>-</td><td> SBL</td></tr>
+ * <tr><td>• Filipino (Tagalog)           </td><td>-</td><td> Joseph S. Maza</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Ezekiel JB Vegiga</td></tr>
+ * <tr><td>• Finnish                      </td><td>-</td><td> jtl</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Jukka Laari</td></tr>
+ * <tr><td>• French                       </td><td>-</td><td> Pascal Crozet</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Jérôme Blum</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Mathieu Van Weersch</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Marina Louwrier-Johannsen</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Thomas Laroche</td></tr>
+ * <tr><td>                               </td><td>-</td><td> William Gathoye</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Marc Sokolovitch</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Alain-Olivier Breysse</td></tr>
+ * <tr><td>• Galician                     </td><td>-</td><td> Julio Mojón Fuentes</td></tr>
+ * <tr><td>• Georgian                     </td><td>-</td><td> UGLT.org</td></tr>
+ * <tr><td>• German                       </td><td>-</td><td> Stefan Geuken</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Stefan Pendl</td></tr>
+ * <tr><td>• Greek                        </td><td>-</td><td> Konstantinos Kapoukranidis</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Dionisios Klonaris</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Wasilis Mandratzis</td></tr>
+ * <tr><td>• Hebrew                       </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
+ * <tr><td>• Hindi                        </td><td>-</td><td> Gaurav Chatterjee</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Utkarsh Ray</td></tr>
+ * <tr><td>• Hungarian                    </td><td>-</td><td> Nagy Zsolt</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Áron Hegedüs</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Gellért Lukács</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Brechler Zsolt</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Attila Kalmár</td></tr>
+ * <tr><td>• Icelandic                    </td><td>-</td><td> Stefan Pendl</td></tr>
+ * <tr><td>• Iloko                        </td><td>-</td><td> Joseph S. Maza</td></tr>
+ * <tr><td>• Indonesian (Bahasa Indonesia)</td><td>-</td><td> Taufan Nur Hidayat</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Djati Satria</td></tr>
+ * <tr><td>• Indonesian                   </td><td>-</td><td> Imanuel Novian</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Djati Satria</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Rizki Aulia Rachman</td></tr>
+ * <tr><td>• Italian                      </td><td>-</td><td> Paolo Loggia</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Sherpya</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Edoardo Brunetti</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Alessandro Visentin</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Giacomo Margarito</td></tr>
+ * <tr><td>                               </td><td>-</td><td> eagleman</td></tr>
+ * <tr><td>• Japanese                     </td><td>-</td><td> ao3</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Masao Kajiwara</td></tr>
+ * <tr><td>                               </td><td>-</td><td> kako</td></tr>
+ * <tr><td>                               </td><td>-</td><td> necrose99</td></tr>
+ * <tr><td>• Javanese                     </td><td>-</td><td> Taufan Nur Hidayat</td></tr>
+ * <tr><td>• Kapampangan                  </td><td>-</td><td> Edwin N. Camaya</td></tr>
+ * <tr><td>• Korean                       </td><td>-</td><td> Alex Han</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Inhwan Hwang</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Zames Dean</td></tr>
+ * <tr><td>• Latin                        </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
+ * <tr><td>• Latvian                      </td><td>-</td><td> Sevelyr</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Vladislav Stuznev</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Raitis Nugumanovs</td></tr>
+ * <tr><td>• Lithuanian                   </td><td>-</td><td> Eugenijus Januškevičius</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Laurynas</td></tr>
+ * <tr><td>• Macedonian                   </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
+ * <tr><td>• Norwegian                    </td><td>-</td><td> Sveinung Heggen</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Stefan Pendl</td></tr>
+ * <tr><td>• Polish                       </td><td>-</td><td> Andrzej Rudnik</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Ireneusz Chorosz</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Mateusz Kacprzak</td></tr>
+ * <tr><td>                               </td><td>-</td><td> CWK</td></tr>
+ * <tr><td>• Portuguese (BR)              </td><td>-</td><td> Depeo da Masol</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Felipe</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Rafael Ferreira</td></tr>
+ * <tr><td>• Portuguese                   </td><td>-</td><td> Ricardo A. Garcia</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Carlos Rodrigues</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Sérgio Marques</td></tr>
+ * <tr><td>• Romanian                     </td><td>-</td><td> Micu (BeBe) Dumitru</td></tr>
+ * <tr><td>• Russian                      </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Raitis Nugumanovs</td></tr>
+ * <tr><td>• Serbian                      </td><td>-</td><td> Damjan Daljevic</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
+ * <tr><td>• Slovak                       </td><td>-</td><td> Milan Cerovský</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Jajo Pajo</td></tr>
+ * <tr><td>• Slovenian                    </td><td>-</td><td> Miha Mlakar</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
+ * <tr><td>• Spanish (AR)                 </td><td>-</td><td> Daniel Testa</td></tr>
+ * <tr><td>• Spanish (ES)                 </td><td>-</td><td> Txusti</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Juan C. Mendez Valledor</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Javier Contreras</td></tr>
+ * <tr><td>                               </td><td>-</td><td> NetVicious</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Joseph S. Maza</td></tr>
+ * <tr><td>• Spanish (MEX)                </td><td>-</td><td> Conrad Flyckt</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Felipe Ángel González Báñez</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Joseph S. Maza</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Francisco Ortega Olivos</td></tr>
+ * <tr><td>• Swedish                      </td><td>-</td><td> Magnus Rostedt</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Per-Eric Jenshagen</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Christoffer Ekberg</td></tr>
+ * <tr><td>                               </td><td>-</td><td> JacobVF</td></tr>
+ * <tr><td>• Tamil                        </td><td>-</td><td> Vinod V.</td></tr>
+ * <tr><td>• Thai                         </td><td>-</td><td> Pat Taweewat</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Thanapon Namjittrong</td></tr>
+ * <tr><td>• Turkish                      </td><td>-</td><td> Huseyin Kozan</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Vedat Odabasioglu</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Şahin Salincakli</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Alper Tiryakioglu</td></tr>
+ * <tr><td>                               </td><td>-</td><td> yakup</td></tr>
+ * <tr><td>• Ukrainian                    </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
+ * <tr><td>                               </td><td>-</td><td> lembergman</td></tr>
+ * <tr><td>                               </td><td>-</td><td> alex hap</td></tr>
+ * <tr><td>• Vietnamese                   </td><td>-</td><td> Vietnamize Team</td></tr>
+ * <tr><td>                               </td><td>-</td><td> DT</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Anh Phan</td></tr>
+ * <tr><td>• Wáray-Wáray                  </td><td>-</td><td> Harvey Fiji</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Voltaire Oyzon</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Joseph S. Maza</td></tr>
+ * <tr><td>• Yiddish                      </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
+ * </table>
+ * @endhtmlonly
+ *
+ * @latexonly
+ * \setlength\LTleft{1.25em}\setlength\LTright{\fill}\begin{longtable}{p{0.4\linewidth}cl}
+ * • Albanian                      & - & Fitim I. Halili \\
+ *                                 & - & Skender Mustafi \\
+ * • Arabic                        & - & Ahmed Arbaoui \\
+ *                                 & - & Awadh A Al-Ghaamdi \\
+ * • Armenian                      & - & MrEgho \\
+ * • Belarusian                    & - & Dmitri Arkhangelski \\
+ * • Bengali                       & - & Sayem Chaklader \\
+ * • Bosanski                      & - & Timur Ljubunčić \\
+ * • Bulgarian                     & - & Dmitri Arkhangelski \\
+ *                                 & - & Georgi Dimov \\
+ * • Burmese (Padauk)              & - & Muhammed Widuya \\
+ *                                 & - & Pyae Sone \\
+ * • Catalan                       & - & Illes Balears \\
+ *                                 & - & Joseph S. Maza \\
+ *                                 & - & jmontane \\
+ * • Chinese (Simplified)          & - & muzuiget \\
+ *                                 & - & HPJ \\
+ *                                 & - & Tommy He \\
+ *                                 & - & Elita Alutee \\
+ *                                 & - & All UltraDefrag Fans \\
+ *                                 & - & wwj402 \\
+ *                                 & - & YF \\
+ * • Chinese (Traditional)         & - & muzuiget \\
+ *                                 & - & Ryan Ping Chih Ko \\
+ *                                 & - & rexx \\
+ *                                 & - & James Bond \\
+ *                                 & - & PasserBy \\
+ * • Croatian                      & - & Denis Jeličić \\
+ *                                 & - & Dmitri Arkhangelski \\
+ *                                 & - & Mladen Ivošević \\
+ *                                 & - & streger \\
+ * • Czech                         & - & David Horák /Dave MacBlack/ \\
+ *                                 & - & Pavel Kinkor \\
+ *                                 & - & Jiří Vírava \\
+ * • Danish                        & - & Patrick Paludan-Müller \\
+ *                                 & - & Jens Erik Graversgaard \\
+ *                                 & - & Jens Hyllegaard \\
+ * • Dutch                         & - & Wim Kerstens \\
+ *                                 & - & Klaas Nekeman \\
+ *                                 & - & Tom Louwrier \\
+ *                                 & - & Evert Blankestijn \\
+ * • English (GB)                  & - & Andrew Smith \\
+ * • English (US)                  & - & Dmitri Arkhangelski \\
+ * • Estonian                      & - & Olav Mägi \\
+ * • Farsi                         & - & Ali Jafari \\
+ *                                 & - & SBL \\
+ * • Filipino (Tagalog)            & - & Joseph S. Maza \\
+ *                                 & - & Ezekiel JB Vegiga \\
+ * • Finnish                       & - & jtl \\
+ *                                 & - & Jukka Laari \\
+ * • French                        & - & Pascal Crozet \\
+ *                                 & - & Jérôme Blum \\
+ *                                 & - & Mathieu Van Weersch \\
+ *                                 & - & Marina Louwrier-Johannsen \\
+ *                                 & - & Thomas Laroche \\
+ *                                 & - & William Gathoye \\
+ *                                 & - & Marc Sokolovitch \\
+ *                                 & - & Alain-Olivier Breysse \\
+ * • Galician                      & - & Julio Mojón Fuentes \\
+ * • Georgian                      & - & UGLT.org \\
+ * • German                        & - & Stefan Geuken \\
+ *                                 & - & Stefan Pendl \\
+ * • Greek                         & - & Konstantinos Kapoukranidis \\
+ *                                 & - & Dionisios Klonaris \\
+ *                                 & - & Wasilis Mandratzis \\
+ * • Hebrew                        & - & Dmitri Arkhangelski \\
+ * • Hindi                         & - & Gaurav Chatterjee \\
+ *                                 & - & Utkarsh Ray \\
+ * • Hungarian                     & - & Nagy Zsolt \\
+ *                                 & - & Áron Hegedüs \\
+ *                                 & - & Gellért Lukács \\
+ *                                 & - & Brechler Zsolt \\
+ *                                 & - & Attila Kalmár \\
+ * • Icelandic                     & - & Stefan Pendl \\
+ * • Iloko                         & - & Joseph S. Maza \\
+ * • Indonesian (Bahasa Indonesia) & - & Taufan Nur Hidayat \\
+ *                                 & - & Djati Satria \\
+ * • Indonesian                    & - & Imanuel Novian \\
+ *                                 & - & Djati Satria \\
+ *                                 & - & Rizki Aulia Rachman \\
+ * • Italian                       & - & Paolo Loggia \\
+ *                                 & - & Sherpya \\
+ *                                 & - & Edoardo Brunetti \\
+ *                                 & - & Alessandro Visentin \\
+ *                                 & - & Giacomo Margarito \\
+ *                                 & - & eagleman \\
+ * • Japanese                      & - & ao3 \\
+ *                                 & - & Masao Kajiwara \\
+ *                                 & - & kako \\
+ *                                 & - & necrose99 \\
+ * • Javanese                      & - & Taufan Nur Hidayat \\
+ * • Kapampangan                   & - & Edwin N. Camaya \\
+ * • Korean                        & - & Alex Han \\
+ *                                 & - & Inhwan Hwang \\
+ *                                 & - & Zames Dean \\
+ * • Latin                         & - & Dmitri Arkhangelski \\
+ * • Latvian                       & - & Sevelyr \\
+ *                                 & - & Vladislav Stuznev \\
+ *                                 & - & Raitis Nugumanovs \\
+ * • Lithuanian                    & - & Eugenijus Januškevičius \\
+ *                                 & - & Laurynas \\
+ * • Macedonian                    & - & Dmitri Arkhangelski \\
+ * • Norwegian                     & - & Sveinung Heggen \\
+ *                                 & - & Stefan Pendl \\
+ * • Polish                        & - & Andrzej Rudnik \\
+ *                                 & - & Ireneusz Chorosz \\
+ *                                 & - & Mateusz Kacprzak \\
+ *                                 & - & CWK \\
+ * • Portuguese (BR)               & - & Depeo da Masol \\
+ *                                 & - & Felipe \\
+ *                                 & - & Rafael Ferreira \\
+ * • Portuguese                    & - & Ricardo A. Garcia \\
+ *                                 & - & Carlos Rodrigues \\
+ *                                 & - & Sérgio Marques \\
+ * • Romanian                      & - & Micu (BeBe) Dumitru \\
+ * • Russian                       & - & Dmitri Arkhangelski \\
+ *                                 & - & Raitis Nugumanovs \\
+ * • Serbian                       & - & Damjan Daljevic \\
+ *                                 & - & Dmitri Arkhangelski \\
+ * • Slovak                        & - & Milan Cerovský \\
+ *                                 & - & Jajo Pajo \\
+ * • Slovenian                     & - & Miha Mlakar \\
+ *                                 & - & Dmitri Arkhangelski \\
+ * • Spanish (AR)                  & - & Daniel Testa \\
+ * • Spanish (ES)                  & - & Txusti \\
+ *                                 & - & Juan C. Mendez Valledor \\
+ *                                 & - & Javier Contreras \\
+ *                                 & - & NetVicious \\
+ *                                 & - & Joseph S. Maza \\
+ * • Spanish (MEX)                 & - & Conrad Flyckt \\
+ *                                 & - & Felipe Ángel González Báñez \\
+ *                                 & - & Joseph S. Maza \\
+ *                                 & - & Francisco Ortega Olivos \\
+ * • Swedish                       & - & Magnus Rostedt \\
+ *                                 & - & Per-Eric Jenshagen \\
+ *                                 & - & Christoffer Ekberg \\
+ *                                 & - & JacobVF \\
+ * • Tamil                         & - & Vinod V. \\
+ * • Thai                          & - & Pat Taweewat \\
+ *                                 & - & Thanapon Namjittrong \\
+ * • Turkish                       & - & Huseyin Kozan \\
+ *                                 & - & Vedat Odabasioglu \\
+ *                                 & - & Şahin Salincakli \\
+ *                                 & - & Alper Tiryakioglu \\
+ *                                 & - & yakup \\
+ * • Ukrainian                     & - & Dmitri Arkhangelski \\
+ *                                 & - & lembergman \\
+ *                                 & - & alex hap \\
+ * • Vietnamese                    & - & Vietnamize Team \\
+ *                                 & - & DT \\
+ *                                 & - & Anh Phan \\
+ * • Wáray-Wáray                   & - & Harvey Fiji \\
+ *                                 & - & Voltaire Oyzon \\
+ *                                 & - & Joseph S. Maza \\
+ * • Yiddish                       & - & Dmitri Arkhangelski \\
+ * \end{longtable}
+ * @endlatexonly
+ *
+ * <b>Portions Copyright &copy;</b>
+ *
+ * UltraDefrag includes portions of the following open source software:
+ *
+ * <ul>
+ * <li><a href="http://www.wxwidgets.org/">wxWidgets</a>
+ *
+ * Portions Copyright &copy; 1998-2005 Julian Smart, Robert Roebling et al
+ *
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Library General Public Licence as published
+ * by the Free Software Foundation; either version 2 of the Licence,
+ * or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library
+ * General Public Licence for more details.
+ *
+ * You should have received a copy of the @subpage LGPL_2_0
+ * along with this software, usually in a file named COPYING.LIB.  If not,
+ * write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+ * Boston, MA 02111-1307 USA.</li>
+ *
+ * <li><a href="http://www.lua.org/">Lua</a>
+ *
+ * Portions Copyright &copy; 1994-2007 Lua.org, PUC-Rio
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in the
+ * Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the
+ * Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+ * KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+ * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+ * PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
+ * OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</li>
+ * 
+ * <li><a href="http://www.gnu.org/software/libc/">GNU C Library</a>
+ *
+ * Portions Copyright &copy; 1989,90,91,92,93,94,96,97 Free Software Foundation, Inc.
+ *
+ * The GNU C Library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * The GNU C Library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Library General Public License for more details.
+ * 
+ * You should have received a copy of the @ref LGPL_2_0
+ * along with this program. If not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.</li>
+ *
+ * <li><a href="http://www.stanford.edu/~blp/avl/">GNU libavl</a>
+ *
+ * Portions Copyright &copy; 1998, 1999, 2000, 2001, 2002, 2004 Free Software Foundation, Inc.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the @subpage LGPL_3_0
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301 USA.</li>
+ *
+ * <li><a href="http://www.reactos.org/">ReactOS</a>
+ *
+ * Portions Copyright &copy; 2002 ReactOS Team
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published
+ * by the Free Software Foundation; either version 2 of the License,
+ * or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the @ref GPL along with this
+ * program; if not, write to the Free Software Foundation, Inc.,
+ * 675 Mass Ave, Cambridge, MA 02139, USA.</li>
+ * </ul>
+ *
+ * UltraDefrag GUI includes icons made by third-party developers.
+ *
+ * The glass icon has been copied from the
+ * <a href="http://nsis.sourceforge.net">NSIS</a>
+ * compiler's frontend.
+ *
+ * <ul>
+ * <li> Portions Copyright &copy; 2002 Robert Rainwater \<rrainwater@yahoo.com\>
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty.  In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ * 
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ * 
+ * -# The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * -# Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * -# This notice may not be removed or altered from any source distribution.</li>
+ * </ul>
+ *
+ * The table and stop icons have been copied from the
+ * <a href="http://www.famfamfam.com/lab/icons/silk/">FamFamFam Silk</a> icon set.
+ *
+ * <ul>
+ * <li> Portions Copyright &copy; 2006 Mark James
+ *
+ * This work is licensed under the <a href="http://creativecommons.org/licenses/by/2.5/">Creative Commons Attribution 2.5 License</a>.
+ *
+ * The icons can also be used under the
+ * <a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 License</a>
+ * with the following requirements:
+ *
+ * As an author, I would appreciate a reference to my authorship 
+ * of the Silk icon set contents within a readme file or equivalent
+ * documentation for the software which includes the set or a subset
+ * of the icons contained within.</li>
+ * </ul>
+ * 
+ * The repeat icon has been copied from the <a href="http://www.interactivemania.com/content/default-icon">Default Icon</a> set.
+ *
+ * <ul>
+ * <li> Portions Copyright &copy; 2011 interactivemania
+ *
+ * Default Icon by interactivemania is licensed under the
+ * <a href="http://creativecommons.org/licenses/by-nd/3.0/">Creative Commons Attribution-No Derivative Works 3.0</a>.</li>
+ * </ul>
+ *
+ * The Lua and Lua Report icons are based on the <a href="http://lua-users.org/wiki/LuaLogo">artwork by Alexandre Nakonechnyj</a>.
+ *
+ * <ul>
+ * <li> Portions Copyright &copy; 1998 Lua.org. Graphic design by Alexandre Nakonechnyj.
+ *
+ * Permission is hereby granted, without written agreement and without
+ * license or royalty fees, to use, copy, and distribute this logo
+ * for any purpose, including commercial applications, subject to the
+ * following conditions:
+ *
+ * - The origin of this logo must not be misrepresented; you must
+ *   not claim that you drew the original logo.
+ * - The only modification you can make is to adapt the orbiting
+ *   text to your product name.
+ * - The logo can be used in any scale as long as the relative
+ *   proportions of its elements are maintained.</li>
+ * </ul>
+ *
+ * The taskbar overlay icon is based on the
+ * <a href="http://p.yusukekamiyamane.com/">Fugue</a> icon set.
+ * Also the following icons have been copied from it: pause, 
+ * gear, terminal, script, help, light bulb, star and large stop.
+ *
+ * <ul>
+ * <li> Portions Copyright &copy; 2012 Yusuke Kamiyamane
+ *
+ * These icons are licensed under the
+ * <a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 License</a>.</li>
+ * </ul>
+ *
+ * The UltraDefrag debugger's icon is based on Mozilla Crash Reporter's icon
+ * licensed under <a href="http://www.mozilla.org/en-US/MPL/">Mozilla Public License 2.0</a>.
+ *
+ * <center>***</center>
+ *
+ * <b>Chief Architect</b>
+ *
+ * - Dmitri Arkhangelski <span class="simple">\<dmitriar@users.sourceforge.net\></span>
+ *
+ * @latexonly
+ * \ifletter
+ *   \newpage
+ * \fi
+ * @endlatexonly
+ *
+ * Special thanks for porting UltraDefrag to Linux are going to:
+ *
+ * - Jean-Pierre André <span class="simple">\<jean-pierre.andre@wanadoo.fr\></span>
+ *
+ * Special thanks for contributions (in alphabetical order):
+ *
+ * @htmlonly
+ * <table style="border:none; margin-left:25px;">
+ * <tr><td>• Justin Dearing     </td><td>-</td><td> The initial version of this handbook and other documentation files.</td></tr>
+ * <tr><td>                     </td><td> </td><td> UltraDefrag Scheduler .NET application.</td></tr>
+ * <tr><td>• Tiago Filipe Silva </td><td>-</td><td> Optimized web images and udsorting.js script.</td></tr>
+ * </table>
+ * @endhtmlonly
+ *
+ * @latexonly
+ * \setlength\LTleft{1.25em}\setlength\LTright{\fill}\begin{longtable}{lcp{0.6\linewidth}}
+ * • Justin Dearing     & - & The initial version of this handbook and other documentation files. \\
+ *                      &   & UltraDefrag Scheduler .NET application. \\
+ * • Tiago Filipe Silva & - & Optimized web images and udsorting.js script. \\
+ * \end{longtable}
+ * @endlatexonly
+ *
+ * Special thanks for good ideas (in alphabetical order):
+ *
+ * @htmlonly
+ * <table style="border:none; margin-left:25px;">
+ * <tr><td>• Alexander Peter Kowalski</td><td>-</td><td> Process priority control (not implemented yet).</td></tr>
+ * <tr><td>• Alexander Vedyakin      </td><td>-</td><td> Disk type detection improvements.</td></tr>
+ * <tr><td>                          </td><td> </td><td> More efficient defragmentation algorithms.</td></tr>
+ * <tr><td>• Andrei Maksimov         </td><td>-</td><td> GUI improvements.</td></tr>
+ * <tr><td>                          </td><td> </td><td> A lot of other interesting ideas.</td></tr>
+ * <tr><td>• Brian Gaff              </td><td>-</td><td> More comfortable GUI design.</td></tr>
+ * <tr><td>• Bryan Kirk              </td><td>-</td><td> Better GUI appearance (new list of drives).</td></tr>
+ * <tr><td>                          </td><td> </td><td> Autodefrag feature (not implemented yet).</td></tr>
+ * <tr><td>• Christopher Naegel      </td><td>-</td><td> A fix for kernel mode driver loading problem on Vista.</td></tr>
+ * <tr><td>• Craig Oakes             </td><td>-</td><td> Hint about case mismatched names of help files.</td></tr>
+ * <tr><td>                          </td><td> </td><td> Hint about incorrect registration of .lua extension.</td></tr>
+ * <tr><td>• Dario Raparelli         </td><td>-</td><td> Windows NT 4.0 support.</td></tr>
+ * <tr><td>• Gan Yau Kuang           </td><td>-</td><td> Drives repair GUI menu.</td></tr>
+ * <tr><td>• Jan Loncik              </td><td>-</td><td> x64 native support. Better default values for filters.</td></tr>
+ * <tr><td>• Jim Laski               </td><td>-</td><td> System fonts and visual styles for graphical interface.</td></tr>
+ * <tr><td>• Joachim Otahal          </td><td>-</td><td> Disk processing algorithms optimization.</td></tr>
+ * <tr><td>• Justin Dearing          </td><td>-</td><td> Boot time defragmentation.</td></tr>
+ * <tr><td>• Kalle Koseck            </td><td>-</td><td> Disk analysis speedup. GUI improvements.</td></tr>
+ * <tr><td>• Kerem Gümrükcü          </td><td>-</td><td> Manifests for Vista User Account Control (UAC).</td></tr>
+ * <tr><td>• Leland G. Whitlock      </td><td>-</td><td> More efficient defragmentation algorithms.</td></tr>
+ * <tr><td>                          </td><td> </td><td> Progress bar (not implemented yet).</td></tr>
+ * <tr><td>• Markus Elfring          </td><td>-</td><td> Strong error handling.</td></tr>
+ * <tr><td>• Mike Braca              </td><td>-</td><td> Cluster map implementation consuming less memory.</td></tr>
+ * <tr><td>• Nagy Zsolt              </td><td>-</td><td> Internationalization support. Installer improvements.</td></tr>
+ * <tr><td>• Parvez Reza             </td><td>-</td><td> Various interesting programming tricks.</td></tr>
+ * <tr><td>• Steve Lawrence          </td><td>-</td><td> Shutdown when done option.</td></tr>
+ * <tr><td>• Vasily Smirnov          </td><td>-</td><td> FAT directories defragmentation algorithm.</td></tr>
+ * <tr><td>                          </td><td> </td><td> Various important GUI improvements.</td></tr>
+ * </table>
+ * @endhtmlonly
+ *
+ * @latexonly
+ * \setlength\LTleft{1.25em}\setlength\LTright{\fill}\begin{longtable}{p{0.35\linewidth}cp{0.5\linewidth}}
+ * • Alexander Peter Kowalski & - & Process priority control (not implemented yet). \\
+ * • Alexander Vedyakin       & - & Disk type detection improvements. \\
+ *                            &   & More efficient defragmentation algorithms. \\
+ * • Andrei Maksimov          & - & GUI improvements. \\
+ *                            &   & A lot of other interesting ideas. \\
+ * • Brian Gaff               & - & More comfortable GUI design. \\
+ * • Bryan Kirk               & - & Better GUI appearance (new list of drives). \\
+ *                            &   & Autodefrag feature (not implemented yet). \\
+ * • Christopher Naegel       & - & A fix for kernel mode driver loading problem on Vista. \\
+ * • Craig Oakes              & - & Hint about case mismatched names of help files. \\
+ *                            &   & Hint about incorrect registration of .lua extension. \\
+ * • Dario Raparelli          & - & Windows NT 4.0 support. \\
+ * • Gan Yau Kuang            & - & Drives repair GUI menu. \\
+ * • Jan Loncik               & - & x64 native support. Better default values for filters. \\
+ * • Jim Laski                & - & System fonts and visual styles for graphical interface. \\
+ * • Joachim Otahal           & - & Disk processing algorithms optimization. \\
+ * • Justin Dearing           & - & Boot time defragmentation. \\
+ * • Kalle Koseck             & - & Disk analysis speedup. GUI improvements. \\
+ * • Kerem Gümrükcü           & - & Manifests for Vista User Account Control (UAC). \\
+ * • Leland G. Whitlock       & - & More efficient defragmentation algorithms. \\
+ *                            &   & Progress bar (not implemented yet). \\
+ * • Markus Elfring           & - & Strong error handling. \\
+ * • Mike Braca               & - & Cluster map implementation consuming less memory. \\
+ * • Nagy Zsolt               & - & Internationalization support. Installer improvements. \\
+ * • Parvez Reza              & - & Various interesting programming tricks. \\
+ * • Steve Lawrence           & - & Shutdown when done option. \\
+ * • Vasily Smirnov           & - & FAT directories defragmentation algorithm. \\
+ *                            &   & Various important GUI improvements. \\
+ * \end{longtable}
+ * @endlatexonly
+ *
+ * Special thanks for translation updates and corrections (in alphabetical order):
+ *
+ * @htmlonly
+ * <dl class="section user" style="margin-left: -7pt"><dt></dt><dd>
+ * @endhtmlonly
+ * @latexonly
+ * \setlength\LTleft{1.25em}\setlength\LTright{\fill}\begin{longtable}{p{1\linewidth-2em}}
+ * @endlatexonly
+ * Aivier, Antonio Vivace, Benny Stütz, Bernard Ladenthin, Carlo Bruschi, Catur Susetyo,
+ * Connection, Dandy Cheung, Daniel Rodríguez, Davide, Dmitry Zemskov, Erwin Dokter, El Fiera,
+ * Fabrizio Marana, FS, Garoiu Victor, Giulio Fornasar, Gustavo Rezende, Haein Jung, Harald Arnesen,
+ * Jan Iemhoff, Jani Kinnunen, JIFF, Julien Chartier, Luigi C., Javier Valdivieso, Jiri Sedlak,
+ * José Carlos Taveira de Souza, José Luis Farías, Joshua Christo Randiny, Karam Al-Shorbassi,
+ * Ken Choy, Krzysztof Świderski, Latino, Leo Smulders, luigif, MAFA1005, Massa,
+ * Matej Marton, Mateusz Krawczyk, Nikolay Parukhin, Patrick Palm, Piotr Halama,
+ * Reynald Didier, Robert Jr, Robert Readman, Rodrigo Lopes Paitach, Seph, SMHA,
+ * strel, Suranappar.se, Timo VJ Lähde, Tjeerd van Sas, Trans-fr, translucens, TurboHz,
+ * udef-jardic, Zirikkanen, zubr139
+ * @htmlonly
+ * </dd></dl>
+ * @endhtmlonly
+ * @latexonly
+ * \\
+ * \end{longtable}
+ * @endlatexonly
+ *
+ * @latexonly
+ * \ifletter
+ *   \newpage
+ * \fi
+ * @endlatexonly
+ *
+ * Special thanks for extensive testing (in alphabetical order):
+ *
+ * @htmlonly
+ * <dl class="section user" style="margin-left: -7pt"><dt></dt><dd>
+ * @endhtmlonly
+ * @latexonly
+ * \setlength\LTleft{1.25em}\setlength\LTright{\fill}\begin{longtable}{p{1\linewidth-2em}}
+ * @endlatexonly
+ * Andrei Maksimov, Bear Windows, Brent Jenkins, Fred Schall,
+ * Jeff Cubillos, Kalle Koseck, Kerem Gümrükcü, Leslie Trenholm,
+ * Markus Elfring, Nagy Zsolt, Sachin Kunjikoran, Stefan Pendl,
+ * Tom Arroyo
+ * @htmlonly
+ * </dd></dl>
+ * @endhtmlonly
+ * @latexonly
+ * \\
+ * \end{longtable}
+ * @endlatexonly
+ *
+ * Also special thanks are going to:
+ *
+ * @htmlonly
+ * <ul>
+ * <li><a href="http://www.sysinternals.com">Mark Russinovich</a></li>
+ * <li><a href="http://www.soldatov.net">Vyacheslav Soldatov</a></li>
+ * <li><a href="http://free.pages.at/blumetools/">blume1975</a></li>
+ * <li><a href="http://www.reactos.org">ReactOS Team</a></li>
+ * <li><a href="http://nsis.sourceforge.net">NSIS developers</a></li>
+ * <li><a href="http://upx.sf.net">UPX developers</a></li>
+ * <li><a href="http://www.mingw.org">MinGW Team</a></li>
+ * <li><a href="http://alter.org.ua/en/">Alexander A. Telyatnikov</a></li>
+ * <li><a href="http://www.codeproject.com/Members/Mumtaz-Zaheer">Mumtaz Zaheer</a></li>
+ * <li><a href="http://chibios.sourceforge.net/">Giovanni Di Sirio</a></li>
+ * <li><a href="http://www.catch22.net/">James Brown</a></li>
+ * <li><a href="http://forum.pellesc.de/index.php?topic=3265.0">Timo VJ Lähde</a></li>
+ * <li><a href="http://www.lokeshdhakar.com/projects/lightbox2/">Lokesh Dhakar</a></li>
+ * <li><a href="http://www.famfamfam.com/lab/icons/flags/">Mark James</a></li>
+ * <li><a href="http://www.codeproject.com/Members/Michael-Dunn">Michael Dunn</a></li>
+ * <li><a href="http://blogs.msdn.com/b/michkap/">Michael Kaplan</a></li>
+ * </ul>
+ * @endhtmlonly
+ *
+ * @latexonly
+ * \setlength\LTleft{1.25em}\setlength\LTright{\fill}\begin{longtable}{p{1\linewidth-2em}}
+ * • \href{http://www.sysinternals.com}{\tt Mark Russinovich} \\
+ * • \href{http://www.soldatov.net}{\tt Vyacheslav Soldatov} \\
+ * • \href{http://free.pages.at/blumetools/}{\tt blume1975} \\
+ * • \href{http://www.reactos.org}{\tt React\-O\-S Team} \\
+ * • \href{http://nsis.sourceforge.net}{\tt N\-S\-I\-S developers} \\
+ * • \href{http://upx.sf.net}{\tt U\-P\-X developers} \\
+ * • \href{http://www.mingw.org}{\tt Min\-G\-W Team} \\
+ * • \href{http://alter.org.ua/en/}{\tt Alexander A. Telyatnikov} \\
+ * • \href{http://www.codeproject.com/Members/Mumtaz-Zaheer}{\tt Mumtaz Zaheer} \\
+ * • \href{http://chibios.sourceforge.net/}{\tt Giovanni Di Sirio} \\
+ * • \href{http://www.catch22.net/}{\tt James Brown} \\
+ * • \href{http://forum.pellesc.de/index.php?topic=3265.0}{\tt Timo V\-J Lähde} \\
+ * • \href{http://www.lokeshdhakar.com/projects/lightbox2/}{\tt Lokesh Dhakar} \\
+ * • \href{http://www.famfamfam.com/lab/icons/flags/}{\tt Mark James} \\
+ * • \href{http://www.codeproject.com/Members/Michael-Dunn}{\tt Michael Dunn} \\
+ * • \href{http://blogs.msdn.com/b/michkap/}{\tt Michael Kaplan} \\
+ * \end{longtable}
+ * @endlatexonly
+ *
+ * Also many thanks to all the people who helped us improve UltraDefrag.
+ *
+ * This documentation is licensed under the terms of the @subpage FDL.
+ *
+ * The program is licensed under the terms of the @subpage GPL.
+ *
+ * @htmlonly
+ * <HR>
+ *  <TABLE STYLE="border: none; width: 97%; margin:auto;">
+ *    <TR>
+ *      <TD STYLE="text-align: left; width: 50%;">Previous: <a href="Development.html">Development</a></TD>
+ *      <TD STYLE="text-align: right; width: 50%;">Next: <a href="index.html">UltraDefrag Handbook</a></TD>
+ *    </TR>
+ *  </TABLE>
+ * @endhtmlonly
+ */

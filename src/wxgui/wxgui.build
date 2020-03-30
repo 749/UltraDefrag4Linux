@@ -1,0 +1,24 @@
+-- UltraDefrag GUI build options
+name        = "ultradefrag"
+target_type = "gui"
+
+-- list of directories containing headers the program relies on
+includes = { "wxgui", "include", "lua5.1", "udefrag", "zenwinx" }
+
+libs = {
+    "kernel32", "user32", "gdi32", "comctl32",
+    "shell32", "msvcrt", "comdlg32", "advapi32",
+    "ole32", "oleaut32", "uuid", "powrprof",
+    "urlmon", "rpcrt4"
+}
+adlibs = { 
+    "$(UDEFRAG_LIB_PATH)\\zenwinx", 
+    "$(UDEFRAG_LIB_PATH)\\udefrag", 
+    "$(UDEFRAG_LIB_PATH)\\lua5.1a", 
+    "$(WXWIDGETS_LIB_PATH)\\wxbase30u", 
+    "$(WXWIDGETS_LIB_PATH)\\wxzlib",
+    "$(WXWIDGETS_LIB_PATH)\\wxpng",
+    "$(WXWIDGETS_LIB_PATH)\\wxmsw30u_core",
+    "$(WXWIDGETS_LIB_PATH)\\wxmsw30u_adv"
+}
+umentry = "winmain"

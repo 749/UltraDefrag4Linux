@@ -24,6 +24,7 @@
  * @{
  */
 
+#include "ntndk.h"
 #include "zenwinx.h"
 
 int default_killer(size_t n);
@@ -87,10 +88,10 @@ void *winx_heap_alloc(size_t size,int flags)
 }
 
 /**
- * @brief Frees memory allocated by winx_malloc.
+ * @brief Frees memory allocated by winx_heap_alloc.
  * @param[in] addr the address of the memory block.
  */
-void winx_free(void *addr)
+void winx_heap_free(void *addr)
 {
     /*
     * Avoid winx_dbg_xxx calls here

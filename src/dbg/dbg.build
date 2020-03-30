@@ -1,0 +1,10 @@
+-- UltraDefag debugger build options
+name        = "udefrag-dbg"
+target_type = "gui"
+
+-- list of directories containing headers the program relies on
+includes = { "include", "zenwinx" }
+
+libs = { "kernel32", "user32", "comctl32", "msvcrt", "urlmon" }
+adlibs = { "$(UDEFRAG_LIB_PATH)\\zenwinx" }
+umentry = "main"

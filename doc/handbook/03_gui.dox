@@ -156,12 +156,12 @@
  * \begin{center}\begin{longtable}{|c|p{0.9\linewidth}|}
  * \hline
  * @endlatexonly
- * @image html "Analysis.png"
+ * @image html "glass.png"
  * @htmlonly
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-1.5\height}{\includegraphics{Analysis.png}} &
+ * \raisebox{-1.5\height}{\includeicon{glass.png}} &
  * @endlatexonly
  * @par Analyze (F5; Enter)
  * Analyze the selected disk(s).
@@ -172,12 +172,12 @@
  * @latexonly
  * \\ \hline
  * @endlatexonly
- * @image html "Defragment.png"
+ * @image html "defrag.png"
  * @htmlonly
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-1.7\height}{\includegraphics{Defragment.png}} &
+ * \raisebox{-1.7\height}{\includeicon{defrag.png}} &
  * @endlatexonly
  * @par Defragment (F6)
  * Defragment the selected disk(s).
@@ -188,12 +188,12 @@
  * @latexonly
  * \\ \hline
  * @endlatexonly
- * @image html "QuickOptimize.png"
+ * @image html "quick.png"
  * @htmlonly
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-1.7\height}{\includegraphics{QuickOptimize.png}} &
+ * \raisebox{-1.7\height}{\includeicon{quick.png}} &
  * @endlatexonly
  * @par Quick optimization (F7)
  * Perform quick optimization of the selected disk(s).
@@ -204,12 +204,12 @@
  * @latexonly
  * \\ \hline
  * @endlatexonly
- * @image html "FullOptimize.png"
+ * @image html "full.png"
  * @htmlonly
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-1.7\height}{\includegraphics{FullOptimize.png}} &
+ * \raisebox{-1.7\height}{\includeicon{full.png}} &
  * @endlatexonly
  * @par Full optimization (Ctrl+F7)
  * Perform full optimization of the selected disk(s).
@@ -220,12 +220,12 @@
  * @latexonly
  * \\ \hline
  * @endlatexonly
- * @image html "OptimizeMFT.png"
+ * @image html "mft.png"
  * @htmlonly
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-1.7\height}{\includegraphics{OptimizeMFT.png}} &
+ * \raisebox{-1.7\height}{\includeicon{mft.png}} &
  * @endlatexonly
  * @par Optimize MFT (Shift+F7)
  * Optimize the master file table on the selected disk(s).
@@ -236,12 +236,12 @@
  * @latexonly
  * \\ \hline
  * @endlatexonly
- * @image html "Pause.png"
+ * @image html "pause.png"
  * @htmlonly
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-1.7\height}{\includegraphics{Pause.png}} &
+ * \raisebox{-1.7\height}{\includeicon{pause.png}} &
  * @endlatexonly
  * @par Pause (Space)
  * Pause or resume the job. The current file movement
@@ -253,12 +253,12 @@
  * @latexonly
  * \\ \hline
  * @endlatexonly
- * @image html "Stop.png"
+ * @image html "stop.png"
  * @htmlonly
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-1.7\height}{\includegraphics{Stop.png}} &
+ * \raisebox{-1.7\height}{\includeicon{stop.png}} &
  * @endlatexonly
  * @par Stop (Ctrl+C)
  * Abort the job. The current file movement
@@ -270,12 +270,12 @@
  * @latexonly
  * \\ \hline
  * @endlatexonly
- * @image html "Report.png"
+ * @image html "report.png"
  * @htmlonly
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-1.7\height}{\includegraphics{Report.png}} &
+ * \raisebox{-1.7\height}{\includeicon{report.png}} &
  * @endlatexonly
  * @par Show report (F8)
  * Open the file fragmentation report for the selected disk(s).
@@ -286,12 +286,12 @@
  * @latexonly
  * \\ \hline
  * @endlatexonly
- * @image html "Repeat.png"
+ * @image html "repeat.png"
  * @htmlonly
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-2.1\height}{\includegraphics{Repeat.png}} &
+ * \raisebox{-2.1\height}{\includeicon{repeat.png}} &
  * @endlatexonly
  * @par Repeat action (Shift+R)
  * Allow to repeat the disk processing multiple times
@@ -309,7 +309,7 @@
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-1.7\height}{\includegraphics{Blank.png}} &
+ * \raisebox{-1.7\height}{\includeicon{Blank.png}} &
  * @endlatexonly
  * @par Skip removable media (Ctrl+M)
  * Exclude removable drives from the list.
@@ -325,7 +325,7 @@
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-1.7\height}{\includegraphics{Blank.png}} &
+ * \raisebox{-1.7\height}{\includeicon{Blank.png}} &
  * @endlatexonly
  * @par Rescan drives (Ctrl+D)
  * Update the list of drives.
@@ -341,7 +341,7 @@
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-1.7\height}{\includegraphics{Blank.png}} &
+ * \raisebox{-1.7\height}{\includeicon{Blank.png}} &
  * @endlatexonly
  * @par Repair drives
  * Repair the selected disk(s) using the <b>chkdsk</b> command line tool.
@@ -358,7 +358,7 @@
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-1.7\height}{\includegraphics{Blank.png}} &
+ * \raisebox{-1.7\height}{\includeicon{Blank.png}} &
  * @endlatexonly
  * @par When done
  * Set the action to be performed after the job completion.
@@ -384,7 +384,7 @@
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-1.7\height}{\includegraphics{Blank.png}} &
+ * \raisebox{-1.7\height}{\includeicon{Blank.png}} &
  * @endlatexonly
  * @par Exit (Alt+F4)
  * Terminate UltraDefrag.
@@ -410,10 +410,13 @@
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-1.5\height}{\includegraphics{Blank.png}} &
+ * \raisebox{-1.5\height}{\includeicon{Blank.png}} &
  * @endlatexonly
  * @par Language
  * Select language or follow additional links to translate the program:
+ * - <b>Translate online</b> opens the project page at 
+     <a href="https://www.transifex.com/projects/p/ultradefrag/resource/main/">transifex</a>.
+ * - <b>Translate offline</b> opens the @ref Translation chapter of this handbook.
  * - <b>Translations folder</b> opens the folder containing all the translations.
  *
  * @htmlonly
@@ -422,30 +425,14 @@
  * @latexonly
  * \\ \hline
  * @endlatexonly
- * @image html "Blank.png"
+ * @image html "gear.png"
  * @htmlonly
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-1.7\height}{\includegraphics{Blank.png}} &
+ * \raisebox{-1.7\height}{\includeicon{gear.png}} &
  * @endlatexonly
- * @par Graphical interface > Font (F9)
- * Select font. The default is Courier New, 9.
- *
- * @htmlonly
- * </td></tr><tr><td>
- * @endhtmlonly
- * @latexonly
- * \\ \hline
- * @endlatexonly
- * @image html "Options.png"
- * @htmlonly
- * </td><td style="width: 90%;">
- * @endhtmlonly
- * @latexonly
- * \raisebox{-1.7\height}{\includegraphics{Options.png}} &
- * @endlatexonly
- * @par Graphical interface > Options (F10)
+ * @par Options (F10)
  * Open the main configuration file.
  *
  * @htmlonly
@@ -459,7 +446,7 @@
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-1.7\height}{\includegraphics{Blank.png}} &
+ * \raisebox{-1.7\height}{\includeicon{Blank.png}} &
  * @endlatexonly
  * @par Sorting
  * Set sorting order for the disk optimization.
@@ -470,12 +457,12 @@
  * @latexonly
  * \\ \hline
  * @endlatexonly
- * @image html "BootTimeScan.png"
+ * @image html "terminal.png"
  * @htmlonly
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-1.7\height}{\includegraphics{BootTimeScan.png}} &
+ * \raisebox{-1.7\height}{\includeicon{terminal.png}} &
  * @endlatexonly
  * @par Boot time scan &gt; Enable (F11)
  * Enable or disable the boot time processing
@@ -487,12 +474,12 @@
  * @latexonly
  * \\ \hline
  * @endlatexonly
- * @image html "BootTimeScript.png"
+ * @image html "script.png"
  * @htmlonly
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-1.7\height}{\includegraphics{BootTimeScript.png}} &
+ * \raisebox{-1.7\height}{\includeicon{script.png}} &
  * @endlatexonly
  * @par Boot time scan &gt; Script (F12)
  * Open the boot time script
@@ -514,12 +501,12 @@
  * \begin{center}\begin{longtable}{|c|p{0.9\linewidth}|}
  * \hline
  * @endlatexonly
- * @image html "Help.png"
+ * @image html "help.png"
  * @htmlonly
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-1.5\height}{\includegraphics{Help.png}} &
+ * \raisebox{-1.5\height}{\includeicon{help.png}} &
  * @endlatexonly
  * @par Contents (F1)
  * Open this handbook.
@@ -530,12 +517,12 @@
  * @latexonly
  * \\ \hline
  * @endlatexonly
- * @image html "BestPractice.png"
+ * @image html "light.png"
  * @htmlonly
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-1.7\height}{\includegraphics{BestPractice.png}} &
+ * \raisebox{-1.7\height}{\includeicon{light.png}} &
  * @endlatexonly
  * @par Best practice (F2)
  * Open the @ref Tips chapter of this handbook.
@@ -551,7 +538,7 @@
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-1.7\height}{\includegraphics{Blank.png}} &
+ * \raisebox{-1.7\height}{\includeicon{Blank.png}} &
  * @endlatexonly
  * @par FAQ (F3)
  * Open the @ref FAQ chapter of this handbook.
@@ -567,7 +554,7 @@
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-1.7\height}{\includegraphics{Blank.png}} &
+ * \raisebox{-1.7\height}{\includeicon{Blank.png}} &
  * @endlatexonly
  * @par Cluster map legend
  * Show the @ref cluster_map_legend "Cluster map" section of this chapter.
@@ -583,7 +570,7 @@
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-1.7\height}{\includegraphics{Blank.png}} &
+ * \raisebox{-1.7\height}{\includeicon{Blank.png}} &
  * @endlatexonly
  * @par Debug
  * Get access to debugging information:
@@ -601,10 +588,10 @@
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-1.7\height}{\includegraphics{Blank.png}} &
+ * \raisebox{-1.7\height}{\includeicon{Blank.png}} &
  * @endlatexonly
- * @par Check for update
- * Check for program updates (helpful when automatic checks are disabled).
+ * @par Upgrade
+ * Set whether the program will check for available updates on startup or not.
  *
  * @htmlonly
  * </td></tr><tr><td>
@@ -612,12 +599,12 @@
  * @latexonly
  * \\ \hline
  * @endlatexonly
- * @image html "About.png"
+ * @image html "star.png"
  * @htmlonly
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-1.7\height}{\includegraphics{About.png}} &
+ * \raisebox{-1.7\height}{\includeicon{star.png}} &
  * @endlatexonly
  * @par About (F4)
  * Show general information about the program.
@@ -645,7 +632,7 @@
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * \raisebox{-1.5\height}{\includegraphics{Blank.png}} &
+ * \raisebox{-1.5\height}{\includeicon{Blank.png}} &
  * @endlatexonly
  * @par No preview options
  * Currently there are no preview options available.

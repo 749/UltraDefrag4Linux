@@ -24,27 +24,18 @@
 #ifndef _ZENWINX_H_
 #define _ZENWINX_H_
 
-/* define WINX_CUSTOM_NTNDK_H to suppress inclusion of ZenWINX ntndk.h file */
-#ifndef WINX_CUSTOM_NTNDK_H
-#include "ntndk.h"
-#endif /* !WINX_CUSTOM_NTNDK_H */
-
-#include "../../include/dbg.h"
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 #define DEFAULT_TAB_WIDTH 2
 #define DEFAULT_PAGING_PROMPT_TO_HIT_ANY_KEY "      Hit any key to display next page,\n" \
                                              "          ESC or Break to abort..."
 
-#ifndef max
-#define max(a,b) ((a)>(b)?(a):(b))
-#endif
-#ifndef min
-#define min(a,b) ((a)<(b)?(a):(b))
-#endif
-
 #define NtCloseSafe(h) { if(h) { NtClose(h); h = NULL; } }
 
 /* debugging macros */
+#include "../../include/dbg.h"
 
 /* prints whatever specified */
 #define trace(format,...)  winx_dbg_print(0,format,## __VA_ARGS__)
@@ -59,6 +50,9 @@
     NtCurrentTeb()->LastStatusValue = status; \
     winx_dbg_print(NT_STATUS_FLAG,E "%s: " format,__FUNCTION__,## __VA_ARGS__); \
 }
+
+/* prints {error prefix}{function name}: {specified string}: {last error and its description} */
+#define letrace(format,...) winx_dbg_print(LAST_ERROR_FLAG,E "%s: " format,__FUNCTION__,## __VA_ARGS__)
 
 /* prints {error prefix}{function name}: not enough memory */
 #define mtrace() etrace("not enough memory")
@@ -106,15 +100,13 @@ void winx_set_dbg_log(wchar_t *path);
 #define winx_disable_dbg_log()    winx_set_dbg_log(NULL)
 
 /* flags for winx_flush_dbg_log */
-#ifndef FLUSH_ALREADY_SYNCHRONIZED
 #define FLUSH_ALREADY_SYNCHRONIZED 0x1 /* for internal use only */
 #define FLUSH_IN_OUT_OF_MEMORY     0x2 /* flush in the out of memory condition */
-#endif
 
 void winx_flush_dbg_log(int flags);
 
-void winx_dbg_print(int flags,char *format, ...);
-void winx_dbg_print_header(char ch, int width, char *format, ...);
+void winx_dbg_print(int flags, const char *format, ...);
+void winx_dbg_print_header(char ch, int width, const char *format, ...);
 
 /* env.c */
 wchar_t *winx_getenv(wchar_t *name);
@@ -155,7 +147,6 @@ int winx_delete_file(const wchar_t *filename);
 void *winx_get_file_contents(const wchar_t *filename,size_t *bytes_read);
 void winx_release_file_contents(void *contents);
 
-/* float.c */
 /* ftw.c */
 /* winx_ftw flags */
 #define WINX_FTW_RECURSIVE              0x1 /* forces to recursively scan all subdirectories */
@@ -238,8 +229,10 @@ int winx_ftw_dump_file(winx_file_info *f,ftw_terminator t,void *user_defined_dat
 #define WINX_OPEN_FOR_BASIC_INFO 0x2 /* open for NtQueryInformationFile(FILE_BASIC_INFORMATION) */
 #define WINX_OPEN_FOR_MOVE       0x4 /* open for FSCTL_MOVE_FILE */
 
+#ifdef _NTNDK_H_
 NTSTATUS winx_defrag_fopen(winx_file_info *f,int action,HANDLE *phandle);
 void winx_defrag_fclose(HANDLE h);
+#endif
 
 /* ftw_ntfs.c */
 /* int64.c */
@@ -340,14 +333,37 @@ wchar_t *winx_get_module_filename(void);
 int winx_create_path(wchar_t *path);
 
 /* privilege.c */
+#define SE_ASSIGNPRIMARYTOKEN_PRIVILEGE  0x3
+#define SE_AUDIT_PRIVILEGE               0x15
+#define SE_BACKUP_PRIVILEGE              0x11
+#define SE_CREATE_PAGEFILE_PRIVILEGE     0x0f
+#define SE_CREATE_PERMANENT_PRIVILEGE    0x10
+#define SE_CREATE_TOKEN_PRIVILEGE        0x2
+#define SE_DEBUG_PRIVILEGE               0x14
+#define SE_IMPERSONATE_PRIVILEGE
+#define SE_INC_BASE_PRIORITY_PRIVILEGE   0x0e
+#define SE_INCREASE_QUOTA_PRIVILEGE      0x5
+#define SE_LOAD_DRIVER_PRIVILEGE         0x0a
+#define SE_LOCK_MEMORY_PRIVILEGE         0x4
+#define SE_MANAGE_VOLUME_PRIVILEGE       0x1c
+#define SE_PROF_SINGLE_PROCESS_PRIVILEGE 0x0d
+#define SE_RESTORE_PRIVILEGE             0x12
+#define SE_SECURITY_PRIVILEGE            0x8
+#define SE_SHUTDOWN_PRIVILEGE            0x13
+#define SE_SYSTEM_PROFILE_PRIVILEGE      0x0b
+#define SE_SYSTEMTIME_PRIVILEGE          0x0c
+#define SE_TAKE_OWNERSHIP_PRIVILEGE      0x9
+#define SE_TCB_PRIVILEGE                 0x7
+
 int winx_enable_privilege(unsigned long luid);
 
 /* reg.c */
-int winx_bootex_check(wchar_t *command);
-int winx_bootex_register(wchar_t *command);
-int winx_bootex_unregister(wchar_t *command);
+int winx_bootex_check(const wchar_t *command);
+int winx_bootex_register(const wchar_t *command);
+int winx_bootex_unregister(const wchar_t *command);
 
 /* stdio.c */
+#ifdef _NTNDK_H_
 int winx_putch(int ch);
 int winx_puts(const char *string);
 void winx_print(char *string);
@@ -384,6 +400,7 @@ int winx_prompt(char *prompt,char *string,int n,winx_history *h);
 
 int winx_print_strings(char **strings,int line_width,
     int max_rows,char *prompt,int divide_to_pages);
+#endif /* _NTNDK_H_ */
 
 /* string.c */
 /* reliable _toupper and _tolower analogs */
@@ -404,41 +421,8 @@ char *winx_stristr(const char *s1, const char *s2);
 int winx_wcsmatch(wchar_t *string, wchar_t *mask, int flags);
 char *winx_vsprintf(const char *format,va_list arg);
 char *winx_sprintf(const char *format, ...);
-
-/*
-* winx_swprintf routine implementation
-* would be too sophisticated because
-* nt 4.0 misses _vsnwprintf call.
-* The macro implementation is much easier.
-*
-* Example:
-*
-* wchar_t *msg;
-* int size, result;
-*
-* winx_swprintf(msg,size,result,L"%hs","hello");
-* if(msg){
-*   winx_printf("%ws\n",msg);
-*   winx_free(msg);
-* }
-*/
-#define WINX_SWPRINTF_BUFFER_SIZE 128
-#define winx_swprintf(retval,size,result,format,...) { \
-    size = WINX_SWPRINTF_BUFFER_SIZE; \
-    do { \
-        retval = winx_tmalloc(size * sizeof(wchar_t)); \
-        if(!retval) break; \
-        memset(retval,0,size * sizeof(wchar_t)); \
-        result = _snwprintf(retval,size,format,## __VA_ARGS__); \
-        if(result != -1 && result != size){ \
-            retval[size - 1] = 0; \
-            break; \
-        } \
-        winx_free(retval); \
-        retval = NULL; \
-        size <<= 1; \
-    } while(size > 0); \
-}
+wchar_t *winx_vswprintf(const wchar_t *format,va_list arg);
+wchar_t *winx_swprintf(const wchar_t *format, ...);
 
 #define WINX_PAT_ICASE  0x1 /* compile patterns for case insensitive search */
 
@@ -460,8 +444,10 @@ ULONGLONG winx_hr_to_bytes(char *string);
 void winx_to_utf8(char *dst,int size,wchar_t *src);
 
 /* thread.c */
+#ifdef _NTNDK_H_
 int winx_create_thread(PTHREAD_START_ROUTINE start_addr,PVOID parameter);
 void winx_exit_thread(NTSTATUS status);
+#endif
 
 /* time.c */
 ULONGLONG winx_str2time(char *string);
@@ -493,6 +479,27 @@ int winx_get_drive_type(char letter);
 * to hold all known names.
 */
 #define MAX_FS_NAME_LENGTH 31
+
+#ifndef _NTNDK_H_
+#pragma pack(push, 1)
+typedef struct _NTFS_DATA {
+    LARGE_INTEGER VolumeSerialNumber;
+    LARGE_INTEGER NumberSectors;
+    LARGE_INTEGER TotalClusters;
+    LARGE_INTEGER FreeClusters;
+    LARGE_INTEGER TotalReserved;
+    ULONG BytesPerSector;
+    ULONG BytesPerCluster;
+    ULONG BytesPerFileRecordSegment;
+    ULONG ClustersPerFileRecordSegment;
+    LARGE_INTEGER MftValidDataLength;
+    LARGE_INTEGER MftStartLcn;
+    LARGE_INTEGER Mft2StartLcn;
+    LARGE_INTEGER MftZoneStart;
+    LARGE_INTEGER MftZoneEnd;
+} NTFS_DATA, *PNTFS_DATA;
+#pragma pack(pop)
+#endif /* !_NTNDK_H_ */
 
 typedef struct _winx_volume_information {
     char volume_letter;                    /* must be set by caller! */
@@ -543,5 +550,9 @@ void winx_shutdown(void);
 
 /* Red-black trees with parent pointers */
 #include "prb.h"
+
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* _ZENWINX_H_ */

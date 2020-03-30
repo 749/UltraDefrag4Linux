@@ -1,5 +1,63 @@
 ﻿HISTORY
 
+  Version 7.0.0 2015-12-23
+  ------------------------------------------------------------------------------
+    RC1:
+    - few minor bugs were fixed
+    - the following translations were updated:
+
+      Filipino (Tagalog), Spanish
+    
+    beta6:
+    - few major bugs affecting thread safety were fixed
+
+    beta5:
+    - wxWidgets were upgraded to the latest stable 3.0.2 release
+    - a lot of minor bugs were fixed
+    - Finnish translation was updated
+    - NOTE: the language selection got broken, because wxWidgets 3.0.2
+      uses different language identifiers; just click Settings > Language
+      and select yours once again to fix that
+    
+    beta4:
+    - safer options were used for compilation
+    - Slovak translation was updated
+    - one minor bug was fixed
+    
+    beta3:
+    - crash handling was reimplemented to gather more information
+    - few minor bugs were fixed
+    - Portuguese (Brazil) translation was updated
+
+    beta2:
+    - the following translations were updated:
+
+      Catalan, Chinese (China), Chinese (Taiwan), Czech, Danish, Dutch, 
+      English (United Kingdom), French, Georgian, German, Greek, Hungarian, 
+      Iloko, Indonesian, Italian, Japanese, Korean, Lithuanian, Persian, 
+      Polish, Portuguese, Portuguese (Brazil), Russian, Spanish, Spanish (Mexico), 
+      Swedish, Thai, Turkish, Ukrainian, Vietnamese
+
+    beta1:
+    - GUI and command line tools reimplemented on top of wxWidgets library
+    - online translation migrated from http://ultradefrag.wikispaces.com/
+      to http://www.transifex.com/projects/p/ultradefrag/
+    - initial language selection is now done by the GUI instead of the installer
+    - ability to hide drives list columns through their resizing added
+    - ability to check for all or stable updates added
+    - multicolumn language selection menu implemented
+    - internal GUI settings moved from guiopts-internals.lua to gui.ini file
+    - Windows NT 4.0 and Windows 2000 support dropped due to poor API support
+    - useless font selection dialog removed from GUI (adjust Windows theme instead)
+    - scale_by_dpi GUI parameter removed, as well as disable_latest_version_check
+      and restore_default_window_size parameters (examine guiopts.lua file for details)
+    - Internals: Windows Driver Kit support dropped because of its
+      unreliable development environment - use Windows SDK v7.1 instead
+    - winx_vswprintf and winx_swprintf routines added to zenwinx library
+    - wgx library replaced by wxWidgets library
+
+                                    ***
+
   Version 6.1.1 2015-11-20
   ------------------------------------------------------------------------------
     - graphical interface forced to check for available updates more reliably

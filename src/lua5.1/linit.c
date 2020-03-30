@@ -1,5 +1,5 @@
 /*
-** $Id: linit.c 3599 2013-01-01 05:52:44Z dmitriar $
+** $Id: linit.c,v 1.14 2005/12/29 15:32:11 roberto Exp $
 ** Initialization of libraries for lua.c
 ** See Copyright Notice in lua.h
 */

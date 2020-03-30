@@ -29,6 +29,7 @@
 * possible - they're much easier for use.
 */
 
+#include "ntndk.h"
 #include "zenwinx.h"
 
 struct cmd {
@@ -117,17 +118,17 @@ static int get_boot_exec_list(struct cmd **list)
  * zero indicates that they're different, negative value
  * indicates a failure of the comparison.
  */
-static int cmd_compare(wchar_t *reg_cmd,wchar_t *cmd)
+static int cmd_compare(wchar_t *reg_cmd,const wchar_t *cmd)
 {
     wchar_t *long_cmd;
-    int size,result;
+    int result;
     
     /* do we have the command registered as it is? */
     if(!winx_wcsicmp(cmd,reg_cmd))
         return 1;
         
     /* compare reg_cmd with 'autocheck {cmd}' */
-    winx_swprintf(long_cmd,size,result,L"autocheck %ws",cmd);
+    long_cmd = winx_swprintf(L"autocheck %ws",cmd);
     if(long_cmd == NULL){
         mtrace();
         return (-1);
@@ -153,7 +154,7 @@ static int save_boot_exec_list(struct cmd *list)
     NTSTATUS status;
     
     for(c = list; c; c = c->next){
-        if(c->cmd[0]) length += wcslen(c->cmd) + 1;
+        if(c->cmd[0]) length += (int)wcslen(c->cmd) + 1;
         if(c->next == list) break;
     }
     commands = winx_malloc(length * sizeof(wchar_t));
@@ -208,7 +209,7 @@ static void destroy_boot_exec_list(struct cmd *list)
  * is registered, zero indicates that it isn't,
  * negative value indicates a failure of the check.
  */
-int winx_bootex_check(wchar_t *command)
+int winx_bootex_check(const wchar_t *command)
 {
     struct cmd *c, *list = NULL;
     int result = (-1);
@@ -245,7 +246,7 @@ done:
  * @note Command's executable must be placed inside 
  * the system32 directory to be executed successfully.
  */
-int winx_bootex_register(wchar_t *command)
+int winx_bootex_register(const wchar_t *command)
 {
     struct cmd *c, *list = NULL;
     struct cmd *prev_command = NULL;
@@ -300,7 +301,7 @@ done:
  * executable, without the extension.
  * @return Zero for success, negative value otherwise.
  */
-int winx_bootex_unregister(wchar_t *command)
+int winx_bootex_unregister(const wchar_t *command)
 {
     struct cmd *c, *list = NULL;
     struct cmd *head, *next = NULL;

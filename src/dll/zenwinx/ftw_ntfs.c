@@ -24,6 +24,7 @@
  * @{
  */
 
+#include "ntndk.h"
 #include "zenwinx.h"
 #include "ntfs.h"
 
@@ -586,7 +587,7 @@ static void analyze_single_attribute(ULONGLONG mft_id,FILE_RECORD_HEADER *frh,
                     attribute_found = TRUE;
             } else {
                 if(name != NULL){
-                    name_length = wcslen(attr_name);
+                    name_length = (int)wcslen(attr_name);
                     if(name_length == attr->NameLength){
                         if(memcmp((void *)attr_name,(void *)name,name_length * sizeof(wchar_t)) == 0){
                             if(attr->AttributeNumber == attr_number)
@@ -950,8 +951,7 @@ static void analyze_non_resident_attribute_list(winx_file_info *f,ULONGLONG list
     /* allocate memory for an integral number of cluster to hold a whole AttributeList */
     cluster_size = sp->ml.cluster_size;
     clusters_to_read = list_size / cluster_size;
-    /* the following check is a little bit complicated, because _aulldvrm() call is missing on w2k */
-    if(list_size - clusters_to_read * cluster_size/*list_size % cluster_size*/) clusters_to_read ++;
+    if(list_size % cluster_size) clusters_to_read ++;
     cluster = (char *)winx_tmalloc((SIZE_T)(cluster_size * clusters_to_read));
     if(!cluster){
         etrace("cannot allocate %I64u bytes of memory",
@@ -1242,7 +1242,7 @@ static int update_stream_name(winx_file_info *f,mft_scan_parameters *sp)
     wchar_t *new_name;
     int length;
     
-    length = wcslen(f->name) + wcslen(sp->mfi.Name) + 1;
+    length = (int)wcslen(f->name) + (int)wcslen(sp->mfi.Name) + 1;
     new_name = winx_malloc((length + 1) * sizeof(wchar_t));
     
     if(f->name[0]) /* stream name is not empty */

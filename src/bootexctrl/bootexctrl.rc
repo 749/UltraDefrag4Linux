@@ -21,6 +21,7 @@
 * BootExecute Control program resources.
 */
 
+#include <windows.h>
 #include "../include/version.h"
 
 /* manifests for all targets produces make-manifests.cmd script */

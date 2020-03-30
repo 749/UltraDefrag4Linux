@@ -1,0 +1,182 @@
+/*
+ *  UltraDefrag - a powerful defragmentation tool for Windows NT.
+ *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
+ *
+ *  Permission is granted to copy, distribute and/or modify this document
+ *  under the terms of the GNU Free Documentation License, Version 1.3 or
+ *  any later version published by the Free Software Foundation; with no
+ *  Invariant Sections.
+ */
+
+/**
+ * @page Development Development
+ *
+ * If you'd like to know what's under the hood you are welcome to inspect UltraDefrag sources.
+ * You can either use <a href="http://sourceforge.net/p/ultradefrag/code/">online svn browser</a>
+ * or download sources from <a href="http://sourceforge.net/projects/ultradefrag/files/">SourceForge</a>.
+ * Alternatively you can setup an SVN client (for instance <a href="http://tortoisesvn.net/">TortoiseSVN</a>)
+ * and check sources out from their <a href="https://svn.code.sf.net/p/ultradefrag/code/">base address</a>.
+ *
+ * Essential parts of UltraDefrag are written in four programming languages:
+ *
+ * <center>
+ * @htmlonly
+ * <a href="http://www.openhub.net/p/ultradefrag" title="UltraDefrag development statistics at Open Hub">
+ * <img src="languages.png" alt="" width="334" height="184" /></a>
+ * @endhtmlonly
+ * @latexonly
+ * \href{http://www.openhub.net/p/ultradefrag}{\includeicon{languages.png}}
+ * @endlatexonly
+ * </center>
+ *
+ * UltraDefrag <a href="http://ultradefrag.sourceforge.net/doc/lib/">core libraries</a>
+ * are written in pure C for compatibility with Windows boot environment where only bare
+ * ntdll interfaces are available. Both graphical and command line tools are written in C++
+ * on top of <a href="http://www.wxwidgets.org/">wxWidgets</a> library which helps to keep
+ * things simple. For configuration purposes and reports convertion the program uses
+ * <a href="http://www.lua.org/">Lua</a> scripting language. UltraDefrag installers are
+ * written in <a href="http://nsis.sourceforge.net/">NSIS</a>.
+ *
+ * <h1>Compilation</h1>
+ * To build the program install the following software:
+ *
+ * - <a href="http://sourceforge.net/projects/tdm-gcc/">MinGW</a>,
+ *   <a href="http://github.com/wxWidgets/wxWidgets/releases/download/v3.0.2/wxWidgets-3.0.2.7z">wxWidgets 3.0.2</a>,
+ *   <a href="http://www.doxygen.org/">Doxygen 1.8.4</a>, <a href="http://nsis.sourceforge.net/">NSIS</a>,
+ *   <a href="http://www.7-zip.org/">7-zip</a>
+ * - <a href="http://luabinaries.luaforge.net/">Lua 5.1.x</a>, <a href="http://upx.sf.net/">UPX</a>
+ *   (extract them somewhere on your <b>\%path\%</b>)
+ * - <a href="http://help.transifex.com/features/client/index.html#windows-version">Transifex client</a>
+ *   (put it to <b>\\src\\tools\\transifex</b> folder)
+ * - <a href="http://sourceforge.net/projects/gnuwin32/files/gettext/">GNU gettext</a> (optional; for translations management)
+ * - <a href="http://www.miktex.org/">MiKTeX</a> (optional; for pdf documentation; use basic installer)
+ *
+ * To build 64-bit packages install also <a href="http://www.microsoft.com/en-us/download/details.aspx?id=8442">Microsoft Windows SDK v7.1</a>.
+ *
+ * To configure build environment follow these steps:
+ *
+ * @htmlonly
+ * <div class="fragment">
+ * <div class="line"><span class="comment">:: edit the main configuration file</span></div>
+ * <div class="line"><span class="keyword">edit</span> setvars.cmd</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: patch the installed software</span></div>
+ * <div class="line"><span class="keyword">patch-tools</span></div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: build wxWidgets using all the compilers</span></div>
+ * <div class="line"><span class="comment">:: involved in development</span></div>
+ * <div class="line"><span class="keyword">wxbuild</span> --use-mingw</div>
+ * <div class="line"><span class="keyword">wxbuild</span> --use-winsdk</div>
+ * </div>
+ * @endhtmlonly
+ *
+ * @latexonly
+ * \begin{DoxyCode}
+ * \rem{:: edit the main configuration file}
+ * \cmd{edit} setvars.cmd
+ *
+ * \rem{:: patch the installed software}
+ * \cmd{patch-tools}
+ *
+ * \rem{:: build wxWidgets using all the compilers}
+ * \rem{:: involved in development}
+ * \cmd{wxbuild} --use-mingw
+ * \cmd{wxbuild} --use-winsdk
+ * \end{DoxyCode}
+ * @endlatexonly
+ *
+ * To build UltraDefrag use the following commands:
+ *
+ * @htmlonly
+ * <div class="fragment">
+ * <div class="line"><span class="comment">:: build the program using defaults</span></div>
+ * <div class="line"><span class="keyword">build</span></div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: show all available options</span></div>
+ * <div class="line"><span class="keyword">build</span> --help</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: use predefined build actions</span></div>
+ * <div class="line"><span class="keyword">build-menu</span></div>
+ * </div>
+ * @endhtmlonly
+ *
+ * @latexonly
+ * \begin{DoxyCode}
+ * \rem{:: build the program using defaults}
+ * \cmd{build}
+ *
+ * \rem{:: show all available options}
+ * \cmd{build} --help
+ *
+ * \rem{:: use predefined build actions}
+ * \cmd{build-menu}
+ * \end{DoxyCode}
+ * @endlatexonly
+ *
+ * If you need an IDE for development install <a href="http://www.codeblocks.org/">Code::Blocks</a>
+ * as well. To launch it in correct environment type:
+ *
+ * @htmlonly
+ * <div class="fragment">
+ * <div class="line"><span class="keyword">start-CodeBlocks</span></div>
+ * </div>
+ * @endhtmlonly
+ *
+ * @latexonly
+ * \begin{DoxyCode}
+ * \cmd{start-CodeBlocks}
+ * \end{DoxyCode}
+ * @endlatexonly
+ *
+ * If you'd like to know how the build process works inspect
+ * .cmd files - they contain the complete information.
+ *
+ * <h1>Web resources</h1>
+ * Follow these links to understand better UltraDefrag design and internals.
+ *
+ * <h2>Batch scripting</h2>
+ * <a href="http://stackoverflow.com/questions/245395/hidden-features-of-windows-batch-files">Hidden features of Windows batch files</a>\n
+ * <a href="http://ss64.com/nt/syntax.html">Windows command line syntax</a>\n
+ * <a href="http://www.robvanderwoude.com/">Rob van der Woude's scripting pages</a>
+ *
+ * <h2>Binary trees</h2>
+ * <a href="http://en.wikipedia.org/wiki/The_Art_of_Computer_Programming">The Art of Computer Programming</a>
+ *
+ * <h2>Boot time interface</h2>
+ * <a href="http://ultradefrag.sourceforge.net/doc/man/Windows NT(2000) Native API Reference.pdf">Windows native API reference</a>\n
+ * <a href="http://j00ru.vexillium.org/ntapi/">Windows x86 system call table</a>
+ *
+ * <h2>Defragmentation</h2>
+ * <a href="http://ultradefrag.sourceforge.net/doc/man/Inside Windows NT Disk Defragmenting.pdf">Inside Windows NT disk defragmenting</a>\n
+ * <a href="http://blogs.msdn.com/b/e7/archive/2009/01/25/disk-defragmentation-background-and-engineering-the-windows-7-improvements.aspx">Improvements in Windows 7</a>\n
+ * <a href="http://download.microsoft.com/download/e/b/a/eba1050f-a31d-436b-9281-92cdfeae4b45/2kuptoXP.doc">Improvements in Windows XP</a>\n
+ * <a href="http://msdn.microsoft.com/en-us/library/aa363911(VS.85).aspx">Defragmenting Files (Windows)</a>\n
+ * <a href="http://msdn.microsoft.com/en-us/library/aa365230(VS.85).aspx">Master File Table (Windows)</a>
+ *
+ * <h2>File systems</h2>
+ * <a href="http://ultradefrag.sourceforge.net/doc/man/ntfs/">NTFS on-disk structure</a>
+ *
+ * <h2>Graphical interface</h2>
+ * <a href="http://msdn.microsoft.com/en-us/library/aa511258.aspx">Design apps for the Windows desktop</a>\n
+ * <a href="http://msdn.microsoft.com/en-us/library/dd464659(VS.85).aspx">Writing High-DPI Win32 Applications</a>
+ *
+ * <h2>Software design</h2>
+ * <a href="http://www.faqs.org/docs/artu/">The Art of Unix Programming</a>\n
+ * <a href="http://www.gnu.org/prep/standards/">GNU coding standards</a>\n
+ * <a href="http://www.gnu.org/prep/maintain/">Information for maintainers of GNU software</a>
+ *
+ * <h2>Threads</h2>
+ * <a href="http://www-01.ibm.com/support/knowledgecenter/ssw_aix_61/com.ibm.aix.genprogc/writing_reentrant_thread_safe_code.htm%23writing_reentrant_thread_safe_co?cp=ssw_aix_61%2F13-3-12-18">Writing reentrant and threadsafe code</a>\n
+ * <a href="http://www.thinkingparallel.com/2006/10/15/a-short-guide-to-mastering-thread-safety/">A short guide to mastering thread-safety</a>
+ *
+ * @htmlonly
+ * <HR>
+ *  <TABLE STYLE="border: none; width: 97%; margin:auto;">
+ *    <TR>
+ *      <TD STYLE="text-align: left; width: 50%;">Previous: <a href="Translation.html">Translation</a></TD>
+ *      <TD STYLE="text-align: right; width: 50%;">Next: <a href="Credits.html">Credits and License</a></TD>
+ *    </TR>
+ *  </TABLE>
+ * @endhtmlonly
+ */

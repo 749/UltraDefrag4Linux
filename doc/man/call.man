@@ -1,0 +1,35 @@
+CALL(1)            UltraDefrag Boot Time Commands             CALL(1)
+
+NAME
+        call - manual page for call v7.0.0
+
+SYNOPSIS
+        call [OPTION]
+
+DESCRIPTION
+        'call' executes a command script. The default action
+        is to execute the main boot time script.
+
+OPTIONS
+        {file path}
+                execute {file path}
+
+EXAMPLES
+        call
+                execute "%SystemRoot%\System32\ud-boot-time.cmd"
+
+        call C:\Temp\MyCustom.cmd
+                execute "C:\Temp\MyCustom.cmd"
+
+AUTHOR
+        Written by UltraDefrag Development Team.
+
+COPYRIGHT
+        Copyright (C) 2010-2015 UltraDefrag Development Team
+        This is free software. You may redistribute copies of
+        it under the terms of the GNU General Public License
+        <http://www.gnu.org/licenses/gpl.html>. There is NO
+        warranty; not even for MERCHANTABILITY or FITNESS
+        FOR A PARTICULAR PURPOSE.
+
+call                          April 2015                            1

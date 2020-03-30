@@ -1,0 +1,48 @@
+SET(1)             UltraDefrag Boot Time Commands              SET(1)
+
+NAME
+        set - manual page for set v7.0.0
+
+SYNOPSIS
+        set [OPTION]
+
+DESCRIPTION
+        'set' lists, creates, changes and deletes environment
+        variables. The default action is to list all the variables.
+
+OPTIONS
+        {letter}
+                list all available variables starting with {letter};
+                the case of the variable name will be ignored
+
+        {name}={value}
+                assign {value} to the variable {name}
+
+        {name}=
+                delete the variable {name}
+
+EXAMPLES
+        set
+                list all environment variables
+
+        set u
+                list all environment variables starting with 'u'
+
+        set UD_SIZELIMIT=50MB
+                assign '50MB' value to the variable 'UD_SIZELIMIT'
+
+        set UD_EX_FILTER=
+                delete the variable 'UD_EX_FILTER'
+
+AUTHOR
+        Written by UltraDefrag Development Team.
+
+COPYRIGHT
+        Copyright (C) 2010-2015 UltraDefrag Development Team
+        This is free software. You may redistribute copies of
+        it under the terms of the GNU General Public License
+        <http://www.gnu.org/licenses/gpl.html>. There is NO
+        warranty; not even for MERCHANTABILITY or FITNESS
+        FOR A PARTICULAR PURPOSE.
+
+set                           April 2015                            1
