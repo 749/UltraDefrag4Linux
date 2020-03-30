@@ -6,14 +6,14 @@
 # Aivier <iaivier@126.com>, 2013
 # Stefan Pendl <stefanpe@users.sourceforge.net>, 2013
 # wwj402 <wwj402@gmail.com>, 2013
-# YF <yfdyh000@gmail.com>, 2014
+# Y.F Yang <yfdyh000@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ultradefrag\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/p/ultradefrag/bugs/\n"
 "POT-Creation-Date: 2013-07-10 21:44+0200\n"
 "PO-Revision-Date: 2014-11-22 01:20+0000\n"
-"Last-Translator: YF <yfdyh000@gmail.com>\n"
+"Last-Translator: Y.F Yang <yfdyh000@gmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/stefanpendl/ultradefrag/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"

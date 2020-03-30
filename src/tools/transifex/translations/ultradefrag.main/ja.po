@@ -3,16 +3,17 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# necrose99 <mike@michaellawrenceit.com>, 2014
+# Michael Robert Lawrence <mike@michaellawrenceit.com>, 2014
 # Stefan Pendl <stefanpe@users.sourceforge.net>, 2013
 # Stefan Pendl <stefanpe@users.sourceforge.net>, 2013
+# Tatsuya Mizushima (MCtek) <tmizushima@gmail.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: ultradefrag\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/p/ultradefrag/bugs/\n"
 "POT-Creation-Date: 2013-07-10 21:44+0200\n"
-"PO-Revision-Date: 2014-09-22 21:32+0000\n"
-"Last-Translator: necrose99 <mike@michaellawrenceit.com>\n"
+"PO-Revision-Date: 2016-05-24 00:17+0000\n"
+"Last-Translator: Tatsuya Mizushima (MCtek) <tmizushima@gmail.com>\n"
 "Language-Team: Japanese (http://www.transifex.com/stefanpendl/ultradefrag/language/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -150,7 +151,7 @@ msgstr "レポートファイルの設定"
 
 #: i18n.cpp:168
 msgid "&View change log"
-msgstr "ログを変更して表示"
+msgstr "変更履歴を表示"
 
 #: i18n.cpp:169
 msgid "View translation &report"
@@ -226,7 +227,7 @@ msgstr "&アップグレード"
 
 #: i18n.cpp:197
 msgid "&Never check"
-msgstr "&決して確認"
+msgstr "&確認しない"
 
 #: i18n.cpp:198
 msgid "Check &stable releases only"
@@ -391,11 +392,11 @@ msgstr "いいえ"
 
 #: statbar.cpp:92
 msgid "folders"
-msgstr "ﾃﾞｨﾚｸﾄﾘ"
+msgstr "フォルダ"
 
 #: statbar.cpp:93
 msgid "files"
-msgstr "ﾌｧｲﾙ"
+msgstr "ファイル"
 
 #: statbar.cpp:94
 msgid "fragmented"
@@ -452,7 +453,7 @@ msgstr "ディスクを修復する必要があります"
 #: vollist.cpp:369
 #, c-format
 msgid "%5.2lf %% analyzed"
-msgstr "%5.2lf %% で分析"
+msgstr "%5.2lf %% 分析中"
 
 #. : Status of the running disk defragmentation,
 #. : expands to "10 % defragmented, pass 5".
@@ -461,7 +462,7 @@ msgstr "%5.2lf %% で分析"
 #: vollist.cpp:375
 #, c-format
 msgid "%5.2lf %% defragmented, pass %d"
-msgstr "%5.2lf %%、デフラグ、パス %d"
+msgstr "%5.2lf %% デフラグ中、%d パス"
 
 #. : Status of the running disk optimization, expands to
 #. : "10 % optimized, pass 5, 1024 moves total".
@@ -469,7 +470,7 @@ msgstr "%5.2lf %%、デフラグ、パス %d"
 #. : in the translated string at the correct positions.
 #: vollist.cpp:383
 msgid "%5.2lf %% optimized, pass %d, %I64u moves total"
-msgstr "%5.2lf %% に最適化され、%d,、%I64uファイルは、総移動し合格"
+msgstr "%5.2lf %% 最適化中、%d パス、%I64u 個移動しました"
 
 #. : Status of the completed disk analysis.
 #: vollist.cpp:390
@@ -483,7 +484,7 @@ msgstr "分析済み"
 #: vollist.cpp:396
 #, c-format
 msgid "Defragmented, in %d passes"
-msgstr "%d のパスで、デフラグ"
+msgstr "%d パスでデフラグ完了"
 
 #. : Status of the completed disk optimization, expands to
 #. : "Optimized, in 5 passes, 1024 moves total".
@@ -491,4 +492,4 @@ msgstr "%d のパスで、デフラグ"
 #. : in the translated string at the correct positions.
 #: vollist.cpp:404
 msgid "Optimized, in %d passes, %I64u moves total"
-msgstr "で、最適化された%d を通過、%I64u は、総移動する"
+msgstr "%d パスで最適化完了、%I64u 個移動しました"

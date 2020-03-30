@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# credofashion <credofashion@gmail.com>, 2016
 # Stefan Pendl <stefanpe@users.sourceforge.net>, 2013
 # Stefan Pendl <stefanpe@users.sourceforge.net>, 2013
 msgid ""
@@ -10,8 +11,8 @@ msgstr ""
 "Project-Id-Version: ultradefrag\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/p/ultradefrag/bugs/\n"
 "POT-Creation-Date: 2013-07-10 21:44+0200\n"
-"PO-Revision-Date: 2013-11-20 09:52+0000\n"
-"Last-Translator: Stefan Pendl <stefanpe@users.sourceforge.net>\n"
+"PO-Revision-Date: 2016-12-14 17:58+0000\n"
+"Last-Translator: credofashion <credofashion@gmail.com>\n"
 "Language-Team: Arabic (http://www.transifex.com/stefanpendl/ultradefrag/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,11 +22,11 @@ msgstr ""
 
 #: about.cpp:77
 msgid "About UltraDefrag"
-msgstr "حول UltraDefrag"
+msgstr "موقع UltraDefrag"
 
 #: about.cpp:90
 msgid "An open source defragmentation utility."
-msgstr ""
+msgstr "اداة الغاء التجزئه مفتوحة المصدر"
 
 #: about.cpp:92
 msgid "Credits and licenses are listed in the handbook."
@@ -33,7 +34,7 @@ msgstr ""
 
 #: about.cpp:95
 msgid "UltraDefrag website"
-msgstr ""
+msgstr "موقع UltraDefrag"
 
 #: i18n.cpp:129
 msgid "&Action"
@@ -165,7 +166,7 @@ msgstr "ت&سليم الترجمة الحالية"
 
 #: i18n.cpp:174
 msgid "&Options"
-msgstr ""
+msgstr "&خيارات"
 
 #: i18n.cpp:177
 msgid "&Enable"
@@ -221,7 +222,7 @@ msgstr "&شرح رموز الخريطة"
 
 #: i18n.cpp:196 upgrade.cpp:161
 msgid "&Upgrade"
-msgstr ""
+msgstr "&ترقيه"
 
 #: i18n.cpp:197
 msgid "&Never check"
@@ -468,7 +469,7 @@ msgstr ""
 #. : in the translated string at the correct positions.
 #: vollist.cpp:383
 msgid "%5.2lf %% optimized, pass %d, %I64u moves total"
-msgstr ""
+msgstr "%5.2lf %% تحسين, المنتهى %d, %I64u إجمالى التحركات"
 
 #. : Status of the completed disk analysis.
 #: vollist.cpp:390

@@ -55,7 +55,7 @@
  * <tr><td>                               </td><td>-</td><td> Elita Alutee</td></tr>
  * <tr><td>                               </td><td>-</td><td> All UltraDefrag Fans</td></tr>
  * <tr><td>                               </td><td>-</td><td> wwj402</td></tr>
- * <tr><td>                               </td><td>-</td><td> YF</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Y.F. Yang</td></tr>
  * <tr><td>• Chinese (Traditional)        </td><td>-</td><td> muzuiget</td></tr>
  * <tr><td>                               </td><td>-</td><td> Ryan Ping Chih Ko</td></tr>
  * <tr><td>                               </td><td>-</td><td> rexx</td></tr>
@@ -114,6 +114,7 @@
  * <tr><td>• Indonesian                   </td><td>-</td><td> Imanuel Novian</td></tr>
  * <tr><td>                               </td><td>-</td><td> Djati Satria</td></tr>
  * <tr><td>                               </td><td>-</td><td> Rizki Aulia Rachman</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Joshua Randiny</td></tr>
  * <tr><td>• Italian                      </td><td>-</td><td> Paolo Loggia</td></tr>
  * <tr><td>                               </td><td>-</td><td> Sherpya</td></tr>
  * <tr><td>                               </td><td>-</td><td> Edoardo Brunetti</td></tr>
@@ -123,7 +124,8 @@
  * <tr><td>• Japanese                     </td><td>-</td><td> ao3</td></tr>
  * <tr><td>                               </td><td>-</td><td> Masao Kajiwara</td></tr>
  * <tr><td>                               </td><td>-</td><td> kako</td></tr>
- * <tr><td>                               </td><td>-</td><td> necrose99</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Michael Robert Lawrence</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Tatsuya Mizushima (MCtek)</td></tr>
  * <tr><td>• Javanese                     </td><td>-</td><td> Taufan Nur Hidayat</td></tr>
  * <tr><td>• Kapampangan                  </td><td>-</td><td> Edwin N. Camaya</td></tr>
  * <tr><td>• Korean                       </td><td>-</td><td> Alex Han</td></tr>
@@ -182,6 +184,7 @@
  * <tr><td>• Ukrainian                    </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
  * <tr><td>                               </td><td>-</td><td> lembergman</td></tr>
  * <tr><td>                               </td><td>-</td><td> alex hap</td></tr>
+ * <tr><td>                               </td><td>-</td><td> zubr139</td></tr>
  * <tr><td>• Uzbek (Latin)                </td><td>-</td><td> Sherzod Mamatkulov</td></tr>
  * <tr><td>• Vietnamese                   </td><td>-</td><td> Vietnamize Team</td></tr>
  * <tr><td>                               </td><td>-</td><td> DT</td></tr>
@@ -216,7 +219,7 @@
  *                                 & - & Elita Alutee \\
  *                                 & - & All UltraDefrag Fans \\
  *                                 & - & wwj402 \\
- *                                 & - & YF \\
+ *                                 & - & Y.F. Yang \\
  * • Chinese (Traditional)         & - & muzuiget \\
  *                                 & - & Ryan Ping Chih Ko \\
  *                                 & - & rexx \\
@@ -275,6 +278,7 @@
  * • Indonesian                    & - & Imanuel Novian \\
  *                                 & - & Djati Satria \\
  *                                 & - & Rizki Aulia Rachman \\
+ *                                 & - & Joshua Randiny \\
  * • Italian                       & - & Paolo Loggia \\
  *                                 & - & Sherpya \\
  *                                 & - & Edoardo Brunetti \\
@@ -284,7 +288,8 @@
  * • Japanese                      & - & ao3 \\
  *                                 & - & Masao Kajiwara \\
  *                                 & - & kako \\
- *                                 & - & necrose99 \\
+ *                                 & - & Michael Robert Lawrence \\
+ *                                 & - & Tatsuya Mizushima (MCtek) \\
  * • Javanese                      & - & Taufan Nur Hidayat \\
  * • Kapampangan                   & - & Edwin N. Camaya \\
  * • Korean                        & - & Alex Han \\
@@ -343,6 +348,7 @@
  * • Ukrainian                     & - & Dmitri Arkhangelski \\
  *                                 & - & lembergman \\
  *                                 & - & alex hap \\
+ *                                 & - & zubr139 \\
  * • Uzbek (Latin)                 & - & Sherzod Mamatkulov \\
  * • Vietnamese                    & - & Vietnamize Team \\
  *                                 & - & DT \\
@@ -655,15 +661,15 @@
  * \setlength\LTleft{1.25em}\setlength\LTright{\fill}\begin{longtable}{p{1\linewidth-2em}}
  * @endlatexonly
  * Aivier, Antonio Vivace, Benny Stütz, Bernard Ladenthin, Carlo Bruschi, Catur Susetyo,
- * Connection, Dandy Cheung, Daniel Rodríguez, Davide, Dmitry Zemskov, Erwin Dokter, El Fiera,
+ * Connection, credofashion, Dandy Cheung, Daniel Rodríguez, Davide, Dmitry Zemskov, Erwin Dokter, El Fiera,
  * Fabrizio Marana, FS, Garoiu Victor, Giulio Fornasar, Gustavo Rezende, Haein Jung, Harald Arnesen,
  * Jan Iemhoff, Jani Kinnunen, JIFF, Julien Chartier, Luigi C., Javier Valdivieso, Jiri Sedlak,
- * José Carlos Taveira de Souza, José Luis Farías, Joshua Christo Randiny, Karam Al-Shorbassi,
+ * José Carlos Taveira de Souza, José Luis Farías, Karam Al-Shorbassi,
  * Ken Choy, Krzysztof Świderski, Latino, Leo Smulders, luigif, MAFA1005, Massa,
  * Matej Marton, Mateusz Krawczyk, Nikolay Parukhin, Patrick Palm, Piotr Halama,
  * Reynald Didier, Robert Jr, Robert Readman, Rodrigo Lopes Paitach, Seph, SMHA,
  * strel, Suranappar.se, Timo VJ Lähde, Tjeerd van Sas, Trans-fr, translucens, TurboHz,
- * udef-jardic, Zirikkanen, zubr139
+ * udef-jardic, Zirikkanen
  * @htmlonly
  * </dd></dl>
  * @endhtmlonly

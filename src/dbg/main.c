@@ -162,7 +162,7 @@ static void show_advice(void)
        "The program itself is known to be pretty\n"
        "stable, so you probably have either broken\n"
        "hardware or a virus infection. However, if\n"
-       "it's not your case, dont' hesitate to report\n"
+       "it's not your case, don't hesitate to report\n"
        "the crash via our bug tracker:\n\n"
        "http://sourceforge.net/p/ultradefrag/bugs/\n\n"
        "Also you might downgrade to UltraDefrag v6\n"

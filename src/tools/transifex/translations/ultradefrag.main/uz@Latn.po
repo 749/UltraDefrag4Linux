@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: ultradefrag\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/p/ultradefrag/bugs/\n"
 "POT-Creation-Date: 2013-07-10 21:44+0200\n"
-"PO-Revision-Date: 2016-02-12 07:00+0000\n"
+"PO-Revision-Date: 2016-04-15 22:53+0000\n"
 "Last-Translator: Sherzod Mamatkulov <softuz@mail.ru>\n"
 "Language-Team: Uzbek (Latin) (http://www.transifex.com/stefanpendl/ultradefrag/language/uz@Latn/)\n"
 "MIME-Version: 1.0\n"
@@ -84,11 +84,11 @@ msgstr "Amalni ta&krorlash"
 
 #: i18n.cpp:143
 msgid "Skip removable &media"
-msgstr "Olinadigan m&ediani tashlab ketish"
+msgstr "Olinadigan m&edia tashlab ketilsin"
 
 #: i18n.cpp:144
 msgid "&Rescan drives"
-msgstr "&Disklarni qayta tekshirish"
+msgstr "Disklarni &qayta tekshirish"
 
 #: i18n.cpp:145
 msgid "Repair dri&ves"
@@ -104,7 +104,7 @@ msgstr "&Nihoyasiga yetgach"
 
 #: i18n.cpp:150
 msgid "&None"
-msgstr "&Hechnima qilinmasin"
+msgstr "&Hech nima qilinmasin"
 
 #: i18n.cpp:152
 msgid "Stan&dby"
@@ -128,7 +128,7 @@ msgstr "Kompyuter o‘&chirilsin"
 
 #: i18n.cpp:159
 msgid "&Show report"
-msgstr "Hi&sobot ko‘rsatilsin"
+msgstr "Hi&sobotni ko‘rsatish"
 
 #: i18n.cpp:162
 msgid "&Language"
@@ -136,7 +136,7 @@ msgstr "&Interfeys tili"
 
 #: i18n.cpp:163 i18n.cpp:209
 msgid "&Boot time scan"
-msgstr "Tizimni &yuklash vaqtida tekshirish"
+msgstr "&Tizimni yuklash vaqtida tekshirish"
 
 #: i18n.cpp:164
 msgid "&Sorting"
@@ -164,7 +164,7 @@ msgstr "&Joriy tarjimani yuborish"
 
 #: i18n.cpp:174
 msgid "&Options"
-msgstr "&Opsiyalar"
+msgstr "&Parametrlar"
 
 #: i18n.cpp:177
 msgid "&Enable"
@@ -192,7 +192,7 @@ msgstr "&O‘zgargan vaqti bo‘yicha"
 
 #: i18n.cpp:185
 msgid "By &last access time"
-msgstr "&Oxirgi ochilgan vaqti bo‘yicha"
+msgstr "O&xirgi ochilgan vaqti bo‘yicha"
 
 #: i18n.cpp:186
 msgid "In &ascending order"
@@ -272,11 +272,11 @@ msgstr "Fragmentatsiya"
 
 #: i18n.cpp:221
 msgid "Total space"
-msgstr "Jami bo‘shlig‘i"
+msgstr "Jami bo‘shliq"
 
 #: i18n.cpp:222
 msgid "Free space"
-msgstr "Bo‘sh joyi"
+msgstr "Bo‘sh joy"
 
 #: i18n.cpp:224
 #, no-c-format
@@ -389,19 +389,19 @@ msgstr "Y&o‘q"
 
 #: statbar.cpp:92
 msgid "folders"
-msgstr "jildlar"
+msgstr "ta jild"
 
 #: statbar.cpp:93
 msgid "files"
-msgstr "fayllar"
+msgstr "ta fayl"
 
 #: statbar.cpp:94
 msgid "fragmented"
-msgstr "fragmentlangan"
+msgstr "tasi fragmentlangan"
 
 #: statbar.cpp:95
 msgid "compressed"
-msgstr "siqilgan"
+msgstr "tasi siqilgan"
 
 #: taskbar.cpp:198
 msgid "The job is paused"
@@ -409,7 +409,7 @@ msgstr "Ish pauza qilindi"
 
 #: taskbar.cpp:203
 msgid "The job is running"
-msgstr "Ish ketmoqda"
+msgstr "Ish bajarilmoqda"
 
 #: tray.cpp:70
 msgid "Show"
@@ -481,7 +481,7 @@ msgstr "Tahlil qilindi"
 #: vollist.cpp:396
 #, c-format
 msgid "Defragmented, in %d passes"
-msgstr "Defragmentatsiya qilindi, %d sikldan so‘ng"
+msgstr "Defragmentatsiya qilindi, %d ta sikl"
 
 #. : Status of the completed disk optimization, expands to
 #. : "Optimized, in 5 passes, 1024 moves total".
@@ -489,4 +489,4 @@ msgstr "Defragmentatsiya qilindi, %d sikldan so‘ng"
 #. : in the translated string at the correct positions.
 #: vollist.cpp:404
 msgid "Optimized, in %d passes, %I64u moves total"
-msgstr "Optimallandi, %d sikldan so‘ng, jami %I64u tasi ko‘chirildi"
+msgstr "Optimallandi, %d ta sikldan so‘ng, jami %I64u tasi ko‘chirildi"

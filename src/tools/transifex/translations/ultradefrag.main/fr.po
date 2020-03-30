@@ -3,21 +3,21 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Trans-fr, 2013
+# French language coordinator <french.translation@rbox.me>, 2013
 # Julien Chartier, 2013
 # Julien Chartier, 2013
 # Marc Sokolovitch <sokolovitch@yahoo.com>, 2013
 # Marc Sokolovitch <sokolovitch@yahoo.com>, 2013
 # Stefan Pendl <stefanpe@users.sourceforge.net>, 2013
 # Stefan Pendl <stefanpe@users.sourceforge.net>, 2013
-# Trans-fr, 2014-2015
+# French language coordinator <french.translation@rbox.me>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: ultradefrag\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/p/ultradefrag/bugs/\n"
 "POT-Creation-Date: 2013-07-10 21:44+0200\n"
 "PO-Revision-Date: 2015-01-29 17:01+0000\n"
-"Last-Translator: Trans-fr\n"
+"Last-Translator: French language coordinator <french.translation@rbox.me>\n"
 "Language-Team: French (http://www.transifex.com/stefanpendl/ultradefrag/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
