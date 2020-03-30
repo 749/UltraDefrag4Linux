@@ -1128,7 +1128,7 @@ typedef struct _FILE_BOTH_DIRECTORY_INFORMATION {
     LARGE_INTEGER       ChangeTime;
     LARGE_INTEGER       EndOfFile;
     /*
-    * The next field may hold zero for 3.99 Gb files on FAT32
+    * The next field may hold zero for 3.99 GB files on FAT32
     * volumes with 32k cluster size (tested on 32-bit XP SP1).
     */
     LARGE_INTEGER       AllocationSize;

@@ -489,7 +489,7 @@ void *winx_get_file_contents(const char *filename,size_t *bytes_read)
     
 #ifndef _WIN64
     if(size > 0xFFFFFFFF){
-        winx_printf("\n%s: Files larger than ~4Gb aren\'t supported!\n\n",
+        winx_printf("\n%s: Files larger than ~4GB aren\'t supported!\n\n",
             filename);
         winx_fclose(f);
         return NULL;

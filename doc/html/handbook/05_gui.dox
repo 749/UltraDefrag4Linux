@@ -718,6 +718,10 @@
  * @note
  * Unused map blocks are <b>not</b> to be confused with free space.
  *
+ * @par Free space color
+ * The default is white as shown in the image above,
+ * but this can be changed through the background color setting.
+ *
  * <h1>When done</h1>
  * If any of the actions except <b>None</b> is checked, UltraDefrag
  * will automatically perform that action after the job completes.

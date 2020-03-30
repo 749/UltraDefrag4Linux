@@ -1,23 +1,30 @@
 /*
-* Hibernate for Windows - a command line tool for Windows hibernation.
-*
-* Programmer:    Dmitri Arkhangelski (dmitriar@gmail.com)
-* Creation date: October 2009
-* License:       Public Domain
-*/
+ *  Hibernate for Windows - a command line tool for Windows hibernation.
+ *  Copyright (c) 2009-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
-#define VS_VERSION_INFO     1
-#ifndef WINVER
-#define WINVER 0x0400
-#endif
-#include <winresrc.h>
+#include "../include/version.h"
 
 /* manifests for all targets produces make-manifests.cmd script */
 1 24 "hibernate.manifest"
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,0
- PRODUCTVERSION 1,0,0,0
+ FILEVERSION VERSION
+ PRODUCTVERSION VERSION
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -34,12 +41,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "UltraDefrag Development Team\0"
             VALUE "FileDescription", "Hibernate for Windows\0"
-            VALUE "FileVersion", "1, 0, 0, 0\0"
+            VALUE "FileVersion", "1, 0, 1, 0\0"
             VALUE "InternalName", "hibernate\0"
-            VALUE "LegalCopyright", "Public Domain\0"
+            VALUE "LegalCopyright", "Copyright © 2007-2012 UltraDefrag Development Team\0"
             VALUE "OriginalFilename", "hibernate.exe\0"
             VALUE "ProductName", "Hibernate for Windows\0"
-            VALUE "ProductVersion", "1, 0, 0, 0\0"
+            VALUE "ProductVersion", "1, 0, 1, 0\0"
         END
     END
     BLOCK "VarFileInfo"

@@ -61,14 +61,14 @@ REPORTS                   = Reporty
 
 ; --- --- Language submenu
 
-TRANSLATIONS_CHANGE_LOG   = Zobraziť zmeny protokolu
-TRANSLATIONS_REPORT       = Zobraziť preklad správy
+TRANSLATIONS_CHANGE_LOG   = Zobraziť zoznam zmien
+TRANSLATIONS_REPORT       = Zobraziť report prekladu
 TRANSLATIONS_FOLDER       = Priečinok s jazykovými prekladmi
-TRANSLATIONS_SUBMIT       = Odoslať aktuálne preklad
+TRANSLATIONS_SUBMIT       = Odoslať váš preklad
 
 ; --- --- Graphical interface submenu
 
-FONT                      = Písmo
+FONT                      = Font
 OPTIONS                   = Možnosti
 
 ; --- --- Boot time scan submenu
@@ -81,7 +81,7 @@ SCRIPT                    = Skript
 CONTENTS                  = Obsah
 BEST_PRACTICE             = Vhodné použitie
 FAQ                       = Časté otázky
-CM_LEGEND                 = Cluster mapa legenda
+CM_LEGEND                 = Legenda cluster mapy
 DEBUG                     = Ladiť
 CHECK_UPDATE              = Skontrolovať aktualizácie
 ABOUT                     = O programe
@@ -126,11 +126,11 @@ LICENSE                   = Licencia
 
 ; Shutdown confirmation
 
-PLEASE_CONFIRM            = Prosím potvrď
-REALLY_SHUTDOWN_WHEN_DONE = Naozaj chceš vypnúť počítač po dokončení?
-REALLY_HIBERNATE_WHEN_DONE= Naozaj chceš uspať počítač po dokončení?
-REALLY_LOGOFF_WHEN_DONE   = Naozaj sa chceš odhlásiť po dokončení?
-REALLY_REBOOT_WHEN_DONE   = Naozaj chceš reštartovať počítač po dokončení?
+PLEASE_CONFIRM            = Prosím potvrďte
+REALLY_SHUTDOWN_WHEN_DONE = Naozaj chcete vypnúť počítač po dokončení?
+REALLY_HIBERNATE_WHEN_DONE= Naozaj chcete uspať počítač po dokončení?
+REALLY_LOGOFF_WHEN_DONE   = Naozaj sa chcete po dokončení odhlásiť?
+REALLY_REBOOT_WHEN_DONE   = Naozaj chcete po dokončení reštartovať počítač?
 SECONDS_TILL_SHUTDOWN     = sekúnd do vypnutia počítača
 SECONDS_TILL_HIBERNATION  = sekúnd do uspatia počítača
 SECONDS_TILL_LOGOFF       = sekúnd do odhlásenia používateľa
@@ -140,8 +140,8 @@ NO                        = nie
 
 ; Upgrade dialog
 
-UPGRADE_CAPTION           = Môžete upgradovať ma ^-^
-UPGRADE_MESSAGE           = Správa je k dispozícii na stiahnutie!
+UPGRADE_CAPTION           = Môžete ma aktualizovať ^-^
+UPGRADE_MESSAGE           = Nová verzia je k dispozícii na stiahnutie!
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 
@@ -162,11 +162,11 @@ POWERED_BY_LUA            = Powered by Lua
 
 FRAGMENTS                 = fragmenty
 SIZE                      = veľkosť
-FILENAME                  = súboru
+FILENAME                  = názov súboru
 COMMENT                   = komentár
 
 LOCKED                    = zamknutý
-MOVE_FAILED               = pohybovať sa nepodarilo
+MOVE_FAILED               = presun sa nepodaril
 INVALID                   = neplatný
 
 ; END OF FILE

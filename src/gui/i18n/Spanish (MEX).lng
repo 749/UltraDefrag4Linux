@@ -161,13 +161,13 @@ VISIT_HOMEPAGE            = Visitar el sitio Web
 VIEW_REPORT_OPTIONS       = Ver las opciones de informe
 POWERED_BY_LUA            = Desarrollado por Lua
 
-FRAGMENTS                 = framentos
+FRAGMENTS                 = fragmentos
 SIZE                      = tamaño
 FILENAME                  = nombre de archivo
 COMMENT                   = comentario
 
-LOCKED                    = cerrado
+LOCKED                    = bloqueado
 MOVE_FAILED               = error al mover
-INVALID                   = inválido
+INVALID                   = no es válido
 
 ; END OF FILE

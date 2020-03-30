@@ -28,17 +28,17 @@
  * Analyze the disk.
  *
  * @par --defragment
- * Defragment the disk. This key is optional. Specifying just 
- * the drive letter will cause UltraDefrag to defragment the disk.
+ * Defragment the disk. This is the default action.
  *
- * @par -o, --optimize
- * Optimize the disk space by moving all files to the beginning of the disk.
+ * @par --optimize-mft
+ * Optimize the MFT by placing its fragments as close to each other as possible.
+ * This is also included in full and quick optimization.
  *
  * @par -q, --quick-optimize
  * Optimize the disk space by moving not fragmented files to the beginning of the disk.
  *
- * @par --optimize-mft
- * Optimize the MFT by placing its fragments as close to each other as possible.
+ * @par -o, --optimize
+ * Optimize the disk space by moving all files to the beginning of the disk.
  *
  * @par -l, --list-available-volumes
  * List all disks available for defragmentation, except removable. Each line of the
@@ -50,6 +50,9 @@
  *
  * @par -h, -?, --help
  * Show help screen. Running UltraDefrag without arguments has the same effect.
+ *
+ * @note
+ * The commands are exclusive and can't be combined with each other.
  *
  * Options:
  * @par -r, --repeat
@@ -132,16 +135,16 @@
  * \begin{Indent}
  * @endlatexonly
  * @par UD_IN_FILTER
- * List of files to be included in defragmentation process. File names 
+ * List of file patterns to be included in the defragmentation process. File patterns 
  * must be separated by semicolons.
  *
  * @par UD_EX_FILTER
- * List of files to be excluded from defragmentation process. File names 
+ * List of file patterns to be excluded from the defragmentation process. File patterns 
  * must be separated by semicolons.
  *
  * @par UD_FILE_SIZE_THRESHOLD
  * Exclude all files larger than the specified size.<br/>The following 
- * size suffixes are accepted: Kb, Mb, Gb, Tb, Pb, Eb.
+ * size suffixes are accepted: KB, MB, GB, TB, PB, EB.
  *
  * @par UD_FRAGMENTS_THRESHOLD
  * Exclude all files which have less fragments than the specified number.
@@ -215,7 +218,7 @@
  *
  * @par process only files below 50 MB in size
  * @code
- * set UD_FILE_SIZE_THRESHOLD=50Mb
+ * set UD_FILE_SIZE_THRESHOLD=50MB
  * @endcode
  *
  * @par process only files with more than 6 fragments
@@ -271,7 +274,7 @@
  * @echo off
  *
  * set UD_EX_FILTER=*system volume information*;*temp*;*tmp*;*recycle*;*.zip;*.7z;*.rar
- * set UD_FILE_SIZE_THRESHOLD=50Mb
+ * set UD_FILE_SIZE_THRESHOLD=50MB
  * udefrag c: > c:\ud.log
  *
  * set UD_IN_FILTER=D:\My Documents\*
@@ -291,7 +294,7 @@
  *
  * rem Defragment small files.
  *
- * set UD_FILE_SIZE_THRESHOLD=50Mb
+ * set UD_FILE_SIZE_THRESHOLD=50MB
  * udefrag c:
  *
  * rem Defragment large files 

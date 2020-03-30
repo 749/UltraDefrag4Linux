@@ -143,7 +143,7 @@ NO                        = 否
 ; Upgrade dialog
 
 UPGRADE_CAPTION           = 升级吧 ^-^
-UPGRADE_MESSAGE           = 有新的更新可以下载！
+UPGRADE_MESSAGE           = 有更新可以下载！
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 

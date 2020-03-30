@@ -452,10 +452,10 @@ void winx_patfree(winx_patlist *patterns)
  */
 int winx_bytes_to_hr(ULONGLONG bytes, int digits, char *buffer, int length)
 {
-    char *suffixes[] = { "b", "Kb", "Mb", "Gb", "Tb", "Pb", "Eb", "Zb", "Yb" };
+    char *suffixes[] = { "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
     ULONGLONG n; /* an integer part of the result */
     ULONGLONG m; /* a multiplier */
-    ULONGLONG r; /* a rest */
+    ULONGLONG r; /* a remaining part */
     int i;       /* an index for the suffixes array */
     double rd;
     char spec[] = "%I64u.%00I64u %s";
@@ -489,7 +489,7 @@ int winx_bytes_to_hr(ULONGLONG bytes, int digits, char *buffer, int length)
  * @brief Converts human readable
  * string to number of bytes.
  * @details Supported suffixes:
- * b, Kb, Mb, Gb, Tb, Pb, Eb, Zb, Yb.
+ * B, KB, MB, GB, TB, PB, EB, ZB, YB.
  * @param[in] string string to be converted.
  * @return Number of bytes.
  * @note Accepted values are below 16.0 Eb,
@@ -497,12 +497,12 @@ int winx_bytes_to_hr(ULONGLONG bytes, int digits, char *buffer, int length)
  */
 ULONGLONG winx_hr_to_bytes(char *string)
 {
-    char *suffixes[] = { "Kb", "Mb", "Gb", "Tb", "Pb", "Eb", "Zb", "Yb" };
+    char *suffixes[] = { "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
     int suffix_found = 0;
     char *dp;    /* a dot position */
     ULONGLONG n; /* an integer part */
     ULONGLONG m; /* a multiplier */
-    ULONGLONG r; /* a rest */
+    ULONGLONG r; /* a remaining part */
     int i;       /* an index for the suffixes array */
     double rd;
     

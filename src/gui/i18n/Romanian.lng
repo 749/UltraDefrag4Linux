@@ -17,72 +17,72 @@
 
 ; Main Menu
 
-ACTION                    = Actiune
+ACTION                    = Acțiune
 REPORT                    = Raport
-SETTINGS                  = Setari
+SETTINGS                  = Setări
 HELP                      = Ajutor
 
 ; --- Action Menu
 
-ANALYSE                   = Analizeaza
+ANALYSE                   = Analizează
 DEFRAGMENT                = Defragmentare
-QUICK_OPTIMIZE            = Optimizare Rapida
-FULL_OPTIMIZE             = Optimizare Completa
+QUICK_OPTIMIZE            = Optimizare rapidă
+FULL_OPTIMIZE             = Optimizare completă
 OPTIMIZE_MFT              = Optimizare MFT
 STOP                      = Stop
-REPEAT_ACTION             = Repeta actiunea
+REPEAT_ACTION             = Repetă acțiunea
 SKIP_REMOVABLE_MEDIA      = Treci peste drive-urile portabile
-RESCAN_DRIVES             = Re-scaneaza partitiile
-REPAIR_DRIVES             = Unităţi de reparaţii
-WHEN_DONE                 = Cand e gata
-EXIT                      = Iesire
+RESCAN_DRIVES             = Re-scanează unitățile
+REPAIR_DRIVES             = Repară unitățile
+WHEN_DONE                 = Când e gata
+EXIT                      = Ieșire
 
 ; --- --- When done submenu
 
 WHEN_DONE_NONE            = Nimic
-WHEN_DONE_EXIT            = Iesire
-WHEN_DONE_STANDBY         = Asteptare
+WHEN_DONE_EXIT            = Ieșire
+WHEN_DONE_STANDBY         = Așteptare
 WHEN_DONE_HIBERNATE       = Hibernare
 WHEN_DONE_LOGOFF          = Delogare
 WHEN_DONE_REBOOT          = Repornire
-WHEN_DONE_SHUTDOWN        = Inchide
+WHEN_DONE_SHUTDOWN        = Închide
 
 ; --- Report Menu
 
-SHOW_REPORT               = Arata raportul
+SHOW_REPORT               = Arată raportul
 
 ; --- Settings Menu
 
 LANGUAGE                  = Limba
-GRAPHICAL_INTERFACE       = Interfata grafica
-BOOT_TIME_SCAN            = Timpul de scanare butabil
+GRAPHICAL_INTERFACE       = Interfața grafică
+BOOT_TIME_SCAN            = Scanare la pornirea sistemului
 REPORTS                   = Rapoarte
 
 ; --- --- Language submenu
 
-TRANSLATIONS_CHANGE_LOG   = Vezi schimba jurnal
-TRANSLATIONS_REPORT       = Vezi raportul de traducere
+TRANSLATIONS_CHANGE_LOG   = Vezi jurnalul schimbărilor
+TRANSLATIONS_REPORT       = Vezi raportul traducerilor
 TRANSLATIONS_FOLDER       = Dosarul traducerilor
-TRANSLATIONS_SUBMIT       = Trimite traducere curent
+TRANSLATIONS_SUBMIT       = Trimite traducerea curentă
 
 ; --- --- Graphical interface submenu
 
-FONT                      = Fontul
-OPTIONS                   = Optiuni
+FONT                      = Font
+OPTIONS                   = Opțiuni
 
 ; --- --- Boot time scan submenu
 
-ENABLE                    = Activeaza
-SCRIPT                    = Scenariu
+ENABLE                    = Activează
+SCRIPT                    = Script
 
 ; --- Help Menu
 
-CONTENTS                  = Continut
-BEST_PRACTICE             = Cea mai buna practica
+CONTENTS                  = Conținut
+BEST_PRACTICE             = Cele mai bune practici
 FAQ                       = Întrebări frecvente
-CM_LEGEND                 = Cluster hartă legenda
-DEBUG                     = Depana
-CHECK_UPDATE              = Verificaţi pentru actualizare
+CM_LEGEND                 = Legenda hărții cluster
+DEBUG                     = Depanare
+CHECK_UPDATE              = Verifică actualizări
 ABOUT                     = Despre
 
 ; --- --- Debug submenu
@@ -92,14 +92,14 @@ REPORT_BUG                = Trimite raportul de eroare
 
 ; --- Toolbar Tooltips
 
-BOOT_TIME_SCRIPT          = Script pentru timpul de butare
+BOOT_TIME_SCRIPT          = Script pentru pornirea sistemului
 
 ; Drives list items.
 
-VOLUME                    = Conduce
+VOLUME                    = Volum
 STATUS                    = Stadiu
-TOTAL                     = Spatiu Total
-FREE                      = Spatiu Liber
+TOTAL                     = Spațiu total
+FREE                      = Spațiu liber
 PERCENT                   = % liber
 
 ; Status messages
@@ -108,64 +108,64 @@ STATUS_RUNNING            = Executare
 STATUS_ANALYSED           = Analizare
 STATUS_DEFRAGMENTED       = Defragmentare
 STATUS_OPTIMIZED          = Optimizare
-STATUS_DIRTY              = Disc trebuie să fie reparat
+STATUS_DIRTY              = Discul trebuie reparat
 
 ; Status bar messages.
 
 DIRS                      = dosare
-FILES                     = fisiere
+FILES                     = fișiere
 FRAGMENTED                = fragmentate
 COMPRESSED                = arhivate
 
 ; About window.
 
 ABOUT_WIN_TITLE           = Despre Ultra Defragmenter
-CREDITS                   = Creditari
-LICENSE                   = Licenta
+CREDITS                   = Credite
+LICENSE                   = Licență
 
 ; Shutdown confirmation
 
-PLEASE_CONFIRM            = Va Rugam Confirmati
-REALLY_SHUTDOWN_WHEN_DONE = Sigur inchideti calculatorul cand este gata?
-REALLY_HIBERNATE_WHEN_DONE= Sunteti sigur ca vreti sa hiberneze calculatorul cand este gata?
-REALLY_LOGOFF_WHEN_DONE   = Santeti sigur ca vreti sa va delogati cand e gata?
-REALLY_REBOOT_WHEN_DONE   = Santeti sigur ca vreti sa restarteze cand e gata?
-SECONDS_TILL_SHUTDOWN     = secunde pana la inchidere
-SECONDS_TILL_HIBERNATION  = secunde pana la hibernare
-SECONDS_TILL_LOGOFF       = secunde pana la delogare
-SECONDS_TILL_REBOOT       = secunde pana la restartare
+PLEASE_CONFIRM            = Confirmați
+REALLY_SHUTDOWN_WHEN_DONE = Vreți să opriți calculatorul când e gata?
+REALLY_HIBERNATE_WHEN_DONE= Vreți să hiberneze calculatorul când e gata?
+REALLY_LOGOFF_WHEN_DONE   = Vreți să va delogați când e gata?
+REALLY_REBOOT_WHEN_DONE   = Vreți să restartați calculatorul când e gata?
+SECONDS_TILL_SHUTDOWN     = secunde până la închidere
+SECONDS_TILL_HIBERNATION  = secunde până la hibernare
+SECONDS_TILL_LOGOFF       = secunde până la delogare
+SECONDS_TILL_REBOOT       = secunde până la restartare
 YES                       = Da
 NO                        = Nu
 
 ; Upgrade dialog
 
-UPGRADE_CAPTION           = Poţi să-mi faceţi upgrade ^-^
-UPGRADE_MESSAGE           = eliberare este disponibil pentru download!
+UPGRADE_CAPTION           = Puteți să-mi faceți upgrade ^-^
+UPGRADE_MESSAGE           = o versiune nouă este disponibilă pentru descărcare!
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 
-JOB_IS_RUNNING            = Un loc de muncă se execută
+JOB_IS_RUNNING            = O sarcină se execută
 
 ; Strings for system tray icon context menu.
 
-SHOW                      = Arăta
+SHOW                      = Arată
 HIDE                      = Ascunde
 
 ; Strings for the file fragmentation reports.
 
-FRAGMENTED_FILES_ON       = Fişierelor fragmentate de pe
+FRAGMENTED_FILES_ON       = Fișiere fragmentate de pe
 
-VISIT_HOMEPAGE            = Vizitaţi pagina noastră
-VIEW_REPORT_OPTIONS       = Vizualizaţi opţiunile de raport
+VISIT_HOMEPAGE            = Vizitați pagina noastră
+VIEW_REPORT_OPTIONS       = Vizualizați opțiunile de raport
 POWERED_BY_LUA            = Powered by Lua
 
 FRAGMENTS                 = fragmente
 SIZE                      = dimensiune
-FILENAME                  = filename
+FILENAME                  = nume fișier
 COMMENT                   = comentariu
 
 LOCKED                    = blocat
-MOVE_FAILED               = mutaţi nu a reuşit
+MOVE_FAILED               = mutarea nu a reușit
 INVALID                   = invalid
 
 ; END OF FILE

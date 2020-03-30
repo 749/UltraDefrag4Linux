@@ -4,6 +4,7 @@ Options -IncludesNOEXEC
 # redirects
 Redirect permanent /handbook/boot.html           http://ultradefrag.sourceforge.net/handbook/Boot.html
 Redirect permanent /handbook/console.html        http://ultradefrag.sourceforge.net/handbook/Console.html
+Redirect permanent /handbook/credits.html        http://ultradefrag.sourceforge.net/handbook/Credits.html
 Redirect permanent /handbook/faq.html            http://ultradefrag.sourceforge.net/handbook/FAQ.html
 Redirect permanent /handbook/gui.html            http://ultradefrag.sourceforge.net/handbook/GUI.html
 Redirect permanent /handbook/installation.html   http://ultradefrag.sourceforge.net/handbook/Installation.html

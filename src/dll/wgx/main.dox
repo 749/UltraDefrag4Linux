@@ -44,6 +44,12 @@
 /** @} */
 
 /**
+ * @defgroup Console Console
+ * @{
+ */
+/** @} */
+
+/**
  * @defgroup Debug Debugging
  * @{
  */

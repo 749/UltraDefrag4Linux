@@ -230,6 +230,16 @@ grid_color_g = $grid_color_g
 grid_color_b = $grid_color_b
 
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- Background color, in RGB format; default value is (255;255;255),
+-- all color components should be in range 0-255,
+-- (0;0;0) means black; (255;255;255) - white.
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+free_color_r = $free_color_r
+free_color_g = $free_color_g
+free_color_b = $free_color_b
+
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- this number helps to upgrade configuration file correctly, don't change it
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -295,7 +305,7 @@ end
 -- THE MAIN CODE STARTS HERE
 -- current version of configuration file
 -- version numbers 0-99 are reserved for 5.0.x series of the program
-current_version = 8
+current_version = 9
 old_version = 0
 upgrade_needed = 1
 
@@ -325,6 +335,9 @@ grid_line_width = 1
 grid_color_r = 0
 grid_color_g = 0
 grid_color_b = 0
+free_color_r = 255
+free_color_g = 255
+free_color_b = 255
 
 -- get user preferences
 path = instdir .. "\\options\\guiopts.lua"

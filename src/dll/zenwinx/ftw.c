@@ -207,7 +207,7 @@ int winx_ftw_dump_file(winx_file_info *f,
             if(filemap->Pair[i].Lcn == LLINVALID)
                 continue;
             
-            /* the following is usual for 3.99 Gb files on FAT32 under XP */
+            /* the following is usual for 3.99 GB files on FAT32 under XP */
             if(filemap->Pair[i].Vcn == 0){
                 DebugPrint("winx_ftw_dump_file: %ws: wrong map of file detected",f->path);
                 goto dump_failed;

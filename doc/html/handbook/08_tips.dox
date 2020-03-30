@@ -162,7 +162,7 @@
  *
  * @par Create USN journal
  * Use the command line below to create the USN journal of drive C:.
- * A reasonable size of the USN journal is 85Mb for each 100Gb, the delta should be
+ * A reasonable size of the USN journal is 85MB for each 100GB, the delta should be
  * between
  * @htmlonly
  * <sup>1</sup>/<sub>8</sub>
@@ -178,7 +178,7 @@
  * \begin{math}^1/_4\end{math}
  * @endlatexonly
  * of the maximum size.
- * The default values are usually 32Mb maximum size and 4Mb delta.
+ * The default values are usually 32MB maximum size and 4MB delta.
  * The example creates an USN journal of default size.
  * @code
  * fsutil usn createjournal m=33554432 a=4194304 C:

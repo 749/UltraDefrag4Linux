@@ -2,4 +2,7 @@
 Options -IncludesNOEXEC
 
 # redirects
+Redirect permanent /doxy-doc/wgx/html/bug.html  http://ultradefrag.sourceforge.net/doxy-doc/wgx/html/
+Redirect permanent /doxy-doc/wgx/html/main.html http://ultradefrag.sourceforge.net/doxy-doc/wgx/html/
+
 RedirectMatch seeother /doxy-doc/udefrag-kernel/html/.+\.html http://ultradefrag.sourceforge.net/doxy-doc/udefrag.dll/html/

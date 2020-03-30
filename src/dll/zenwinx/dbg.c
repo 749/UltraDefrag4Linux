@@ -562,7 +562,7 @@ static int init_dbg_log(void)
  */
 static void flush_dbg_log(int already_synchronized)
 {
-    #define DBG_BUFFER_SIZE (100 * 1024) /* 100 Kb */
+    #define DBG_BUFFER_SIZE (100 * 1024) /* 100 KB */
     WINX_FILE *f;
     char *lb;
     winx_dbg_log_entry *old_dbg_log, *log_entry;

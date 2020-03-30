@@ -30,10 +30,10 @@ QUICK_OPTIMIZE            = Ikanatad a &Napartak
 FULL_OPTIMIZE             = Ikanatad a &Sibubukel
 OPTIMIZE_MFT              = Ikanatad ti M&FT
 STOP                      = &Isardeng
-REPEAT_ACTION             = Ulet&en
+REPEAT_ACTION             = Ulit&en
 SKIP_REMOVABLE_MEDIA      = Ikulasay ti &Media a Maikkat
 RESCAN_DRIVES             = Suki&maten ti Drive
-REPAIR_DRIVES             = Repair drives
+REPAIR_DRIVES             = Tarimnen ti Drive
 WHEN_DONE                 = &Apagleppasna...
 EXIT                      = &Ressaten
 
@@ -43,7 +43,7 @@ WHEN_DONE_NONE            = &Awan
 WHEN_DONE_EXIT            = &Ressaten
 WHEN_DONE_STANDBY         = &Pagurayen
 WHEN_DONE_HIBERNATE       = Pat&urogen
-WHEN_DONE_LOGOFF          = &Turposen
+WHEN_DONE_LOGOFF          = &Turposen ti Sesion
 WHEN_DONE_REBOOT          = Irugi &Manen
 WHEN_DONE_SHUTDOWN        = I&ddepen
 
@@ -55,7 +55,7 @@ SHOW_REPORT               = Ipadla&w
 
 LANGUAGE                  = Pagsa&sao
 GRAPHICAL_INTERFACE       = &Bista
-BOOT_TIME_SCAN            = &Usigen iti Panagrugi
+BOOT_TIME_SCAN            = &Usigen iti Apagrugi
 REPORTS                   = Pa&damag
 
 ; --- --- Language submenu
@@ -87,7 +87,7 @@ ABOUT                     = &Maipapan iti
 
 ; --- --- Debug submenu
 
-OPEN_LOG                  = Ilukat ti Rehistro
+OPEN_LOG                  = Ilukat ti &Rehistro
 REPORT_BUG                = Itulod ti &Padamag ti Kammali
 
 ; --- Toolbar Tooltips
@@ -104,7 +104,7 @@ PERCENT                   = % ti Nawaya
 
 ; Status messages
 
-STATUS_RUNNING            = Nakaandar
+STATUS_RUNNING            = Uma-andar
 STATUS_ANALYSED           = Inusig
 STATUS_DEFRAGMENTED       = Dinagup
 STATUS_OPTIMIZED          = Inkanatad
@@ -133,14 +133,14 @@ REALLY_REBOOT_WHEN_DONE   = Apagleppasna ket kayatyo nga irugi manen?
 SECONDS_TILL_SHUTDOWN     = segundo intuno panagiddep
 SECONDS_TILL_HIBERNATION  = segundo intuno panagpaturog
 SECONDS_TILL_LOGOFF       = segundo intuno panagturpos
-SECONDS_TILL_REBOOT       = segundo intuno panagrugi manen
+SECONDS_TILL_REBOOT       = segundo intuno panagirugi manen
 YES                       = &Wen
 NO                        = &Saan
 
 ; Upgrade dialog
 
 UPGRADE_CAPTION           = Mapalaingennak ^-^
-UPGRADE_MESSAGE           = bersion ket maiyulogen!
+UPGRADE_MESSAGE           = a bersion ket maiyulogen!
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 
@@ -148,14 +148,14 @@ JOB_IS_RUNNING            = Adda ti nakaandar
 
 ; Strings for system tray icon context menu.
 
-SHOW                      = Ipakita
+SHOW                      = Ipadlaw
 HIDE                      = Ilemmeng
 
 ; Strings for the file fragmentation reports.
 
 FRAGMENTED_FILES_ON       = Napisi nga intar iti
 
-VISIT_HOMEPAGE            = Basaen ti Purok Web
+VISIT_HOMEPAGE            = Basaen ti Kangrunaan a Panid
 VIEW_REPORT_OPTIONS       = Imatangan ti opsion ti padamag
 POWERED_BY_LUA            = Babaen ti teknolohia ti Lua
 

@@ -1,6 +1,7 @@
 ﻿;------------------------------------------------------------------------------
 ; UltraDefrag GUI Vietnamese Language Pack.
 ; Copyright (C) 2010 Vietnamize Team.
+; Copyright (C) 2012 DT.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
@@ -17,82 +18,82 @@
 
 ; Main Menu
 
-ACTION                    = Hành động
-REPORT                    = Báo cáo
-SETTINGS                  = Thiết đặt
-HELP                      = Trợ giúp
+ACTION                    = &Thao tác
+REPORT                    = &Báo cáo
+SETTINGS                  = Thiết &lập
+HELP                      = Trợ &giúp
 
 ; --- Action Menu
 
-ANALYSE                   = Phân tích
-DEFRAGMENT                = Chống phân mảnh
-QUICK_OPTIMIZE            = Nhanh chóng tối ưu hóa
-FULL_OPTIMIZE             = Toàn tối ưu hóa
-OPTIMIZE_MFT              = Tối ưu hóa MFT
-STOP                      = Dừng
-REPEAT_ACTION             = Lặp lại hành động
-SKIP_REMOVABLE_MEDIA      = Không quét các thiết bị di động
-RESCAN_DRIVES             = Quét Ổ đĩa
-REPAIR_DRIVES             = Sửa chữa ổ đĩa
-WHEN_DONE                 = Khi hoàn tất
-EXIT                      = Thoát
+ANALYSE                   = &Phân tích
+DEFRAGMENT                = &Chống phân mảnh
+QUICK_OPTIMIZE            = Tối ưu hóa &nhanh
+FULL_OPTIMIZE             = Tối ưu hóa &toàn bộ
+OPTIMIZE_MFT              = Tối ưu hóa &MFT
+STOP                      = &Dừng
+REPEAT_ACTION             = &Lặp lại hành động
+SKIP_REMOVABLE_MEDIA      = &Bỏ qua các thiết bị di động
+RESCAN_DRIVES             = &Quét ổ đĩa
+REPAIR_DRIVES             = &Sửa chữa ổ đĩa
+WHEN_DONE                 = &Khi hoàn tất
+EXIT                      = T&hoát
 
 ; --- --- When done submenu
 
-WHEN_DONE_NONE            = Không làm gì cả
-WHEN_DONE_EXIT            = Thoát chương trình
-WHEN_DONE_STANDBY         = Về chế độ Chờ
-WHEN_DONE_HIBERNATE       = Chuyển sang chế độ Ngủ đông
-WHEN_DONE_LOGOFF          = Đăng xuất
-WHEN_DONE_REBOOT          = Khởi động lại
-WHEN_DONE_SHUTDOWN        = Tắt máy tính
+WHEN_DONE_NONE            = &Không làm gì cả
+WHEN_DONE_EXIT            = T&hoát chương trình
+WHEN_DONE_STANDBY         = Về chế độ &Chờ
+WHEN_DONE_HIBERNATE       = Về chế độ &Ngủ đông
+WHEN_DONE_LOGOFF          = &Đăng xuất khỏi máy
+WHEN_DONE_REBOOT          = Khởi động &lại
+WHEN_DONE_SHUTDOWN        = &Tắt máy tính
 
 ; --- Report Menu
 
-SHOW_REPORT               = Xem báo cáo
+SHOW_REPORT               = &Xem báo cáo
 
 ; --- Settings Menu
 
-LANGUAGE                  = Ngôn ngữ
-GRAPHICAL_INTERFACE       = Giao diện người dùng
-BOOT_TIME_SCAN            = Quét trong Môi trường DOS
-REPORTS                   = Báo cáo
+LANGUAGE                  = &Ngôn ngữ
+GRAPHICAL_INTERFACE       = &Giao diện người dùng
+BOOT_TIME_SCAN            = &Quét khi khởi động
+REPORTS                   = &Báo cáo
 
 ; --- --- Language submenu
 
-TRANSLATIONS_CHANGE_LOG   = Thay đổi đăng nhập
-TRANSLATIONS_REPORT       = Xem báo cáo dịch
-TRANSLATIONS_FOLDER       = Thư mục bản dịch
-TRANSLATIONS_SUBMIT       = Gửi dịch hiện tại
+TRANSLATIONS_CHANGE_LOG   = &Xem các thay đổi
+TRANSLATIONS_REPORT       = Xem &báo cáo dịch
+TRANSLATIONS_FOLDER       = &Thư mục bản dịch
+TRANSLATIONS_SUBMIT       = &Gửi bản dịch hiện tại
 
 ; --- --- Graphical interface submenu
 
-FONT                      = Đặt phông
-OPTIONS                   = Tùy chọn
+FONT                      = Thay đổi &phông chữ
+OPTIONS                   = &Tùy chọn
 
 ; --- --- Boot time scan submenu
 
-ENABLE                    = Kích hoạt
-SCRIPT                    = Chỉnh sửa
+ENABLE                    = &Kích hoạt
+SCRIPT                    = &Chỉnh sửa
 
 ; --- Help Menu
 
-CONTENTS                  = Nội dung trợ giúp
-BEST_PRACTICE             = Hướng dẫn trực tuyến
-FAQ                       = Hỏi đáp
-CM_LEGEND                 = Cụm bản đồ huyền thoại
-DEBUG                     = Gỡ rối
-CHECK_UPDATE              = Kiểm tra cho cập nhật
-ABOUT                     = Giới thiệu
+CONTENTS                  = &Nội dung trợ giúp
+BEST_PRACTICE             = &Thủ thuật
+FAQ                       = &Câu hỏi thường gặp
+CM_LEGEND                 = Chú &giải các nhóm tập tin
+DEBUG                     = Tìm &lỗi
+CHECK_UPDATE              = &Kiểm tra phiên bản mới
+ABOUT                     = G&iới thiệu
 
 ; --- --- Debug submenu
 
-OPEN_LOG                  = Mở đăng nhập
-REPORT_BUG                = Gửi báo cáo lỗi
+OPEN_LOG                  = &Mở báo cáo lỗi
+REPORT_BUG                = &Gửi báo cáo lỗi
 
 ; --- Toolbar Tooltips
 
-BOOT_TIME_SCRIPT          = Sửa tham số quét trong môi trường DOS
+BOOT_TIME_SCRIPT          = Sửa tham số quét khi khởi động
 
 ; Drives list items.
 
@@ -119,13 +120,13 @@ COMPRESSED                = tệp hệ thống đã nén
 
 ; About window.
 
-ABOUT_WIN_TITLE           = Giới thiệu về Ultra Defragmenter
-CREDITS                   = Công trạng
-LICENSE                   = Giấy phép
+ABOUT_WIN_TITLE           = Giới thiệu về Ultra Defragmenter
+CREDITS                   = &Công trạng
+LICENSE                   = &Giấy phép
 
 ; Shutdown confirmation
 
-PLEASE_CONFIRM            = Xác nhận
+PLEASE_CONFIRM            = Xác nhận
 REALLY_SHUTDOWN_WHEN_DONE = Bạn muốn Tắt Máy sau khi Chống phân mảnh xong?
 REALLY_HIBERNATE_WHEN_DONE= Bạn muốn chuyển sang Chế độ Ngủ Đông sau khi Chống phân mảnh xong?
 REALLY_LOGOFF_WHEN_DONE   = Bạn muốn Đăng xuất sau khi Chống phân mảnh xong?
@@ -134,13 +135,13 @@ SECONDS_TILL_SHUTDOWN     = giây sau sẽ Tắt Máy
 SECONDS_TILL_HIBERNATION  = giây sau sẽ chuyển sang Chế độ Ngủ Đông
 SECONDS_TILL_LOGOFF       = giây sau, máy sẽ đăng xuất tài khoản
 SECONDS_TILL_REBOOT       = giây sau, máy sẽ khởi động lại
-YES                       = Có
-NO                        = Không
+YES                       = &Có
+NO                        = &Không
 
 ; Upgrade dialog
 
 UPGRADE_CAPTION           = Bạn có thể nâng cấp tôi ^-^
-UPGRADE_MESSAGE           = phát hành là có sẵn để tải về!
+UPGRADE_MESSAGE           = Đã có phiên bản mới để tải về !
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 
@@ -149,17 +150,17 @@ JOB_IS_RUNNING            = Một công việc đang chạy
 ; Strings for system tray icon context menu.
 
 SHOW                      = Hiển thị
-HIDE                      = Hide
+HIDE                      = Ẩn đi
 
 ; Strings for the file fragmentation reports.
 
-FRAGMENTED_FILES_ON       = Bị phân mảnh các tập tin về
+FRAGMENTED_FILES_ON       = Các tập tin phân mảnh ở
 
-VISIT_HOMEPAGE            = Chủ của chúng tôi
+VISIT_HOMEPAGE            = Trang chủ của chúng tôi
 VIEW_REPORT_OPTIONS       = Xem các tùy chọn báo cáo
-POWERED_BY_LUA            = Powered by Lua
+POWERED_BY_LUA            = Sử dụng ngôn ngữ LUA
 
-FRAGMENTS                 = mảnh vỡ
+FRAGMENTS                 = phân mảnh
 SIZE                      = kích thước
 FILENAME                  = tên tập tin
 COMMENT                   = bình luận

@@ -34,6 +34,7 @@
  *
  * @htmlonly
  * <table style="border:none; margin-left:20px;">
+ * <tr><td>• Albanian                     </td><td>-</td><td> Fitim I. HALILI - Gjakovë</td></tr>
  * <tr><td>• Arabic                       </td><td>-</td><td> Ahmed Arbaoui</td></tr>
  * <tr><td>                               </td><td>-</td><td> Awadh A Al-Ghaamdi</td></tr>
  * <tr><td>• Belarusian                   </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
@@ -108,6 +109,7 @@
  * <tr><td>• Latin                        </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
  * <tr><td>• Latvian                      </td><td>-</td><td> Sevelyr</td></tr>
  * <tr><td>                               </td><td>-</td><td> Vladislav Stuznev</td></tr>
+ * <tr><td>• Lithuanian                   </td><td>-</td><td> Eugenijus Januškevičius</td></tr>
  * <tr><td>• Macedonian                   </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
  * <tr><td>• Norwegian                    </td><td>-</td><td> Sveinung Heggen</td></tr>
  * <tr><td>                               </td><td>-</td><td> Stefan Pendl</td></tr>
@@ -131,8 +133,8 @@
  * <tr><td>• Spanish (ES)                 </td><td>-</td><td> Txusti</td></tr>
  * <tr><td>                               </td><td>-</td><td> Juan C. Mendez Valledor</td></tr>
  * <tr><td>• Spanish (MEX)                </td><td>-</td><td> Conrad Flyckt</td></tr>
- * <tr><td>•                              </td><td>-</td><td> Felipe Ángel González Báñez</td></tr>
- * <tr><td>•                              </td><td>-</td><td> Joseph S. Maza</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Felipe Ángel González Báñez</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Joseph S. Maza</td></tr>
  * <tr><td>• Swedish                      </td><td>-</td><td> Magnus Rostedt</td></tr>
  * <tr><td>                               </td><td>-</td><td> Per-Eric Jenshagen</td></tr>
  * <tr><td>                               </td><td>-</td><td> Christoffer Ekberg</td></tr>
@@ -143,14 +145,17 @@
  * <tr><td>                               </td><td>-</td><td> Şahin Salincakli</td></tr>
  * <tr><td>• Ukrainian                    </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
  * <tr><td>• Vietnamese                   </td><td>-</td><td> Vietnamize Team</td></tr>
+ * <tr><td>                               </td><td>-</td><td> DT</td></tr>
  * <tr><td>• Wáray-Wáray                  </td><td>-</td><td> Harvey Fiji</td></tr>
- * <tr><td>•                              </td><td>-</td><td> Voltaire Oyzon</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Voltaire Oyzon</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Joseph S. Maza</td></tr>
  * <tr><td>• Yiddish                      </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
  * </table>
  * @endhtmlonly
  *
  * @latexonly
  * \par\begin{Indent}\begin{xtabular}{p{0.4\linewidth}cl}
+ * • Albanian                      & - & Fitim I. HALILI - Gjakovë \\
  * • Arabic                        & - & Ahmed Arbaoui \\
  *                                 & - & Awadh A Al-Ghaamdi \\
  * • Belarusian                    & - & Dmitri Arkhangelski \\
@@ -225,6 +230,7 @@
  * • Latin                         & - & Dmitri Arkhangelski \\
  * • Latvian                       & - & Sevelyr \\
  *                                 & - & Vladislav Stuznev \\
+ * • Lithuanian                    & - & Eugenijus Januškevičius \\
  * • Macedonian                    & - & Dmitri Arkhangelski \\
  * • Norwegian                     & - & Sveinung Heggen \\
  *                                 & - & Stefan Pendl \\
@@ -248,8 +254,8 @@
  * • Spanish (ES)                  & - & Txusti \\
  *                                 & - & Juan C. Mendez Valledor \\
  * • Spanish (MEX)                 & - & Conrad Flyckt \\
- * •                               & - & Felipe Ángel González Báñez \\
- * •                               & - & Joseph S. Maza \\
+ *                                 & - & Felipe Ángel González Báñez \\
+ *                                 & - & Joseph S. Maza \\
  * • Swedish                       & - & Magnus Rostedt \\
  *                                 & - & Per-Eric Jenshagen \\
  *                                 & - & Christoffer Ekberg \\
@@ -260,8 +266,10 @@
  *                                 & - & Şahin Salincakli \\
  * • Ukrainian                     & - & Dmitri Arkhangelski \\
  * • Vietnamese                    & - & Vietnamize Team \\
+ *                                 & - & DT \\
  * • Wáray-Wáray                   & - & Harvey Fiji \\
- * •                               & - & Voltaire Oyzon \\
+ *                                 & - & Voltaire Oyzon \\
+ *                                 & - & Joseph S. Maza \\
  * • Yiddish                       & - & Dmitri Arkhangelski \\
  * \end{xtabular}\end{Indent}\par
  * @endlatexonly
@@ -504,41 +512,25 @@
  *
  * Special thanks for correcting and updating translations (in alphabetical order):
  *
- * - Alper Tiryakioglu
- * - Antonio Vivace
+ * - Alper Tiryakioglu, Antonio Vivace
  * - Benny Stütz
  * - Connection
- * - Dandy Cheung
- * - Daniel Rodríguez
- * - Dionisios Klonaris
+ * - Dandy Cheung, Daniel Rodríguez, Dionisios Klonaris
  * - Erwin Dokter
- * - Fabrizio Marana
- * - Francisco Ortega Olivos
- * - FS
- * - Giulio Fornasar
- * - Haein Jung
- * - Harald Arnesen
+ * - Fabrizio Marana, Francisco Ortega Olivos, FS
+ * - Giulio Fornasar, Gustavo Rezende
+ * - Haein Jung, Harald Arnesen
  * - Jan Iemhoff
  * - Luigi C.
  * - Denis Jeličić
- * - Javier Valdivieso
- * - Joseph S. B. Maza
- * - Joseph S. Maza
- * - José Carlos Taveira de Souza
- * - José Luis Farías
+ * - Javier Valdivieso, Joseph S. B. Maza, Joseph S. Maza, José Carlos Taveira de Souza, José Luis Farías
  * - Ken Choy
- * - Latino
- * - Leo Smulders
- * - Massa
- * - Matej Marton
+ * - Latino, Leo Smulders
+ * - Massa, Matej Marton
  * - Patrick Palm
- * - Reynald Didier
- * - Robert Jr
- * - Rodrigo Lopes Paitach
- * - Seph
- * - SMHA
- * - Timo VJ Lähde
- * - translucens
+ * - Reynald Didier, Robert Jr, Rodrigo Lopes Paitach
+ * - Seph, SMHA
+ * - Timo VJ Lähde, translucens
  * - Zirikkanen
  *
  * Special thanks for extensive testing (in alphabetical order):
@@ -547,13 +539,11 @@
  * - Brent Jenkins
  * - Fred Schall
  * - Jeff Cubillos
- * - Kalle Koseck
- * - Kerem Gümrükcü
+ * - Kalle Koseck, Kerem Gümrükcü
  * - Leslie Trenholm
  * - Markus Elfring
  * - Nagy Zsolt
- * - Sachin Kunjikoran
- * - Stefan Pendl
+ * - Sachin Kunjikoran, Stefan Pendl
  * - Tom Arroyo
  *
  * Also special thanks is going to:
@@ -573,6 +563,7 @@
  * - <a href="http://www.lokeshdhakar.com/projects/lightbox2/">Lokesh Dhakar</a>
  * - <a href="http://www.famfamfam.com/lab/icons/flags/">Mark James</a>
  * - <a href="http://www.codeproject.com/Members/Michael-Dunn">Michael Dunn</a>
+ * - <a href="http://blogs.msdn.com/b/michkap/">Michael Kaplan</a>
  *
  * Also many thanks to all the people who helped us improve UltraDefrag.
  *

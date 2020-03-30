@@ -1,5 +1,5 @@
 ﻿;------------------------------------------------------------------------------
-; UltraDefrag GUI AR Spanish Language Pack.
+; UltraDefrag GUI Spanish (AR) Language Pack.
 ; Copyright (C) 2008, 2010, 2012 Daniel Testa.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
@@ -33,8 +33,8 @@ OPTIMIZE_MFT              = Optimizar MFT
 STOP                      = D&etener
 REPEAT_ACTION             = Re&petir acciónn
 SKIP_REMOVABLE_MEDIA      = &Ignorar discos removíbles
-RESCAN_DRIVES             = Actuali&zar
-REPAIR_DRIVES             = Repair drives
+RESCAN_DRIVES             = Re-Es&canear unidades
+REPAIR_DRIVES             = &Reparar unidades
 WHEN_DONE                 = Al &Terminar
 EXIT                      = Salir
 
@@ -141,7 +141,7 @@ NO                        = &No
 ; Upgrade dialog
 
 UPGRADE_CAPTION           = Una actualización está disponible ^-^
-UPGRADE_MESSAGE           = versión está disponible para descargar!
+UPGRADE_MESSAGE           = Una nueva versión está disponible para descargar!
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 
@@ -160,7 +160,7 @@ VISIT_HOMEPAGE            = Visitar el sitio Web
 VIEW_REPORT_OPTIONS       = Ver las opciones de informe
 POWERED_BY_LUA            = Desarrollado por Lua
 
-FRAGMENTS                 = framentos
+FRAGMENTS                 = fragmentos
 SIZE                      = tamaño
 FILENAME                  = nombre de archivo
 COMMENT                   = comentario

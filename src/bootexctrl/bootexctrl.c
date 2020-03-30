@@ -28,6 +28,7 @@
 #include <ctype.h>
 #include <commctrl.h>
 
+#include "../dll/wgx/wgx.h"
 #include "../include/ultradfgver.h"
 
 int h_flag = 0;
@@ -53,29 +54,31 @@ void show_help(void)
         );
 }
 
-void DisplayLastError(char *caption)
+void DisplayLastError(wchar_t *caption)
 {
-    LPVOID lpMsgBuf;
-    char buffer[128];
+    wchar_t *msg;
+    wchar_t buffer[128];
     DWORD error = GetLastError();
 
-    if(!FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | 
-            FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-            NULL,error,MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-            (LPTSTR)&lpMsgBuf,0,NULL)){
-                if(error == ERROR_COMMITMENT_LIMIT){
-                    (void)_snprintf(buffer,sizeof(buffer),
-                            "Not enough memory.");
-                } else {
-                    (void)_snprintf(buffer,sizeof(buffer),
-                            "Error code = 0x%x",(UINT)error);
-                }
-                buffer[sizeof(buffer) - 1] = 0;
-                MessageBox(NULL,buffer,caption,MB_OK | MB_ICONHAND);
-                return;
+    if(!FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+      FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+      NULL,error,MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+      (LPWSTR)(void *)&msg,0,NULL)){
+        if(error == ERROR_COMMITMENT_LIMIT){
+            (void)_snwprintf(buffer,
+                sizeof(buffer)/sizeof(wchar_t),
+                L"Not enough memory.");
+        } else {
+            (void)_snwprintf(buffer,
+                sizeof(buffer)/sizeof(wchar_t),
+                L"Error code = 0x%x",(UINT)error);
+        }
+        buffer[sizeof(buffer)/sizeof(wchar_t) - 1] = 0;
+        MessageBoxW(NULL,buffer,caption,MB_OK | MB_ICONHAND);
+        return;
     } else {
-        MessageBox(NULL,(LPCTSTR)lpMsgBuf,caption,MB_OK | MB_ICONHAND);
-        LocalFree(lpMsgBuf);
+        MessageBoxW(NULL,msg,caption,MB_OK | MB_ICONHAND);
+        LocalFree(msg);
     }
 }
 
@@ -89,7 +92,7 @@ int open_smss_key(HKEY *phkey)
     if(result != ERROR_SUCCESS){
         if(!silent){
             SetLastError((DWORD)result);
-            DisplayLastError("Cannot open SMSS key!");
+            DisplayLastError(L"Cannot open SMSS key!");
         }
         return 0;
     }
@@ -178,7 +181,7 @@ int register_cmd(void)
     if(result != ERROR_SUCCESS && result != ERROR_MORE_DATA){
         if(!silent){
             SetLastError((DWORD)result);
-            DisplayLastError("Cannot query BootExecute value size!");
+            DisplayLastError(L"Cannot query BootExecute value size!");
         }
         return 4;
     }
@@ -196,7 +199,7 @@ int register_cmd(void)
     if(result != ERROR_SUCCESS){
         if(!silent){
             SetLastError((DWORD)result);
-            DisplayLastError("Cannot query BootExecute value!");
+            DisplayLastError(L"Cannot query BootExecute value!");
         }
         (void)RegCloseKey(hKey);
         free(data);
@@ -232,7 +235,7 @@ save_changes:
     if(result != ERROR_SUCCESS){
         if(!silent){
             SetLastError((DWORD)result);
-            DisplayLastError("Cannot set BootExecute value!");
+            DisplayLastError(L"Cannot set BootExecute value!");
         }
         (void)RegCloseKey(hKey);
         free(data);
@@ -261,7 +264,7 @@ int unregister_cmd(void)
     if(result != ERROR_SUCCESS && result != ERROR_MORE_DATA){
         if(!silent){
             SetLastError((DWORD)result);
-            DisplayLastError("Cannot query BootExecute value size!");
+            DisplayLastError(L"Cannot query BootExecute value size!");
         }
         return 4;
     }
@@ -279,7 +282,7 @@ int unregister_cmd(void)
     if(result != ERROR_SUCCESS){
         if(!silent){
             SetLastError((DWORD)result);
-            DisplayLastError("Cannot query BootExecute value!");
+            DisplayLastError(L"Cannot query BootExecute value!");
         }
         (void)RegCloseKey(hKey);
         free(data);
@@ -326,7 +329,7 @@ int unregister_cmd(void)
     if(result != ERROR_SUCCESS){
         if(!silent){
             SetLastError((DWORD)result);
-            DisplayLastError("Cannot set BootExecute value!");
+            DisplayLastError(L"Cannot set BootExecute value!");
         }
         (void)RegCloseKey(hKey);
         free(data);
@@ -344,15 +347,15 @@ done:
 int parse_cmdline(void)
 {
     int argc;
-    short **argv;
+    wchar_t **argv;
     
     if(wcsstr(_wcslwr(GetCommandLineW()),L"/s"))
         silent = 1;
 
-    argv = (short **)CommandLineToArgvW(_wcslwr(GetCommandLineW()),&argc);
+    argv = (wchar_t **)CommandLineToArgvW(_wcslwr(GetCommandLineW()),&argc);
     if(argv == NULL){
         if(!silent)
-            DisplayLastError("CommandLineToArgvW failed!");
+            DisplayLastError(L"CommandLineToArgvW failed!");
         exit(1);
     }
 
@@ -392,8 +395,6 @@ int parse_cmdline(void)
 
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nShowCmd)
 {
-    int result = 0;
-    
     /* strongly required! to be compatible with manifest */
     InitCommonControls();
 
@@ -401,11 +402,18 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nS
 
     if(h_flag){
         show_help();
-    } else if(r_flag){
-        result = register_cmd();
-    } else if(u_flag){
-        result = unregister_cmd();
+        return 0;
     }
     
-    return result;
+    /* check for admin rights - they're strongly required */
+    if(!WgxCheckAdminRights()){
+        if(!silent){
+            MessageBox(NULL,"Administrative rights are needed "
+              "to run the program!","BootExecute Control",
+              MB_OK | MB_ICONHAND);
+        }
+        return 1;
+    }
+
+    return (r_flag ? register_cmd() : unregister_cmd());
 }

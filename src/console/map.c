@@ -99,7 +99,7 @@ int AllocateClusterMap(void)
     cluster_map = malloc(map_rows * map_symbols_per_line);
     if(cluster_map == NULL){
         if(!b_flag) settextcolor(FOREGROUND_RED | FOREGROUND_INTENSITY);
-        printf("Cannot allocate %i bytes of memory for cluster map!\n\n",
+        fprintf(stderr,"Cannot allocate %i bytes of memory for cluster map!\n\n",
             map_rows * map_symbols_per_line);
         if(!b_flag) settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
         return (-1);
@@ -132,52 +132,52 @@ void RedrawMap(udefrag_progress_info *pi)
             memcpy(cluster_map,pi->cluster_map,pi->cluster_map_size);
     }
 
-    fprintf(stderr,"\n\n");
+    printf("\n\n");
     
     settextcolor(border_color);
     prev_color = border_color;
     c[0] = 0xC9; c[1] = 0;
-    fprintf(stderr,c);
+    printf(c);
     for(j = 0; j < map_symbols_per_line; j++){
         c[0] = 0xCD; c[1] = 0;
-        fprintf(stderr,c);
+        printf(c);
     }
     c[0] = 0xBB; c[1] = 0;
-    fprintf(stderr,c);
-    fprintf(stderr,"\n");
+    printf(c);
+    printf("\n");
 
     for(i = 0; i < map_rows; i++){
         if(border_color != prev_color) settextcolor(border_color);
         prev_color = border_color;
         c[0] = 0xBA; c[1] = 0;
-        fprintf(stderr,c);
+        printf(c);
         for(j = 0; j < map_symbols_per_line; j++){
             color = colors[(int)cluster_map[i * map_symbols_per_line + j]];
             if(color != prev_color) settextcolor(color);
             prev_color = color;
             c[0] = map_symbol; c[1] = 0;
-            fprintf(stderr,"%s",c);
+            printf("%s",c);
         }
         if(border_color != prev_color) settextcolor(border_color);
         prev_color = border_color;
         c[0] = 0xBA; c[1] = 0;
-        fprintf(stderr,c);
-        fprintf(stderr,"\n");
+        printf(c);
+        printf("\n");
     }
 
     if(border_color != prev_color) settextcolor(border_color);
     prev_color = border_color;
     c[0] = 0xC8; c[1] = 0;
-    fprintf(stderr,c);
+    printf(c);
     for(j = 0; j < map_symbols_per_line; j++){
         c[0] = 0xCD; c[1] = 0;
-        fprintf(stderr,c);
+        printf(c);
     }
     c[0] = 0xBC; c[1] = 0;
-    fprintf(stderr,c);
-    fprintf(stderr,"\n");
+    printf(c);
+    printf("\n");
 
-    fprintf(stderr,"\n");
+    printf("\n");
     if(!b_flag) settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
     else settextcolor(default_color);
     map_completed = 1;
@@ -191,8 +191,8 @@ void InitializeMapDisplay(char volume_letter)
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     COORD cursor_pos;
 
-    clear_line(stderr);
-    fprintf(stderr,"\r%c: %s%6.2lf%% complete, fragmented/total = %u/%u",
+    clear_line(stdout);
+    printf("\r%c: %s%6.2lf%% complete, fragmented/total = %u/%u",
         volume_letter,"analyze:  ",0.00,0,0);
     RedrawMap(NULL);
 

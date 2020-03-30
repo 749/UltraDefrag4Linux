@@ -36,7 +36,7 @@ STOP                      = 停止
 REPEAT_ACTION             = 操作を繰り返す
 SKIP_REMOVABLE_MEDIA      = リムーバブルメディアは除外
 RESCAN_DRIVES             = ドライブを再読込み
-REPAIR_DRIVES             = 修理·ドライブ
+REPAIR_DRIVES             = ドライブの修復 (CHKDSK)
 WHEN_DONE                 = デフラグ完了後の動作
 EXIT                      = 終了
 
@@ -160,7 +160,7 @@ FRAGMENTED_FILES_ON       = 断片化されたファイル
 
 VISIT_HOMEPAGE            = ホームページを訪問
 VIEW_REPORT_OPTIONS       = レポートオプションを表示
-POWERED_BY_LUA            = を搭載 Lua
+POWERED_BY_LUA            = Luaを搭載
 
 FRAGMENTS                 = フラグメント
 SIZE                      = サイズ

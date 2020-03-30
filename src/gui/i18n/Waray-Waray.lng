@@ -2,6 +2,7 @@
 ; UltraDefrag GUI Wáray-Wáray Language Pack.
 ; Copyright (C) 2012 Harvey Fiji.
 ; Copyright (C) 2012 Voltaire Oyzon.
+; Copyright (C) 2012 Joseph S. Maza.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
@@ -61,10 +62,10 @@ REPORTS                   = &Sumat
 
 ; --- --- Language submenu
 
-TRANSLATIONS_CHANGE_LOG   = &View change log
-TRANSLATIONS_REPORT       = View translation &report
+TRANSLATIONS_CHANGE_LOG   = &Kitaa an talaan hin pagbag-o
+TRANSLATIONS_REPORT       = Kitaa an &sumat han paghubad
 TRANSLATIONS_FOLDER       = &Hiripusán han mga hinubad
-TRANSLATIONS_SUBMIT       = &Submit current translation
+TRANSLATIONS_SUBMIT       = &Igsumite an yana nga ginhubad
 
 ; --- --- Graphical interface submenu
 
@@ -88,8 +89,8 @@ ABOUT                     = &Bahin han
 
 ; --- --- Debug submenu
 
-OPEN_LOG                  = Open &log
-REPORT_BUG                = Send bug &report
+OPEN_LOG                  = Buklará &an talaan
+REPORT_BUG                = Igsumat it &bug
 
 ; --- Toolbar Tooltips
 
@@ -140,33 +141,33 @@ NO                        = &Diri
 
 ; Upgrade dialog
 
-UPGRADE_CAPTION           = You can upgrade me ^-^
-UPGRADE_MESSAGE           = release is available for download!
+UPGRADE_CAPTION           = Puyde mo ako ig-upgrade ^-^
+UPGRADE_MESSAGE           = ginpagawas andam na para hin pagdeskarga!
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 
-JOB_IS_RUNNING            = A job is running
+JOB_IS_RUNNING            = Mayda buruhaton nga ginpapadalagan
 
 ; Strings for system tray icon context menu.
 
-SHOW                      = Show
-HIDE                      = Hide
+SHOW                      = Igpakita
+HIDE                      = Tago-a
 
 ; Strings for the file fragmentation reports.
 
-FRAGMENTED_FILES_ON       = Fragmented files on
+FRAGMENTED_FILES_ON       = Mga ginpinitpinit nga mga fayl ha
 
-VISIT_HOMEPAGE            = Visit our Homepage
-VIEW_REPORT_OPTIONS       = View report options
-POWERED_BY_LUA            = Powered by Lua
+VISIT_HOMEPAGE            = Bisitaha an amon baláyan
+VIEW_REPORT_OPTIONS       = Kitaa an pagpipili-an hin mga súmat
+POWERED_BY_LUA            = Ginpapadalágan han Lua
 
-FRAGMENTS                 = fragments
-SIZE                      = size
-FILENAME                  = filename
-COMMENT                   = comment
+FRAGMENTS                 = nga mga pinitpinit
+SIZE                      = kadako
+FILENAME                  = ngaran han fayl
+COMMENT                   = panhinabi
 
-LOCKED                    = locked
-MOVE_FAILED               = move failed
-INVALID                   = invalid
+LOCKED                    = ginkandadohan
+MOVE_FAILED               = waray mabalhin
+INVALID                   = diri mahihimo
 
 ; END OF FILE

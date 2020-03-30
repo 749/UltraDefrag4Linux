@@ -1,0 +1,171 @@
+﻿;------------------------------------------------------------------------------
+; UltraDefrag GUI Albanian Language Pack.
+; Copyright (C) 2012 Fitim I. HALILI - Gjakovë.
+;------------------------------------------------------------------------------
+; History --- Date ---------- Full Name
+;------------------------------------------------------------------------------
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
+;------------------------------------------------------------------------------
+
+; Please keep the header and comments in English and use Latin letters,
+; so everyone understands them
+
+; THIS FILE MUST BE SAVED IN **UTF-8** ENCODING
+; Use \n as a newline character in strings.
+; Use an ampersand (&) before a letter to make it a keyboard accelerator
+
+
+; Main Menu
+
+ACTION                    = &Aksioni
+REPORT                    = &Raporti
+SETTINGS                  = &Konfigurimet
+HELP                      = N&dihmë
+
+; --- Action Menu
+
+ANALYSE                   = &Analizimi
+DEFRAGMENT                = &Defragmentimi
+QUICK_OPTIMIZE            = &Shpejtesia e optimizimit
+FULL_OPTIMIZE             = &Optimizimi i plotë
+OPTIMIZE_MFT              = &Optimizimi MFT
+STOP                      = &Ndalimi
+REPEAT_ACTION             = Për&sërit aksionin
+SKIP_REMOVABLE_MEDIA      = Tejkalo &mediumin e lëvizshëm
+RESCAN_DRIVES             = Rifresko &diskun
+REPAIR_DRIVES             = Repair dri&ves
+WHEN_DONE                 = Përf&undimi...
+EXIT                      = Da&lja
+
+; --- --- When done submenu
+
+WHEN_DONE_NONE            = &Asgjë
+WHEN_DONE_EXIT            = Da&lja nga UD
+WHEN_DONE_STANDBY         = Stan&dby
+WHEN_DONE_HIBERNATE       = &Hibernimi
+WHEN_DONE_LOGOFF          = &Shkyçje
+WHEN_DONE_REBOOT          = &Restartimi i kompjuterit
+WHEN_DONE_SHUTDOWN        = &Fikja
+
+; --- Report Menu
+
+SHOW_REPORT               = Trego &raportin
+
+; --- Settings Menu
+
+LANGUAGE                  = &Gjuha
+GRAPHICAL_INTERFACE       = &Interfejsi grafik
+BOOT_TIME_SCAN            = &Skenimi para kyçjes së kompjuterit
+REPORTS                   = &Raportet
+
+; --- --- Language submenu
+
+TRANSLATIONS_CHANGE_LOG   = &View change log
+TRANSLATIONS_REPORT       = View translation &report
+TRANSLATIONS_FOLDER       = &Përkthimi
+TRANSLATIONS_SUBMIT       = &Submit current translation
+
+; --- --- Graphical interface submenu
+
+FONT                      = &Fontet
+OPTIONS                   = &Opcioni
+
+; --- --- Boot time scan submenu
+
+ENABLE                    = &Ndërlidhur
+SCRIPT                    = &Skripta
+
+; --- Help Menu
+
+CONTENTS                  = &Përmbajtja
+BEST_PRACTICE             = &Praktika më e mirë
+FAQ                       = &Pyetjet dhe përgjigjet më të shpeshta
+CM_LEGEND                 = Cluster map &legend
+DEBUG                     = De&bug
+CHECK_UPDATE              = Kontrollo për &update
+ABOUT                     = &Për programin
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Open &log
+REPORT_BUG                = Send bug &report
+
+; --- Toolbar Tooltips
+
+BOOT_TIME_SCRIPT          = Skriptimi para kyçjes së kompjuterit
+
+; Drives list items.
+
+VOLUME                    = Disku
+STATUS                    = Statusi
+TOTAL                     = Hapësira totale
+FREE                      = Hapësira e lirë
+PERCENT                   = % e lirë
+
+; Status messages
+
+STATUS_RUNNING            = Kryerja
+STATUS_ANALYSED           = Analizimi
+STATUS_DEFRAGMENTED       = Defragmentimi
+STATUS_OPTIMIZED          = Optimizimi
+STATUS_DIRTY              = Disk needs to be repaired
+
+; Status bar messages.
+
+DIRS                      = direktoriumi
+FILES                     = fajllat
+FRAGMENTED                = fragmentimi
+COMPRESSED                = kompresimi
+
+; About window.
+
+ABOUT_WIN_TITLE           = Për Ultra Defragmenter-in
+CREDITS                   = &Autori
+LICENSE                   = &Licenca
+
+; Shutdown confirmation
+
+PLEASE_CONFIRM            = Ju lutemi konfirmoni...
+REALLY_SHUTDOWN_WHEN_DONE = A dëshironi ta shkyçni kompjuterin pas përfundimit të defragmentimit?
+REALLY_HIBERNATE_WHEN_DONE= A dëshironi të pushoni kompjuterin pas përfundimit të defragmentimit?
+REALLY_LOGOFF_WHEN_DONE   = A dëshironi të çlajmëroni shfrytëzuesin pas përfundimit të defragmentimit?
+REALLY_REBOOT_WHEN_DONE   = A dëshironi ta restartoni kompjuterin pas përfundimit të defragmentimit?
+SECONDS_TILL_SHUTDOWN     = sekondat deri në fikje
+SECONDS_TILL_HIBERNATION  = sekondat deri te hibernimi
+SECONDS_TILL_LOGOFF       = sekondat deri te paraqitja e shfrytëzuesit
+SECONDS_TILL_REBOOT       = sekondat deri te restartimi
+YES                       = &Po
+NO                        = &Jo
+
+; Upgrade dialog
+
+UPGRADE_CAPTION           = You can upgrade me ^-^
+UPGRADE_MESSAGE           = release is available for download!
+
+; A string for the taskbar icon overlay, needed for accessibility.
+
+JOB_IS_RUNNING            = A job is running
+
+; Strings for system tray icon context menu.
+
+SHOW                      = Show
+HIDE                      = Hide
+
+; Strings for the file fragmentation reports.
+
+FRAGMENTED_FILES_ON       = Fragmented files on
+
+VISIT_HOMEPAGE            = Visit our Homepage
+VIEW_REPORT_OPTIONS       = View report options
+POWERED_BY_LUA            = Powered by Lua
+
+FRAGMENTS                 = Fragments
+SIZE                      = Size
+FILENAME                  = Filename
+COMMENT                   = Comment
+
+LOCKED                    = locked
+MOVE_FAILED               = move failed
+INVALID                   = invalid
+
+; END OF FILE

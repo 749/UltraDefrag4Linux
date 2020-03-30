@@ -36,6 +36,51 @@
 
 Var AtLeastXP
 
+!macro InitCrashDate
+
+    Push $R0
+    Push $R1
+    
+    ; get current date as UTC
+    ${time::GetLocalTimeUTC} $R0
+
+    ; convert current date into seconds since 1.1.1970
+    ${time::MathTime} "second($R0) =" $R1
+
+    ; create entry in the crash ini file
+    WriteINIStr "$INSTDIR\crash-info.ini" "LastProcessedEvent" "TimeStamp" $R1
+    FlushINI    "$INSTDIR\crash-info.ini"
+
+    Pop $R1
+    Pop $R0
+
+!macroend
+
+!define InitCrashDate "!insertmacro InitCrashDate"
+
+;-----------------------------------------
+
+!macro CheckAdminRights
+
+    Push $R0
+
+    ; check if the user has administrative rights
+    UserInfo::GetAccountType
+    Pop $R0
+
+    ${If} $R0 != "Admin"
+        MessageBox MB_OK|MB_ICONEXCLAMATION "Administrative rights are needed to install the program!" /SD IDOK
+        Abort
+    ${EndIf}
+
+    Pop $R0
+
+!macroend
+
+!define CheckAdminRights "!insertmacro CheckAdminRights"
+
+;-----------------------------------------
+
 !macro CheckMutex
 
     Push $R0

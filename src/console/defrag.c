@@ -111,21 +111,6 @@ void clear_line(FILE *f)
         display_last_error("Cannot set cursor position!");
 }
 
-/**
- * @brief Prints Unicode string.
- * @note Only characters compatible
- * with the current locale (OEM by default)
- * will be printed correctly. Otherwise
- * the '?' characters will be printed instead.
- */
-void print_unicode_string(wchar_t *string)
-{
-    DWORD written;
-    
-    if(string)
-        WriteConsoleW(hStdOut,string,wcslen(string),&written,NULL);
-}
-
 /* -------------------------------------------- */
 /*         UltraDefrag specific routines        */
 /* -------------------------------------------- */
@@ -236,7 +221,7 @@ BOOL WINAPI CtrlHandlerRoutine(DWORD dwCtrlType)
 void display_error(char *string)
 {
     if(!b_flag) settextcolor(FOREGROUND_RED | FOREGROUND_INTENSITY);
-    printf("%s",string);
+    fprintf(stderr,"%s",string);
     if(!b_flag) settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 }
 
@@ -260,12 +245,12 @@ static void display_defrag_error(udefrag_job_type job_type, int error_code)
     default:
         break;
     }
-    printf("\nDisk %s failed!\n\n",operation);
+    fprintf(stderr,"\nDisk %s failed!\n\n",operation);
     
     if(!b_flag) settextcolor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-    printf("%s\n\n",udefrag_get_error_description(error_code));
+    fprintf(stderr,"%s\n\n",udefrag_get_error_description(error_code));
     if(error_code == UDEFRAG_UNKNOWN_ERROR)
-        printf("Enable logs or use DbgView program to get more information.\n\n");
+        fprintf(stderr,"Enable logs or use DbgView program to get more information.\n\n");
     
     if(!b_flag) settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 }
@@ -277,14 +262,14 @@ static void display_defrag_error(udefrag_job_type job_type, int error_code)
 static void display_invalid_volume_error(int error_code)
 {
     if(!b_flag) settextcolor(FOREGROUND_RED | FOREGROUND_INTENSITY);
-    printf("The disk cannot be processed.\n\n");
+    fprintf(stderr,"The disk cannot be processed.\n\n");
     if(!b_flag) settextcolor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 
     if(error_code == UDEFRAG_UNKNOWN_ERROR){
-        printf("Disk is missing or some unknown error has been encountered.\n");
-        printf("Enable logs or use DbgView program to get more information.\n\n");
+        fprintf(stderr,"Disk is missing or some unknown error has been encountered.\n");
+        fprintf(stderr,"Enable logs or use DbgView program to get more information.\n\n");
     } else {
-        printf("%s\n\n",udefrag_get_error_description(error_code));
+        fprintf(stderr,"%s\n\n",udefrag_get_error_description(error_code));
     }
 
     if(!b_flag) settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
@@ -295,24 +280,37 @@ static void display_invalid_volume_error(int error_code)
  */
 void display_last_error(char *caption)
 {
-    LPVOID lpMsgBuf;
+    wchar_t *msg;
+    int length;
     DWORD error = GetLastError();
 
-    if(!FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+    if(!FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | 
             FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
             NULL,error,MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-            (LPTSTR)&lpMsgBuf,0,NULL)){
+            (LPWSTR)(void *)&msg,0,NULL)){
                 if(!b_flag) settextcolor(FOREGROUND_RED | FOREGROUND_INTENSITY);
                 if(error == ERROR_COMMITMENT_LIMIT)
-                    printf("\n%s\nNot enough memory.\n\n",caption);
+                    fprintf(stderr,"\n%s\nNot enough memory.\n\n",caption);
                 else
-                    printf("\n%s\nError code = 0x%x\n\n",caption,(UINT)error);
+                    fprintf(stderr,"\n%s\nError code = 0x%x\n\n",caption,(UINT)error);
                 if(!b_flag) settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
     } else {
         if(!b_flag) settextcolor(FOREGROUND_RED | FOREGROUND_INTENSITY);
-        printf("\n%s\n%s\n",caption,(char *)lpMsgBuf);
+        fprintf(stderr,"\n%s\n",caption);
+        /* get rid of trailing new line */
+        length = wcslen(msg);
+        if(length > 0){
+            if(msg[length - 1] == '\n')
+                msg[length - 1] = 0;
+        }
+        if(length > 1){
+            if(msg[length - 2] == '\r')
+                msg[length - 2] = 0;
+        }
+        WgxPrintUnicodeString(msg,stderr);
+        fprintf(stderr,"\n");
         if(!b_flag) settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-        LocalFree(lpMsgBuf);
+        LocalFree(msg);
     }
 }
 
@@ -392,32 +390,32 @@ void update_progress(udefrag_progress_info *pi, void *p)
             op_name = "optimize: ";
             break;
         }
-        clear_line(stderr);
+        clear_line(stdout);
         if(pi->current_operation == VOLUME_OPTIMIZATION && !stop_flag && pi->completion_status == 0){
             if(pi->pass_number > 1)
-                fprintf(stderr,"\r%c: %s%6.2lf%% complete, pass %lu, moves total = %I64u",
+                printf("\r%c: %s%6.2lf%% complete, pass %lu, moves total = %I64u",
                     volume_letter,op_name,pi->percentage,pi->pass_number,pi->total_moves);
             else
-                fprintf(stderr,"\r%c: %s%6.2lf%% complete, moves total = %I64u",
+                printf("\r%c: %s%6.2lf%% complete, moves total = %I64u",
                     volume_letter,op_name,pi->percentage,pi->total_moves);
         } else {
             if(pi->pass_number > 1)
-                fprintf(stderr,"\r%c: %s%6.2lf%% complete, pass %lu, fragmented/total = %lu/%lu",
+                printf("\r%c: %s%6.2lf%% complete, pass %lu, fragmented/total = %lu/%lu",
                     volume_letter,op_name,pi->percentage,pi->pass_number,pi->fragmented,pi->files);
             else
-                fprintf(stderr,"\r%c: %s%6.2lf%% complete, fragmented/total = %lu/%lu",
+                printf("\r%c: %s%6.2lf%% complete, fragmented/total = %lu/%lu",
                     volume_letter,op_name,pi->percentage,pi->fragmented,pi->files);
         }
         if(pi->completion_status != 0 && !stop_flag){
             /* set progress indicator to 100% state */
-            clear_line(stderr);
+            clear_line(stdout);
             if(pi->pass_number > 1)
-                fprintf(stderr,"\r%c: %s100.00%% complete, %lu passes needed, fragmented/total = %lu/%lu",
+                printf("\r%c: %s100.00%% complete, %lu passes needed, fragmented/total = %lu/%lu",
                     volume_letter,op_name,pi->pass_number,pi->fragmented,pi->files);
             else
-                fprintf(stderr,"\r%c: %s100.00%% complete, fragmented/total = %lu/%lu",
+                printf("\r%c: %s100.00%% complete, fragmented/total = %lu/%lu",
                     volume_letter,op_name,pi->fragmented,pi->files);
-            if(!m_flag) fprintf(stderr,"\n");
+            if(!m_flag) printf("\n");
         }
         
         if(m_flag)
@@ -527,11 +525,11 @@ static int process_volumes(void)
     /* skip invalid paths */
     for(path = paths; path; path = path->next){
         if(wcslen(path->path) < 2){
-            printf("incomplete path detected: %ls\n",path->path);
+            fprintf(stderr,"incomplete path detected: %ls\n",path->path);
             path->processed = 1;
         }
         if(path->path[1] != ':'){
-            printf("incomplete path detected: %ls\n",path->path);
+            fprintf(stderr,"incomplete path detected: %ls\n",path->path);
             path->processed = 1;
         }
         if(path->next == paths) break;
@@ -541,11 +539,11 @@ static int process_volumes(void)
         if(path->processed == 0){
             if(!b_flag) settextcolor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
             if(first_path){
-                print_unicode_string(path->path);
+                WgxPrintUnicodeString(path->path,stdout);
                 printf("\n");
             } else {
                 printf("\n");
-                print_unicode_string(path->path);
+                WgxPrintUnicodeString(path->path,stdout);
                 printf("\n");
             }
             if(!b_flag) settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
@@ -605,7 +603,7 @@ static int process_volumes(void)
                             wcscpy(new_in_filter,aux_buffer);
                             path_found = 1;
                             if(!b_flag) settextcolor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-                            print_unicode_string(another_path->path);
+                            WgxPrintUnicodeString(another_path->path,stdout);
                             printf("\n");
                             if(!b_flag) settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
                             another_path->processed = 1;
@@ -769,6 +767,12 @@ int __cdecl main(int argc, char **argv)
         "and you are welcome to redistribute it under certain conditions.\n\n"
         );
         
+    /* check for admin rights - they're strongly required */
+    if(!WgxCheckAdminRights()){
+        display_error("Administrative rights are needed to run the program!\n");
+        terminate_console(1);
+    }
+
     /* handle initialization failure */
     if(udefrag_init_failed()){
         display_error("Initialization failed!\nSend bug report to the authors please.\n");

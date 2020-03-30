@@ -188,7 +188,7 @@ BOOL WgxSaveOptions(char *path,WGX_OPTION *table,WGX_SAVE_OPTIONS_CALLBACK cb)
     f = fopen(path,"wt");
     if(f == NULL){
         (void)_snprintf(err_msg,sizeof(err_msg) - 1,
-            "Cannot open %s file:\n%s",
+            "Cannot open %s file: %s",
             path,_strerror(NULL));
         err_msg[sizeof(err_msg) - 1] = 0;
         WgxDbgPrint("%s\n",err_msg);
@@ -237,7 +237,7 @@ BOOL WgxSaveOptions(char *path,WGX_OPTION *table,WGX_SAVE_OPTIONS_CALLBACK cb)
 fail:
             fclose(f);
             (void)_snprintf(err_msg,sizeof(err_msg) - 1,
-                "Cannot write to %s file:\n%s",
+                "Cannot write to %s file: %s",
                 path,_strerror(NULL));
             err_msg[sizeof(err_msg) - 1] = 0;
             WgxDbgPrint("%s\n",err_msg);

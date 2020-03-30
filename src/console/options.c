@@ -73,6 +73,7 @@ void show_help(void)
         "  -h,  --help                         Show this help screen\n"
         "  -?                                  Show this help screen\n"
         "\n"
+        "  The commands are exclusive and can't be combined with each other.\n"
         "  If no command is specified it will defragment the disk.\n"
         "\n"
         "Options:\n"
@@ -141,7 +142,7 @@ void show_help(void)
         "\n"
         "  UD_FILE_SIZE_THRESHOLD              Exclude all files larger than specified.\n"
         "                                      The following size suffixes are accepted:\n"
-        "                                      Kb, Mb, Gb, Tb, Pb, Eb.\n"
+        "                                      KB, MB, GB, TB, PB, EB.\n"
         "\n"
         "  UD_FRAGMENTS_THRESHOLD              Exclude all files which have less number\n"
         "                                      of fragments than specified.\n"
@@ -185,7 +186,7 @@ void show_help(void)
         "  set UD_IN_FILTER=*windows*;*winnt*  include only paths, which include either\n"
         "                                      'windows' or 'winnt' words.\n"
         "\n"
-        "  set UD_FILE_SIZE_THRESHOLD=50Mb     process only files below 50 MB in size.\n"
+        "  set UD_FILE_SIZE_THRESHOLD=50MB     process only files below 50 MB in size.\n"
         "\n"
         "  set UD_FRAGMENTS_THRESHOLD=6        process only files with more than\n"
         "                                      '6' fragments.\n"
@@ -418,7 +419,7 @@ void parse_cmdline(int argc, char **argv)
             if(optopt == '?') h_flag = 1;
             break;
         default:
-            printf("?? getopt returned character code 0%o ??\n", c);
+            fprintf(stderr,"?? getopt returned character code 0%o ??\n", c);
         }
     }
     
@@ -434,7 +435,7 @@ void parse_cmdline(int argc, char **argv)
                 if(argv[optind][1] == ':'){
                     ch = argv[optind][0];
                     if(letter_index > (MAX_DOS_DRIVES - 1)){
-                        printf("Too many letters specified on the command line.\n");
+                        fprintf(stderr,"Too many letters specified on the command line.\n");
                     } else {
                         letters[letter_index] = ch;
                         letter_index ++;
@@ -542,7 +543,7 @@ void search_for_paths(void)
                 WgxDbgPrintLastError("search_for_paths: GetLongPathNameW failed");
                 goto use_short_path;
             } else if(result > MAX_LONG_PATH + 1){
-                printf("search_for_paths: long path of \'%ls\' is too long!",xargv[i]);
+                fprintf(stderr,"search_for_paths: long path of \'%ls\' is too long!",xargv[i]);
                 goto use_short_path;
             }
         } else {
@@ -556,7 +557,7 @@ use_short_path:
             WgxDbgPrintLastError("search_for_paths: GetFullPathNameW failed");
             wcscpy(full_path,long_path);
         } else if(result > MAX_LONG_PATH + 1){
-            printf("search_for_paths: full path of \'%ls\' is too long!",long_path);
+            fprintf(stderr,"search_for_paths: full path of \'%ls\' is too long!",long_path);
             wcscpy(full_path,long_path);
         }
         full_path[MAX_LONG_PATH] = 0;

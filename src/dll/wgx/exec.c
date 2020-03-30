@@ -32,6 +32,8 @@
 
 #define MAX_CMD_LENGTH 32768
 
+typedef BOOL (WINAPI*CHECKTOKENMEMBERSHIP)(HANDLE TokenHandle,PSID SidToCheck,PBOOL IsMember);
+
 /**
  * @brief Lightweight version
  * of CreateProcess system API.
@@ -110,6 +112,105 @@ BOOL WgxCreateThread(LPTHREAD_START_ROUTINE routine,LPVOID param)
         return FALSE;
     CloseHandle(h);
     return TRUE;
+}
+
+/**
+ * @brief Defines whether the user
+ * has administrative rights or not.
+ * @details Based on the UserInfo
+ * NSIS plug-in.
+ */
+BOOL WgxCheckAdminRights(void)
+{
+    HANDLE hToken;
+    SID_IDENTIFIER_AUTHORITY SystemSidAuthority = {SECURITY_NT_AUTHORITY};
+    PSID psid = NULL;
+    CHECKTOKENMEMBERSHIP pCheckTokenMembership;
+    BOOL IsMember = FALSE;
+    BOOL result = FALSE;
+    BOOL api_result;
+    TOKEN_GROUPS *ptg = NULL;
+    DWORD bytes_allocated = 0;
+    DWORD bytes_needed = 0;
+    DWORD j;
+    
+    if(!OpenThreadToken(GetCurrentThread(),TOKEN_QUERY,FALSE,&hToken)){
+        WgxDbgPrintLastError("WgxCheckAdminRights: cannot open access token of the thread");
+        if(!OpenProcessToken(GetCurrentProcess(),TOKEN_QUERY,&hToken)){
+            WgxDbgPrintLastError("WgxCheckAdminRights: cannot open access token of the process");
+            return FALSE;
+        }
+    }
+    
+    if(!AllocateAndInitializeSid(&SystemSidAuthority,2,
+      SECURITY_BUILTIN_DOMAIN_RID,DOMAIN_ALIAS_RID_ADMINS,
+      0,0,0,0,0,0,&psid)){
+        WgxDbgPrintLastError("WgxCheckAdminRights: cannot create the security identifier");
+        psid = NULL;
+        goto done;
+    }
+      
+    pCheckTokenMembership = (CHECKTOKENMEMBERSHIP)GetProcAddress(
+      GetModuleHandle("advapi32"),"CheckTokenMembership");
+    if(pCheckTokenMembership){
+        /* we are at least on w2k */
+        if(!pCheckTokenMembership(NULL,psid,&IsMember)){
+            WgxDbgPrintLastError("WgxCheckAdminRights: cannot check token membership");
+            goto done;
+        }
+        if(!IsMember){
+            WgxDbgPrint("WgxCheckAdminRights: the user is not a member of administrators group");
+            goto done;
+        }
+    } else {
+        /* we are on NT 4 */
+        do {
+            api_result = GetTokenInformation(hToken,TokenGroups,ptg,bytes_allocated,&bytes_needed);
+            if(!api_result && GetLastError() != ERROR_INSUFFICIENT_BUFFER){
+                /* the call failed */
+                WgxDbgPrintLastError("WgxCheckAdminRights: cannot get token information");
+                goto done;
+            }
+            if(!api_result){
+                if(bytes_needed <= bytes_allocated){
+                    /* the call needs smaller buffer?? */
+                    WgxDbgPrint("WgxCheckAdminRights: GetTokenInformation failed (requested smaller buffer)");
+                    goto done;
+                }
+                /* the call needs larger buffer */
+                if(ptg) free(ptg);
+                ptg = malloc(bytes_needed);
+                if(ptg == NULL){
+                    WgxDbgPrint("WgxCheckAdminRights: not enough memory");
+                    goto done;
+                }
+                bytes_allocated = bytes_needed;
+                continue;
+            }
+            break;
+        } while(1);
+        if(ptg == NULL){
+            WgxDbgPrint("WgxCheckAdminRights: GetTokenInformation failed (requested no buffer)");
+            goto done;
+        }
+        for(j = 0; j < ptg->GroupCount; j++){
+            if(EqualSid(ptg->Groups[j].Sid,psid)){
+                result = TRUE;
+                goto done;
+            }
+        }
+        WgxDbgPrint("WgxCheckAdminRights: the user is not a member of administrators group");
+        goto done;
+    }
+    
+    /* all checks succeeded */
+    result = TRUE;
+
+done:
+    if(ptg) free(ptg);
+    if(psid) FreeSid(psid);
+    CloseHandle(hToken);
+    return result;
 }
 
 /** @} */

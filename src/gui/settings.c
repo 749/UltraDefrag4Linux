@@ -55,6 +55,9 @@ extern int grid_line_width;
 extern int grid_color_r;
 extern int grid_color_g;
 extern int grid_color_b;
+extern int free_color_r;
+extern int free_color_g;
+extern int free_color_b;
 extern double pix_per_dialog_unit;
 extern int last_block_size;
 extern int last_grid_width;
@@ -81,6 +84,9 @@ WGX_OPTION read_only_options[] = {
     {WGX_CFG_INT,     0, "grid_color_r", &grid_color_r, (void *)0},
     {WGX_CFG_INT,     0, "grid_color_g", &grid_color_g, (void *)0},
     {WGX_CFG_INT,     0, "grid_color_b", &grid_color_b, (void *)0},
+    {WGX_CFG_INT,     0, "free_color_r", &free_color_r, (void *)255},
+    {WGX_CFG_INT,     0, "free_color_g", &free_color_g, (void *)255},
+    {WGX_CFG_INT,     0, "free_color_b", &free_color_b, (void *)255},
     {WGX_CFG_INT,     0, "disable_latest_version_check", &disable_latest_version_check, 0},
     {WGX_CFG_INT,     0, "scale_by_dpi", &scale_by_dpi, (void *)1},
     {WGX_CFG_INT,     0, "restore_default_window_size", &restore_default_window_size, 0},

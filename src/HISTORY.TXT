@@ -1,6 +1,39 @@
 ﻿HISTORY
 
-  Version 5.0.6  2012-06-
+  Version 5.0.7  2012-09-01
+  ------------------------------------------------------------------------------
+    - added compatibility with the following software by exclusion their 
+      essential files from moving (excluded files are listed in brackets):
+      SafeBoot (safeboot.fs), Symantec GoBack (Gobackio.bin),
+      PGP Whole Disk Encryption (PGPWDE0*), Acronis OS Selector (bootwiz*),
+      DriveCrypt (BootAuth?.sys), DiskCryptor ($dcsys$)
+    - added crash handling code to the GUI, it shows the crash information
+      on startup when the program crashed during the last run
+    - changed unit suffixes from lower case 'b' to capital 'B',
+      this is going conform with the SI units.
+      Current scripts will still function, since we ignore character case.
+    - error messages of the command line tool redirected to stderr
+      while everything else - to stdout to comply with the common practice
+    - fixed the progress indicator overflow; now it should never exceed 100%
+    - added option to specify a custom cluster map background color
+      (free-space color)
+    - included further information in the documentation to fix bug #3561122
+
+    - the following translations were added:
+
+      Lithuanian, Albanian
+
+    - the following translations were updated:
+
+      Vietnamese, Polish, Iloko, Portuguese (BR), Norwegian, Slovak,
+      Chinese (Simplified), Chinese (Traditional), Spanish (MEX),
+      Wáray-Wáray, Japanese, Spanish (AR)
+
+    - Internals: WgxPrintUnicodeString, WgxCheckAdminRights
+      routines added to wgx library
+
+
+  Version 5.0.6  2012-06-20
   ------------------------------------------------------------------------------
     - GUI debugging output was forced to be saved in the log file
     - added "Debug" item to the help menu

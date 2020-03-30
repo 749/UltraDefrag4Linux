@@ -410,7 +410,7 @@ int ShutdownOrHibernate(void)
         break;
     case IDM_WHEN_DONE_LOGOFF:
         if(shutdown_cmd_present){
-            result = WgxCreateProcess("%windir%\\system32\\cmd.exe","/K shutdown -l -t 0");
+            result = WgxCreateProcess("%windir%\\system32\\cmd.exe","/K shutdown -l");
         } else {
             result = ExitWindowsEx(EWX_LOGOFF | EWX_FORCEIFHUNG,
                 SHTDN_REASON_MAJOR_OTHER | SHTDN_REASON_MINOR_OTHER | \

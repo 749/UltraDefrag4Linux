@@ -45,8 +45,8 @@
  * <h3>Where can I find a legend of the cluster map colors?</h3>
  * The colors are described in the <b>Cluster Map</b> section of the @ref GUI page. 
  *
- * <h3>When cluster map will become interactive, so I'll be able to know where
- * individual files are locating on disk?</h3>
+ * <h3>When will the cluster map become interactive, so I'll be able to know where
+ * individual files are located on disk?</h3>
  * When defragmentation algorithms are quite effective, this is not necessary
  * to know location of individual files - anyway you'll get your drive optimized
  * quite well. Maybe we'll implement the discussed feature later, but now we prefer
@@ -85,12 +85,24 @@
  * <h3>How can I process all disks except a few?</h3>
  * You can use the filter variables to do this.
  * For instance you like to defragment all fixed drives except C and S.\n
- * To achieve this you use <b>set UD_EX_FILTER=C:\\;S:\\</b> and execute
+ * To achieve this you use <b>set UD_EX_FILTER=C:\\*;S:\\*</b> and execute
  * <b>udefrag --all-fixed</b>.\n
  * The analysis will be executed for any drive, but defragmentation will be
  * skipped for drive C and S.\n
  * The analysis will not be complete for excluded FAT disks, because the
  * driver does only check the root folder of excluded disks.
+ *
+ * <h1>Boot time processing</h1>
+ * <h3>What is the best configuration for boot disks?</h3>
+ * For NTFS it should be sufficient to use quick optimization.
+ * For FAT it is highly recommended to convert the boot disk into NTFS
+ * due to performance and security reasons.
+ * If you need to use FAT for various reasons, only defragmentation is supported.
+ *
+ * <h3>Why are there still some files fragmented?</h3>
+ * Some system configurations are locking files even at boot, which can't be prevented. 
+ * In some cases the size of the free space regions is not big enough to hold the entire file,
+ * this can be corrected by using quick optimization, which consolidates free space.
  *
  * <h1>Miscellaneous</h1>
  * <h3>How can I disable the boot time defragmenter manually?</h3>

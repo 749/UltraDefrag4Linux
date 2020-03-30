@@ -25,7 +25,7 @@ HELP                      = &Hjelp
 
 ; --- Action Menu
 
-ANALYSE                   = &Analysere
+ANALYSE                   = &Analyser
 DEFRAGMENT                = &Defragmenter
 QUICK_OPTIMIZE            = Rask optimalisering
 FULL_OPTIMIZE             = Full optimalisering
@@ -157,16 +157,16 @@ HIDE                      = Skjul
 FRAGMENTED_FILES_ON       = Fragmenterte filer på
 
 VISIT_HOMEPAGE            = Besøk vår hjemmeside
-VIEW_REPORT_OPTIONS       = Se rapport alternativer
+VIEW_REPORT_OPTIONS       = Se rapporteringsalternativer
 POWERED_BY_LUA            = Powered by Lua
 
 FRAGMENTS                 = fragmenter
 SIZE                      = størrelse
 FILENAME                  = filnavn
-COMMENT                   = kommentere
+COMMENT                   = kommentér
 
 LOCKED                    = låst
-MOVE_FAILED               = flytte mislyktes
+MOVE_FAILED               = flytting mislyktes
 INVALID                   = ugyldig
 
 ; END OF FILE

@@ -9,6 +9,7 @@
 ; Revised May. 27, 2010 by Robert Jr
 ; Revised Oct. 04, 2011 by Massa
 ; Revised Jun. 08, 2012 by Rodrigo Lopes Paitach
+; Revised Jul. 13, 2012 by Gustavo Rezende
 ;------------------------------------------------------------------------------
 
 ; Please keep the header and comments in English and use Latin letters,
@@ -59,7 +60,7 @@ SHOW_REPORT               = &Mostrar relatório
 
 LANGUAGE                  = &Idioma
 GRAPHICAL_INTERFACE       = Interface &Gráfica
-BOOT_TIME_SCAN            = &Scan durante o boot
+BOOT_TIME_SCAN            = &Varredura durante o boot
 REPORTS                   = &Relatórios
 
 ; --- --- Language submenu
@@ -92,7 +93,7 @@ ABOUT                     = &Sobre
 ; --- --- Debug submenu
 
 OPEN_LOG                  = Abrir &log
-REPORT_BUG                = Enviar &relatório erros
+REPORT_BUG                = Enviar &relatório de erros
 
 ; --- Toolbar Tooltips
 
@@ -131,7 +132,7 @@ LICENSE                   = &Licença
 
 PLEASE_CONFIRM            = Por favor Confirme
 REALLY_SHUTDOWN_WHEN_DONE = Você realmente quer desligar quando acabar?
-REALLY_HIBERNATE_WHEN_DONE= Você realmente quer hibernar quando acabar?
+REALLY_HIBERNATE_WHEN_DONE = Você realmente quer hibernar quando acabar?
 REALLY_LOGOFF_WHEN_DONE   = Você realmente quer fazer logoff quando acabar?
 REALLY_REBOOT_WHEN_DONE   = Você realmente quer reiniciar quando acabar?
 SECONDS_TILL_SHUTDOWN     = segundos até o desligamento
@@ -153,7 +154,7 @@ JOB_IS_RUNNING            = Um trabalho está sendo executado
 ; Strings for system tray icon context menu.
 
 SHOW                      = Mostrar
-HIDE                      = Esconder
+HIDE                      = Ocultar
 
 ; Strings for the file fragmentation reports.
 
@@ -166,9 +167,9 @@ POWERED_BY_LUA            = Desenvolvido por Lua
 FRAGMENTS                 = fragmentos
 SIZE                      = tamanho
 FILENAME                  = nome do arquivo
-COMMENT                   = comentar
+COMMENT                   = comentário
 
-LOCKED                    = trancado
+LOCKED                    = bloqueado
 MOVE_FAILED               = mover falhou
 INVALID                   = inválido
 
