@@ -74,6 +74,12 @@
 /** @} */
 
 /**
+ * @defgroup Taskbar Taskbar Icon Overlays
+ * @{
+ */
+/** @} */
+
+/**
  * @defgroup WebAnalytics Web Analytics
  * @{
  */

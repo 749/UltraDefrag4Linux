@@ -14,12 +14,12 @@
  * <h1>Installer</h1>
  * <h3>How can I determine which installer to download?</h3>
  * -# open the <b>Run</b> dialog by hitting [Windows]+R
- * -# type <b>cmd.exe /K echo %PROCESSOR_ARCHITECTURE%</b>
+ * -# type <b>cmd.exe /K echo \%PROCESSOR_ARCHITECTURE\%</b>
  * -# hit the OK button
  * -# examine the top-left corner of the opened command prompt window
- * If it reads <b>x86</b> you download the <b>i386</b> installer.
- * If it reads <b>AMD64</b> you download the <b>amd64</b> installer.
- * If it reads <b>IA64</b> you download the <b>ia64</b> installer.
+ *     - If it reads <b>x86</b> you download the <b>i386</b> installer.
+ *     - If it reads <b>AMD64</b> you download the <b>amd64</b> installer.
+ *     - If it reads <b>IA64</b> you download the <b>ia64</b> installer.
  *
  * <h3>Can I up- or downgrade over an existing installation?</h3>
  * The installer is written to support up- and downgrading without the need

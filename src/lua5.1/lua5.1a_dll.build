@@ -13,6 +13,9 @@ src = {
     "lundump.c", "lvm.c", "lzio.c"
 }
 
+-- list of directories containing headers the library relies on
+includes = { "include", "lua5.1" }
+
 deffile  = "lua5.1.def"
 -- we never use __stdcall convention
 mingw_deffile  = "lua5.1.def"

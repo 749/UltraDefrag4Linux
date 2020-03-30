@@ -377,13 +377,12 @@
  * @latexonly
  * \\ \hline
  * @endlatexonly
- * @image html "Blank.png"
- * @image latex "Blank.png"
+ * @image html "BestPractice.png"
  * @htmlonly
  * </td><td style="width: 90%;">
  * @endhtmlonly
  * @latexonly
- * &
+ * \raisebox{-1.5\height}{\includegraphics{BestPractice.png}} &
  * @endlatexonly
  * @par Best practice (F2)
  * This launches the @ref Tips chapter of this handbook.
@@ -418,6 +417,22 @@
  * @endhtmlonly
  * @latexonly
  * &
+ * @endlatexonly
+ * @par Check for update
+ * This checks for program updates on demand, this is helpful if automatic update checks are disabled.
+ *
+ * @htmlonly
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * @endlatexonly
+ * @image html "About.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.5\height}{\includegraphics{About.png}} &
  * @endlatexonly
  * @par About (F4)
  * This opens the about window.
@@ -514,6 +529,16 @@
  * @image html removable.png"
  * @htmlonly
  * </td></tr></table>
+ * <table style="border: none;">
+ * <tr><td>Dirty drives are marked by</td><td>
+ * @endhtmlonly
+ * @image html "fixed-dirty.png"
+ * @htmlonly
+ * </td><td>and</td><td>
+ * @endhtmlonly
+ * @image html removable-dirty.png"
+ * @htmlonly
+ * </td><td>, run CHKDSK to correct the problem.</td></tr></table>
  * @endhtmlonly
  *
  * @latexonly
@@ -522,6 +547,13 @@
  * \raisebox{-0.3\height}{\includegraphics{fixed.png}} &
  * , removable drives - by &
  * \raisebox{-0.3\height}{\includegraphics{removable.png}} \\
+ * \end{tabular}\par
+ * \par\begin{tabular}{lclcl}
+ * Dirty drives are marked by &
+ * \raisebox{-0.3\height}{\includegraphics{fixed-dirty.png}} &
+ * and &
+ * \raisebox{-0.3\height}{\includegraphics{removable-dirty.png}} &
+ * , run CHKDSK to correct the problem. \\
  * \end{tabular}\par
  * @endlatexonly
  *

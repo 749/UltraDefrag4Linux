@@ -40,7 +40,8 @@ HWND hMap = NULL;
 WGX_FONT wgxFont = {{0},0};
 RECT win_rc; /* coordinates of main window */
 RECT r_rc;   /* coordinates of restored window */
-double pix_per_dialog_unit = PIX_PER_DIALOG_UNIT_96DPI;
+double fScale = 1.0f;
+UINT TaskbarButtonCreatedMsg = 0;
 
 int when_done_action = IDM_WHEN_DONE_NONE;
 int shutdown_requested = 0;
@@ -73,6 +74,67 @@ int job_flags = UD_PREVIEW_MATCHING;
 
 /* forward declarations */
 LRESULT CALLBACK MainWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam);
+static void DestroySynchObjects(void);
+
+/**
+ * @brief Initializes all objects
+ * synchronizing access to essential data.
+ * @return Zero for success,
+ * negative value otherwise.
+ */
+static int InitSynchObjects(void)
+{
+    hLangMenuEvent = CreateEvent(NULL,FALSE,TRUE,NULL);
+    if(hLangMenuEvent == NULL){
+        WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,
+            "Cannot create language menu synchronization event!");
+        WgxDbgPrintLastError("InitSynchObjects: language menu event creation failed");
+        return (-1);
+    }
+    hTaskbarIconEvent = CreateEvent(NULL,FALSE,TRUE,NULL);
+    if(hTaskbarIconEvent == NULL){
+        WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,
+            "Cannot create taskbar icon synchronization event!");
+        WgxDbgPrintLastError("InitSynchObjects: taskbar icon event creation failed");
+        WgxDbgPrint("no taskbar icon overlays will be shown");
+        WgxDbgPrint("and no system tray icon will be shown");
+        DestroySynchObjects();
+        return (-1);
+    }
+    hMapEvent = CreateEvent(NULL,FALSE,TRUE,NULL);
+    if(hMapEvent == NULL){
+        WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,
+            "Cannot create cluster map synchronization event!");
+        WgxDbgPrintLastError("InitSynchObjects: map event creation failed");
+        DestroySynchObjects();
+        return (-1);
+    }
+    hListEvent = CreateEvent(NULL,FALSE,TRUE,NULL);
+    if(hListEvent == NULL){
+        WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,
+            "Cannot create drives list synchronization event!");
+        WgxDbgPrintLastError("InitSynchObjects: list event creation failed");
+        DestroySynchObjects();
+        return (-1);
+    }
+    return 0;
+}
+
+/**
+ * @brief Destroys all objects
+ * synchronizing access to essential data.
+ */
+static void DestroySynchObjects(void)
+{
+    if(hLangMenuEvent)
+        CloseHandle(hLangMenuEvent);
+    if(hTaskbarIconEvent)
+        CloseHandle(hTaskbarIconEvent);
+    if(hMapEvent)
+        CloseHandle(hMapEvent);
+    if(hListEvent)
+        CloseHandle(hListEvent);
+}
 
 /**
  * @brief Defines whether GUI is a part of
@@ -233,15 +295,16 @@ static void InitMainWindowCoordinates(void)
     int center_on_the_screen = 0;
     int screen_width, screen_height;
     int width, height;
-    RECT rc;
+    HDC hDC;
 
     if(scale_by_dpi){
-        rc.top = rc.left = 0;
-        rc.right = rc.bottom = 100;
-        if(MapDialogRect(hWindow,&rc))
-            pix_per_dialog_unit = (double)(rc.right - rc.left) / 100;
+        hDC = GetDC(NULL);
+        if(hDC){
+            fScale = (double)GetDeviceCaps(hDC,LOGPIXELSX) / 96.0f;
+            ReleaseDC(NULL,hDC);
+        }
     }
-
+    
     if(r_rc.left == UNDEFINED_COORD)
         center_on_the_screen = 1;
     else if(r_rc.top == UNDEFINED_COORD)
@@ -295,6 +358,9 @@ void ResizeMainWindow(int force)
         return;
     }
     
+    if(list_height == 0)
+        list_height = DPI(VLIST_HEIGHT);
+
     /* correct invalid list heights */
     min_list_height = GetMinVolListHeight();
     if(list_height < min_list_height)
@@ -354,6 +420,10 @@ int CreateMainWindow(int nShowCmd)
     /* register class */
     if(RegisterMainWindowClass() < 0)
         return (-1);
+
+    TaskbarButtonCreatedMsg = RegisterWindowMessage("TaskbarButtonCreated");
+    if(TaskbarButtonCreatedMsg == 0)
+        WgxDbgPrintLastError("CreateMainWindow: cannot register TaskbarButtonCreated message");
 
     if(dry_run == 0){
         if(portable_mode) caption = VERSIONINTITLE_PORTABLE;
@@ -706,7 +776,21 @@ LRESULT CALLBACK MainWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
     short lang_name[MAX_PATH];
     wchar_t *report_opts_path;
     FILE *f;
-    int flag;
+    int flag, disable_latest_version_check_old;
+    
+    if(uMsg == TaskbarButtonCreatedMsg){
+        /* set taskbar icon overlay */
+        if(show_taskbar_icon_overlay){
+            if(WaitForSingleObject(hTaskbarIconEvent,INFINITE) != WAIT_OBJECT_0){
+                WgxDbgPrintLastError("StartJobsThreadProc: wait on hTaskbarIconEvent failed");
+            } else {
+                if(job_is_running)
+                    SetTaskbarIconOverlay(IDI_BUSY,L"JOB_IS_RUNNING");
+                SetEvent(hTaskbarIconEvent);
+            }
+        }
+        return 0;
+    }
 
     switch(uMsg){
     case WM_CREATE:
@@ -869,6 +953,12 @@ LRESULT CALLBACK MainWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
             return 0;
         case IDM_FAQ:
             OpenWebPage("FAQ.html");
+            return 0;
+        case IDM_CHECK_UPDATE:
+            disable_latest_version_check_old = disable_latest_version_check;
+            disable_latest_version_check = 0;
+            CheckForTheNewVersion();
+            disable_latest_version_check = disable_latest_version_check_old;
             return 0;
         case IDM_ABOUT:
             AboutBox();
@@ -1096,7 +1186,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nS
     /* save preferences to update the config file to the recent format */
     SavePrefs();
     
-    if(Init_I18N_Events() < 0){
+    if(InitSynchObjects() < 0){
         DeleteEnvironmentVariables();
         return 1;
     }
@@ -1111,29 +1201,24 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nS
     */
     InitCommonControls();
     
-    if(init_jobs() < 0){
-        Destroy_I18N_Events();
-        DeleteEnvironmentVariables();
-        stop_web_statistics();
-        return 2;
-    }
+    init_jobs();
     
     /* track changes in guiopts.lua file; synchronized with map redraw */
     StartPrefsChangesTracking();
     StartBootExecChangesTracking();
     StartLangIniChangesTracking();
     StartI18nFolderChangesTracking();
-
+    
     if(CreateMainWindow(nShowCmd) < 0){
         StopPrefsChangesTracking();
         StopBootExecChangesTracking();
         StopLangIniChangesTracking();
         StopI18nFolderChangesTracking();
         release_jobs();
-        Destroy_I18N_Events();
         WgxDestroyResourceTable(i18n_table);
-        DeleteEnvironmentVariables();
         stop_web_statistics();
+        DeleteEnvironmentVariables();
+        DestroySynchObjects();
         return 3;
     }
 
@@ -1154,14 +1239,14 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nS
     if(shutdown_requested){
         result = ShutdownOrHibernate();
         WgxDestroyFont(&wgxFont);
-        Destroy_I18N_Events();
         WgxDestroyResourceTable(i18n_table);
+        DestroySynchObjects();
         return result;
     }
     
     WgxDestroyFont(&wgxFont);
-    Destroy_I18N_Events();
     WgxDestroyResourceTable(i18n_table);
+    DestroySynchObjects();
     return 0;
 }
 

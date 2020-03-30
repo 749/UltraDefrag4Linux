@@ -208,15 +208,10 @@ void UpdateToolbarTooltips(void)
     int i, j, k;
     wchar_t buffer[256];
     wchar_t text[256];
+    wchar_t *s;
     
     if(hTooltip == NULL)
         return;
-
-    /* synchronize with other threads */
-    if(WaitForSingleObject(hLangPackEvent,INFINITE) != WAIT_OBJECT_0){
-        WgxDbgPrintLastError("UpdateToolbarTooltips: wait on hLangPackEvent failed");
-        return;
-    }
 
     for(i = 0; i < N_BUTTONS; i++){
         if(buttons[i].style == TBSTYLE_SEP)
@@ -226,10 +221,15 @@ void UpdateToolbarTooltips(void)
         ti.hwnd = hToolbar;
         ti.hinst = hInstance;
         ti.uId = i;
-        _snwprintf(buffer,256,L"%ws (%hs)",
-            WgxGetResourceString(i18n_table,buttons[i].tooltip_key),
-            buttons[i].hotkeys);
-        buffer[255] = 0;
+        s = WgxGetResourceString(i18n_table,buttons[i].tooltip_key);
+        if(text){
+            _snwprintf(buffer,256,L"%ws (%hs)",s,
+                buttons[i].hotkeys);
+            buffer[255] = 0;
+            free(s);
+        } else {
+            buffer[0] = 0;
+        }
         /* remove ampersands */
         for(j = 0, k = 0; buffer[j]; j++){
             if(buffer[j] != '&'){
@@ -241,8 +241,6 @@ void UpdateToolbarTooltips(void)
         ti.lpszText = text;
         SendMessage(hTooltip,TTM_UPDATETIPTEXTW,0,(LPARAM)&ti);
     }
-    
-    SetEvent(hLangPackEvent);
 }
 
 /** @} */

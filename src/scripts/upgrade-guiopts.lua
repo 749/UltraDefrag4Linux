@@ -7,12 +7,12 @@
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
   (at your option) any later version.
- 
+
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
- 
+
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -30,7 +30,7 @@ config_file_contents = [[
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- I. Filters
 
--- The main goal of defragmentation is disk access speedup. However, while 
+-- The main goal of defragmentation is disk access speedup. However, while
 -- some fragmented files decrease its performance, another may be left as they
 -- are without any noticeable system performance degradation.
 
@@ -59,6 +59,8 @@ config_file_contents = [[
 -- Note that paths must be typed with double back slashes instead of the single
 -- ones. For example, "C:\\MyDocs\\Music\\mp3\\Red_Hot_Chili_Peppers\\*"
 
+-- Empty strings ("") turn off the filters.
+
 -- Note that files marked as temporary by system are always excluded regardless
 -- of filters, since these files usually take no effect on system performance.
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -69,10 +71,10 @@ ex_filter = "$ex_filter"
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- The file_size_threshold filter allows to exclude big files from
 -- the defragmentation. For example, when you watch a movie, it takes
--- usually 1-2 hours while time needed to move drive's head from one 
+-- usually 1-2 hours while time needed to move drive's head from one
 -- fragment to another is about a few seconds. Therefore, you'll see
 -- no difference between fragmented and not fragmented movie file.
--- By setting the file_size_threshold filter, overall disk 
+-- By setting the file_size_threshold filter, overall disk
 -- defragmentation time can be highly decreased.
 
 -- To exclude all files greater than 100 Mb, set:
@@ -88,6 +90,8 @@ file_size_threshold = "$file_size_threshold"
 -- 5 fragments, set:
 
 -- fragments_threshold = 5
+
+-- Both zero value and empty string ("") turn off the filter.
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 fragments_threshold = $fragments_threshold
@@ -97,17 +101,19 @@ fragments_threshold = $fragments_threshold
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- When the specified time interval elapses the job will be terminated 
--- automatically. For example, to terminate processing after 6 hours and 
+-- When the specified time interval elapses the job will be terminated
+-- automatically. For example, to terminate processing after 6 hours and
 -- 30 minutes, set:
 
 -- time_limit = "6h 30m"
+
+-- Both zero value and empty string ("") turn off this option.
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 time_limit = "$time_limit"
 
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- Progress refresh interval, in milliseconds. The default value is 100. 
+-- Progress refresh interval, in milliseconds. The default value is 100.
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 refresh_interval = $refresh_interval
@@ -127,9 +133,15 @@ dbgprint_level = "$dbgprint_level"
 
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- Set log_file_path to the path and file name of the log file to be created,
--- for normal operation set it to an empty string.
+-- for normal operation set it to an empty string ("").
 -- For example:
 -- log_file_path = "C:\\Windows\\UltraDefrag\\Logs\\ultradefrag.log"
+--
+-- Examples using environment variables:
+-- a) Same as above, but uses SystemRoot (= windir) variable
+--    log_file_path = os.getenv("SystemRoot") .. "\\UltraDefrag\\Logs\\ultradefrag.log"
+-- b) Uses the temporary directory of the executing user
+--    log_file_path = os.getenv("TEMP") .. "\\UltraDefrag_Logs\\ultradefrag.log"
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 log_file_path = "$log_file_path"
@@ -157,7 +169,7 @@ seconds_for_shutdown_rejection = $seconds_for_shutdown_rejection
 disable_latest_version_check = $disable_latest_version_check
 
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- Set scale_by_dpi parameter to 0 to not scale the buttons and text 
+-- Set scale_by_dpi parameter to 0 to not scale the buttons and text
 -- according to the screens DPI settings.
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -173,12 +185,18 @@ restore_default_window_size = $restore_default_window_size
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- Set show_menu_icons parameter to 1 to show menu icons
 -- on Vista and more recent Windows editions.
--- Note: screen DPI below or equal to 125% must be set
--- currently in order to display icons.
 -- Note: restart the program after this parameter adjustment.
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 show_menu_icons = $show_menu_icons
+
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- Set show_taskbar_icon_overlay parameter to 1 to show the taskbar icon
+-- overlay indicating that the job is running on Windows 7 and more recent
+-- Windows editions.
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+show_taskbar_icon_overlay = $show_taskbar_icon_overlay
 
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- III. Cluster map options
@@ -255,7 +273,7 @@ end
 -- THE MAIN CODE STARTS HERE
 -- current version of configuration file
 -- version numbers 0-99 are reserved for 5.0.x series of the program
-current_version = 3
+current_version = 5
 old_version = 0
 upgrade_needed = 1
 
@@ -278,6 +296,8 @@ seconds_for_shutdown_rejection = 60
 disable_latest_version_check = 0
 scale_by_dpi = 1
 restore_default_window_size = 0
+show_menu_icons = 1
+show_taskbar_icon_overlay = 1
 map_block_size = 4
 grid_line_width = 1
 grid_color_r = 0
@@ -313,11 +333,10 @@ if upgrade_needed ~= 0 then
             f:close()
         end
     end
-    
+
     -- RULES OF UPGRADE TO THE CURRENT VERSION
     if old_version == 0 then
-        -- revert in_filter and ex_filter to their defaults
-        -- this is a main reason for upgrade to the version 1
+        -- upgrade filters, now they should include wildcards
         in_filter = ""
         ex_filter = "*system volume information*;*temp*;*tmp*;*recycle*;*.zip;*.7z;*.rar"
     end
@@ -325,14 +344,14 @@ if upgrade_needed ~= 0 then
         -- sizelimit has been superseded by file_size_threshold
         file_size_threshold = sizelimit
     end
-    
+
     -- save the upgraded configuration
     f = assert(io.open(path, "w"))
     if f ~= nil then
         save_preferences(f)
         f:close()
     end
-    
+
     -- save guiopts-internals.lua when needed
     if old_version == 0 then
         if rx ~= nil then

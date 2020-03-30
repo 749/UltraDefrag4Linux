@@ -41,55 +41,26 @@ typedef BOOLEAN (WINAPI *SET_SUSPEND_STATE_PROC)(BOOLEAN Hibernate,BOOLEAN Force
  */
 static void ResizeShutdownConfirmDialog(HWND hwnd,wchar_t *counter_msg)
 {
-    int client_width, client_height;
-    int icon_width = 32;
-    int icon_height = 32;
-    int spacing = 7;
-    int large_spacing = 11;
-    int margin = 11;
-    int extra_spacing = 20;
+    wchar_t *text1 = NULL, *text2 = NULL;
+    wchar_t buffer[256];
+    wchar_t text[256];
     int text1_width, text1_height;
     int text2_width, text2_height;
-    int button_width = 75;
-    int button_height = 23;
-    HDC hdc;
-    wchar_t *text1, *text2;
-    wchar_t buffer[256];
-    SIZE size;
     int text_block_width;
     int text_block_height;
     int top_width, top_height;
     int bottom_width, bottom_height;
+    int client_width, client_height;
     int icon_y, text1_y;
     int button1_x;
+    int button_width = MIN_BTN_WIDTH;
+    int button_height = MIN_BTN_HEIGHT;
+    int buttons_spacing = SMALL_SPACING;
+    int width, height;
+    BOOL result;
     RECT rc;
-    HFONT hFont, hOldFont;
     
-    /* synchronize access to localized strings with other threads */
-    if(WaitForSingleObject(hLangPackEvent,INFINITE) != WAIT_OBJECT_0){
-        WgxDbgPrintLastError("ResizeShutdownConfirmDialog: wait on hLangPackEvent failed");
-        return;
-    }
-
     /* get dimensions of texts */
-    hdc = GetDC(hwnd);
-    if(hdc == NULL){
-        WgxDbgPrintLastError("ResizeShutdownConfirmDialog: cannot get device context of the window");
-        goto done;
-    }
-    
-    if(use_custom_font_in_dialogs){
-        hFont = wgxFont.hFont;
-    } else {
-        hFont = (HFONT)SendMessage(hwnd,WM_GETFONT,0,0);
-        if(hFont == NULL){
-            WgxDbgPrintLastError("ResizeShutdownConfirmDialog: cannot get default font");
-            ReleaseDC(hwnd,hdc);
-            goto done;
-        }
-    }
-    hOldFont = SelectObject(hdc,hFont);
-    
     switch(when_done_action){
     case IDM_WHEN_DONE_HIBERNATE:
         text1 = WgxGetResourceString(i18n_table,L"REALLY_HIBERNATE_WHEN_DONE");
@@ -104,42 +75,68 @@ static void ResizeShutdownConfirmDialog(HWND hwnd,wchar_t *counter_msg)
         text1 = WgxGetResourceString(i18n_table,L"REALLY_SHUTDOWN_WHEN_DONE");
         break;
     default:
-        text1 = L"";
+        text1 = _wcsdup(L"");
         break;
     }
-    
-    if(!GetTextExtentPoint32W(hdc,text1,wcslen(text1),&size)){
-        WgxDbgPrintLastError("ResizeShutdownConfirmDialog: cannot get text1 dimensions");
-        SelectObject(hdc,hOldFont);
-        ReleaseDC(hwnd,hdc);
-        goto done;
+    if(text1 == NULL){
+        WgxDbgPrint("ResizeShutdownConfirmDialog: cannot allocate memory for text1");
+        return;
     }
-    text1_width = size.cx;
-    text1_height = size.cy;
-    
-    /* TODO: do it more accurately, without the need of extra_spacing  */
+    result = WgxGetTextDimensions(text1,
+        use_custom_font_in_dialogs ? wgxFont.hFont : NULL,
+        GetDlgItem(hwnd,IDC_MESSAGE), &text1_width, &text1_height);
+    if(result == FALSE)
+        goto done;
+
     _snwprintf(buffer,sizeof(buffer)/sizeof(wchar_t),L"%u %ws",seconds_for_shutdown_rejection,counter_msg);
     buffer[sizeof(buffer)/sizeof(wchar_t) - 1] = 0;
     text2 = buffer;
-    if(!GetTextExtentPoint32W(hdc,text2,wcslen(text2),&size)){
-        WgxDbgPrintLastError("ResizeShutdownConfirmDialog: cannot get text2 dimensions");
-        SelectObject(hdc,hOldFont);
-        ReleaseDC(hwnd,hdc);
+    result = WgxGetTextDimensions(text2,
+        use_custom_font_in_dialogs ? wgxFont.hFont : NULL,
+        GetDlgItem(hwnd,IDC_DELAY_MSG), &text2_width, &text2_height);
+    if(result == FALSE)
+        goto done;
+    /* TODO: do it more accurately, without the need of extra spacing */
+    text2_width += DPI(20);
+    
+    /* calculate dimensions of buttons */
+    if(!GetWindowTextW(GetDlgItem(hwnd,IDC_YES_BUTTON),text,sizeof(text)/sizeof(wchar_t))){
+        WgxDbgPrint("ResizeShutdownConfirmDialog: cannot get Yes button text");
         goto done;
     }
-    text2_width = size.cx + extra_spacing;
-    text2_height = size.cy;
-    
-    SelectObject(hdc,hOldFont);
-    ReleaseDC(hwnd,hdc);
-    
+    text[sizeof(text)/sizeof(wchar_t) - 1] = 0;
+    result = WgxGetTextDimensions(text,
+        use_custom_font_in_dialogs ? wgxFont.hFont : NULL,
+        GetDlgItem(hwnd,IDC_YES_BUTTON), &width, &height);
+    if(result == FALSE)
+        goto done;
+    if(width + 2 * BTN_H_SPACING > button_width)
+        button_width = width + 2 * BTN_H_SPACING;
+    if(height + 2 * BTN_V_SPACING > button_height)
+        button_height = height + 2 * BTN_V_SPACING;
+
+    if(!GetWindowTextW(GetDlgItem(hwnd,IDC_NO_BUTTON),text,sizeof(text)/sizeof(wchar_t))){
+        WgxDbgPrint("ResizeShutdownConfirmDialog: cannot get No button text");
+        goto done;
+    }
+    text[sizeof(text)/sizeof(wchar_t) - 1] = 0;
+    result = WgxGetTextDimensions(text,
+        use_custom_font_in_dialogs ? wgxFont.hFont : NULL,
+        GetDlgItem(hwnd,IDC_NO_BUTTON), &width, &height);
+    if(result == FALSE)
+        goto done;
+    if(width + 2 * BTN_H_SPACING > button_width)
+        button_width = width + 2 * BTN_H_SPACING;
+    if(height + 2 * BTN_V_SPACING > button_height)
+        button_height = height + 2 * BTN_V_SPACING;
+
     /* calculate dimensions of the entire text block */
     text_block_width = max(text1_width,text2_width);
-    text_block_height = text1_height + spacing + text2_height;
+    text_block_height = text1_height + SMALL_SPACING + text2_height;
     
-    top_width = icon_width + large_spacing + text_block_width;
-    top_height = max(icon_height,text_block_height);
-    bottom_width = button_width * 2 + spacing;
+    top_width = ICON_SIZE + LARGE_SPACING + text_block_width;
+    top_height = max(ICON_SIZE,text_block_height);
+    bottom_width = button_width * 2 + SMALL_SPACING;
     bottom_height = button_height;
     if(top_width < bottom_width){
         text_block_width += bottom_width - top_width;
@@ -147,8 +144,8 @@ static void ResizeShutdownConfirmDialog(HWND hwnd,wchar_t *counter_msg)
     }
     
     /* calculate dimensions of the entire client area */
-    client_width = top_width + margin * 2;
-    client_height = top_height + large_spacing + bottom_height + margin * 2;
+    client_width = top_width + MARGIN * 2;
+    client_height = top_height + LARGE_SPACING + bottom_height + MARGIN * 2;
     
     rc.left = 0;
     rc.right = client_width;
@@ -163,41 +160,43 @@ static void ResizeShutdownConfirmDialog(HWND hwnd,wchar_t *counter_msg)
     MoveWindow(hwnd,0,0,rc.right - rc.left,rc.bottom - rc.top,FALSE);
             
     /* reposition controls */
-    if(icon_height <= text_block_height){
-        icon_y = (text_block_height - icon_height) / 2 + margin;
-        text1_y = margin;
+    if(ICON_SIZE <= text_block_height){
+        icon_y = (text_block_height - ICON_SIZE) / 2 + MARGIN;
+        text1_y = MARGIN;
     } else {
-        icon_y = margin;
-        text1_y = (icon_height - text_block_height) / 2 + margin;
+        icon_y = MARGIN;
+        text1_y = (ICON_SIZE - text_block_height) / 2 + MARGIN;
     }
     SetWindowPos(GetDlgItem(hwnd,IDC_SHUTDOWN_ICON),NULL,
-        margin,
+        MARGIN,
         icon_y,
-        icon_width,
-        icon_height,
+        ICON_SIZE,
+        ICON_SIZE,
         SWP_NOZORDER);
     SetWindowPos(GetDlgItem(hwnd,IDC_MESSAGE),NULL,
-        margin + icon_width + large_spacing,
+        MARGIN + ICON_SIZE + LARGE_SPACING,
         text1_y,
         text_block_width,
-        text1_height + spacing,
+        text1_height + SMALL_SPACING,
         SWP_NOZORDER);
     SetWindowPos(GetDlgItem(hwnd,IDC_DELAY_MSG),NULL,
-        margin + icon_width + large_spacing,
-        text1_y + text1_height + spacing,
+        MARGIN + ICON_SIZE + LARGE_SPACING,
+        text1_y + text1_height + SMALL_SPACING,
         text_block_width,
-        text2_height + spacing,
+        text2_height + SMALL_SPACING,
         SWP_NOZORDER);
-    button1_x = (client_width - button_width * 2 - spacing) / 2;
+    button1_x = (client_width - button_width * 2 - SMALL_SPACING) / 2;
+    if((client_width - button_width * 2 - SMALL_SPACING) % 2)
+        buttons_spacing ++;
     SetWindowPos(GetDlgItem(hwnd,IDC_YES_BUTTON),NULL,
         button1_x,
-        margin + top_height + large_spacing,
+        MARGIN + top_height + LARGE_SPACING,
         button_width,
         button_height,
         SWP_NOZORDER);
     SetWindowPos(GetDlgItem(hwnd,IDC_NO_BUTTON),NULL,
-        button1_x + button_width + spacing,
-        margin + top_height + large_spacing,
+        button1_x + button_width + buttons_spacing,
+        MARGIN + top_height + LARGE_SPACING,
         button_width,
         button_height,
         SWP_NOZORDER);
@@ -210,8 +209,7 @@ static void ResizeShutdownConfirmDialog(HWND hwnd,wchar_t *counter_msg)
     WgxCenterWindow(hwnd);
 
 done:
-    /* end of synchronization */
-    SetEvent(hLangPackEvent);
+    free(text1);
 }
 
 /**
@@ -226,34 +224,35 @@ BOOL CALLBACK ShutdownConfirmDlgProc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lPa
     #define MAX_TEXT_LENGTH 127
     static wchar_t buffer[MAX_TEXT_LENGTH + 1];
     static wchar_t counter_msg[MAX_TEXT_LENGTH + 1];
+    wchar_t *text = NULL;
 
     switch(msg){
     case WM_INITDIALOG:
         if(use_custom_font_in_dialogs)
             WgxSetFont(hWnd,&wgxFont);
-        if(WaitForSingleObject(hLangPackEvent,INFINITE) != WAIT_OBJECT_0){
-            WgxDbgPrintLastError("ShutdownConfirmDlgProc: wait on hLangPackEvent failed");
-            counter_msg[0] = 0;
-        } else {
-            WgxSetText(hWnd,i18n_table,L"PLEASE_CONFIRM");
-            WgxSetText(GetDlgItem(hWnd,IDC_YES_BUTTON),i18n_table,L"YES");
-            WgxSetText(GetDlgItem(hWnd,IDC_NO_BUTTON),i18n_table,L"NO");
-            switch(when_done_action){
-            case IDM_WHEN_DONE_HIBERNATE:
-                wcsncpy(counter_msg,WgxGetResourceString(i18n_table,L"SECONDS_TILL_HIBERNATION"),MAX_TEXT_LENGTH);
-                break;
-            case IDM_WHEN_DONE_LOGOFF:
-                wcsncpy(counter_msg,WgxGetResourceString(i18n_table,L"SECONDS_TILL_LOGOFF"),MAX_TEXT_LENGTH);
-                break;
-            case IDM_WHEN_DONE_REBOOT:
-                wcsncpy(counter_msg,WgxGetResourceString(i18n_table,L"SECONDS_TILL_REBOOT"),MAX_TEXT_LENGTH);
-                break;
-            case IDM_WHEN_DONE_SHUTDOWN:
-                wcsncpy(counter_msg,WgxGetResourceString(i18n_table,L"SECONDS_TILL_SHUTDOWN"),MAX_TEXT_LENGTH);
-                break;
-            }
+        WgxSetText(hWnd,i18n_table,L"PLEASE_CONFIRM");
+        WgxSetText(GetDlgItem(hWnd,IDC_YES_BUTTON),i18n_table,L"YES");
+        WgxSetText(GetDlgItem(hWnd,IDC_NO_BUTTON),i18n_table,L"NO");
+        switch(when_done_action){
+        case IDM_WHEN_DONE_HIBERNATE:
+            text = WgxGetResourceString(i18n_table,L"SECONDS_TILL_HIBERNATION");
+            break;
+        case IDM_WHEN_DONE_LOGOFF:
+            text = WgxGetResourceString(i18n_table,L"SECONDS_TILL_LOGOFF");
+            break;
+        case IDM_WHEN_DONE_REBOOT:
+            text = WgxGetResourceString(i18n_table,L"SECONDS_TILL_REBOOT");
+            break;
+        case IDM_WHEN_DONE_SHUTDOWN:
+            text = WgxGetResourceString(i18n_table,L"SECONDS_TILL_SHUTDOWN");
+            break;
+        }
+        if(text){
+            wcsncpy(counter_msg,text,MAX_TEXT_LENGTH);
             counter_msg[MAX_TEXT_LENGTH] = 0;
-            SetEvent(hLangPackEvent);
+            free(text);
+        } else {
+            counter_msg[0] = 0;
         }
 
         /* set timer */
@@ -273,6 +272,9 @@ BOOL CALLBACK ShutdownConfirmDlgProc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lPa
 
         /* shutdown will be rejected by pressing the space key */
         (void)SetFocus(GetDlgItem(hWnd,IDC_NO_BUTTON));
+        
+        /* bring dialog to foreground */
+        SetForegroundWindow(hWnd);
         return FALSE;
     case WM_TIMER:
         counter --;

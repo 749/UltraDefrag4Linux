@@ -5,6 +5,9 @@ target_type = "gui"
 src = { "bootexctrl.c" }
 rc = { "bootexctrl.rc" }
 
+-- list of directories containing headers the program relies on
+includes = { "include" }
+
 libs = { "kernel32", "user32", "advapi32", "shell32", "msvcrt", "comctl32" }
 
 umentry = "winmain"

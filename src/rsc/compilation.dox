@@ -13,23 +13,21 @@
  * @page Compilation Compilation
  *
  * To compile UltraDefrag from sources you need first of all decide
- * which compiler to use. There are few different compilers supported
- * at this moment, including GCC (in <a href="http://www.mingw.org/">MinGW environment</a>),
- * Microsoft C compiler (in MS Visual Studio 6.0 environment) and 
- * <a href="http://download.microsoft.com/download/9/0/f/90f019ac-8243-48d3-91cf-81fc4093ecfd/1830_usa_ddk.iso" 
+ * which development environment to use. There are two possible choices:
+ * <a href="http://www.mingw.org/">MinGW environment</a>
+ * and <a href="http://download.microsoft.com/download/9/0/f/90f019ac-8243-48d3-91cf-81fc4093ecfd/1830_usa_ddk.iso" 
  * title="DDK for Windows Server 2003 SP1 (231MB CD-ISO-Image)">Windows Server
- * 2003 DDK</a>. The first two compilers are easier to use while the last one
+ * 2003 DDK</a>. The first one is easier to use while the last one
  * is a single choice when you need to compile binaries for all of the
  * supported processor architectures.
  *
- * Both MinGW and MS Visual Studio need to be patched to be able
- * to compile UltraDefrag. Type <b>build --help</b> (see below)
- * for details.
+ * MinGW needs to be patched to be able to compile UltraDefrag.
+ * Type <b>build --help</b> (see below) for details.
  *
  * You can download the <a href="http://koti.mbnet.fi/vaultec/mingwstudio.php">MinGW Developer Studio</a>,
  * if you need a fully functional development environment for MinGW.
  *
- * Regardless of the selected compiler you need to setup a few other little
+ * Regardless of the selected development environment you need to setup a few other little
  * tools on your system:
  *
  * - <a href="http://nsis.sourceforge.net/">NSIS compiler</a> to create the installers

@@ -40,7 +40,10 @@
 --]]
 
 name, deffile, mingw_deffile, baseaddr, nativedll, umentry = "", "", "", "", 0, ""
-src, rc, libs, adlibs = {}, {}, {}, {}
+src, rc, includes, libs, adlibs = {}, {}, {}, {}, {}
+
+headers = {}
+inc = {}
 
 input_filename = ""
 target_type, target_ext, target_name = "", "", ""
@@ -51,14 +54,54 @@ arch = ""
 static_lib = 0
 
 ddk_cmd = "build.exe"
-msvc_cmd = "nmake.exe /NOLOGO /A /f"
-mingw_cmd = "mingw32-make --always-make -f Makefile.mingw"
-mingw_x64_cmd = "gmake --always-make -f Makefile_x64.mingw"
+mingw_cmd = "mingw32-make -f Makefile.mingw"
+mingw_x64_cmd = "gmake -f Makefile_x64.mingw"
+
+-- we never use SDK, so let it recompile everything
+sdk_cmd = "nmake.exe /NOLOGO /A /f"
 
 -- common subroutines
 function copy(src, dst)
     if os.execute("cmd.exe /C copy /Y " .. src .. " " .. dst) ~= 0 then
         error("Can't copy from " .. src .. " to " .. dst .. "!");
+    end
+end
+
+function build_list_of_headers()
+    local f, i, j, dir, index, n, h
+    if includes[1] == nil then return end
+    -- include headers listed in 'headers' file,
+    -- but only these locating in directories
+    -- listed in 'includes' table
+    n = 0 -- total number of headers
+    f = assert(io.open("headers","rt"))
+    for line in f:lines() do
+        i, j, dir = string.find(line,"^.*\\(.-)\\.-$")
+        headers[line] = dir
+        n = n + 1
+    end
+    f:close()
+    if n == 0 then
+        error("the \"headers\" file seems to be empty!")
+        return
+    end
+    index = 1
+    for i, dir in ipairs(includes) do
+        n = 0 -- number of headers found for current directory
+        for h in pairs(headers) do
+            if headers[h] == dir then
+                inc[index] = h
+                index = index + 1
+                n = n + 1
+            end
+        end
+        if n == 0 then
+            error("no headers found in " .. dir .. "!")
+            return
+        end
+    end
+    if inc[1] == nil then
+        error("no acceptable headers found in \"headers\" file!")
     end
 end
 
@@ -187,35 +230,22 @@ function produce_ddk_makefile()
     f:close()
 end
 
--- MS Visual Studio backend
-function produce_msvc_makefile()
+-- WinSDK backend
+function produce_sdk_makefile()
     local s, upname
     local cl_flags, rsc_flags, link_flags
 
     local f = assert(io.open(".\\" .. name .. ".mak","w"))
 
-    --[[
-    OUTDIR and INTDIR parameters are replaced with current directory
-    f:write("!IF \"\$(OS)\" == \"Windows_NT\"\n")
-    f:write("NULL=\n")
-    f:write("!ELSE\n")
-    f:write("NULL=nul\n")
-    f:write("!ENDIF\n\n")
-    --]]
-
-    if os.getenv("BUILD_ENV") == "winsdk" then
-        cl_flags = "CPP_PROJ=/nologo /W3 /O2 /D \"WIN32\" /D \"NDEBUG\" /D \"_MBCS\" "
-    else
-        cl_flags = "CPP_PROJ=/nologo /W3 /O2 /D \"WIN32\" /D \"NDEBUG\" /D \"_MBCS\" "
+    cl_flags = "CPP_PROJ=/nologo /W3 /O2 /D \"WIN32\" /D \"NDEBUG\" /D \"_MBCS\" "
+    cl_flags = cl_flags .. "/D \"USE_WINSDK\" /GS- /arch:SSE2 "
+    
+    -- the following check eliminates need of msvcr90.dll library
+    if nativedll == 0 then
+        cl_flags = cl_flags .. "/MD "
     end
     
     upname = string.upper(name) .. "_EXPORTS"
-
-    if os.getenv("BUILD_ENV") == "winsdk" then
-        cl_flags = cl_flags .. "/D \"USE_WINSDK\" /GS- /arch:SSE2 "
-    else
-        cl_flags = cl_flags .. "/D \"USE_MSVC\" "
-    end
 
     if target_type == "console" then
         cl_flags = cl_flags .. "/D \"_CONSOLE\" "
@@ -226,27 +256,11 @@ function produce_msvc_makefile()
     elseif target_type == "dll" then
         cl_flags = cl_flags .. "/D \"_CONSOLE\" /D \"_USRDLL\" /D \"" .. upname .. "\" "
         s = "console"
-    elseif target_type == "driver" then
-        cl_flags = cl_flags .. "/I \"\$(ROSINCDIR)\" /I \"\$(ROSINCDIR)\\ddk\" "
-        s = "native"
     elseif target_type == "native" then
         s = "native"
     else error("Unknown target type: " .. target_type .. "!")
     end
     
-    -- the following check eliminates need of msvcr90.dll when compiles with SDK
-    if nativedll == 0 and os.getenv("BUILD_ENV") ~= "winsdk" then
-        cl_flags = cl_flags .. "/MD "
-    end
-    
-    if arch == "i386" then
-        cl_flags = cl_flags .. " "
-    elseif arch == "amd64" then
-        cl_flags = cl_flags .. " "
-    elseif arch == "ia64" then
-        cl_flags = cl_flags .. " "
-    end
-
     f:write("ALL : \"", name, ".", target_ext, "\"\n\n")
     f:write(cl_flags, " /c \n")
 
@@ -286,9 +300,6 @@ function produce_msvc_makefile()
         link_flags = link_flags .. "/implib:" .. name .. ".lib "
     elseif target_type == "native" then
         link_flags = link_flags .. "/entry:\"NtProcessStartup\" "
-    elseif target_type == "driver" then
-        link_flags = link_flags .. "/base:\"0x10000\" /entry:\"DriverEntry\" "
-        link_flags = link_flags .. "/driver /align:32 "
     end
     f:write(link_flags, " /out:\"", name, ".", target_ext, "\" \n\n")
     
@@ -457,34 +468,41 @@ function produce_mingw_makefile()
     --else
     --    f:write(static_lib_mingw_rules)
     --end
-    
-    f:write(".PHONY: print_header\n\n")
-    f:write("\$(TARGET): print_header \$(RSRC_OBJS) \$(SRC_OBJS)\n")
-    f:write("\t\$(build_target)\n")
-
-    if target_type == "dll" then
-        f:write("\t\$(correct_lib)\n")
-    end
-    
-    f:write("\nprint_header:\n")
-    f:write("\t\@echo ----------Configuration: ", name, " - Release----------\n\n")
-    
     if target_type == "dll" then
         f:write("define correct_lib\n")
-        f:write("\t\@echo ------ correct the lib\$(PROJECT).dll.a library ------\n")
-        f:write("\t\@dlltool -k --output-lib lib\$(PROJECT).dll.a --def ")
+        f:write("\@echo ------ correct the lib\$(PROJECT).dll.a library ------\n")
+        f:write("\@dlltool -k --output-lib lib\$(PROJECT).dll.a --def ")
         f:write(mingw_deffile, "\n")
         f:write("endef\n\n")
     end
+    f:write("define print_header\n")
+    f:write("\@echo ----------Configuration: ", name, " - Release----------\n")
+    f:write("endef\n\n")
+    
+    f:write("\$(TARGET): \$(RSRC_OBJS) \$(SRC_OBJS)\n")
+    f:write("\t\$(print_header)\n")
+    f:write("\t\$(build_target)\n")
+    if target_type == "dll" then
+        f:write("\t\$(correct_lib)\n")
+    end
+    f:write("\n")
+    
+    build_list_of_headers()
     
     for i, v in ipairs(src) do
-        f:write(string.gsub(v,"%.c","%.o"), ": ")
-        f:write(v, "\n\t\$(compile_source)\n\n")
+        f:write(string.gsub(v,"%.c","%.o"), ": ", v, " ")
+        for i, v in ipairs(inc) do
+            f:write("\\\n", v, " ")
+        end
+        f:write("\n\t\$(compile_source)\n\n")
     end
 
     for i, v in ipairs(rc) do
-        f:write(string.gsub(v,"%.rc","%.res"), ": ")
-        f:write(v, "\n\t\$(compile_resource)\n\n")
+        f:write(string.gsub(v,"%.rc","%.res"), ": ", v, " ")
+        for i, v in ipairs(inc) do
+            f:write("\\\n", v, " ")
+        end
+        f:write("\n\t\$(compile_resource)\n\n")
     end
 
     f:close()
@@ -575,34 +593,41 @@ function produce_mingw_x64_makefile()
     f:write("\n\n")
 
     f:write(main_mingw_rules)
-    
-    f:write(".PHONY: print_header\n\n")
-    f:write("\$(TARGET): print_header \$(RSRC_OBJS) \$(SRC_OBJS)\n")
-    f:write("\t\$(build_target)\n")
-
-    if target_type == "dll" then
-        f:write("\t\$(correct_lib)\n")
-    end
-    
-    f:write("\nprint_header:\n")
-    f:write("\t\@echo ----------Configuration: ", name, " - Release----------\n\n")
-    
     if target_type == "dll" then
         f:write("define correct_lib\n")
-        f:write("\t\@echo ------ correct the lib\$(PROJECT).dll.a library ------\n")
-        f:write("\t\@x86_64-w64-mingw32-dlltool -k --output-lib lib\$(PROJECT).dll.a --def ")
+        f:write("\@echo ------ correct the lib\$(PROJECT).dll.a library ------\n")
+        f:write("\@x86_64-w64-mingw32-dlltool -k --output-lib lib\$(PROJECT).dll.a --def ")
         f:write(deffile, "\n")
         f:write("endef\n\n")
     end
+    f:write("define print_header\n")
+    f:write("\@echo ----------Configuration: ", name, " - Release----------\n")
+    f:write("endef\n\n")
+    
+    f:write("\$(TARGET): \$(RSRC_OBJS) \$(SRC_OBJS)\n")
+    f:write("\t\$(print_header)\n")
+    f:write("\t\$(build_target)\n")
+    if target_type == "dll" then
+        f:write("\t\$(correct_lib)\n")
+    end
+    f:write("\n")
+    
+    build_list_of_headers()
     
     for i, v in ipairs(src) do
-        f:write(string.gsub(v,"%.c","%.o"), ": ")
-        f:write(v, "\n\t\$(compile_source)\n\n")
+        f:write(string.gsub(v,"%.c","%.o"), ": ", v, " ")
+        for i, v in ipairs(inc) do
+            f:write("\\\n", v, " ")
+        end
+        f:write("\n\t\$(compile_source)\n\n")
     end
 
     for i, v in ipairs(rc) do
-        f:write(string.gsub(v,"%.rc","%.res"), ": ")
-        f:write(v, "\n\t\$(compile_resource)\n\n")
+        f:write(string.gsub(v,"%.rc","%.res"), ": ", v, " ")
+        for i, v in ipairs(inc) do
+            f:write("\\\n", v, " ")
+        end
+        f:write("\n\t\$(compile_resource)\n\n")
     end
 
     f:close()
@@ -642,7 +667,6 @@ if os.getenv("BUILD_ENV") == "winddk" then
     arch = "i386"
     if os.getenv("AMD64") ~= nil then arch = "amd64" end
     if os.getenv("IA64") ~= nil then arch = "ia64" end
-    ddk_cmd = ddk_cmd .. " -c"
     if os.execute(ddk_cmd) ~= 0 then
         error("Can't build the target!")
     end
@@ -667,14 +691,14 @@ elseif os.getenv("BUILD_ENV") == "winsdk" then
         print("Driver compilation is not supported by Windows SDK.\n")
     else
         if obsolete(input_filename, name .. ".mak") then
-            produce_msvc_makefile()
+            produce_sdk_makefile()
         end
         print(input_filename .. " windows sdk build performing...\n")
         arch = "i386"
         if os.getenv("AMD64") ~= nil then arch = "amd64" end
         if os.getenv("IA64") ~= nil then arch = "ia64" end
-        msvc_cmd = msvc_cmd .. name .. ".mak"
-        if os.execute(msvc_cmd) ~= 0 then
+        sdk_cmd = sdk_cmd .. name .. ".mak"
+        if os.execute(sdk_cmd) ~= 0 then
             error("Can't build the target!")
         end
         if static_lib == 0 then
@@ -691,21 +715,6 @@ elseif os.getenv("BUILD_ENV") == "winsdk" then
                 copy(name .. ".lib", "..\\..\\lib\\" .. arch .. "\\")
             end
         end
-    end
-elseif os.getenv("BUILD_ENV") == "msvc" then
-    if obsolete(input_filename, name .. ".mak") then
-        produce_msvc_makefile()
-    end
-    print(input_filename .. " msvc build performing...\n")
-    msvc_cmd = msvc_cmd .. name .. ".mak"
-    if os.execute(msvc_cmd) ~= 0 then
-        error("Can't build the target!")
-    end
-    if static_lib == 0 then
-        copy(target_name,"..\\..\\bin\\")
-    end
-    if target_type == "dll" then
-        copy(name .. ".lib","..\\..\\lib\\")
     end
 elseif os.getenv("BUILD_ENV") == "mingw" then
     if obsolete(input_filename, ".\\Makefile.mingw") then

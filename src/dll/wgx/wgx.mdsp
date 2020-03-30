@@ -27,7 +27,7 @@ optimizeLevel=0
 // linker
 libraryPath=..\..\lib
 outputFilename=../../bin/wgx.dll
-libraries=lua5.1a,gdi32,comdlg32,comctl32,msvcrt
+libraries=lua5.1a,gdi32,comdlg32,comctl32,msvcrt,ole32
 extraLinkerOptions=wgx.def -Wl,--kill-at,--entry,_DllMain@12,--strip-all
 ignoreStartupFile=0
 ignoreDefaultLibs=0
@@ -65,7 +65,7 @@ optimizeLevel=2
 // linker
 libraryPath=..\..\lib
 outputFilename=../../bin/wgx.dll
-libraries=lua5.1a,gdi32,comdlg32,comctl32,msvcrt
+libraries=lua5.1a,gdi32,comdlg32,comctl32,msvcrt,ole32
 extraLinkerOptions=wgx.def -Wl,--kill-at,--entry,_DllMain@12,--strip-all
 ignoreStartupFile=0
 ignoreDefaultLibs=0
@@ -90,20 +90,22 @@ extraResourceOptions=
 8=shell.c
 9=config.c
 10=menu.c
+11=taskbar.c
 [Header]
 1=wgx.h
+2=taskbar.h
 [Resource]
 1=wgx.rc
 [Other]
 [History]
-menu.c,0
-wgx.h,4655
-i18n.c,5160
-font.c,5936
-wgx.def,84
-wgx.rc,855
-main.dox,1346
-wgx.build,151
+accel.c,2157
 misc.c,0
-accel.c,2171
-dbg.c,2904
+wgx.build,97
+main.dox,1343
+wgx.rc,852
+wgx.def,70
+font.c,5927
+i18n.c,5141
+wgx.h,4652
+menu.c,0
+dbg.c,2878

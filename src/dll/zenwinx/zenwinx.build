@@ -13,6 +13,9 @@ src = {
 }
 rc = { "zenwinx.rc" }
 
+-- list of directories containing headers the library relies on
+includes = { "include", "zenwinx" }
+
 deffile  = "zenwinx.def"
 -- we never use __stdcall convention
 mingw_deffile  = "zenwinx.def"

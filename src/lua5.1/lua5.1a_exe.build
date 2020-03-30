@@ -6,6 +6,9 @@ target_type = "console"
 src = { "lua.c" }
 rc = { "lua.rc" }
 
+-- list of directories containing headers the program relies on
+includes = { "include", "lua5.1" }
+
 libs = { "msvcrt" }
 adlibs = { "$(UDEFRAG_LIB_PATH)\\lua5.1a" }
 

@@ -42,6 +42,8 @@ static void DestroyImageList(void);
 
 int column_widths_adjusted = 0;
 
+HANDLE hListEvent = NULL;
+
 /**
  * @brief Initializes the list of volumes.
  */
@@ -49,33 +51,59 @@ void InitVolList(void)
 {
     LV_COLUMNW lvc;
     LV_ITEM lvi;
-    
-    if(WaitForSingleObject(hLangPackEvent,INFINITE) != WAIT_OBJECT_0){
-        WgxDbgPrintLastError("InitVolList: wait on hLangPackEvent failed");
-        return;
-    }
+    wchar_t *text;
     
     (void)SendMessage(hList,LVM_SETEXTENDEDLISTVIEWSTYLE,0,
         (LRESULT)(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT));
 
     /* create header */
     lvc.mask = LVCF_TEXT;
-    lvc.pszText = WgxGetResourceString(i18n_table,L"VOLUME");
-    (void)SendMessage(hList,LVM_INSERTCOLUMNW,0,(LRESULT)&lvc);
+    lvc.pszText = text = WgxGetResourceString(i18n_table,L"VOLUME");
+    if(text){
+        (void)SendMessage(hList,LVM_INSERTCOLUMNW,0,(LRESULT)&lvc);
+        free(text);
+    } else {
+        lvc.pszText = L"Volume";
+        (void)SendMessage(hList,LVM_INSERTCOLUMNW,0,(LRESULT)&lvc);
+    }
 
-    lvc.pszText = WgxGetResourceString(i18n_table,L"STATUS");
-    (void)SendMessage(hList,LVM_INSERTCOLUMNW,1,(LRESULT)&lvc);
+    lvc.pszText =  text = WgxGetResourceString(i18n_table,L"STATUS");
+    if(text){
+        (void)SendMessage(hList,LVM_INSERTCOLUMNW,1,(LRESULT)&lvc);
+        free(text);
+    } else {
+        lvc.pszText = L"Status";
+        (void)SendMessage(hList,LVM_INSERTCOLUMNW,1,(LRESULT)&lvc);
+    }
 
     lvc.mask |= LVCF_FMT;
     lvc.fmt = LVCFMT_RIGHT;
-    lvc.pszText = WgxGetResourceString(i18n_table,L"TOTAL");
-    (void)SendMessage(hList,LVM_INSERTCOLUMNW,2,(LRESULT)&lvc);
+    lvc.pszText =  text = WgxGetResourceString(i18n_table,L"TOTAL");
+    if(text){
+        (void)SendMessage(hList,LVM_INSERTCOLUMNW,2,(LRESULT)&lvc);
+        free(text);
+    } else {
+        lvc.pszText = L"Total";
+        (void)SendMessage(hList,LVM_INSERTCOLUMNW,2,(LRESULT)&lvc);
+    }
 
-    lvc.pszText = WgxGetResourceString(i18n_table,L"FREE");
-    (void)SendMessage(hList,LVM_INSERTCOLUMNW,3,(LRESULT)&lvc);
+    lvc.pszText =  text = WgxGetResourceString(i18n_table,L"FREE");
+    if(text){
+        (void)SendMessage(hList,LVM_INSERTCOLUMNW,3,(LRESULT)&lvc);
+        free(text);
+    } else {
+        lvc.pszText = L"Free";
+        (void)SendMessage(hList,LVM_INSERTCOLUMNW,3,(LRESULT)&lvc);
+    }
 
-    lvc.pszText = WgxGetResourceString(i18n_table,L"PERCENT");
-    (void)SendMessage(hList,LVM_INSERTCOLUMNW,4,(LRESULT)&lvc);
+    lvc.pszText =  text = WgxGetResourceString(i18n_table,L"PERCENT");
+    if(text){
+        (void)SendMessage(hList,LVM_INSERTCOLUMNW,4,(LRESULT)&lvc);
+        free(text);
+    } else {
+        lvc.pszText = L"% free";
+        (void)SendMessage(hList,LVM_INSERTCOLUMNW,4,(LRESULT)&lvc);
+    }
 
     OldListWndProc = WgxSafeSubclassWindow(hList,ListWndProc);
     (void)SendMessage(hList,LVM_SETBKCOLOR,0,RGB(255,255,255));
@@ -88,7 +116,6 @@ void InitVolList(void)
     lvi.pszText = "hi";
     lvi.iImage = 0;
     (void)SendMessage(hList,LVM_INSERTITEM,0,(LRESULT)&lvi);
-    SetEvent(hLangPackEvent);
 }
 
 /**
@@ -310,14 +337,9 @@ static void AddCapacityInformation(int index, volume_info *v)
 static void VolListUpdateStatusFieldInternal(int index,volume_processing_job *job)
 {
     LV_ITEMW lviw;
-    wchar_t *ProcessCaption = L"";
+    wchar_t *ProcessCaption = NULL;
     wchar_t buffer[128], PassString[32] = L"", MoveString[32] = L"", PercentString[32] = L"";
 
-    if(WaitForSingleObject(hLangPackEvent,INFINITE) != WAIT_OBJECT_0){
-        WgxDbgPrintLastError("VolListUpdateStatusFieldInternal: wait on hLangPackEvent failed");
-        return;
-    }
-    
     lviw.mask = LVIF_TEXT;
     lviw.iItem = index;
     lviw.iSubItem = 1;
@@ -341,7 +363,7 @@ static void VolListUpdateStatusFieldInternal(int index,volume_processing_job *jo
         }
     }
     
-    if(job->pi.completion_status < 0){
+    if(job->pi.completion_status < 0 || ProcessCaption == NULL){
         lviw.pszText = L"";
     } else {
         if(job->pi.completion_status == 0 || stop_pressed){
@@ -369,7 +391,29 @@ static void VolListUpdateStatusFieldInternal(int index,volume_processing_job *jo
     }
 
     (void)SendMessage(hList,LVM_SETITEMW,0,(LRESULT)&lviw);
-    SetEvent(hLangPackEvent);
+    if(ProcessCaption)
+        free(ProcessCaption);
+}
+
+/**
+ * @brief Marks a volume as dirty or as clean.
+ */
+void SetVolumeDirtyStatus(int index, volume_info *v)
+{
+    LV_ITEMW lviw;
+
+    lviw.iItem = index;
+    lviw.iSubItem = 1;
+    if(v->is_dirty){
+        lviw.mask = LVIF_TEXT | LVIF_IMAGE;
+        lviw.pszText = L"Disk is dirty, run CHKDSK to repair it";
+        lviw.iImage = v->is_removable ? 3 : 2;
+        (void)SendMessage(hList,LVM_SETITEMW,0,(LRESULT)&lviw);
+    } else {
+        lviw.mask = LVIF_IMAGE;
+        lviw.iImage = v->is_removable ? 1 : 0;
+        (void)SendMessage(hList,LVM_SETITEMW,0,(LRESULT)&lviw);
+    }
 }
 
 /**
@@ -390,11 +434,16 @@ static void VolListAddItem(int index, volume_info *v)
     lvi.iItem = index;
     lvi.iSubItem = 0;
     lvi.pszText = vname;
-    lvi.iImage = v->is_removable ? 1 : 0;
+    if(v->is_dirty == 0){
+        lvi.iImage = v->is_removable ? 1 : 0;
+    } else {
+        lvi.iImage = v->is_removable ? 3 : 2;
+    }
     (void)SendMessage(hList,LVM_INSERTITEMW,0,(LRESULT)&lvi);
 
     job = get_job(v->letter);
     VolListUpdateStatusFieldInternal(index,job);
+    SetVolumeDirtyStatus(index,v);
     AddCapacityInformation(index,v);
 }
 
@@ -408,10 +457,12 @@ static DWORD WINAPI RescanDrivesThreadProc(LPVOID lpParameter)
     LV_ITEM lvi;
     int i;
     
-/*  WgxDisableWindows(hWindow,IDC_RESCAN,IDC_ANALYSE,
-        IDC_DEFRAGM,IDC_OPTIMIZE,IDC_SHOWFRAGMENTED,0);
-    HideProgress();
-*/
+    /* synchronize with other theads */
+    if(WaitForSingleObject(hListEvent,INFINITE) != WAIT_OBJECT_0){
+        WgxDbgPrintLastError("RescanDrivesThreadProc: wait on hListEvent failed");
+        return 0;
+    }
+    
     /* refill the volume list control */
     (void)SendMessage(hList,LVM_DELETEALLITEMS,0,0);
     v = udefrag_get_vollist(skip_removable);
@@ -435,9 +486,9 @@ static DWORD WINAPI RescanDrivesThreadProc(LPVOID lpParameter)
     RedrawMap(job,0);
     if(job) UpdateStatusBar(&job->pi);
     
-/*  WgxEnableWindows(hWindow,IDC_RESCAN,IDC_ANALYSE,
-        IDC_DEFRAGM,IDC_OPTIMIZE,IDC_SHOWFRAGMENTED,0);
-*/  return 0;
+    /* end of synchronization */
+    SetEvent(hListEvent);
+    return 0;
 }
 
 /**
@@ -574,13 +625,42 @@ void SelectAllDrives(void)
  */
 static void InitImageList(void)
 {
-    hImgList = ImageList_Create(16,16,ILC_COLOR8,2,0);
+    int size;
+    HICON hFixed = NULL;
+    HICON hRemovable = NULL;
+    HICON hFixedDirty = NULL;
+    HICON hRemovableDirty = NULL;
+
+    size = GetSystemMetrics(SM_CXSMICON);
+    if(size < 20){
+        size = 16;
+    } else if(size < 24){
+        size = 20;
+    } else if(size < 32){
+        size = 24;
+    } else {
+        size = 32;
+    }
+    hImgList = ImageList_Create(size,size,ILC_MASK,4,0);
     if(hImgList == NULL){
         WgxDbgPrintLastError("InitImageList: ImageList_Create failed");
     } else {
-        ImageList_AddIcon(hImgList,LoadIcon(hInstance,MAKEINTRESOURCE(IDI_FIXED)));
-        ImageList_AddIcon(hImgList,LoadIcon(hInstance,MAKEINTRESOURCE(IDI_REMOVABLE)));
-        SendMessage(hList,LVM_SETIMAGELIST,LVSIL_SMALL,(LRESULT)hImgList);
+        WgxLoadIcon(hInstance,IDI_FIXED,size,&hFixed);
+        WgxLoadIcon(hInstance,IDI_REMOVABLE,size,&hRemovable);
+        WgxLoadIcon(hInstance,IDI_FIXED_DIRTY,size,&hFixedDirty);
+        WgxLoadIcon(hInstance,IDI_REMOVABLE_DIRTY,size,&hRemovableDirty);
+        if(hFixed && hRemovable && hFixedDirty && hRemovableDirty){
+            ImageList_AddIcon(hImgList,hFixed);
+            ImageList_AddIcon(hImgList,hRemovable);
+            ImageList_AddIcon(hImgList,hFixedDirty);
+            ImageList_AddIcon(hImgList,hRemovableDirty);
+            SendMessage(hList,LVM_SETIMAGELIST,LVSIL_SMALL,(LRESULT)hImgList);
+        } else {
+            if(hFixed) DestroyIcon(hFixed);
+            if(hRemovable) DestroyIcon(hRemovable);
+            if(hFixedDirty) DestroyIcon(hFixedDirty);
+            if(hRemovableDirty) DestroyIcon(hRemovableDirty);
+        }
     }
 }
 

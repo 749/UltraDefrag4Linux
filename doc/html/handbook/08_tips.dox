@@ -124,7 +124,7 @@
  * and a second separate session to process disks G: and H:\n
  * This will result in less time needed to process all four disks.
  * If both hard-disks are occupied in a similar way the time will be
- * reduced to about 50% compared to the time needed for all disks to be
+ * reduced to about 50\% compared to the time needed for all disks to be
  * processed one after the other.
  *
  * <h1>Caveats</h1>

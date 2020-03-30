@@ -5,10 +5,14 @@ target_type = "dll"
 
 src = {
     "accel.c", "config.c", "dbg.c", "font.c", "i18n.c",
-    "menu.c", "misc.c", "shell.c", "web-analytics.c", "wgx.c" 
+    "menu.c", "misc.c", "shell.c", "taskbar.c",
+    "web-analytics.c", "wgx.c"
 }
 
 rc = { "wgx.rc" }
+
+-- list of directories containing headers the library relies on
+includes = { "include", "lua5.1", "wgx" }
 
 deffile  = "wgx.def"
 -- we never use __stdcall convention
@@ -17,6 +21,6 @@ baseaddr = "0x01700000"
 
 libs = {
     "kernel32", "user32", "gdi32", "comctl32",
-    "shell32", "msvcrt", "comdlg32"
+    "shell32", "msvcrt", "comdlg32", "ole32"
 }
 adlibs = { "$(UDEFRAG_LIB_PATH)\\lua5.1a" }

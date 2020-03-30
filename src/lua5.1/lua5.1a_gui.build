@@ -6,6 +6,9 @@ target_type = "gui"
 src = { "lua_gui.c" }
 rc = { "lua_gui.rc" }
 
+-- list of directories containing headers the program relies on
+includes = { "include", "lua5.1" }
+
 libs = { "msvcrt", "kernel32", "user32", "comctl32" }
 adlibs = { "$(UDEFRAG_LIB_PATH)\\lua5.1a" }
 

@@ -140,8 +140,104 @@ function display_report(path)
 end
 
 -------------------------------------------------------------------------------
+-- Internationalization Procedures
+-------------------------------------------------------------------------------
+
+localized = {}
+
+function get_localization_strings()
+    local f, i, j, lang = nil
+    local contents
+    local a, b, c, name, value, s
+    local eq_sign_detected
+    local value_length
+    
+    -- get selected language name
+    f = io.open(instdir .. "\\lang.ini","r")
+    if f == nil then return end
+    for line in f:lines() do
+        i, j, lang = string.find(line,"^%s*Selected%s*=%s*(.-)%s*$")
+        if lang ~= nil then break end
+    end
+    f:close()
+    if lang == nil then return end
+    
+    -- read .lng file as a whole
+    f = io.open(instdir .. "\\i18n\\" .. lang .. ".lng","rb")
+    if f == nil then return end
+    contents = f:read("*all")
+    f:close()
+    if contents == nil then return end
+    
+    -- fill table of localized strings
+    name = ""; value = {}
+    value_length = 0
+    eq_sign_detected = 0
+    for c1, c2 in string.gfind(contents,"(.)(.)") do
+        -- decode subsequent UTF-16 LE character
+        a = string.byte(c1)
+        b = math.lshift(string.byte(c2),8)
+        c = math.bor(a,b)
+        if c == 0xD or c == 0xA then
+            -- \r or \n detected
+            if name ~= "" and value[1] ~= nil then
+                -- remove trailing white space from the name
+                i, j, s = string.find(name,"^%s*(.-)%s*$")
+                if s ~= nil then name = s else name = "" end
+                -- remove trailing white space from the value
+                for i = value_length, 1, -1 do
+                    if value[i] == 0x20 or value[i] == 0x9 then
+                        value[i] = nil
+                    else
+                        break
+                    end
+                end
+                if name ~= "" and value[1] ~= nil then
+                    -- add localized string to the table
+                    localized[name] = value
+                end
+            end
+            -- reset both name and value
+            name = ""; value = {}
+            value_length = 0
+            eq_sign_detected = 0
+        elseif c == 0x3D then
+            eq_sign_detected = 1
+        else
+            if eq_sign_detected == 1 then
+                if c == 0x20 or c == 0x9 then
+                    -- white space detected
+                    if value[1] ~= nil then
+                        table.insert(value,c)
+                        value_length = value_length + 1
+                    end
+                else
+                    table.insert(value,c)
+                    value_length = value_length + 1
+                end
+            else
+                name = string.format("%s%c",name,c)
+            end
+        end
+    end
+end
+
+function write_localized_string(f,key,default_string)
+    if localized[key] ~= nil then
+        for i, c in ipairs(localized[key]) do
+            write_unicode_character(f,c)
+        end
+    else
+        f:write(default_string)
+    end
+end
+
+-------------------------------------------------------------------------------
 -- Plain Text Output Procedures
 -------------------------------------------------------------------------------
+
+-- Plain text reports may be used in batch scripts to extract
+-- information from. So, let's avoid their localization.
 
 function write_text_header(f)
     local formatted_time = ""
@@ -205,36 +301,81 @@ end
 -- HTML Output Procedures
 -------------------------------------------------------------------------------
 
-links_x1 = [[
+-- HTML reports are intended to be opened in a web
+-- browser. So, let's use localized strings there.
+
+links_1 = [[
 <table class="links_toolbar" width="100%"><tbody>
 <tr>
-<td class="left"><a href="http://ultradefrag.sourceforge.net">Visit our Homepage</a></td>
+<td class="left"><a href="http://ultradefrag.sourceforge.net">
+]]
+
+links_2 = [[
+</a></td>
 <td class="center"><a href="file:///
 ]]
 
-links_x2 = [[
-\options\udreportopts.lua">View report options</a></td>
+links_3 = [[
+\options\udreportopts.lua">
+]]
+
+links_4 = [[
+</a></td>
 <td class="right">
-<a href="http://www.lua.org/">Powered by Lua</a>
+<a href="http://www.lua.org/">
+]]
+
+links_5 = [[
+</a>
 </td>
 </tr>
 </tbody></table>
 
 ]]
 
-table_header = [[
-<tr>
-<td class="c"><a href="javascript:sort_items('fragments')">fragments</a></td>
-<td class="c"><a href="javascript:sort_items('size')">size</a></td>
-<td class="c"><a href="javascript:sort_items('name')">filename</a></td>
-<td class="c"><a href="javascript:sort_items('comment')">comment</a></td>
-<td class="c"><a href="javascript:sort_items('status')">status</a></td>
-</tr>
-]]
-
 -- these markups must be identical, except of representation
 table_head        = [[<table id="main_table" border="1" cellspacing="0" width="100%">]]
 table_head_for_js = [[<table id=\"main_table\" border=\"1\" cellspacing=\"0\" width=\"100%%\">]]
+
+function write_links_toolbar(f)
+    f:write(links_1)
+    write_localized_string(f,"VISIT_HOMEPAGE","Visit our Homepage")
+    f:write(links_2, instdir, links_3)
+    write_localized_string(f,"VIEW_REPORT_OPTIONS","View report options")
+    f:write(links_4)
+    write_localized_string(f,"POWERED_BY_LUA","Powered by Lua")
+    f:write(links_5)
+end
+
+function write_page_title(f)
+    write_localized_string(f,"FRAGMENTED_FILES_ON","Fragmented files on")
+end
+
+function write_main_table_header(f)
+    f:write("<tr>\n<td class=\"c\"><a href=\"javascript:sort_items(\'fragments\')\">")
+    write_localized_string(f,"FRAGMENTS","fragments")
+    f:write("</a></td>\n<td class=\"c\"><a href=\"javascript:sort_items(\'size\')\">")
+    write_localized_string(f,"SIZE","size")
+    f:write("</a></td>\n<td class=\"c\"><a href=\"javascript:sort_items(\'name\')\">")
+    write_localized_string(f,"FILENAME","filename")
+    f:write("</a></td>\n<td class=\"c\"><a href=\"javascript:sort_items(\'comment\')\">")
+    write_localized_string(f,"COMMENT","comment")
+    f:write("</a></td>\n<td class=\"c\"><a href=\"javascript:sort_items(\'status\')\">")
+    write_localized_string(f,"STATUS","status")
+    f:write("</a></td>\n</tr>\n")
+end
+
+function write_file_status(f,file)
+    if file.status == "locked" then
+        write_localized_string(f,"LOCKED","locked")
+    elseif file.status == "move failed" then
+        write_localized_string(f,"MOVE_FAILED","move failed")
+    elseif file.status == "invalid" then
+        write_localized_string(f,"INVALID","invalid")
+    else
+        f:write(file.status)
+    end
+end
 
 function get_javascript()
     local js = "", f
@@ -279,7 +420,6 @@ function get_css()
 end
 
 function write_web_page_header(f,js,css)
-    local links_toolbar = links_x1 .. instdir .. links_x2
     local formatted_time = ""
     
     -- format time appropriate for locale
@@ -287,30 +427,30 @@ function write_web_page_header(f,js,css)
         formatted_time = os.date("%c",os.time(current_time))
     end
     
-    f:write("<html>\n",
-        "<head>\n",
-            "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\">\n",
-            "<title>Fragmented files on ", volume_letter, ": [", formatted_time, "]</title>\n",
-            "<style type=\"text/css\">\n", css, "</style>\n",
-            "<script language=\"javascript\">\n", js, "</script>\n",
+    f:write(
+        "<html>\n",
+         "<head>\n",
+          "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\">\n",
+          "<title>"
+    )
+    write_page_title(f)
+    f:write(" ", volume_letter, ": [", formatted_time, "]</title>\n",
+         "<style type=\"text/css\">\n", css, "</style>\n",
+         "<script language=\"javascript\">\n", js, "</script>\n",
         "</head>\n",
         "<body>\n",
-            "<h3 class=\"title\">Fragmented files on ", volume_letter, ": (", formatted_time, ")</h3>\n",
-            links_toolbar,
-            "<div id=\"for_msie\">\n",
-                table_head, "\n"
+         "<h3 class=\"title\">"
     )
+    write_page_title(f)
+    f:write(" ", volume_letter, ": (", formatted_time, ")</h3>\n")
+    write_links_toolbar(f)
+    f:write("<div id=\"for_msie\">\n",table_head,"\n")
 end
 
 function write_web_page_footer(f)
-    local links_toolbar = links_x1 .. instdir .. links_x2
-
-    f:write("</table>\n",
-        "</div>\n",
-        links_toolbar,
-        "<script type=\"text/javascript\">init_sorting_engine();</script>\n",
-        "</body></html>\n"
-    )
+    f:write("</table>\n</div>\n")
+    write_links_toolbar(f)
+    f:write("<script type=\"text/javascript\">init_sorting_engine();</script>\n</body></html>\n")
 end
 
 function write_main_table_body(f)
@@ -320,7 +460,9 @@ function write_main_table_body(f)
         f:write("<tr class=\"", class, "\"><td class=\"c\">", file.fragments,"</td>")
         f:write("<td class=\"filesize\" id=\"", file.size, "\">", file.hrsize,"</td><td>")
         write_unicode_name(f,file.uname)
-        f:write("</td><td class=\"c\">", file.comment, "</td><td class=\"file-status\">", file.status, "</td></tr>\n")
+        f:write("</td><td class=\"c\">", file.comment, "</td><td class=\"file-status\">")
+        write_file_status(f,file)
+        f:write("</td></tr>\n")
     end
 end
 
@@ -346,7 +488,7 @@ function build_html_report()
     write_web_page_header(f,js,css)
     
     -- write the main table
-    f:write(table_header)
+    write_main_table_header(f)
     write_main_table_body(f)
     
     -- write the web page footer
@@ -377,6 +519,9 @@ dofile(report_path)
 if format_version == nil or format_version < 5 then
     error("Reports produced by old versions of UltraDefrag are no more supported.\nUpdate the program at least to the 5.0.3 version.")
 end
+
+-- read i18n strings
+get_localization_strings()
 
 -- build file fragmentation reports
 if produce_html_report == 1 then

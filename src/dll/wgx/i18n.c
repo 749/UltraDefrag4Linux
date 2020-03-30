@@ -24,7 +24,10 @@
  * @{
  */
 
-#define WIN32_NO_STATUS
+/*
+* We use STATUS_WAIT_0...
+* #define WIN32_NO_STATUS
+*/
 #include <windows.h>
 #include <string.h>
 #include <stdio.h>
@@ -32,7 +35,26 @@
 
 #include "wgx.h"
 
-void ExtractToken(wchar_t *dest, wchar_t *src, int max_chars)
+/* synchronization objects */
+HANDLE hSynchEvent = NULL;
+
+void WgxInitSynchObjects(void)
+{
+    hSynchEvent = CreateEvent(NULL,FALSE,TRUE,NULL);
+    if(hSynchEvent == NULL){
+        WgxDbgPrintLastError("WgxInitSynchObjects: event creation failed");
+        WgxDbgPrint("Internationalization routines will not work therefore");
+    }
+}
+
+void WgxDestroySynchObjects(void)
+{
+    if(hSynchEvent)
+        CloseHandle(hSynchEvent);
+}
+
+/* auxiliary routines */
+static void ExtractToken(wchar_t *dest, wchar_t *src, int max_chars)
 {
     signed int i,cnt;
     wchar_t ch;
@@ -56,7 +78,7 @@ void ExtractToken(wchar_t *dest, wchar_t *src, int max_chars)
     }
 }
 
-void AddResourceEntry(PWGX_I18N_RESOURCE_ENTRY table,wchar_t *line_buffer)
+static void AddResourceEntry(PWGX_I18N_RESOURCE_ENTRY table,wchar_t *line_buffer)
 {
     wchar_t first_char = line_buffer[0];
     wchar_t *eq_pos;
@@ -115,8 +137,7 @@ BOOL WgxBuildResourceTable(PWGX_I18N_RESOURCE_ENTRY table,wchar_t *lng_file_path
 
     line_buffer = malloc(8192 * sizeof(wchar_t));
     if(line_buffer == NULL){
-        WgxDbgPrint("WgxBuildResourceTable: cannot allocate %u bytes of memory\n",
-            8192 * sizeof(wchar_t));
+        OutputDebugString("WgxBuildResourceTable: cannot allocate memory\n");
         return FALSE;
     }
     
@@ -128,11 +149,20 @@ BOOL WgxBuildResourceTable(PWGX_I18N_RESOURCE_ENTRY table,wchar_t *lng_file_path
         free(line_buffer);
         return FALSE;
     }
-
-    /* read lines and applies them to specified table */
-    while(fgetws(line_buffer,8192,f)){
-        line_buffer[8192 - 1] = 0;
-        AddResourceEntry(table,line_buffer);
+    
+    /* synchronize access to the table */
+    if(hSynchEvent){
+        if(WaitForSingleObject(hSynchEvent,INFINITE) != WAIT_OBJECT_0){
+            WgxDbgPrintLastError("WgxBuildResourceTable: synchronization failed");
+        } else {
+            /* read lines and applies them to the specified table */
+            while(fgetws(line_buffer,8192,f)){
+                line_buffer[8192 - 1] = 0;
+                AddResourceEntry(table,line_buffer);
+            }
+            /* end of synchronization */
+            SetEvent(hSynchEvent);
+        }
     }
 
     fclose(f);
@@ -141,7 +171,7 @@ BOOL WgxBuildResourceTable(PWGX_I18N_RESOURCE_ENTRY table,wchar_t *lng_file_path
 }
 
 /**
- * @brief Applies a i18n table to the dialog window.
+ * @brief Applies an i18n table to the dialog window.
  * @param[in] table pointer to the i18n table.
  * @param[in] hWindow handle to the window.
  */
@@ -149,23 +179,51 @@ void WgxApplyResourceTable(PWGX_I18N_RESOURCE_ENTRY table,HWND hWindow)
 {
     int i;
     HWND hChild;
+    wchar_t *text = NULL;
 
     if(!table || !hWindow) return;
     
     for(i = 0;; i++){
         if(table[i].Key == NULL) break;
         hChild = GetDlgItem(hWindow,table[i].ControlID);
-        if(table[i].LoadedString) (void)SetWindowTextW(hChild,table[i].LoadedString);
-        else (void)SetWindowTextW(hChild,table[i].DefaultString);
+        /* synchronize access to the LoadedString */
+        if(hSynchEvent){
+            if(WaitForSingleObject(hSynchEvent,INFINITE) != WAIT_OBJECT_0){
+                WgxDbgPrintLastError("WgxApplyResourceTable: synchronization failed");
+            } else {
+                if(table[i].LoadedString){
+                    text = _wcsdup(table[i].LoadedString);
+                    if(text == NULL)
+                        OutputDebugString("WgxApplyResourceTable: cannot allocate memory\n");
+                }
+                /* end of synchronization */
+                SetEvent(hSynchEvent);
+            }
+        }
+        if(text == NULL){
+            text = _wcsdup(table[i].DefaultString);
+            if(text == NULL)
+                OutputDebugString("WgxApplyResourceTable: cannot allocate memory\n");
+        }
+        if(text){
+            (void)SetWindowTextW(hChild,text);
+            free(text);
+        }
     }
 }
 
 /**
- * @brief Applies a 18n table to individual GUI control.
+ * @brief Applies an i18n table to individual GUI control.
  */
 void WgxSetText(HWND hWnd, PWGX_I18N_RESOURCE_ENTRY table, wchar_t *key)
 {
-    (void)SetWindowTextW(hWnd,WgxGetResourceString(table,key));
+    wchar_t *text;
+    
+    text = WgxGetResourceString(table,key);
+    if(text){
+        (void)SetWindowTextW(hWnd,text);
+        free(text);
+    }
 }
 
 /**
@@ -174,21 +232,50 @@ void WgxSetText(HWND hWnd, PWGX_I18N_RESOURCE_ENTRY table, wchar_t *key)
  * @param[in] key pointer to the key string.
  * @return A pointer to the localized string if
  * available or to the default string otherwise.
+ * @note The returned string should be freed by
+ * a call to the free() routine after a use.
  */
 wchar_t *WgxGetResourceString(PWGX_I18N_RESOURCE_ENTRY table,wchar_t *key)
 {
     int i;
+    wchar_t *text = NULL;
     
     if(!table || !key) return NULL;
     
-    for(i = 0;; i++){
-        if(table[i].Key == NULL) break;
-        if(!wcscmp(table[i].Key,key)){
-            if(table[i].LoadedString) return table[i].LoadedString;
-            return table[i].DefaultString;
+    /* synchronize access to the table */
+    if(hSynchEvent){
+        if(WaitForSingleObject(hSynchEvent,INFINITE) != WAIT_OBJECT_0){
+            WgxDbgPrintLastError("WgxDestroyResourceTable: synchronization failed");
+            goto synch_failed;
+        } else {
+            for(i = 0;; i++){
+                if(table[i].Key == NULL) break;
+                if(!wcscmp(table[i].Key,key)){
+                    if(table[i].LoadedString)
+                        text = _wcsdup(table[i].LoadedString);
+                    else
+                        text = _wcsdup(table[i].DefaultString);
+                    if(text == NULL)
+                        OutputDebugString("WgxGetResourceString: cannot allocate memory\n");
+                    break;
+                }
+            }
+            /* end of synchronization */
+            SetEvent(hSynchEvent);
+        }
+    } else {
+synch_failed:
+        for(i = 0;; i++){
+            if(table[i].Key == NULL) break;
+            if(!wcscmp(table[i].Key,key)){
+                text = _wcsdup(table[i].DefaultString);
+                if(text == NULL)
+                    OutputDebugString("WgxGetResourceString: cannot allocate memory\n");
+                break;
+            }
         }
     }
-    return NULL;
+    return text;
 }
 
 /**
@@ -201,11 +288,20 @@ void WgxDestroyResourceTable(PWGX_I18N_RESOURCE_ENTRY table)
     
     if(!table) return;
     
-    for(i = 0;; i++){
-        if(table[i].Key == NULL) break;
-        if(table[i].LoadedString){
-            free(table[i].LoadedString);
-            table[i].LoadedString = NULL;
+    /* synchronize access to the table */
+    if(hSynchEvent){
+        if(WaitForSingleObject(hSynchEvent,INFINITE) != WAIT_OBJECT_0){
+            WgxDbgPrintLastError("WgxDestroyResourceTable: synchronization failed");
+        } else {
+            for(i = 0;; i++){
+                if(table[i].Key == NULL) break;
+                if(table[i].LoadedString){
+                    free(table[i].LoadedString);
+                    table[i].LoadedString = NULL;
+                }
+            }
+            /* end of synchronization */
+            SetEvent(hSynchEvent);
         }
     }
 }

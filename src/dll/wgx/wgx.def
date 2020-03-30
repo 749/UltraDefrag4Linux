@@ -15,9 +15,11 @@ EXPORTS
 
     WgxEnableWindows
     WgxDisableWindows
+    WgxLoadIcon
     WgxSetIcon
     WgxCheckWindowCoordinates
     WgxCenterWindow
+    WgxGetTextDimensions
     WgxSafeSubclassWindow
     WgxSafeCallWndProc
 
@@ -37,3 +39,6 @@ EXPORTS
     
     WgxGetOptions
     WgxSaveOptions
+
+    WgxSetTaskbarIconOverlay
+    WgxRemoveTaskbarIconOverlay

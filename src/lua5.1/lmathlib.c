@@ -49,6 +49,13 @@ static int math_rshift (lua_State *L) {
   return 1;
 }
 
+static int math_lshift (lua_State *L) {
+  unsigned int a = (unsigned int)luaL_checknumber(L, 1);
+  unsigned int b = (unsigned int)luaL_checknumber(L, 2);
+  lua_pushnumber(L, (a << b));
+  return 1;
+}
+
 /*
 * End of bitwise operations.
 */
@@ -274,6 +281,7 @@ static const luaL_Reg mathlib[] = {
   {"band",   math_band},
   {"bor",   math_bor},
   {"rshift",   math_rshift},
+  {"lshift",   math_lshift},
   {NULL, NULL}
 };
 

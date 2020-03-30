@@ -6,10 +6,13 @@ target_type = "gui"
 src = {
     "about.c", "i18n.c", "job.c", "main.c", "map.c", "menu.c", "prb.c",
     "progress.c", "reports.c", "settings.c", "shutdown.c", "statbar.c",
-    "toolbar.c", "upgrade.c", "vollist.c"
+    "taskbar.c", "toolbar.c", "upgrade.c", "vollist.c"
     
 }
 rc = { "ultradefrag.rc" }
+
+-- list of directories containing headers the program relies on
+includes = { "gui", "include", "lua5.1", "udefrag", "wgx" }
 
 libs = {
     "kernel32", "user32", "gdi32", "comctl32",

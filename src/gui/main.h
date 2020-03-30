@@ -90,8 +90,6 @@
 #define MIN_WIDTH             500 /* minimal window width */
 #define MIN_HEIGHT            400 /* minimal window height */
 #define SPACING               7   /* spacing between controls */
-#define PADDING_X             14  /* horizontal padding between borders and controls */
-#define PADDING_Y             14  /* vertical padding between top border and controls */
 #define VLIST_HEIGHT          130 /* volume list height */
 #define MIN_LIST_HEIGHT       40  /* minimal list height */
 
@@ -137,7 +135,7 @@ typedef struct _volume_processing_job {
 #define NEVER_EXECUTED_JOB 0x100
 
 /* prototypes */
-int init_jobs(void);
+void init_jobs(void);
 volume_processing_job *get_job(char volume_letter);
 int get_job_index(volume_processing_job *job);
 void update_status_of_all_jobs(void);
@@ -149,10 +147,8 @@ int CreateMainMenu(void);
 int CreateToolbar(void);
 void UpdateToolbarTooltips(void);
 
-int Init_I18N_Events(void);
 void ApplyLanguagePack(void);
 void BuildLanguageMenu(void);
-void Destroy_I18N_Events(void);
 
 /*void InitProgress(void);
 void ShowProgress(void);
@@ -164,6 +160,7 @@ void ShowReports(void);
 
 void InitFont(void);
 
+extern HANDLE hListEvent;
 void InitVolList(void);
 void VolListNotifyHandler(LPARAM lParam);
 void VolListGetColumnWidths(void);
@@ -172,6 +169,7 @@ void VolListUpdateStatusField(volume_processing_job *job);
 void VolListRefreshItem(volume_processing_job *job);
 void ReleaseVolList(void);
 void SelectAllDrives(void);
+void SetVolumeDirtyStatus(int index,volume_info *v);
 
 void InitMap(void);
 void RedrawMap(volume_processing_job *job, int map_refill_required);
@@ -206,6 +204,11 @@ int ShutdownOrHibernate(void);
 
 void OpenWebPage(char *page);
 
+extern HANDLE hTaskbarIconEvent;
+extern int job_is_running;
+void SetTaskbarIconOverlay(int resource_id, wchar_t *description_key);
+void RemoveTaskbarIconOverlay(void);
+
 /* common global variables */
 extern HINSTANCE hInstance;
 extern HWND hWindow;
@@ -214,7 +217,7 @@ extern HWND hMap;
 extern HWND hStatus;
 extern HMENU hMainMenu;
 extern HWND hToolbar;
-extern double pix_per_dialog_unit;
+extern double fScale;
 extern WGX_FONT wgxFont;
 extern WGX_I18N_RESOURCE_ENTRY i18n_table[];
 extern volume_processing_job *current_job;
@@ -224,7 +227,6 @@ extern int when_done_action;
 extern int shutdown_requested;
 extern int exit_pressed;
 extern int boot_time_defrag_enabled;
-extern HANDLE hLangPackEvent;
 extern HANDLE hLangMenuEvent;
 extern int use_custom_font_in_dialogs;
 extern int portable_mode;
@@ -246,40 +248,42 @@ extern int dry_run;
 extern int job_flags;
 extern int repeat_action;
 extern int show_menu_icons;
+extern int show_taskbar_icon_overlay;
 
 /*
-* Note:
-* 
-* + You should not wait for one SendMessage handler completion
-*   from another SendMessage handler. Because it will be a deadlock cause.
+* NOTE: the following code causes a deadlock
+* because the sending thread is blocked until
+* the receiving thread processes the message.
 *
-* + Example:
-*
+* HWND hWindow;
+* int stop;
 * int done;
 *
-* window_proc()
+* DWORD WINAPI ThreadProc(LPVOID lpParameter)
 * {
-*   if(stop button was pressed)
-*   {
-*     stop_the_driver();
-*     wait for done flag;
-*   }
+*     done = 0;
+*     while(!stop){
+*         Sleep(100);
+*     }
+*     SendMessage(hWindow, ...); // waits for WM_DESTROY
+*                                // handling completion
+*     done = 1;
+*     return 0;
 * }
 *
-* analyse_thread_proc()
+* window_proc(HWND hWnd, UINT uMsg, ...)
 * {
-*   done = 0;
-*   analyse();
-*   RedrawMap();
-*   done = 1;
+*     if(uMsg == WM_CREATE){
+*         hWindow = hWnd;
+*         stop = 0;
+*         create_thread(ThreadProc,NULL,NULL);
+*     } else if(uMsg == WM_DESTROY){ // waits for done flag
+*         stop = 1;
+*         while(!done){
+*             Sleep(100);
+*         }
+*     }
 * }
-*
-* + How it works:
-* 
-* RedrawMap() will send message to the map control 
-* that can not be handled by system before window_proc() returns.
-* But window_proc() is waiting for done flag, that can be set
-* after(!) RedrawMap() call. Therefore we have a deadlock.
 */
 
 #define create_thread(func,param,ph) \
@@ -287,8 +291,20 @@ extern int show_menu_icons;
 
 #define UNDEFINED_COORD (-10000)
 
-/* This macro converts pixels from 96 DPI to the current one. */
-#define PIX_PER_DIALOG_UNIT_96DPI 1.74
-#define DPI(x) ((int)((double)x * pix_per_dialog_unit / PIX_PER_DIALOG_UNIT_96DPI))
+/* this macro converts pixels from 96 DPI to the current one */
+#define DPI(x) ((int)((double)x * fScale))
+
+/* window layout constants, used in shutdown confirmation and about dialogs */
+/* based on layout guidelines: http://msdn.microsoft.com/en-us/library/aa511279.aspx */
+#define ICON_SIZE      32      /* size of the shutdown icon */
+#define SHIP_WIDTH     109
+#define SHIP_HEIGHT    147
+#define SMALL_SPACING  DPI(7)  /* spacing between related controls */
+#define LARGE_SPACING  DPI(11) /* spacing between unrelated controls */
+#define MARGIN         DPI(11) /* dialog box margins */
+#define MIN_BTN_WIDTH  DPI(75) /* recommended button width */
+#define MIN_BTN_HEIGHT DPI(23) /* recommended button height */
+#define BTN_H_SPACING  DPI(9)  /* minimal space between text and button right/left sides */
+#define BTN_V_SPACING  DPI(4)  /* minimal space between text and button top/bottom sides */
 
 #endif /* _UDEFRAG_GUI_MAIN_H_ */

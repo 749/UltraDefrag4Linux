@@ -113,9 +113,11 @@ void WgxDestroyResourceTable(PWGX_I18N_RESOURCE_ENTRY table);
 
 void WgxEnableWindows(HANDLE hMainWindow, ...);
 void WgxDisableWindows(HANDLE hMainWindow, ...);
+BOOL WgxLoadIcon(HINSTANCE hInstance,UINT IconID,UINT size,HICON *phIcon);
 void WgxSetIcon(HINSTANCE hInstance,HWND hWindow,UINT IconID);
 void WgxCheckWindowCoordinates(LPRECT lprc,int min_width,int min_height);
 void WgxCenterWindow(HWND hwnd);
+BOOL WgxGetTextDimensions(wchar_t *text,HFONT hFont,HWND hWnd,int *pWidth,int *pHeight);
 WNDPROC WgxSafeSubclassWindow(HWND hwnd,WNDPROC NewProc);
 LRESULT WgxSafeCallWndProc(WNDPROC OldProc,HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam);
 
@@ -139,5 +141,8 @@ typedef void (*WGX_SAVE_OPTIONS_CALLBACK)(char *error);
 
 BOOL WgxGetOptions(char *config_file_path,WGX_OPTION *opts_table);
 BOOL WgxSaveOptions(char *config_file_path,WGX_OPTION *opts_table,WGX_SAVE_OPTIONS_CALLBACK cb);
+
+BOOL WgxSetTaskbarIconOverlay(HWND hWindow,HINSTANCE hInstance,int resource_id, wchar_t *description);
+BOOL WgxRemoveTaskbarIconOverlay(HWND hWindow);
 
 #endif /* _WGX_H_ */

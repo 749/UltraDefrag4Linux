@@ -110,42 +110,51 @@ void UpdateStatusBar(udefrag_progress_info *pi)
 {
     char s[32];
     #define BFSIZE 128
-    short bf[BFSIZE];
+    wchar_t bf[BFSIZE];
+    wchar_t *text;
 
     if(!hStatus) return;
 
-    if(WaitForSingleObject(hLangPackEvent,INFINITE) != WAIT_OBJECT_0){
-        WgxDbgPrintLastError("UpdateStatusBar: wait on hLangPackEvent failed");
-        return;
+    text = WgxGetResourceString(i18n_table,L"DIRS");
+    if(text){
+        (void)_snwprintf(bf,BFSIZE - 1,L"%lu %s",pi->directories,text);
+        bf[BFSIZE - 1] = 0;
+        (void)SendMessage(hStatus,SB_SETTEXTW,0,(LPARAM)bf);
+        free(text);
     }
-    
-    (void)_snwprintf(bf,BFSIZE - 1,L"%lu %s",pi->directories,
-            WgxGetResourceString(i18n_table,L"DIRS"));
-    bf[BFSIZE - 1] = 0;
-    (void)SendMessage(hStatus,SB_SETTEXTW,0,(LPARAM)bf);
 
-    (void)_snwprintf(bf,BFSIZE - 1,L"%lu %s",pi->files,
-            WgxGetResourceString(i18n_table,L"FILES"));
-    bf[BFSIZE - 1] = 0;
-    (void)SendMessage(hStatus,SB_SETTEXTW,1,(LPARAM)bf);
+    text = WgxGetResourceString(i18n_table,L"FILES");
+    if(text){
+        (void)_snwprintf(bf,BFSIZE - 1,L"%lu %s",pi->files,text);
+        bf[BFSIZE - 1] = 0;
+        (void)SendMessage(hStatus,SB_SETTEXTW,1,(LPARAM)bf);
+        free(text);
+    }
 
-    (void)_snwprintf(bf,BFSIZE - 1,L"%lu %s",pi->fragmented,
-            WgxGetResourceString(i18n_table,L"FRAGMENTED"));
-    bf[BFSIZE - 1] = 0;
-    (void)SendMessage(hStatus,SB_SETTEXTW,2,(LPARAM)bf);
+    text = WgxGetResourceString(i18n_table,L"FRAGMENTED");
+    if(text){
+        (void)_snwprintf(bf,BFSIZE - 1,L"%lu %s",pi->fragmented,text);
+        bf[BFSIZE - 1] = 0;
+        (void)SendMessage(hStatus,SB_SETTEXTW,2,(LPARAM)bf);
+        free(text);
+    }
 
-    (void)_snwprintf(bf,BFSIZE - 1,L"%lu %s",pi->compressed,
-            WgxGetResourceString(i18n_table,L"COMPRESSED"));
-    bf[BFSIZE - 1] = 0;
-    (void)SendMessage(hStatus,SB_SETTEXTW,3,(LPARAM)bf);
+    text = WgxGetResourceString(i18n_table,L"COMPRESSED");
+    if(text){
+        (void)_snwprintf(bf,BFSIZE - 1,L"%lu %s",pi->compressed,text);
+        bf[BFSIZE - 1] = 0;
+        (void)SendMessage(hStatus,SB_SETTEXTW,3,(LPARAM)bf);
+        free(text);
+    }
 
-    (void)udefrag_bytes_to_hr(pi->mft_size,2,s,sizeof(s));
-    (void)_snwprintf(bf,BFSIZE - 1,L"%S %s",s,
-            WgxGetResourceString(i18n_table,L"MFT"));
-    bf[BFSIZE - 1] = 0;
-    (void)SendMessage(hStatus,SB_SETTEXTW,4,(LPARAM)bf);
-
-    SetEvent(hLangPackEvent);
+    text = WgxGetResourceString(i18n_table,L"MFT");
+    if(text){
+        (void)udefrag_bytes_to_hr(pi->mft_size,2,s,sizeof(s));
+        (void)_snwprintf(bf,BFSIZE - 1,L"%S %s",s,text);
+        bf[BFSIZE - 1] = 0;
+        (void)SendMessage(hStatus,SB_SETTEXTW,4,(LPARAM)bf);
+        free(text);
+    }
 }
 
 /** @} */

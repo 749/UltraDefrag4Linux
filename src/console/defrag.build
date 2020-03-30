@@ -9,6 +9,9 @@ src = {
 }
 rc = { "defrag.rc" }
 
+-- list of directories containing headers the program relies on
+includes = { "console", "include", "lua5.1", "share", "udefrag", "wgx" }
+
 libs = { "kernel32", "user32", "msvcrt", "shell32" }
 adlibs = { 
     "$(UDEFRAG_LIB_PATH)\\udefrag",

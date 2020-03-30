@@ -1,5 +1,27 @@
 ﻿HISTORY
 
+  Version 5.0.4  2012-04-07
+  ------------------------------------------------------------------------------
+    - dirty volumes needing CHKDSK repair were returned
+      to the drives list with a special mark in their status field
+    - taskbar icon overlay indicating that a job is running was added
+      for Windows 7 and more recent Windows editions; it can be turned
+      on/off by show_taskbar_icon_overlay GUI option
+    - menu item to manually check for updates added
+    - i18n support was added to file fragmentation reports
+    - the following translations were updated:
+
+      Korean, French (FR), Spanish (AR), Croatian, Spanish (MEX), Wáray-Wáray
+
+    - menu icons for high DPI screens were added
+    - Internals: WgxSetTaskbarIconOverlay, WgxRemoveTaskbarIconOverlay,
+      WgxLoadIcon and WgxGetTextDimensions routines added to wgx library
+    - WgxGetResourceString behavior changed
+    - math.lshift function added to Lua library
+    - incremental compilation enabled
+    - MS Visual Studio 6.0 development environment support dropped
+
+
   Version 5.0.3  2012-02-26
   ------------------------------------------------------------------------------
     - produce_html_report and produce_plain_text_report options were added

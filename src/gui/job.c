@@ -51,26 +51,18 @@ int stop_pressed;
 /* nonzero value indicates that the main window has been closed */
 int exit_pressed = 0;
 
+/* this flag is used for taskbar icon redraw synchonization */
+int job_is_running = 0;
+
 extern int map_blocks_per_line;
 extern int map_lines;
 
 /**
  * @brief Initializes structures belonging to all jobs.
  */
-int init_jobs(void)
+void init_jobs(void)
 {
-    char event_name[64];
     int i;
-    
-    _snprintf(event_name,64,"udefrag-gui-%u",(int)GetCurrentProcessId());
-    event_name[63] = 0;
-    hMapEvent = CreateEvent(NULL,FALSE,TRUE,event_name);
-    if(hMapEvent == NULL){
-        WgxDisplayLastError(NULL,MB_OK | MB_ICONHAND,
-            "Cannot create %s event!",
-            event_name);
-        return (-1);
-    }
     
     for(i = 0; i < NUMBER_OF_JOBS; i++){
         memset(&jobs[i],0,sizeof(volume_processing_job));
@@ -78,7 +70,6 @@ int init_jobs(void)
         jobs[i].job_type = NEVER_EXECUTED_JOB;
         jobs[i].volume_letter = 'a' + i;
     }
-    return 0;
 }
 
 /**
@@ -249,7 +240,9 @@ static void DisplayDefragError(int error_code)
  */
 static void ProcessSingleVolume(volume_processing_job *job)
 {
+    volume_info v;
     int error_code;
+    int index;
 
     if(job == NULL)
         return;
@@ -274,6 +267,12 @@ static void ProcessSingleVolume(volume_processing_job *job)
                 terminator, NULL);
         if(error_code < 0 && !exit_pressed){
             DisplayDefragError(error_code);
+        }
+        /* update dirty volume mark */
+        index = get_job_index(job);
+        if(index != -1){
+            if(udefrag_get_volume_information(job->volume_letter,&v) >= 0)
+                SetVolumeDirtyStatus(index,&v);
         }
     }
 }
@@ -323,6 +322,17 @@ DWORD WINAPI StartJobsThreadProc(LPVOID lpParameter)
     tbi.iImage = 2; /* grayed repeat icon */
     SendMessage(hToolbar,TB_SETBUTTONINFO,IDM_REPEAT_ACTION,(LRESULT)&tbi);
     SendMessage(hToolbar,TB_ENABLEBUTTON,IDM_SHOW_REPORT,MAKELONG(FALSE,0));
+    
+    /* set taskbar icon overlay */
+    if(show_taskbar_icon_overlay){
+        if(WaitForSingleObject(hTaskbarIconEvent,INFINITE) != WAIT_OBJECT_0){
+            WgxDbgPrintLastError("StartJobsThreadProc: wait on hTaskbarIconEvent failed");
+        } else {
+            SetTaskbarIconOverlay(IDI_BUSY,L"JOB_IS_RUNNING");
+            job_is_running = 1;
+            SetEvent(hTaskbarIconEvent);
+        }
+    }
 
     /* process all selected volumes */
     index = -1;
@@ -373,6 +383,15 @@ DWORD WINAPI StartJobsThreadProc(LPVOID lpParameter)
     SendMessage(hToolbar,TB_SETBUTTONINFO,IDM_REPEAT_ACTION,(LRESULT)&tbi);
     SendMessage(hToolbar,TB_ENABLEBUTTON,IDM_SHOW_REPORT,MAKELONG(TRUE,0));
     
+    /* remove taskbar icon overlay */
+    if(WaitForSingleObject(hTaskbarIconEvent,INFINITE) != WAIT_OBJECT_0){
+        WgxDbgPrintLastError("StartJobsThreadProc: wait on hTaskbarIconEvent failed");
+    } else {
+        job_is_running = 0;
+        RemoveTaskbarIconOverlay();
+        SetEvent(hTaskbarIconEvent);
+    }
+
     /* check the when done action state */
     if(!exit_pressed && !stop_pressed){
         if(when_done_action != IDM_WHEN_DONE_NONE){
@@ -437,8 +456,6 @@ void release_jobs(void)
         if(j->map.scaled_buffer)
             free(j->map.scaled_buffer);
     }
-    if(hMapEvent)
-        CloseHandle(hMapEvent);
 }
 
 /** @} */

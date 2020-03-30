@@ -100,10 +100,12 @@ WGX_MENU settings_menu[] = {
 WGX_MENU help_menu[] = {
     {MF_STRING | MF_ENABLED,IDM_CONTENTS,      NULL, L"&Contents\tF1",       9 },
     {MF_SEPARATOR,0,NULL,NULL,0},
-    {MF_STRING | MF_ENABLED,IDM_BEST_PRACTICE, NULL, L"Best &practice\tF2", -1 },
+    {MF_STRING | MF_ENABLED,IDM_BEST_PRACTICE, NULL, L"Best &practice\tF2", 10 },
     {MF_STRING | MF_ENABLED,IDM_FAQ,           NULL, L"&FAQ\tF3",           -1 },
     {MF_SEPARATOR,0,NULL,NULL,0},
-    {MF_STRING | MF_ENABLED,IDM_ABOUT,         NULL, L"&About\tF4",         -1 },
+    {MF_STRING | MF_ENABLED,IDM_CHECK_UPDATE,  NULL, L"Check for &update",  -1 },
+    {MF_SEPARATOR,0,NULL,NULL,0},
+    {MF_STRING | MF_ENABLED,IDM_ABOUT,         NULL, L"&About\tF4",         11 },
     {0,0,NULL,NULL,0}
 };
 
@@ -143,16 +145,21 @@ int CreateMainMenu(void)
     ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
     osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
     GetVersionEx(&osvi);
-    /* for DPI > 125% better icons are needed: in 24x24 and 32x32 sizes */
-    cx = GetSystemMetrics(SM_CXMENUCHECK);
-    if(osvi.dwMajorVersion > 5 && cx < 20 && show_menu_icons){
-        /* menu icons look nicely on Vista and above */
-        if(cx < 19){
+    /* menu icons look nicely on Vista and above */
+    if(osvi.dwMajorVersion > 5 && show_menu_icons){
+        cx = GetSystemMetrics(SM_CXMENUCHECK);
+        if(cx < 16){
             /* 100% DPI */
             id = IDB_MENU_ICONS_15;
-        } else {
+        } else if(cx < 20){
             /* 125% DPI */
             id = IDB_MENU_ICONS_19;
+        } else if(cx < 26){
+            /* 150% DPI */
+            id = IDB_MENU_ICONS_25;
+        } else {
+            /* 200% DPI */
+            id = IDB_MENU_ICONS_31;
         }
         hBitmap = LoadBitmap(hInstance, MAKEINTRESOURCE(id));
         hBitmapMasked = WgxCreateMenuBitmapMasked(hBitmap, (COLORREF)-1);

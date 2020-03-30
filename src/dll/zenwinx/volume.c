@@ -601,7 +601,7 @@ static void get_volume_dirty_flag(winx_volume_information *v)
         NULL,0,&dirty_flag,sizeof(ULONG),NULL);
     winx_fclose(f);
     if(result >= 0 && (dirty_flag & VOLUME_IS_DIRTY)){
-        DebugPrint("%c: volume is dirty! Run Check Disk to repair it.",
+        DebugPrint("%c: volume is dirty! Run CHKDSK to repair it.",
             v->volume_letter);
         v->is_dirty = 1;
     }
