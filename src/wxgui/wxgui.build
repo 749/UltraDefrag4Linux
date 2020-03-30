@@ -10,7 +10,7 @@ libs = {
     "ole32", "oleaut32", "uuid", "powrprof",
     "urlmon", "rpcrt4", "shlwapi", "version",
     "zenwinx", "udefrag", "lua5.1a", "wxbase31u",
-    "wxzlib", "wxpng", "wxmsw31u_core", "wxmsw31u_adv"
+    "wxzlib", "wxpng", "wxjpeg", "wxmsw31u_core", "wxmsw31u_adv"
 }
 
 umentry = "winmain"

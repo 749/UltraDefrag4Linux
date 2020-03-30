@@ -164,8 +164,11 @@ enum {
 #define MIN_PANEL_HEIGHT            40
 
 // dialog layout constants
-#define SMALL_SPACING  DPI(5)
-#define LARGE_SPACING  DPI(11)
+#define SMALL_SPACING    DPI(5)
+#define MODERATE_SPACING DPI(8)
+#define LARGE_SPACING    DPI(11)
+
+#define ALIGN_CENTER  wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL
 
 // frame size adjustment flags
 #define FRAME_WIDTH_INCREASED  0x1
@@ -487,6 +490,7 @@ public:
     void OnListSize(wxSizeEvent& event);
     void OnLocaleChange(wxCommandEvent& event);
     void OnSplitChanged(wxSplitterEvent& event);
+    void OnUpgradeNow(wxCommandEvent& event);
     void PopulateList(wxCommandEvent& event);
     void ReadUserPreferences(wxCommandEvent& event);
     void RedrawMap(wxCommandEvent& event);
@@ -521,6 +525,10 @@ public:
     JobsCacheEntry *m_currentJob;
 
 private:
+    bool GetUpgradeOffer(
+        const wxString& id,
+        const wxString& locale,
+        const wxString& path);
     void InitMenu();
     void InitToolbar();
     void InitStatusBar();
@@ -573,6 +581,10 @@ private:
     ConfigThread    *m_configThread;
     ListThread      *m_listThread;
     UpgradeThread   *m_upgradeThread;
+    
+    bool m_upgradeAvailable;
+    bool m_upgradeLinkOpened;
+    int  m_upgradeOfferId;
 
     RefreshDrivesInfoThread *m_rdiThread;
 

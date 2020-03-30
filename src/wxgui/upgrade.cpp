@@ -164,19 +164,102 @@ void MainFrame::OnHelpUpgrade(wxCommandEvent& event)
     }
 }
 
+void MainFrame::OnUpgradeNow(wxCommandEvent& event)
+{
+    wxString url(wxT("https://ultradefrag.net/upgrade/v7/"));
+    url << wxString::Format(wxT("%u"),m_upgradeOfferId);
+    if(!wxLaunchDefaultBrowser(url)){
+        Utils::ShowError(wxT("Cannot open %ls!"),ws(url));
+    } else {
+        m_upgradeLinkOpened = true;
+    }
+
+    event.Skip();
+}
+
+bool MainFrame::GetUpgradeOffer(const wxString& id,const wxString& locale,const wxString& path)
+{
+    wxString url = wxT("http://ultradefrag.net/upgrade/v7/");
+    url << locale << wxT("/") << id << wxT(".jpg");
+    
+    if(Utils::DownloadFile(url,path)){
+        wxTextFile file; file.Open(path);
+        wxString s = file.GetFirstLine();
+        if(s.Find(wxT("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"")) != wxNOT_FOUND){
+            return false;
+        }
+        return true;
+    }
+    
+    return false;
+}
+
 void MainFrame::ShowUpgradeDialog(wxCommandEvent& event)
 {
-    wxString message = wxString();
-    //: This expands to "Release 7.0.0 is available for download!"
-    //: Make sure that "%ls" is included in the translated string at the correct position
-    message.Printf(_("Release %ls is available for download!"),ws(event.GetString()));
+    if(m_upgradeLinkOpened) return;
+    
+    // download upgrade offer
+    wxFileName target(wxT(".\\tmp"));
+    target.Normalize();
+    wxString dir(target.GetFullPath());
+    if(!wxDirExists(dir)) wxMkdir(dir);
 
-    if(Utils::MessageDialog(this,_("You can upgrade me ^-^"),
-      wxART_INFORMATION,_("&Upgrade"),_("&Cancel"),ts(message)) == wxID_OK)
-    {
-        wxString url(wxT("https://ultradefrag.net"));
-        if(!wxLaunchDefaultBrowser(url))
-            Utils::ShowError(wxT("Cannot open %ls!"),ws(url));
+    wxString path(dir);
+    path << wxT("\\upgrade.jpg");
+    
+    bool result = true;
+
+    if(!m_upgradeAvailable){
+        result = GetUpgradeOffer(wxT("1"),g_locale->GetName(),path);
+        if(!result) result = GetUpgradeOffer(wxT("1"),wxT("en_US"),path);
+    }
+    
+    if(result){
+        // show upgrade dialog
+        wxDialog dlg(this,wxID_ANY,_("Special offer"));
+
+        wxImage img(path,wxBITMAP_TYPE_JPEG);
+        //img.Rescale(DPI(img.GetWidth()) / 2,DPI(img.GetHeight()) / 2,wxIMAGE_QUALITY_BICUBIC);
+        
+        wxStaticBitmap *pic = new wxStaticBitmap(&dlg,wxID_ANY,wxBitmap(img));
+        
+        wxButton *upgradeNow = new wxButton(&dlg,wxID_APPLY,_("Upgrade Now"));
+        
+        wxGridBagSizer* contents = new wxGridBagSizer(MODERATE_SPACING,MODERATE_SPACING);
+
+        contents->Add(pic,wxGBPosition(0,0),wxDefaultSpan,ALIGN_CENTER);
+        contents->Add(upgradeNow,wxGBPosition(1,0),wxDefaultSpan,ALIGN_CENTER);
+
+        wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
+        hbox->AddSpacer(MODERATE_SPACING);
+        hbox->Add(contents,wxSizerFlags());
+        hbox->AddSpacer(MODERATE_SPACING);
+        
+        wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
+        vbox->AddSpacer(MODERATE_SPACING);
+        vbox->Add(hbox,wxSizerFlags());
+        vbox->AddSpacer(MODERATE_SPACING);
+        
+        dlg.SetSizerAndFit(vbox);
+        vbox->SetSizeHints(&dlg);
+
+        if(!IsIconized()) dlg.Center();
+        else dlg.CenterOnScreen();
+        
+        // bind event handlers
+        upgradeNow->Bind(wxEVT_BUTTON,&MainFrame::OnUpgradeNow,this);
+
+        dlg.ShowModal();
+    }
+    
+    if(m_upgradeAvailable) return;
+    
+    result = GetUpgradeOffer(wxT("2"),g_locale->GetName(),path);
+    if(!result) result = GetUpgradeOffer(wxT("2"),wxT("en_US"),path);
+    
+    if(result){
+        m_upgradeAvailable = true;
+        m_upgradeOfferId ++;
     }
 }
 
