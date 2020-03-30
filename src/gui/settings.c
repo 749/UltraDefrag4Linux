@@ -236,6 +236,10 @@ void InitFont(void)
 /**
  * @internal
  * @brief StartPrefsChangesTracking thread routine.
+ * @note This thread reloads configuration files
+ * whenever something gets changed in the installation
+ * directory, even when the last modification time
+ * gets changed for its subdirectories.
  */
 DWORD WINAPI PrefsChangesTrackingProc(LPVOID lpParameter)
 {

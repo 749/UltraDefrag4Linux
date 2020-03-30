@@ -44,7 +44,7 @@ cpp_files = 0
 rsrc_patterns = { "%.ico$", "%.bmp$", "%.manifest$" }
 
 ddk_cmd = "build.exe"
-mingw_cmd = "mingw32-make -f Makefile.mingw"
+mingw_cmd = "mingw32-make --no-builtin-rules -f Makefile.mingw"
 sdk_cmd = "nmake.exe /NOLOGO /f Makefile.winsdk"
 
 -- common subroutines

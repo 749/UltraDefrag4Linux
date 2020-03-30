@@ -186,14 +186,14 @@
     ; we only support Windows NT
     ${IfNot} ${IsNT}
         ${LogAndDisplayAbort} \
-            "This program is not supported on Windows 95, 98 and Me!"
+            "This program cannot be used on Windows 95, 98 and Me!"
         Abort
     ${EndIf}
 
     ; we only support Windows NT4 and above
     ${IfNot} ${AtLeastWinNT4}
         ${LogAndDisplayAbort} \
-            "This program is not supported on Windows versions below NT4!"
+            "This program cannot be used on Windows versions below NT4!"
         Abort
     ${EndIf}
 
@@ -220,7 +220,7 @@
         ${If} $R0 == "amd64"
         ${AndIf} ${ULTRADFGARCH} != "amd64"
             ${LogAndDisplayAbort} \
-                "This installer cannot be used on x64 version of Windows!$\n \
+                "This installer cannot be used on x64 versions of Windows!$\n \
                 Download the amd64 version from http://ultradefrag.sourceforge.net/"
             Pop $R0
             Abort
@@ -228,7 +228,7 @@
         ${If} $R0 == "ia64"
         ${AndIf} ${ULTRADFGARCH} != "ia64"
             ${LogAndDisplayAbort} \
-                "This installer cannot be used on IA-64 version of Windows!$\n \
+                "This installer cannot be used on IA-64 versions of Windows!$\n \
                 Download the ia64 version from http://ultradefrag.sourceforge.net/"
             Pop $R0
             Abort
@@ -340,7 +340,6 @@ SkipMove:
         File "udefrag.dll"
         File "wgx.dll"
         File /oname=hibernate4win.exe "hibernate.exe"
-        File "${ROOTDIR}\src\installer\ud-help.cmd"
 
     SetOutPath "$INSTDIR"
         File "${ROOTDIR}\src\HISTORY.TXT"
@@ -414,7 +413,6 @@ SkipMove:
     Delete "$SYSDIR\wgx.dll"
     Delete "$SYSDIR\lua5.1a.dll"
     Delete "$SYSDIR\hibernate4win.exe"
-    Delete "$SYSDIR\ud-help.cmd"
 
     DetailPrint "Deregister .luar file extension..."
     DeleteRegKey HKCR "LuaReport"
@@ -1037,6 +1035,7 @@ SkipMove:
     Delete "$SYSDIR\udefrag-gui-config.exe"
     Delete "$SYSDIR\udefrag-scheduler.exe"
     Delete "$SYSDIR\ud-config.cmd"
+    Delete "$SYSDIR\ud-help.cmd"
     Delete "$SYSDIR\udefrag-kernel.dll"
     Delete "$SYSDIR\lua5.1a.exe"
     Delete "$SYSDIR\lua5.1a_gui.exe"

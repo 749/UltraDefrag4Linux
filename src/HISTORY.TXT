@@ -1,5 +1,10 @@
 ﻿HISTORY
 
+  Version 6.1.1 2015-11-20
+  ------------------------------------------------------------------------------
+    - graphical interface forced to check for available updates more reliably
+
+
   Version 6.1.0 2015-04-19
   ------------------------------------------------------------------------------
     - documentation was cleaned up

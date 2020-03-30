@@ -55,6 +55,7 @@
  * <tr><td>                               </td><td>-</td><td> Elita Alutee</td></tr>
  * <tr><td>                               </td><td>-</td><td> All UltraDefrag Fans</td></tr>
  * <tr><td>                               </td><td>-</td><td> wwj402</td></tr>
+ * <tr><td>                               </td><td>-</td><td> YF</td></tr>
  * <tr><td>• Chinese (Traditional)        </td><td>-</td><td> muzuiget</td></tr>
  * <tr><td>                               </td><td>-</td><td> Ryan Ping Chih Ko</td></tr>
  * <tr><td>                               </td><td>-</td><td> rexx</td></tr>
@@ -63,6 +64,7 @@
  * <tr><td>• Croatian                     </td><td>-</td><td> Denis Jeličić</td></tr>
  * <tr><td>                               </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
  * <tr><td>                               </td><td>-</td><td> Mladen Ivošević</td></tr>
+ * <tr><td>                               </td><td>-</td><td> streger</td></tr>
  * <tr><td>• Czech                        </td><td>-</td><td> David Horák /Dave MacBlack/</td></tr>
  * <tr><td>                               </td><td>-</td><td> Pavel Kinkor</td></tr>
  * <tr><td>                               </td><td>-</td><td> Jiří Vírava</td></tr>
@@ -82,6 +84,7 @@
  * <tr><td>                               </td><td>-</td><td> Ezekiel JB Vegiga</td></tr>
  * <tr><td>                               </td><td>-</td><td> Stefan Pendl</td></tr>
  * <tr><td>• Finnish                      </td><td>-</td><td> jtl</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Jukka Laari</td></tr>
  * <tr><td>• French                       </td><td>-</td><td> Pascal Crozet</td></tr>
  * <tr><td>                               </td><td>-</td><td> Jérôme Blum</td></tr>
  * <tr><td>                               </td><td>-</td><td> Mathieu Van Weersch</td></tr>
@@ -177,6 +180,7 @@
  * <tr><td>                               </td><td>-</td><td> yakup</td></tr>
  * <tr><td>• Ukrainian                    </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
  * <tr><td>                               </td><td>-</td><td> lembergman</td></tr>
+ * <tr><td>                               </td><td>-</td><td> alex hap</td></tr>
  * <tr><td>• Vietnamese                   </td><td>-</td><td> Vietnamize Team</td></tr>
  * <tr><td>                               </td><td>-</td><td> DT</td></tr>
  * <tr><td>                               </td><td>-</td><td> Anh Phan</td></tr>
@@ -210,6 +214,7 @@
  *                                 & - & Elita Alutee \\
  *                                 & - & All UltraDefrag Fans \\
  *                                 & - & wwj402 \\
+ *                                 & - & YF \\
  * • Chinese (Traditional)         & - & muzuiget \\
  *                                 & - & Ryan Ping Chih Ko \\
  *                                 & - & rexx \\
@@ -218,6 +223,7 @@
  * • Croatian                      & - & Denis Jeličić \\
  *                                 & - & Dmitri Arkhangelski \\
  *                                 & - & Mladen Ivošević \\
+ *                                 & - & streger \\
  * • Czech                         & - & David Horák /Dave MacBlack/ \\
  *                                 & - & Pavel Kinkor \\
  *                                 & - & Jiří Vírava \\
@@ -237,6 +243,7 @@
  *                                 & - & Ezekiel JB Vegiga \\
  *                                 & - & Stefan Pendl \\
  * • Finnish                       & - & jtl \\
+ *                                 & - & Jukka Laari \\
  * • French                        & - & Pascal Crozet \\
  *                                 & - & Jérôme Blum \\
  *                                 & - & Mathieu Van Weersch \\
@@ -332,6 +339,7 @@
  *                                 & - & yakup \\
  * • Ukrainian                     & - & Dmitri Arkhangelski \\
  *                                 & - & lembergman \\
+ *                                 & - & alex hap \\
  * • Vietnamese                    & - & Vietnamize Team \\
  *                                 & - & DT \\
  *                                 & - & Anh Phan \\
@@ -616,14 +624,14 @@
  * @endlatexonly
  * Aivier, Antonio Vivace, Benny Stütz, Bernard Ladenthin, Carlo Bruschi, Catur Susetyo,
  * Connection, Dandy Cheung, Daniel Rodríguez, Davide, Dmitry Zemskov, Erwin Dokter, El Fiera,
- * Fabrizio Marana, FS, Giulio Fornasar, Gustavo Rezende, Haein Jung, Harald Arnesen,
+ * Fabrizio Marana, FS, Garoiu Victor, Giulio Fornasar, Gustavo Rezende, Haein Jung, Harald Arnesen,
  * Jan Iemhoff, JIFF, Julien Chartier, Luigi C., Javier Valdivieso, Jiri Sedlak,
- * José Carlos Taveira de Souza, José Luis Farías, Joshua C, Karam Al-Shorbassi,
+ * José Carlos Taveira de Souza, José Luis Farías, Joshua Christo Randiny, Karam Al-Shorbassi,
  * Ken Choy, Krzysztof Świderski, Latino, Leo Smulders, luigif, MAFA1005, Massa,
  * Matej Marton, Mateusz Krawczyk, Nikolay Parukhin, Patrick Palm, Piotr Halama,
  * Reynald Didier, Robert Jr, Robert Readman, Rodrigo Lopes Paitach, Seph, SMHA,
- * strel, Suranappar.se, Timo VJ Lähde, Tjeerd van Sas, translucens, TurboHz,
- * Zirikkanen, zubr139
+ * strel, Suranappar.se, Timo VJ Lähde, Tjeerd van Sas, Trans-fr, translucens, TurboHz,
+ * udef-jardic, Zirikkanen, zubr139
  * @htmlonly
  * </dd></dl>
  * @endhtmlonly

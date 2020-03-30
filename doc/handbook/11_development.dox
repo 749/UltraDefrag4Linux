@@ -32,7 +32,7 @@
  *   <a href="http://www.doxygen.org/">Doxygen 1.8.4</a>,
  *   <a href="http://nsis.sourceforge.net/">NSIS</a>,
  *   <a href="http://www.7-zip.org/">7-zip</a>
- * - <a href="http://luabinaries.luaforge.net/">Lua</a>,
+ * - <a href="http://luabinaries.luaforge.net/">Lua 5.1.x</a>,
  *   <a href="http://upx.sf.net/">UPX</a>
  *   (extract them somewhere on your <b>\%path\%</b>)
  * - <a href="http://www.miktex.org/">MiKTeX</a> (optional; for pdf documentation; use basic installer)

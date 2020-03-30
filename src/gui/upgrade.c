@@ -42,8 +42,7 @@ wchar_t announcement[MAX_ANNOUNCEMENT_LEN];
 typedef HRESULT (__stdcall *URLMON_PROCEDURE)(
     /* LPUNKNOWN */ void *lpUnkcaller,
     LPCSTR szURL,
-    LPTSTR szFileName,
-    DWORD cchFileName,
+    LPCSTR szFileName,
     DWORD dwReserved,
     /*IBindStatusCallback*/ void *pBSC
 );
@@ -54,12 +53,12 @@ DWORD WINAPI CheckForTheNewVersionThreadProc(LPVOID lpParameter);
 /**
 * @brief Retrieves the latest version number from the project's website.
 * @return Version number string. NULL indicates failure.
-* @note Based on http://msdn.microsoft.com/en-us/library/ms775122(VS.85).aspx
 */
 static char *GetLatestVersion(void)
 {
-    URLMON_PROCEDURE pURLDownloadToCacheFile;
     HMODULE hUrlmonDLL = NULL;
+    URLMON_PROCEDURE pURLDownloadToFile;
+    char *version_ini_path = ".\\tmp\\data\\version.ini";
     HRESULT result;
     FILE *f;
     int res;
@@ -72,22 +71,35 @@ static char *GetLatestVersion(void)
         return NULL;
     }
     
-    /* get an address of procedure downloading a file */
-    pURLDownloadToCacheFile = (URLMON_PROCEDURE)GetProcAddress(hUrlmonDLL,"URLDownloadToCacheFileA");
-    if(pURLDownloadToCacheFile == NULL){
-        letrace("URLDownloadToCacheFile not found in urlmon.dll");
+    /*
+    * URLDownloadToCacheFileA cannot be used here because
+    * it may immediately delete the file after its creation.
+    */
+    pURLDownloadToFile = (URLMON_PROCEDURE)GetProcAddress(hUrlmonDLL,"URLDownloadToFileA");
+    if(pURLDownloadToFile == NULL){
+        letrace("URLDownloadToFile not found in urlmon.dll");
         return NULL;
     }
     
-    /* download a file */
-    result = pURLDownloadToCacheFile(NULL,VERSION_URL,version_ini_path,MAX_PATH,0,NULL);
+    res = _mkdir(".\\tmp");
+    if(res < 0 && errno == ENOENT)
+        etrace("cannot create .\\tmp folder: path was not found");
 
-    version_ini_path[MAX_PATH] = 0;
+    /*
+    * Use a subfolder to prevent configuration files
+    * reload (see PrefsChangesTrackingProc() for details).
+    */
+    res = _mkdir(".\\tmp\\data");
+    if(res < 0 && errno == ENOENT)
+        etrace("cannot create .\\tmp\\data folder: path was not found");
+    
+    /* download the file */
+    result = pURLDownloadToFile(NULL,VERSION_URL,version_ini_path,0,NULL);
     if(result != S_OK){
         if(result == E_OUTOFMEMORY){
             mtrace();
         } else {
-            etrace("URLDownloadToCacheFile failed");
+            etrace("URLDownloadToFile failed");
         }
         return NULL;
     }
@@ -103,7 +115,7 @@ static char *GetLatestVersion(void)
     /* read version string */
     res = fread(version_number,1,MAX_VERSION_FILE_LEN,f);
     (void)fclose(f);
-    /* remove cached data, otherwise it may not be loaded next time */
+    /* cleanup */
     (void)remove(version_ini_path);
     if(res == 0){
         etrace("cannot read %s",version_ini_path);

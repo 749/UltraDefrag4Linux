@@ -391,17 +391,17 @@ FunctionEnd
 ;----------------------------------------------
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-    !insertmacro MUI_DESCRIPTION_TEXT ${SecCore}            "The core files required to use UltraDefrag."
+    !insertmacro MUI_DESCRIPTION_TEXT ${SecCore}            "Install UltraDefrag core files (required)."
     !insertmacro MUI_DESCRIPTION_TEXT ${SecInterfaces}      "Select at least one interface to be installed."
-    !insertmacro MUI_DESCRIPTION_TEXT ${SecBoot}            "The boot time interface processes your volumes during the start of Windows."
+    !insertmacro MUI_DESCRIPTION_TEXT ${SecBoot}            "The boot time interface can defragment files which are usually locked by Windows."
     !insertmacro MUI_DESCRIPTION_TEXT ${SecConsole}         "The command line interface can be used for automation."
-    !insertmacro MUI_DESCRIPTION_TEXT ${SecGUI}             "The graphical user interface with cluster map and volume list."
-    !insertmacro MUI_DESCRIPTION_TEXT ${SecHelp}            "Handbook, documentation or help file however you like to call it."
-    !insertmacro MUI_DESCRIPTION_TEXT ${SecShellHandler}    "Defragment your volumes, folders and files from their Explorer context menu."
-    !insertmacro MUI_DESCRIPTION_TEXT ${SecShortcuts}       "Adds icons for easy access."
-    !insertmacro MUI_DESCRIPTION_TEXT ${SecStartMenuIcon}   "Adds an icon to your start menu."
-    !insertmacro MUI_DESCRIPTION_TEXT ${SecDesktopIcon}     "Adds an icon to your desktop."
-    !insertmacro MUI_DESCRIPTION_TEXT ${SecQuickLaunchIcon} "Adds an icon to your quick launch toolbar."
+    !insertmacro MUI_DESCRIPTION_TEXT ${SecGUI}             "The traditional graphical interface displays visual representation of disk clusters."
+    !insertmacro MUI_DESCRIPTION_TEXT ${SecHelp}            "Install UltraDefrag Handbook."
+    !insertmacro MUI_DESCRIPTION_TEXT ${SecShellHandler}    "Defragment individual files and folders directly from Windows Explorer."
+    !insertmacro MUI_DESCRIPTION_TEXT ${SecShortcuts}       "Add icons for easy access."
+    !insertmacro MUI_DESCRIPTION_TEXT ${SecStartMenuIcon}   "Add an icon to your start menu."
+    !insertmacro MUI_DESCRIPTION_TEXT ${SecDesktopIcon}     "Add an icon to your desktop."
+    !insertmacro MUI_DESCRIPTION_TEXT ${SecQuickLaunchIcon} "Add an icon to your quick launch toolbar."
     !insertmacro MUI_DESCRIPTION_TEXT ${SecUsageTracking}   "Disable web based usage tracking."
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 

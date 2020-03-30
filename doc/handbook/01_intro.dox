@@ -72,7 +72,7 @@
  * Defragmentation eliminates little fragments joining them together.
  *
  * Full optimization moves all small files and fragments to the end of the disk
- * to release some space in the beginning. Then it moves them back, sorted by a user
+ * to release some space in the beginning. Then it moves them back, sorted by user
  * defined criteria, to speed up access to groups of small files. By default files
  * are sorted by path in ascending order. Additionally FAT directories and NTFS
  * master file tables get fixed up as mentioned above.
