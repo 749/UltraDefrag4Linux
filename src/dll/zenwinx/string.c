@@ -101,7 +101,7 @@ wchar_t *winx_wcsdup(const wchar_t *s)
         return NULL;
     
     length = wcslen(s);
-    cp = winx_heap_alloc((length + 1) * sizeof(short));
+    cp = winx_heap_alloc((length + 1) * sizeof(wchar_t));
     if(cp) wcscpy(cp,s);
     return cp;
 }
@@ -529,6 +529,53 @@ ULONGLONG winx_hr_to_bytes(char *string)
     /* convertion to LONGLONG is needed for MinGW */
     r = (ULONGLONG)(LONGLONG)((double)(LONGLONG)m * rd);
     return n * m + r;
+}
+
+/**
+ * @brief Converts a string to UTF-8 encoding.
+ * @param[out] dst the destination buffer.
+ * @param[in] size size of the destination buffer.
+ * @param[in] src the source string.
+ * @note Each converted character needs maximum
+ * three bytes to be stored. So destination buffer
+ * should be at least (1.5 * src_bytes) long.
+ */
+void winx_to_utf8(char *dst,int size,wchar_t *src)
+{
+    int i; /* src index */
+    int j; /* dst index */
+    wchar_t c, b1, b2, b3;
+    
+    if(!src || !dst || size <= 0) return;
+    
+    for(i = j = 0; src[i]; i++){
+        c = src[i];
+        if(c < 0x80){
+            if(j > (size - 2)) break;
+            dst[j] = (char)c;
+            j ++;
+        } else if(c < 0x800){ /* 0x80 - 0x7FF: 2 bytes */
+            if(j > (size - 3)) break;
+            b2 = 0x80 | (c & 0x3F);
+            c >>= 6;
+            b1 = 0xC0 | c;
+            dst[j] = (char)b1;
+            dst[j+1] = (char)b2;
+            j += 2;
+        } else { /* 0x800 - 0xFFFF: 3 bytes */
+            if(j > (size - 4)) break;
+            b3 = 0x80 | (c & 0x3F);
+            c >>= 6;
+            b2 = 0x80 | (c & 0x3F);
+            c >>= 6;
+            b1 = 0xE0 | c;
+            dst[j] = (char)b1;
+            dst[j+1] = (char)b2;
+            dst[j+2] = (char)b3;
+            j += 3;
+        }
+    }
+    dst[j] = 0;
 }
 
 /** @} */

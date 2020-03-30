@@ -4,11 +4,8 @@
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised Nov. 16, 2010 by Julio Mojón Fuentes
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Galician.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -63,7 +60,10 @@ REPORTS                   = &Informes
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = &Ver cambiar rexistro
+TRANSLATIONS_REPORT       = Ver informe &tradución
 TRANSLATIONS_FOLDER       = &Cartafol de traducións
+TRANSLATIONS_SUBMIT       = &Enviar tradución corrente
 
 ; --- --- Graphical interface submenu
 
@@ -81,8 +81,14 @@ CONTENTS                  = &Contidos
 BEST_PRACTICE             = Óptimos &resultados
 FAQ                       = &Preguntas máis frecuentes
 CM_LEGEND                 = Cluster mapa &lenda
+DEBUG                     = &Depurar
 CHECK_UPDATE              = Asegúrese de que hai actuali&zación
 ABOUT                     = &Acerca de
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = &Abre rexistro
+REPORT_BUG                = &Enviar informe de erro
 
 ; --- Toolbar Tooltips
 

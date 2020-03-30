@@ -8,10 +8,8 @@
 ; Revised Feb. 16, 2010 by José Carlos Taveira de Souza
 ; Revised May. 27, 2010 by Robert Jr
 ; Revised Oct. 04, 2011 by Massa
+; Revised Jun. 08, 2012 by Rodrigo Lopes Paitach
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Portuguese+%28BR%29.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -66,7 +64,10 @@ REPORTS                   = &Relatórios
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = &Visualizar registro de mudanças
+TRANSLATIONS_REPORT       = Visualizar &relatório de traduções
 TRANSLATIONS_FOLDER       = &Pasta das traduções
+TRANSLATIONS_SUBMIT       = &Enviar tradução atual
 
 ; --- --- Graphical interface submenu
 
@@ -83,9 +84,15 @@ SCRIPT                    = &Script
 CONTENTS                  = &Conteúdos
 BEST_PRACTICE             = Melhor &prática
 FAQ                       = &FAQ
-CM_LEGEND                 = Cluster mapa &lenda
+CM_LEGEND                 = Cluster mapa &legenda
+DEBUG                     = De&bug
 CHECK_UPDATE              = Verifique se há atualização
 ABOUT                     = &Sobre
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Abrir &log
+REPORT_BUG                = Enviar &relatório erros
 
 ; --- Toolbar Tooltips
 
@@ -94,7 +101,7 @@ BOOT_TIME_SCRIPT          = Script durante o boot
 ; Drives list items.
 
 VOLUME                    = Volume
-STATUS                    = Status
+STATUS                    = Estatus
 TOTAL                     = Espaço Total
 FREE                      = Espaço Livre
 PERCENT                   = % Livre
@@ -136,7 +143,7 @@ NO                        = &Não
 
 ; Upgrade dialog
 
-UPGRADE_CAPTION           = Você pode atualizar me ^-^
+UPGRADE_CAPTION           = Você pode atualizar-me
 UPGRADE_MESSAGE           = versão está disponível para download!
 
 ; A string for the taskbar icon overlay, needed for accessibility.

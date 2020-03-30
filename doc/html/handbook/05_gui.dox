@@ -275,8 +275,15 @@
  * &
  * @endlatexonly
  * @par Language
- * This allows selecting the displayed language and to open the <b>Translations folder</b>,
- * which contains the <b>translation.template</b> and all language files.
+ * This mainly allows selecting the displayed language.\n\n
+ * - The entry <b>View change log</b> opens the page of translation changes
+ * at the translation wiki.\n
+ * - The entry <b>View translation report</b> opens the page with the
+ * current translation status at the translation wiki.\n
+ * - The entry <b>Translations folder</b> opens the folder containing
+ * the <b>translation.template</b> and all language files.\n
+ * - The entry <b>Submit current translation</b> opens the page of the currently
+ * selected translation at the translation wiki for editing or a new page to submit it.\n
  *
  * @htmlonly
  * </td></tr><tr><td>
@@ -439,6 +446,25 @@
  * @endlatexonly
  * @par Cluster map legend
  * This launches the @ref cluster_map_legend "Cluster Map" section of this page.
+ *
+ * @htmlonly
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * @endlatexonly
+ * @image html "Blank.png"
+ * @image latex "Blank.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * &
+ * @endlatexonly
+ * @par Debug
+ * - The entry <b>Open log (Alt+L)</b> opens the current debug log file in a text editor.
+ * - The entry <b>Send bug report</b> opens the bug tracker web page in the browser,
+ * which allows you to submit a bug report.
  *
  * @htmlonly
  * </td></tr><tr><td>

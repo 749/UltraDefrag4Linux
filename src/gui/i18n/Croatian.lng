@@ -6,11 +6,8 @@
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 1900} by {Replace with your name}
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Croatian.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -65,7 +62,10 @@ REPORTS                   = Izvješća
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = Pregled promijeniti zapisnik
+TRANSLATIONS_REPORT       = Pregled prijevod izvješće
 TRANSLATIONS_FOLDER       = Mapa s prijevodima
+TRANSLATIONS_SUBMIT       = Slanje trenutni prijevod
 
 ; --- --- Graphical interface submenu
 
@@ -83,8 +83,14 @@ CONTENTS                  = Sadržaj
 BEST_PRACTICE             = Najbolja praksa
 FAQ                       = Pitanja i odgovori
 CM_LEGEND                 = Klaster karta legenda
+DEBUG                     = De&bug
 CHECK_UPDATE              = Provjerite ažuriranja
 ABOUT                     = O programu
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Otvorite zapisnik
+REPORT_BUG                = Pošalji bug izvještaj
 
 ; --- Toolbar Tooltips
 

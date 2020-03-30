@@ -8,10 +8,9 @@
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
 ; Revised Oct. 17, 2010 by SMHA
+; Revised May. 12, 2012 by JIFF
+; Revised May. 19, 2012 by Seph
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Polish.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -61,12 +60,15 @@ SHOW_REPORT               = Pokaż raport
 
 LANGUAGE                  = Język
 GRAPHICAL_INTERFACE       = Interfejs graficzny
-BOOT_TIME_SCAN            = Skanowanie uruchomieniowe
+BOOT_TIME_SCAN            = Skanowanie przy uruchomieniu
 REPORTS                   = Raporty
 
 ; --- --- Language submenu
 
-TRANSLATIONS_FOLDER       = Katalog tłumaczeń
+TRANSLATIONS_CHANGE_LOG   = Pokaż listę zmian
+TRANSLATIONS_REPORT       = Pokaż &raport tłumaczeń
+TRANSLATIONS_FOLDER       = Katalog z &tłumaczeniami
+TRANSLATIONS_SUBMIT       = Wy&ślij aktualne tłumaczenie
 
 ; --- --- Graphical interface submenu
 
@@ -76,7 +78,7 @@ OPTIONS                   = Opcje
 ; --- --- Boot time scan submenu
 
 ENABLE                    = Aktywuj
-SCRIPT                    = Skrypt uruchomieniowy
+SCRIPT                    = Skrypt
 
 ; --- Help Menu
 
@@ -84,12 +86,18 @@ CONTENTS                  = Zawartość
 BEST_PRACTICE             = Najlepsze praktyki
 FAQ                       = Najczęściej zadawane pytania
 CM_LEGEND                 = Objaśnienie mapy dysku
+DEBUG                     = De&buguj
 CHECK_UPDATE              = Sprawdź aktualizacje
 ABOUT                     = O UltraDefrag
 
+; --- --- Debug submenu
+
+OPEN_LOG                  = Otwórz raport
+REPORT_BUG                = Wyślij &raport o błędach
+
 ; --- Toolbar Tooltips
 
-BOOT_TIME_SCRIPT          = Skrypt uruchomieniowy
+BOOT_TIME_SCRIPT          = Skrypt wykonywany podczas uruchamiania systemu
 
 ; Drives list items.
 
@@ -154,7 +162,7 @@ FRAGMENTED_FILES_ON       = Pofragmentowane pliki na
 
 VISIT_HOMEPAGE            = Odwiedź naszą witrynę
 VIEW_REPORT_OPTIONS       = Pokaż opcje raportu
-POWERED_BY_LUA            = Powered by Lua
+POWERED_BY_LUA            = Stworzono wykorzystując Lua
 
 FRAGMENTS                 = fragmentów
 SIZE                      = rozmiar

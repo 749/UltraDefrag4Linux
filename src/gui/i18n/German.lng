@@ -9,9 +9,6 @@
 ; Revised Jul. 02, 2011 by FS
 ;------------------------------------------------------------------------------
 
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/German.lng
-
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
 
@@ -38,7 +35,7 @@ STOP                      = &Abbrechen
 REPEAT_ACTION             = &Vorgang wiederholen
 SKIP_REMOVABLE_MEDIA      = &Wechselmedien ignorieren
 RESCAN_DRIVES             = &Laufwerke aktualisieren
-REPAIR_DRIVES             = Laufwerke reparieren
+REPAIR_DRIVES             = Lauf&werke reparieren
 WHEN_DONE                 = &Nach Abschluss
 EXIT                      = &Beenden
 
@@ -65,7 +62,10 @@ REPORTS                   = &Berichte
 
 ; --- --- Language submenu
 
-TRANSLATIONS_FOLDER       = &Übersetzungsordner
+TRANSLATIONS_CHANGE_LOG   = Änderungs&protokoll anzeigen
+TRANSLATIONS_REPORT       = Übersetzungs&bericht anzeigen
+TRANSLATIONS_FOLDER       = Übersetzungs&ordner
+TRANSLATIONS_SUBMIT       = &Aktuelle Übersetzung einreichen
 
 ; --- --- Graphical interface submenu
 
@@ -83,8 +83,14 @@ CONTENTS                  = &Inhalt
 BEST_PRACTICE             = Empfohlene &Verwendung
 FAQ                       = Häufig gestellte &Fragen
 CM_LEGEND                 = &Zuordnungstabellenerklärung
+DEBUG                     = &Problem berichten
 CHECK_UPDATE              = Auf &Aktualisierung prüfen
 ABOUT                     = &Über
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = &Protokoll öffnen
+REPORT_BUG                = Problembericht &senden
 
 ; --- Toolbar Tooltips
 

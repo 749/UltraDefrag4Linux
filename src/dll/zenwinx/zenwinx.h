@@ -360,6 +360,8 @@ void winx_patfree(winx_patlist *patterns);
 int winx_bytes_to_hr(ULONGLONG bytes, int digits, char *buffer, int length);
 ULONGLONG winx_hr_to_bytes(char *string);
 
+void winx_to_utf8(char *dst,int size,wchar_t *src);
+
 /* thread.c */
 int winx_create_thread(PTHREAD_START_ROUTINE start_addr,PVOID parameter,HANDLE *phandle);
 void winx_exit_thread(NTSTATUS status);

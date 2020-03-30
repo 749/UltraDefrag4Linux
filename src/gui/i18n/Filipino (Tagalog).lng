@@ -8,9 +8,6 @@
 ; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
 
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Filipino+%28Tagalog%29.lng
-
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
 
@@ -64,7 +61,10 @@ REPORTS                   = &Ulat
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = &Tingnan baguhin log
+TRANSLATIONS_REPORT       = Tingnan ang pagsasalin &ulat
 TRANSLATIONS_FOLDER       = &Pagsasalin
+TRANSLATIONS_SUBMIT       = &Isumite ang kasalukuyang pagsasalin
 
 ; --- --- Graphical interface submenu
 
@@ -81,9 +81,15 @@ SCRIPT                    = I&skrip
 CONTENTS                  = &Nilalaman
 BEST_PRACTICE             = &Mahusay na Palakad
 FAQ                       = Ma&dalas na Tanong
-CM_LEGEND                 = Cluster mapa &alamat
+CM_LEGEND                 = &Cluster Mapa Alamat
+DEBUG                     = &Debug
 CHECK_UPDATE              = Suriin para sa mga &update
 ABOUT                     = &Tungkol sa
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Buksan ang &Talaan
+REPORT_BUG                = Ipadala ang &Ulat ng Bug
 
 ; --- Toolbar Tooltips
 
@@ -150,7 +156,7 @@ HIDE                      = Taguin
 
 FRAGMENTED_FILES_ON       = nakapirisong file sa
 
-VISIT_HOMEPAGE            = Basahin ang Homepag
+VISIT_HOMEPAGE            = Basahin ang Homepage
 VIEW_REPORT_OPTIONS       = Tanawan ang mga Opsiyon ng Ulat
 POWERED_BY_LUA            = Napapaandar ng Lua
 

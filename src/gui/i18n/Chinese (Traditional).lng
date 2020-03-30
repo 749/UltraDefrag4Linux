@@ -7,11 +7,8 @@
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 1900} by {Replace with your name}
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Chinese+%28Traditional%29.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -66,7 +63,10 @@ REPORTS                   = 報告
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = 查看更改日誌
+TRANSLATIONS_REPORT       = 查看交易及報告
 TRANSLATIONS_FOLDER       = 翻譯資料夾
+TRANSLATIONS_SUBMIT       = 提交當前翻譯
 
 ; --- --- Graphical interface submenu
 
@@ -84,8 +84,14 @@ CONTENTS                  = 內容
 BEST_PRACTICE             = 最佳作法
 FAQ                       = 問與答
 CM_LEGEND                 = 群集地圖圖例
+DEBUG                     = De&bug
 CHECK_UPDATE              = 檢查更新
 ABOUT                     = 關於
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = 打開及登錄
+REPORT_BUG                = 發送錯誤報告
 
 ; --- Toolbar Tooltips
 

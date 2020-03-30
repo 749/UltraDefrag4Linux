@@ -4,11 +4,8 @@
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 1900} by {Replace by Name of Reviser}
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/English+%28US%29.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -36,7 +33,7 @@ STOP                      = &Stop
 REPEAT_ACTION             = Re&peat action
 SKIP_REMOVABLE_MEDIA      = Skip removable &media
 RESCAN_DRIVES             = &Rescan drives
-REPAIR_DRIVES             = Repair drives
+REPAIR_DRIVES             = Repair dri&ves
 WHEN_DONE                 = &When done
 EXIT                      = E&xit
 
@@ -63,7 +60,10 @@ REPORTS                   = &Reports
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = &View change log
+TRANSLATIONS_REPORT       = View translation &report
 TRANSLATIONS_FOLDER       = &Translations folder
+TRANSLATIONS_SUBMIT       = &Submit current translation
 
 ; --- --- Graphical interface submenu
 
@@ -81,8 +81,14 @@ CONTENTS                  = &Contents
 BEST_PRACTICE             = Best &practice
 FAQ                       = &Frequently asked questions
 CM_LEGEND                 = Cluster map &legend
+DEBUG                     = De&bug
 CHECK_UPDATE              = Check for &update
 ABOUT                     = &About
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Open &log
+REPORT_BUG                = Send bug &report
 
 ; --- Toolbar Tooltips
 
@@ -153,10 +159,10 @@ VISIT_HOMEPAGE            = Visit our Homepage
 VIEW_REPORT_OPTIONS       = View report options
 POWERED_BY_LUA            = Powered by Lua
 
-FRAGMENTS                 = fragments
-SIZE                      = size
-FILENAME                  = filename
-COMMENT                   = comment
+FRAGMENTS                 = Fragments
+SIZE                      = Size
+FILENAME                  = Filename
+COMMENT                   = Comment
 
 LOCKED                    = locked
 MOVE_FAILED               = move failed

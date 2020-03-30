@@ -5,11 +5,8 @@
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 1900} by {Replace with your name}
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Latvian.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -64,7 +61,10 @@ REPORTS                   = &Atskaites
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = &Skatīt mainīt log
+TRANSLATIONS_REPORT       = Skatīt tulkošanas &ziņojumu
 TRANSLATIONS_FOLDER       = &Tulkojumi mapi
+TRANSLATIONS_SUBMIT       = &Iesniegt pašreizējo tulkojumu
 
 ; --- --- Graphical interface submenu
 
@@ -82,8 +82,14 @@ CONTENTS                  = &Saturs
 BEST_PRACTICE             = &Labākās prakses
 FAQ                       = &Biežāk uzdotie jautājumi
 CM_LEGEND                 = &Klasteru karte leģenda
+DEBUG                     = &Atkļūdot
 CHECK_UPDATE              = Pārbaudīt &update
 ABOUT                     = &Par programmu
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = &Atvērt žurnālu
+REPORT_BUG                = &Nosūtīt kļūdu ziņojumu
 
 ; --- Toolbar Tooltips
 

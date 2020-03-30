@@ -4,11 +4,8 @@
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 1900} by {Replace by Name of Reviser}
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Thai.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -63,7 +60,10 @@ REPORTS                   = รายงาน
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = ดูการเปลี่ยนแปลงเข้าสู่ระบบ
+TRANSLATIONS_REPORT       = ดูรายงานการแปล
 TRANSLATIONS_FOLDER       = โฟลเดอร์ที่แปล
+TRANSLATIONS_SUBMIT       = ส่งคำแปลในปัจจุบัน
 
 ; --- --- Graphical interface submenu
 
@@ -81,8 +81,14 @@ CONTENTS                  = สารบัญ
 BEST_PRACTICE             = ปฏิบัติที่ดีที่สุด
 FAQ                       = คำถามที่พบบ่อย
 CM_LEGEND                 = ตำนานคลัสเตอร์แผนที่
+DEBUG                     = การแก้ปัญหา
 CHECK_UPDATE              = ตรวจสอบสำหรับการปรับปรุง
 ABOUT                     = เี่กี่ยวกับ
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = เปิดบันทึก
+REPORT_BUG                = ส่งรายงานข้อผิดพลาด
 
 ; --- Toolbar Tooltips
 

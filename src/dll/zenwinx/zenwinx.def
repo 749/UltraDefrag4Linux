@@ -103,6 +103,7 @@ EXPORTS
     winx_patfind
     winx_patcmp
     winx_patfree
+    winx_to_utf8
     winx_path_remove_extension
     winx_path_remove_filename
     winx_path_extract_filename

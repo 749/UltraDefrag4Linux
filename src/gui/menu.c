@@ -59,7 +59,7 @@ WGX_MENU action_menu[] = {
     {MF_STRING | MF_ENABLED | MF_CHECKED,IDM_IGNORE_REMOVABLE_MEDIA, NULL, L"Skip removable &media\tCtrl+M", -1 },
     {MF_STRING | MF_ENABLED,IDM_RESCAN,                              NULL, L"&Rescan drives\tCtrl+D",        -1 },
     {MF_SEPARATOR,0,NULL,NULL,0},
-    {MF_STRING | MF_ENABLED,IDM_REPAIR,                              NULL, L"Repair drives",                 -1 },
+    {MF_STRING | MF_ENABLED,IDM_REPAIR,                              NULL, L"Repair dri&ves",                -1 },
     {MF_SEPARATOR,0,NULL,NULL,0},
     {MF_STRING | MF_ENABLED | MF_POPUP,IDM_WHEN_DONE,                when_done_menu,L"&When done",           -1 },
     {MF_SEPARATOR,0,NULL,NULL,0},
@@ -73,9 +73,12 @@ WGX_MENU report_menu[] = {
 };
 
 WGX_MENU language_menu[] = {
-    {MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_FOLDER,         NULL, L"&Translations folder", -1 },
+    {MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_CHANGE_LOG,     NULL, L"&View change log",            -1 },
+    {MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_REPORT,         NULL, L"View translation &report",    -1 },
+    {MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_FOLDER,         NULL, L"&Translations folder",        -1 },
+    {MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_SUBMIT,         NULL, L"&Submit current translation", -1 },
     {MF_SEPARATOR,0,NULL,NULL,0},
-    {MF_STRING | MF_ENABLED | MF_CHECKED,IDM_LANGUAGE + 0x1, NULL, L"English (US)",         -1 },
+    {MF_STRING | MF_ENABLED | MF_CHECKED,IDM_LANGUAGE + 0x1, NULL, L"English (US)", -1 },
     {0,0,NULL,NULL,0}
 };
 
@@ -99,12 +102,20 @@ WGX_MENU settings_menu[] = {
     {0,0,NULL,NULL,0}
 };
 
+WGX_MENU debug_menu[] = {
+    {MF_STRING | MF_ENABLED,IDM_OPEN_LOG,                           NULL, L"Open &log\tAlt+L", -1 },
+    {MF_STRING | MF_ENABLED,IDM_REPORT_BUG,                         NULL, L"Send bug &report", -1 },
+    {0,0,NULL,NULL,0}
+};
+
 WGX_MENU help_menu[] = {
     {MF_STRING | MF_ENABLED,IDM_CONTENTS,      NULL, L"&Contents\tF1",        9 },
     {MF_SEPARATOR,0,NULL,NULL,0},
     {MF_STRING | MF_ENABLED,IDM_BEST_PRACTICE, NULL, L"Best &practice\tF2",  10 },
     {MF_STRING | MF_ENABLED,IDM_FAQ,           NULL, L"&FAQ\tF3",            -1 },
     {MF_STRING | MF_ENABLED,IDM_CM_LEGEND,     NULL, L"Cluster map &legend", -1 },
+    {MF_SEPARATOR,0,NULL,NULL,0},
+    {MF_STRING | MF_ENABLED | MF_POPUP,IDM_DEBUG, debug_menu, L"&Debug",     -1 },
     {MF_SEPARATOR,0,NULL,NULL,0},
     {MF_STRING | MF_ENABLED,IDM_CHECK_UPDATE,  NULL, L"Check for &update",   -1 },
     {MF_SEPARATOR,0,NULL,NULL,0},

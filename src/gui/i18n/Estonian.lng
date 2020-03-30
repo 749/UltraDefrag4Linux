@@ -4,11 +4,8 @@
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 1900} by {Replace with your name}
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Estonian.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -63,7 +60,10 @@ REPORTS                   = Raportid
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = &Vaata muuta log
+TRANSLATIONS_REPORT       = Vaata tõlke &aruanne
 TRANSLATIONS_FOLDER       = &Tõlked kausta
+TRANSLATIONS_SUBMIT       = &Esitama praegune tõlge
 
 ; --- --- Graphical interface submenu
 
@@ -81,8 +81,14 @@ CONTENTS                  = Sisu
 BEST_PRACTICE             = Parimate tavade
 FAQ                       = Korduma kippuvad küsimused
 CM_LEGEND                 = Cluster kaart legend
+DEBUG                     = Siluda
 CHECK_UPDATE              = Vaata uuendust
 ABOUT                     = Info
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Avage &log
+REPORT_BUG                = &Saada vearaport
 
 ; --- Toolbar Tooltips
 

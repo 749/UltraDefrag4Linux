@@ -1,5 +1,29 @@
 ﻿HISTORY
 
+  Version 5.0.6  2012-06-
+  ------------------------------------------------------------------------------
+    - GUI debugging output was forced to be saved in the log file
+    - added "Debug" item to the help menu
+    - added "View change log", "View translation report" and
+      "Submit current translation" items to language menu
+    - result of the previous operation stays visible for the boot time interface
+    - the following translations were updated:
+
+      Arabic, Portuguese, Italian, Spanish (ES), Hebrew, Serbian, Javanese,
+      Indonesian (Bahasa Indonesia), Polish, Korean, Filipino (Tagalog),
+      Iloko, Chinese (Simplified), Dutch, Portuguese (BR), Danish, Hindi,
+      Bulgarian, Russian
+
+    - the following translations were renamed:
+
+      French (FR) to French, Bosanski to Bosnian and Vietnamese (VI) to Vietnamese
+
+    - Internals: winx_to_utf8 routine added to zenwinx library
+    - winx_dbg_print routine enhanced: $NS and $LE magic sequences support added
+    - udefrag_dbg_print routine added to udefrag library
+    - WgxSetDbgPrintHandler routine added to wgx library
+
+
   Version 5.0.5  2012-05-05
   ------------------------------------------------------------------------------
     - repair drives action was added to the GUI menu

@@ -187,7 +187,7 @@ void WgxApplyResourceTable(PWGX_I18N_RESOURCE_ENTRY table,HWND hWindow)
                 if(table[i].LoadedString){
                     text = _wcsdup(table[i].LoadedString);
                     if(text == NULL)
-                        OutputDebugString("WgxApplyResourceTable: cannot allocate memory\n");
+                        WgxDbgPrint("WgxApplyResourceTable: cannot allocate memory");
                 }
                 /* end of synchronization */
                 SetEvent(hSynchEvent);
@@ -196,7 +196,7 @@ void WgxApplyResourceTable(PWGX_I18N_RESOURCE_ENTRY table,HWND hWindow)
         if(text == NULL){
             text = _wcsdup(table[i].DefaultString);
             if(text == NULL)
-                OutputDebugString("WgxApplyResourceTable: cannot allocate memory\n");
+                WgxDbgPrint("WgxApplyResourceTable: cannot allocate memory");
         }
         if(text){
             (void)SetWindowTextW(hChild,text);
@@ -249,7 +249,7 @@ wchar_t *WgxGetResourceString(PWGX_I18N_RESOURCE_ENTRY table,char *key)
                     else
                         text = _wcsdup(table[i].DefaultString);
                     if(text == NULL)
-                        OutputDebugString("WgxGetResourceString: cannot allocate memory\n");
+                        WgxDbgPrint("WgxGetResourceString: cannot allocate memory");
                     break;
                 }
             }
@@ -262,7 +262,7 @@ synch_failed:
             if(!strcmp(table[i].Key,key)){
                 text = _wcsdup(table[i].DefaultString);
                 if(text == NULL)
-                    OutputDebugString("WgxGetResourceString: cannot allocate memory\n");
+                    WgxDbgPrint("WgxGetResourceString: cannot allocate memory");
                 break;
             }
         }

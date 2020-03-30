@@ -162,6 +162,7 @@ BEGIN
     "R",           IDM_REPEAT_ACTION,           VIRTKEY, SHIFT,   NOINVERT
     "M",           IDM_IGNORE_REMOVABLE_MEDIA,  VIRTKEY, CONTROL, NOINVERT
     "D",           IDM_RESCAN,                  VIRTKEY, CONTROL, NOINVERT
+    "L",           IDM_OPEN_LOG,                VIRTKEY, ALT, NOINVERT
     VK_F8,         IDM_SHOW_REPORT,             VIRTKEY, NOINVERT
     VK_F9,         IDM_CFG_GUI_FONT,            VIRTKEY, NOINVERT
     VK_F10,        IDM_CFG_GUI_SETTINGS,        VIRTKEY, NOINVERT

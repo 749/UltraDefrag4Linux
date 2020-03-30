@@ -4,11 +4,8 @@
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 1900} by {Replace with your name}
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Belarusian.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -63,7 +60,10 @@ REPORTS                   = &Справаздачы
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = &Прагляд часопіса зменіцца
+TRANSLATIONS_REPORT       = Паказаць пераклад &справаздачу
 TRANSLATIONS_FOLDER       = &Тэчка з перакладамі
+TRANSLATIONS_SUBMIT       = &Адправіць бягучы пераклад
 
 ; --- --- Graphical interface submenu
 
@@ -81,8 +81,14 @@ CONTENTS                  = &Змест
 BEST_PRACTICE             = &Лепшыя практыкі
 FAQ                       = &Пытанні і адказы (FAQ)
 CM_LEGEND                 = Легенда &карты
+DEBUG                     = Адладжваць
 CHECK_UPDATE              = &Праверыць абнаўлення
 ABOUT                     = &Аб праграме
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = &Адкрыйце часопіс
+REPORT_BUG                = Адправіць &паведамленне пра памылку
 
 ; --- Toolbar Tooltips
 

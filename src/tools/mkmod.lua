@@ -702,7 +702,12 @@ if os.getenv("BUILD_ENV") == "winddk" then
     end
     if static_lib == 0 then
         if arch == "i386" then
-            copy("objfre_wnet_x86\\i386\\" .. target_name,"..\\..\\bin\\")
+            -- workaround for WDK 7
+            if os.getenv("UD_DDK_VER") == "7600" then
+                copy("objfre_wxp_x86\\i386\\" .. target_name,"..\\..\\bin\\")
+            else
+                copy("objfre_wnet_x86\\i386\\" .. target_name,"..\\..\\bin\\")
+            end
         else
             copy("objfre_wnet_" .. arch .. "\\" .. arch .. "\\" .. target_name,
                 "..\\..\\bin\\" .. arch .. "\\")
@@ -710,7 +715,12 @@ if os.getenv("BUILD_ENV") == "winddk" then
     end
     if target_type == "dll" then
         if arch == "i386" then
-            copy("objfre_wnet_x86\\i386\\" .. name .. ".lib","..\\..\\lib\\")
+            -- workaround for WDK 7
+            if os.getenv("UD_DDK_VER") == "7600" then
+                copy("objfre_wxp_x86\\i386\\" .. name .. ".lib","..\\..\\lib\\")
+            else
+                copy("objfre_wnet_x86\\i386\\" .. name .. ".lib","..\\..\\lib\\")
+            end
         else
             copy("objfre_wnet_" .. arch .. "\\" .. arch .. "\\" .. name .. ".lib",
                  "..\\..\\lib\\" .. arch .. "\\" .. name .. ".lib")

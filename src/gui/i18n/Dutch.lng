@@ -9,10 +9,8 @@
 ; Revised May  31, 2010 by Erwin Dokter
 ; Revised Oct. 18, 2010 by Leo Smulders
 ; Revised Jan. 10, 2012 by Jan Iemhoff
+; Revised May  23, 2012 by Fabrizio Marana
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Dutch.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -48,7 +46,7 @@ EXIT                      = &Programma afsluiten
 
 WHEN_DONE_NONE            = &Niets
 WHEN_DONE_EXIT            = &Programma afsluiten
-WHEN_DONE_STANDBY         = &Standby
+WHEN_DONE_STANDBY         = Computer in &sluimerstand zetten
 WHEN_DONE_HIBERNATE       = &Computer in slaapstand zetten
 WHEN_DONE_LOGOFF          = &Uitloggen
 WHEN_DONE_REBOOT          = &Opnieuw starten
@@ -67,7 +65,10 @@ REPORTS                   = &Logboeken
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = &Bekijk veranderingen
+TRANSLATIONS_REPORT       = Bekijk vertaald &rapport
 TRANSLATIONS_FOLDER       = &Map met vertalingen
+TRANSLATIONS_SUBMIT       = &Huidige vertaling opsturen
 
 ; --- --- Graphical interface submenu
 
@@ -85,8 +86,14 @@ CONTENTS                  = In&houd
 BEST_PRACTICE             = &Beste aanpak
 FAQ                       = &Veelgestelde vragen
 CM_LEGEND                 = Cluster kaart &legende
-CHECK_UPDATE              = Controleer voor &update
+DEBUG                     = De&bug
+CHECK_UPDATE              = Controleer op &update
 ABOUT                     = &Info
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Open &log
+REPORT_BUG                = Verstuur fout&rapport
 
 ; --- Toolbar Tooltips
 

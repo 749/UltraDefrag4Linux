@@ -8,9 +8,6 @@
 ; Revised Oct. 28, 2011 by Matej Marton
 ;------------------------------------------------------------------------------
 
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Slovak.lng
-
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
 
@@ -64,7 +61,10 @@ REPORTS                   = Reporty
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = Zobraziť zmeny protokolu
+TRANSLATIONS_REPORT       = Zobraziť preklad správy
 TRANSLATIONS_FOLDER       = Priečinok s jazykovými prekladmi
+TRANSLATIONS_SUBMIT       = Odoslať aktuálne preklad
 
 ; --- --- Graphical interface submenu
 
@@ -82,8 +82,14 @@ CONTENTS                  = Obsah
 BEST_PRACTICE             = Vhodné použitie
 FAQ                       = Časté otázky
 CM_LEGEND                 = Cluster mapa legenda
+DEBUG                     = Ladiť
 CHECK_UPDATE              = Skontrolovať aktualizácie
 ABOUT                     = O programe
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Otvorte záznam
+REPORT_BUG                = Zaslanie správy o chybe
 
 ; --- Toolbar Tooltips
 

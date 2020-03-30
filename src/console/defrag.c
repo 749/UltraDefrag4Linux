@@ -754,6 +754,7 @@ int __cdecl main(int argc, char **argv)
     */
 
     /* initialize the program */
+    WgxSetDbgPrintHandler(udefrag_dbg_print);
     parse_cmdline(argc,argv);
     init_console();
     

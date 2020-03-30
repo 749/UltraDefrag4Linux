@@ -4,11 +4,8 @@
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 1900} by {Replace by Name of Reviser}
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Burmese+%28Padauk%29.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -64,7 +61,10 @@ REPORTS                   = သတင်းသွင်း
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = &View change log
+TRANSLATIONS_REPORT       = View translation &report
 TRANSLATIONS_FOLDER       = စကားပြန်ရာ ဖိုင်တွဲ
+TRANSLATIONS_SUBMIT       = &Submit current translation
 
 ; --- --- Graphical interface submenu
 
@@ -81,9 +81,15 @@ SCRIPT                    = ညွှန်စာ
 CONTENTS                  = ပါဝင်ရာများ
 BEST_PRACTICE             = အကောင်းဆုံး လုပ်စဉ်
 FAQ                       = မေးပါများ စကားရ
-CM_LEGEND                 = Cluster map &legend
+CM_LEGEND                 = စုပြုံလိုက် ပုံနှင့် ဖြစ်စဉ်
+DEBUG                     = De&bug
 CHECK_UPDATE              = နောက်ဆုံးပေါ် စစ်ဆေးရန်
 ABOUT                     = အကြောင်းအရာ
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Open &log
+REPORT_BUG                = Send bug &report
 
 ; --- Toolbar Tooltips
 
@@ -103,7 +109,7 @@ STATUS_RUNNING            = လုပ်နေသည်
 STATUS_ANALYSED           = သုံးသပ်ပြီး
 STATUS_DEFRAGMENTED       = ဖိုင်များပြန်စီပြီး
 STATUS_OPTIMIZED          = အဆင့်မြင့် လုပ်ပြီး
-STATUS_DIRTY              = Disk needs to be repaired
+STATUS_DIRTY              = ချပ်ပြား ပြင်ရန်လိုအပ်သည်
 
 ; Status bar messages.
 
@@ -114,7 +120,7 @@ COMPRESSED                = ဖိနှိပ်သည်
 
 ; About window.
 
-ABOUT_WIN_TITLE           = Ultra Defragmenter အကြောင်း
+ABOUT_WIN_TITLE           = Ultra Defrag အကြောင်း
 CREDITS                   = မင်းသားများ
 LICENSE                   = လိုင်စင်
 
@@ -134,8 +140,8 @@ NO                        = မဟုတ်ဘူး
 
 ; Upgrade dialog
 
-UPGRADE_CAPTION           = You can upgrade me ^-^
-UPGRADE_MESSAGE           = release is available for download!
+UPGRADE_CAPTION           = သင်ငါ့ကို အဆင့်မြှင့်နိုင်သည် ^-^
+UPGRADE_MESSAGE           = ဒေါင်းဆွဲချရန် ထုတ်ထားလိုက်ပါပြီ
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 
@@ -152,7 +158,7 @@ FRAGMENTED_FILES_ON       = ကွဲပျက်နေသော ဖိုင်
 
 VISIT_HOMEPAGE            = အိမ်စာမျက်နှာသို့ သွားရန်
 VIEW_REPORT_OPTIONS       = ဖြစ်ကြောင်းကြည့်ရန်  ရွေးချယ်ရာ
-POWERED_BY_LUA            = Lua နှင့် အားအင်ဖြည့်
+POWERED_BY_LUA            = LUA နှင့် အားအင်ဖြည့်
 
 FRAGMENTS                 = အစအနများ
 SIZE                      = အရွယ်

@@ -4,11 +4,8 @@
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 1900} by {Replace with your name}
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Macedonian.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -63,7 +60,10 @@ REPORTS                   = &Извештаи
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = Прикажи ги промените &најавите
+TRANSLATIONS_REPORT       = Прикажи ги превод &извештај
 TRANSLATIONS_FOLDER       = &Папка со преводи
+TRANSLATIONS_SUBMIT       = &Достави сегашната превод
 
 ; --- --- Graphical interface submenu
 
@@ -81,8 +81,14 @@ CONTENTS                  = &Содржина
 BEST_PRACTICE             = &Најдобри практики
 FAQ                       = &ЧПП (FAQ)
 CM_LEGEND                 = &Легенда на картата
+DEBUG                     = &Дебагирање
 CHECK_UPDATE              = &Провери за надградби
 ABOUT                     = &За програмата
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Отвори &најавите
+REPORT_BUG                = Испрати извештај за &бубачки
 
 ; --- Toolbar Tooltips
 

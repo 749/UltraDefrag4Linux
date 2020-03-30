@@ -4,11 +4,8 @@
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 1900} by {Replace with your name}
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Romanian.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -63,7 +60,10 @@ REPORTS                   = Rapoarte
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = Vezi schimba jurnal
+TRANSLATIONS_REPORT       = Vezi raportul de traducere
 TRANSLATIONS_FOLDER       = Dosarul traducerilor
+TRANSLATIONS_SUBMIT       = Trimite traducere curent
 
 ; --- --- Graphical interface submenu
 
@@ -81,8 +81,14 @@ CONTENTS                  = Continut
 BEST_PRACTICE             = Cea mai buna practica
 FAQ                       = Întrebări frecvente
 CM_LEGEND                 = Cluster hartă legenda
+DEBUG                     = Depana
 CHECK_UPDATE              = Verificaţi pentru actualizare
 ABOUT                     = Despre
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Deschide jurnal
+REPORT_BUG                = Trimite raportul de eroare
 
 ; --- Toolbar Tooltips
 

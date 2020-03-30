@@ -51,7 +51,7 @@ WGX_I18N_RESOURCE_ENTRY i18n_table[] = {
     {0, "REPEAT_ACTION",            L"Re&peat action",           NULL},
     {0, "SKIP_REMOVABLE_MEDIA",     L"Skip removable &media",    NULL},
     {0, "RESCAN_DRIVES",            L"&Rescan drives",           NULL},
-    {0, "REPAIR_DRIVES",            L"Repair drives",            NULL},
+    {0, "REPAIR_DRIVES",            L"Repair dri&ves",           NULL},
     {0, "WHEN_DONE",                L"&When done",               NULL},
     {0, "WHEN_DONE_NONE",           L"&None",                    NULL},
     {0, "WHEN_DONE_EXIT",           L"E&xit",                    NULL},
@@ -69,7 +69,10 @@ WGX_I18N_RESOURCE_ENTRY i18n_table[] = {
     /* settings menu */
     {0, "SETTINGS",                 L"&Settings",                NULL},
     {0, "LANGUAGE",                 L"&Language",                NULL},
+    {0, "TRANSLATIONS_CHANGE_LOG",  L"&View change log",         NULL},
+    {0, "TRANSLATIONS_REPORT",      L"View translation &report", NULL},
     {0, "TRANSLATIONS_FOLDER",      L"&Translations folder",     NULL},
+    {0, "TRANSLATIONS_SUBMIT",      L"&Submit current translation", NULL},
     {0, "GRAPHICAL_INTERFACE",      L"&Graphical interface",     NULL},
     {0, "FONT",                     L"&Font",                    NULL},
     {0, "OPTIONS",                  L"&Options",                 NULL},
@@ -84,6 +87,9 @@ WGX_I18N_RESOURCE_ENTRY i18n_table[] = {
     {0, "BEST_PRACTICE",            L"Best &practice",           NULL},
     {0, "FAQ",                      L"&FAQ",                     NULL},
     {0, "CM_LEGEND",                L"Cluster map &legend",      NULL},
+    {0, "DEBUG",                    L"De&bug",                   NULL},
+    {0, "OPEN_LOG",                 L"Open &log",                NULL},
+    {0, "REPORT_BUG",               L"Send bug &report",         NULL},
     {0, "CHECK_UPDATE",             L"Check for &update",        NULL},
     {0, "ABOUT",                    L"&About",                   NULL},
 
@@ -136,7 +142,7 @@ WGX_I18N_RESOURCE_ENTRY i18n_table[] = {
     {0,                 "JOB_IS_RUNNING",             L"A job is running",           NULL},
 
     /* end of the table */
-    {0,                 NULL,                          NULL,                          NULL}
+    {0,                 NULL,                         NULL,                          NULL}
 };
 
 struct menu_item {
@@ -160,6 +166,8 @@ struct menu_item menu_items[] = {
     {IDM_IGNORE_REMOVABLE_MEDIA,  "SKIP_REMOVABLE_MEDIA",     "Ctrl+M"},
     {IDM_RESCAN,                  "RESCAN_DRIVES",            "Ctrl+D"},
     {IDM_REPAIR,                  "REPAIR_DRIVES",            NULL},
+    {IDM_OPEN_LOG,                "OPEN_LOG",                 "Alt+L"},
+    {IDM_REPORT_BUG,              "REPORT_BUG",               NULL},
     {IDM_WHEN_DONE_NONE,          "WHEN_DONE_NONE",           NULL},
     {IDM_WHEN_DONE_EXIT,          "WHEN_DONE_EXIT",           NULL},
     {IDM_WHEN_DONE_STANDBY,       "WHEN_DONE_STANDBY",        NULL},
@@ -169,7 +177,10 @@ struct menu_item menu_items[] = {
     {IDM_WHEN_DONE_SHUTDOWN,      "WHEN_DONE_SHUTDOWN",       NULL},
     {IDM_EXIT,                    "EXIT",                     "Alt+F4"},
     {IDM_SHOW_REPORT,             "SHOW_REPORT",              "F8"    },
+    {IDM_TRANSLATIONS_CHANGE_LOG, "TRANSLATIONS_CHANGE_LOG",  NULL    },
+    {IDM_TRANSLATIONS_REPORT,     "TRANSLATIONS_REPORT",      NULL    },
     {IDM_TRANSLATIONS_FOLDER,     "TRANSLATIONS_FOLDER",      NULL    },
+    {IDM_TRANSLATIONS_SUBMIT,     "TRANSLATIONS_SUBMIT",      NULL    },
     {IDM_CFG_GUI_FONT,            "FONT",                     "F9"    },
     {IDM_CFG_GUI_SETTINGS,        "OPTIONS",                  "F10"   },
     {IDM_CFG_BOOT_ENABLE,         "ENABLE",                   "F11"   },
@@ -182,6 +193,7 @@ struct menu_item menu_items[] = {
     {IDM_CHECK_UPDATE,            "CHECK_UPDATE",             NULL    },
     {IDM_ABOUT,                   "ABOUT",                    "F4"    },
     /* submenus */
+    {IDM_DEBUG,                   "DEBUG",                    NULL},
     {IDM_WHEN_DONE,               "WHEN_DONE",                NULL},
     {IDM_LANGUAGE,                "LANGUAGE",                 NULL},
     {IDM_CFG_GUI,                 "GRAPHICAL_INTERFACE",      NULL},
@@ -328,7 +340,7 @@ void ApplyLanguagePack(void)
  */
 static int names_compare(const void *prb_a, const void *prb_b, void *prb_param)
 {
-    return wcscmp((wchar_t *)prb_a,(wchar_t *)prb_b);
+    return _wcsicmp((wchar_t *)prb_a,(wchar_t *)prb_b);
 }
 
 /**
@@ -403,15 +415,42 @@ void BuildLanguageMenu(void)
         return;
     }
     
-    /* add translations folder menu item and a separator */
+    /* add translation menu items and a separator */
+    text = WgxGetResourceString(i18n_table,"TRANSLATIONS_CHANGE_LOG");
+    if(text){
+        if(!AppendMenuW(hLangMenu,MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_CHANGE_LOG,text))
+            WgxDbgPrintLastError("BuildLanguageMenu: cannot append change log");
+        free(text);
+    } else {
+        if(!AppendMenuW(hLangMenu,MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_CHANGE_LOG,L"&View change log"))
+            WgxDbgPrintLastError("BuildLanguageMenu: cannot append change log");
+    }
+    text = WgxGetResourceString(i18n_table,"TRANSLATIONS_REPORT");
+    if(text){
+        if(!AppendMenuW(hLangMenu,MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_REPORT,text))
+            WgxDbgPrintLastError("BuildLanguageMenu: cannot append report");
+        free(text);
+    } else {
+        if(!AppendMenuW(hLangMenu,MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_REPORT,L"View translation &report"))
+            WgxDbgPrintLastError("BuildLanguageMenu: cannot append report");
+    }
     text = WgxGetResourceString(i18n_table,"TRANSLATIONS_FOLDER");
     if(text){
         if(!AppendMenuW(hLangMenu,MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_FOLDER,text))
-            WgxDbgPrintLastError("BuildLanguageMenu: cannot append menu item");
+            WgxDbgPrintLastError("BuildLanguageMenu: cannot append folder");
         free(text);
     } else {
-        if(!AppendMenuW(hLangMenu,MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_FOLDER,L"Translations folder"))
-            WgxDbgPrintLastError("BuildLanguageMenu: cannot append menu item");
+        if(!AppendMenuW(hLangMenu,MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_FOLDER,L"&Translations folder"))
+            WgxDbgPrintLastError("BuildLanguageMenu: cannot append folder");
+    }
+    text = WgxGetResourceString(i18n_table,"TRANSLATIONS_SUBMIT");
+    if(text){
+        if(!AppendMenuW(hLangMenu,MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_SUBMIT,text))
+            WgxDbgPrintLastError("BuildLanguageMenu: cannot append submit");
+        free(text);
+    } else {
+        if(!AppendMenuW(hLangMenu,MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_SUBMIT,L"&Submit current translation"))
+            WgxDbgPrintLastError("BuildLanguageMenu: cannot append submit");
     }
     AppendMenu(hLangMenu,MF_SEPARATOR,0,NULL);
     

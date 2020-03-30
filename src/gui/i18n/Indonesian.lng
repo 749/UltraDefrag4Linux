@@ -5,11 +5,8 @@
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 1900} by {Replace with your name}
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Indonesian.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -64,7 +61,10 @@ REPORTS                   = &Laporan
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = &Lihat perubahan log
+TRANSLATIONS_REPORT       = Lihat laporan &penerjemahan
 TRANSLATIONS_FOLDER       = &Berkas Terjemahan
+TRANSLATIONS_SUBMIT       = &Kirim terjemahan saat ini
 
 ; --- --- Graphical interface submenu
 
@@ -82,8 +82,14 @@ CONTENTS                  = &Isi
 BEST_PRACTICE             = &Praktik terbaik
 FAQ                       = Pertanyaan &yang sering diajukan
 CM_LEGEND                 = Peta Cluster &legenda
+DEBUG                     = De&bug
 CHECK_UPDATE              = Tinjau Pem&baruan
 ABOUT                     = &Tentang
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Buka &log
+REPORT_BUG                = &Kirim laporan bug
 
 ; --- Toolbar Tooltips
 

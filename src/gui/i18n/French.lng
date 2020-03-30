@@ -1,5 +1,5 @@
 ﻿;------------------------------------------------------------------------------
-; UltraDefrag GUI FR French Language Pack.
+; UltraDefrag GUI French Language Pack.
 ; Copyright (C) 2008, 2009 Pascal Crozet.
 ; Copyright (C) 2010 Jérôme Blum.
 ; Copyright (C) 2010 Mathieu Van Weersch.
@@ -11,9 +11,6 @@
 ;------------------------------------------------------------------------------
 ; Revised Nov. 09, 2010 by Reynald Didier
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/French+%28FR%29.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -68,7 +65,10 @@ REPORTS                   = &Rapports
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = Afficher le &journal des modifications
+TRANSLATIONS_REPORT       = Afficher le &rapport de traduction
 TRANSLATIONS_FOLDER       = Dossier des &traductions
+TRANSLATIONS_SUBMIT       = &Soumettre la traduction actuelle
 
 ; --- --- Graphical interface submenu
 
@@ -86,8 +86,14 @@ CONTENTS                  = &Contenu
 BEST_PRACTICE             = A&stuces
 FAQ                       = &Foire aux questions
 CM_LEGEND                 = &Légende de la carte des clusters
+DEBUG                     = Dé&bogage
 CHECK_UPDATE              = Vérifier les &mises à jour
 ABOUT                     = À &propos
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Afficher le journal des événe&ments
+REPORT_BUG                = Envoyer un &rapport de bogue
 
 ; --- Toolbar Tooltips
 

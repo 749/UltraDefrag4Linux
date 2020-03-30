@@ -4,11 +4,8 @@
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 1900} by {Replace with your name}
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Farsi.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -63,7 +60,10 @@ REPORTS                   = گزارشات
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = تغییر ورود به سیستم
+TRANSLATIONS_REPORT       = گزارش ترجمه
 TRANSLATIONS_FOLDER       = پوشه ترجمه
+TRANSLATIONS_SUBMIT       = ارسال ترجمه فعلی
 
 ; --- --- Graphical interface submenu
 
@@ -81,8 +81,14 @@ CONTENTS                  = محتویات
 BEST_PRACTICE             = بهترین تمرین
 FAQ                       = سوالات متداول
 CM_LEGEND                 = خوشه نقشه افسانه ای
+DEBUG                     = اشکال زدایی
 CHECK_UPDATE              = چک برای به روز رسانی
 ABOUT                     = درباره
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = باز کردن ورود به سیستم
+REPORT_BUG                = ارسال گزارش اشکال
 
 ; --- Toolbar Tooltips
 

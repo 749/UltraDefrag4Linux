@@ -1,6 +1,6 @@
 ﻿;------------------------------------------------------------------------------
 ; UltraDefrag GUI Catalan Language Pack.
-; Copyright (C) 2008, 2009 IllesBalears traducció català.
+; Copyright (C) 2008, 2009 Illes Balears traducció català.
 ; Copyright (C) 2011, 2012 Joseph S. Maza.
 ; Copyright (C) 2011 TurboHz.
 ;------------------------------------------------------------------------------
@@ -8,9 +8,6 @@
 ;------------------------------------------------------------------------------
 ; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Catalan.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -65,7 +62,10 @@ REPORTS                   = Infor&mes
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = &Veure el canvi de registre
+TRANSLATIONS_REPORT       = Veure &informe de la traducció
 TRANSLATIONS_FOLDER       = &Carpeta de traduccions
+TRANSLATIONS_SUBMIT       = &Enviar traducció actual
 
 ; --- --- Graphical interface submenu
 
@@ -83,8 +83,14 @@ CONTENTS                  = &Continguts
 BEST_PRACTICE             = &Millors pràctiques
 FAQ                       = &Preguntes més freqüents
 CM_LEGEND                 = Grup &llegenda del mapa
+DEBUG                     = &Depurar
 CHECK_UPDATE              = Cercar &actualitzacions
 ABOUT                     = &Quant a
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Obrir &registre
+REPORT_BUG                = &Envieu l'informe d'error
 
 ; --- Toolbar Tooltips
 

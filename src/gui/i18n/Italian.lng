@@ -10,10 +10,9 @@
 ; Revised Jan. 31, 2010 by Connection
 ; Revised Nov. 21, 2011 by Giulio Fornasar
 ; Revised Mar. 23, 2012 by Antonio Vivace
+; Revised May  05, 2012 by Luigi C.
+; Revised Jun. 05, 2012 by Zirikkanen
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Italian.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -36,12 +35,12 @@ ANALYSE                   = &Analizza
 DEFRAGMENT                = &Deframmenta
 QUICK_OPTIMIZE            = Ottimizzazione &veloce
 FULL_OPTIMIZE             = Ottimizzazione &completa
-OPTIMIZE_MFT              = &MFT ottimizzazione
+OPTIMIZE_MFT              = Ottimizzazione &MFT
 STOP                      = &Interrompi
 REPEAT_ACTION             = Ripeti &Azione
 SKIP_REMOVABLE_MEDIA      = Escludi dischi &rimovibili
 RESCAN_DRIVES             = Riscansiona &unità
-REPAIR_DRIVES             = Unità di ri&parazione
+REPAIR_DRIVES             = Ri&para unità
 WHEN_DONE                 = Quando &finito
 EXIT                      = &Esci
 
@@ -68,7 +67,10 @@ REPORTS                   = &Rapporti
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = &Vedi lista cambiamenti
+TRANSLATIONS_REPORT       = Vedi &rapporto traduzione
 TRANSLATIONS_FOLDER       = Cartella &traduzioni
+TRANSLATIONS_SUBMIT       = &Invia traduzione corrente
 
 ; --- --- Graphical interface submenu
 
@@ -85,13 +87,19 @@ SCRIPT                    = &Script
 CONTENTS                  = &Contenuti
 BEST_PRACTICE             = &Metodo migliore
 FAQ                       = &Domande frequenti
-CM_LEGEND                 = Cluster &legenda
+CM_LEGEND                 = &Legenda mappa dei cluster
+DEBUG                     = De&bug
 CHECK_UPDATE              = Controlla &aggiornamenti
 ABOUT                     = &Info
 
+; --- --- Debug submenu
+
+OPEN_LOG                  = Apri &log
+REPORT_BUG                = Invia &rapporto errore
+
 ; --- Toolbar Tooltips
 
-BOOT_TIME_SCRIPT          = Script di avvio
+BOOT_TIME_SCRIPT          = Script deframmentazione all'avvio
 
 ; Drives list items.
 
@@ -107,7 +115,7 @@ STATUS_RUNNING            = In esecuzione
 STATUS_ANALYSED           = Analizzato
 STATUS_DEFRAGMENTED       = Deframmentato
 STATUS_OPTIMIZED          = Ottimizzato
-STATUS_DIRTY              = Disco deve essere riparato
+STATUS_DIRTY              = Il disco deve essere riparato
 
 ; Status bar messages.
 
@@ -118,7 +126,7 @@ COMPRESSED                = compressi
 
 ; About window.
 
-ABOUT_WIN_TITLE           = Informazioni su Ultra Defragmenter
+ABOUT_WIN_TITLE           = Informazioni su UltraDefrag
 CREDITS                   = &Crediti
 LICENSE                   = &Licenza
 
@@ -133,7 +141,7 @@ SECONDS_TILL_SHUTDOWN     = secondi allo spegnimento
 SECONDS_TILL_HIBERNATION  = secondi all'ibernazione
 SECONDS_TILL_LOGOFF       = secondi alla disconnessione utente
 SECONDS_TILL_REBOOT       = secondi al riavvio
-YES                       = &Sì
+YES                       = &Si
 NO                        = &No
 
 ; Upgrade dialog

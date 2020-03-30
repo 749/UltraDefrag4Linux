@@ -4,11 +4,8 @@
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 1900} by {Replace by Name of Reviser}
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Hebrew.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -28,14 +25,14 @@ HELP                      = עזרה
 ; --- Action Menu
 
 ANALYSE                   = נתח
-DEFRAGMENT                = אח
+DEFRAGMENT                = אחה
 QUICK_OPTIMIZE            = במהירות האופטימלית
 FULL_OPTIMIZE             = ביסודיות האופטימלית
-OPTIMIZE_MFT              = מפט אופטימיזציה
+OPTIMIZE_MFT              = מפת אופטימיזציה
 STOP                      = עצור
 REPEAT_ACTION             = בצע שוב
-SKIP_REMOVABLE_MEDIA      = דלג על דעסקין נשלפים
-RESCAN_DRIVES             = לסרוק מחדש כונני
+SKIP_REMOVABLE_MEDIA      = דלג על דסקים נשלפים
+RESCAN_DRIVES             = סרוק מחדש כוננים
 REPAIR_DRIVES             = תיקון כוננים
 WHEN_DONE                 = כאשר נעשה
 EXIT                      = יציאה
@@ -46,13 +43,13 @@ WHEN_DONE_NONE            = שום דבר
 WHEN_DONE_EXIT            = יציאה
 WHEN_DONE_STANDBY         = במצב המתנה
 WHEN_DONE_HIBERNATE       = שינה
-WHEN_DONE_LOGOFF          = סיומה של הפגישה
+WHEN_DONE_LOGOFF          = התנתק
 WHEN_DONE_REBOOT          = לאתחל
-WHEN_DONE_SHUTDOWN        = סגירת מפעל
+WHEN_DONE_SHUTDOWN        = כבה
 
 ; --- Report Menu
 
-SHOW_REPORT               = להראות הדו"ח
+SHOW_REPORT               = הראה הדו"ח
 
 ; --- Settings Menu
 
@@ -63,7 +60,10 @@ REPORTS                   = דוחות
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = צפה לשנות התחבר
+TRANSLATIONS_REPORT       = הצג את דו"ח תרגום
 TRANSLATIONS_FOLDER       = תרגומים תיקייה
+TRANSLATIONS_SUBMIT       = שלח התרגום הנוכחי
 
 ; --- --- Graphical interface submenu
 
@@ -72,7 +72,7 @@ OPTIONS                   = אפשרויות
 
 ; --- --- Boot time scan submenu
 
-ENABLE                    = לאפשר
+ENABLE                    = אפשר
 SCRIPT                    = תסריט
 
 ; --- Help Menu
@@ -81,8 +81,14 @@ CONTENTS                  = תוכן
 BEST_PRACTICE             = הכי טוב להתאמן
 FAQ                       = שאלות נפוצות
 CM_LEGEND                 = האגדה על המפה
+DEBUG                     = לנפות
 CHECK_UPDATE              = בדוק אם יש עדכון
 ABOUT                     = אודות התוכנית
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = לפתוח יומן
+REPORT_BUG                = שלח דווח על באג
 
 ; --- Toolbar Tooltips
 
@@ -93,8 +99,8 @@ BOOT_TIME_SCRIPT          = תסריט בזמן אתחול
 VOLUME                    = נפח
 STATUS                    = מעמד
 TOTAL                     = סה"כ שטח
-FREE                      = חינם שטח
-PERCENT                   = % חינם
+FREE                      = שטח חופשי
+PERCENT                   = % חופשי
 
 ; Status messages
 
@@ -120,25 +126,25 @@ LICENSE                   = רשיון
 ; Shutdown confirmation
 
 PLEASE_CONFIRM            = אנא ודא
-REALLY_SHUTDOWN_WHEN_DONE = האם אתה באמת רוצה כיבוי מתי לעשות?
-REALLY_HIBERNATE_WHEN_DONE= האם אתה באמת רוצה שינה כאשר נעשה?
-REALLY_LOGOFF_WHEN_DONE   = האם אתה באמת רוצה התנתקות מתי לעשות?
-REALLY_REBOOT_WHEN_DONE   = האם אתה באמת רוצה לאתחל מתי לעשות?
+REALLY_SHUTDOWN_WHEN_DONE = האם אתה בטוח שברצונך לכבות את מחשבך בסיום?
+REALLY_HIBERNATE_WHEN_DONE= האם אתה בטוח שברצונך להעביר למצב שינה את מחשבך בסיום?
+REALLY_LOGOFF_WHEN_DONE   = האם אתה בטוח שברצונך להעביר למצב ניתוק את מחשבך בסיום?
+REALLY_REBOOT_WHEN_DONE   = האם אתה באמת רוצה לאתחל בסיום?
 SECONDS_TILL_SHUTDOWN     = שניות עד כיבוי
 SECONDS_TILL_HIBERNATION  = שניות עד שינה
 SECONDS_TILL_LOGOFF       = שניות עד התנתקות
-SECONDS_TILL_REBOOT       = שניות עד לאתחל
+SECONDS_TILL_REBOOT       = שניות עד לאיתחול
 YES                       = כן
 NO                        = לא
 
 ; Upgrade dialog
 
 UPGRADE_CAPTION           = אתה יכול לשדרג אותי ^-^
-UPGRADE_MESSAGE           = שחרור זמינה להורדה!
+UPGRADE_MESSAGE           = גרסה חדשה זמינה להורדה!
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 
-JOB_IS_RUNNING            = עבודה פועל
+JOB_IS_RUNNING            = עבודה פועלת
 
 ; Strings for system tray icon context menu.
 
@@ -153,13 +159,13 @@ VISIT_HOMEPAGE            = ביקור בדף הבית שלנו
 VIEW_REPORT_OPTIONS       = תצוגת דוח אפשרויות
 POWERED_BY_LUA            = מוגש על ידי Lua
 
-FRAGMENTS                 = מספר שברי
+FRAGMENTS                 = חלקים מקוטעים
 SIZE                      = גודל
 FILENAME                  = שם הקובץ
 COMMENT                   = תגובה
 
 LOCKED                    = נעול
-MOVE_FAILED               = להעביר לא
-INVALID                   = פסול
+MOVE_FAILED               = לא ניתן להעביר
+INVALID                   = לא חוקי
 
 ; END OF FILE

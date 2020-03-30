@@ -1,14 +1,12 @@
 ﻿;------------------------------------------------------------------------------
 ; UltraDefrag GUI Arabic Language Pack.
 ; Copyright (C) 2012 Ahmed Arbaoui.
+; Copyright (C) 2012 Awadh A Al-Ghaamdi _ منتديات عميد التعريب
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 1900} by {Replace by Name of Reviser}
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Arabic.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -23,7 +21,7 @@
 ACTION                    = &إجراء
 REPORT                    = &تقرير
 SETTINGS                  = &إعدادات
-HELP                      = &مساعدة
+HELP                      = تعل&يمات
 
 ; --- Action Menu
 
@@ -33,22 +31,22 @@ QUICK_OPTIMIZE            = &تحسين سريع
 FULL_OPTIMIZE             = &تحسين كامل
 OPTIMIZE_MFT              = &تحسين MFT
 STOP                      = &إيقاف
-REPEAT_ACTION             = إع&ادة الفعل
+REPEAT_ACTION             = إع&ادة الإجراء
 SKIP_REMOVABLE_MEDIA      = استبعاد &الوسائط القابلة للنقل
-RESCAN_DRIVES             = &إعادة تفحّص الأقراص
-REPAIR_DRIVES             = اصلاح محركات
+RESCAN_DRIVES             = &إعادة فحص الأقراص
+REPAIR_DRIVES             = إصلاح محركات الأقراص
 WHEN_DONE                 = &عند الإنتهاء
 EXIT                      = خ&روج
 
 ; --- --- When done submenu
 
-WHEN_DONE_NONE            = &لا شيء
+WHEN_DONE_NONE            = &بدون
 WHEN_DONE_EXIT            = خ&روج
-WHEN_DONE_STANDBY         = وضع&الاستعداد
-WHEN_DONE_HIBERNATE       = &وضع السبات
-WHEN_DONE_LOGOFF          = &الخروج
-WHEN_DONE_REBOOT          = &إعدة التشغيل
-WHEN_DONE_SHUTDOWN        = &إغلاق
+WHEN_DONE_STANDBY         = &استعداد
+WHEN_DONE_HIBERNATE       = إ&سبات
+WHEN_DONE_LOGOFF          = &خروج
+WHEN_DONE_REBOOT          = إ&عادة التشغيل
+WHEN_DONE_SHUTDOWN        = إ&غلاق الكمبيوتر
 
 ; --- Report Menu
 
@@ -58,12 +56,15 @@ SHOW_REPORT               = &عرض التقرير
 
 LANGUAGE                  = &اللغة
 GRAPHICAL_INTERFACE       = &واجهة رسومية
-BOOT_TIME_SCAN            = &فحص زمن بدء التشغيل
+BOOT_TIME_SCAN            = &فحص عند الإقلاع
 REPORTS                   = &تقارير
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = &مشاهدة سجل التطورات
+TRANSLATIONS_REPORT       = مشاهدة تقرير &عن الترجمة
 TRANSLATIONS_FOLDER       = &مجلد الترجمات
+TRANSLATIONS_SUBMIT       = ت&سليم الترجمة الحالية
 
 ; --- --- Graphical interface submenu
 
@@ -72,29 +73,35 @@ OPTIONS                   = &خيارات
 
 ; --- --- Boot time scan submenu
 
-ENABLE                    = &مكّن
-SCRIPT                    = &حروف
+ENABLE                    = ت&مكين
+SCRIPT                    = &برنامج نصي
 
 ; --- Help Menu
 
 CONTENTS                  = &محتويات
 BEST_PRACTICE             = &نصائح
 FAQ                       = &أسئلة مطروحة غالبا
-CM_LEGEND                 = كتلة خريطة أسطورة
+CM_LEGEND                 = &شرح رموز الخريطة
+DEBUG                     = ت&صحيح
 CHECK_UPDATE              = تحقق من &التحديث
 ABOUT                     = &حول
 
+; --- --- Debug submenu
+
+OPEN_LOG                  = &فتح السجل
+REPORT_BUG                = إ&رسال نقرير عن مشكلة
+
 ; --- Toolbar Tooltips
 
-BOOT_TIME_SCRIPT          = سكربت زمن بدء التشغيل
+BOOT_TIME_SCRIPT          = البرنامج النصي عند الإقلاع
 
 ; Drives list items.
 
-VOLUME                    = محرك الاقراص
+VOLUME                    = القرص
 STATUS                    = الحالة
 TOTAL                     = المساحة الكلية
 FREE                      = المساحة الحرة
-PERCENT                   = % حر
+PERCENT                   = % الحرة
 
 ; Status messages
 
@@ -123,38 +130,38 @@ PLEASE_CONFIRM            = الرجاء التأكيد
 REALLY_SHUTDOWN_WHEN_DONE = هل حقا تريد الإغلاق عندما تنتهي ؟
 REALLY_HIBERNATE_WHEN_DONE= هل حقا تريد وضع الاسبات عندما تنتهي ؟
 REALLY_LOGOFF_WHEN_DONE   = هل حقا تريد تسجيل الخروج عندما تنتهي ؟
-REALLY_REBOOT_WHEN_DONE   = هل حقا تريد إعادة التمهيد عندما تنتهي ؟
-SECONDS_TILL_SHUTDOWN     = ثوان حتى يتم إيقاف التشغيل
-SECONDS_TILL_HIBERNATION  = ثوان حتى يتم الإسبات
-SECONDS_TILL_LOGOFF       = ثوان حتى يتم تسجيل الخروج
-SECONDS_TILL_REBOOT       = ثوان حتى يتم إعادة التمهيد
+REALLY_REBOOT_WHEN_DONE   = هل حقا تريد إعادة التشغيل عندما تنتهي ؟
+SECONDS_TILL_SHUTDOWN     = ثانية حتى إيقاف تشغيل الكمبيوتر
+SECONDS_TILL_HIBERNATION  = ثانية حتى يتم الإسبات
+SECONDS_TILL_LOGOFF       = ثانية حتى يتم تسجيل الخروج
+SECONDS_TILL_REBOOT       = ثانية حتى يتم إعادة التشغيل
 YES                       = &نعم
 NO                        = &لا
 
 ; Upgrade dialog
 
-UPGRADE_CAPTION           = يمكنك ترقية لي ^-^
-UPGRADE_MESSAGE           = إطلاق يتوفر للتحميل!
+UPGRADE_CAPTION           = يمكنك ترقيتي ^-^
+UPGRADE_MESSAGE           = النسخة المتوفرة للتحميل
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 
-JOB_IS_RUNNING            = ألف وظيفة يشغل
+JOB_IS_RUNNING            = مهمة ما قيد التشغيل
 
 ; Strings for system tray icon context menu.
 
-SHOW                      = عرض
+SHOW                      = إظهار
 HIDE                      = إخفاء
 
 ; Strings for the file fragmentation reports.
 
-FRAGMENTED_FILES_ON       = تجزئة الملفات على
+FRAGMENTED_FILES_ON       = الملفات المبعثرة على
 
-VISIT_HOMEPAGE            = قم بزيارة صفحتنا الرئيسية
-VIEW_REPORT_OPTIONS       = عرض خيارات تقرير
-POWERED_BY_LUA            = مشغّل بواسطة Lua
+VISIT_HOMEPAGE            = زيارة الصفحة الرئيسية
+VIEW_REPORT_OPTIONS       = عرض خيارات التقرير
+POWERED_BY_LUA            = مقدم من Lua
 
-FRAGMENTS                 = أجزاء
-SIZE                      = حجم
+FRAGMENTS                 = الأجزاء
+SIZE                      = الحجم
 FILENAME                  = اسم الملف
 COMMENT                   = تعليق
 

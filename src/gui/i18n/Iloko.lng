@@ -7,9 +7,6 @@
 ; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
 
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Iloko.lng
-
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
 
@@ -63,7 +60,10 @@ REPORTS                   = Pa&damag
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = Ipadlaw ti &Rehistro ti Pakabaliwan
+TRANSLATIONS_REPORT       = Ipadlaw ti &Padamag ti Kaulog
 TRANSLATIONS_FOLDER       = &Kaulog
+TRANSLATIONS_SUBMIT       = I&datag ti Kaulog
 
 ; --- --- Graphical interface submenu
 
@@ -72,21 +72,27 @@ OPTIONS                   = &Opsion
 
 ; --- --- Boot time scan submenu
 
-ENABLE                    = &Nakabaelan
-SCRIPT                    = &Pamayaan
+ENABLE                    = &Paandaren
+SCRIPT                    = Pa&mayaan
 
 ; --- Help Menu
 
-CONTENTS                  = &Laon
+CONTENTS                  = &Aglalaon
 BEST_PRACTICE             = &Nalaing a Pagsurotan
 FAQ                       = Masansan a &Saludsod
-CM_LEGEND                 = Cluster map &legend
-CHECK_UPDATE              = Check for &update
+CM_LEGEND                 = &Simbolo ti Mapa ti Raay
+DEBUG                     = &Depura
+CHECK_UPDATE              = Duktalan ti &Panarimaan
 ABOUT                     = &Maipapan iti
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Ilukat ti Rehistro
+REPORT_BUG                = Itulod ti &Padamag ti Kammali
 
 ; --- Toolbar Tooltips
 
-BOOT_TIME_SCRIPT          = Pamayaan iti Panagrugina
+BOOT_TIME_SCRIPT          = Pamayaan iti Panagrugi
 
 ; Drives list items.
 
@@ -124,10 +130,10 @@ REALLY_SHUTDOWN_WHEN_DONE = Apagleppasna ket kayatyo nga iddepen?
 REALLY_HIBERNATE_WHEN_DONE= Apagleppasna ket kayatyo a pagturogen?
 REALLY_LOGOFF_WHEN_DONE   = Apagleppasna ket kayatyo a turposen?
 REALLY_REBOOT_WHEN_DONE   = Apagleppasna ket kayatyo nga irugi manen?
-SECONDS_TILL_SHUTDOWN     = kanito intuno panagiddepna
-SECONDS_TILL_HIBERNATION  = kanito intuno panagpaturogna
-SECONDS_TILL_LOGOFF       = kanito intuno panagturposna
-SECONDS_TILL_REBOOT       = kanito intuno panagrugina manen
+SECONDS_TILL_SHUTDOWN     = segundo intuno panagiddep
+SECONDS_TILL_HIBERNATION  = segundo intuno panagpaturog
+SECONDS_TILL_LOGOFF       = segundo intuno panagturpos
+SECONDS_TILL_REBOOT       = segundo intuno panagrugi manen
 YES                       = &Wen
 NO                        = &Saan
 
@@ -138,7 +144,7 @@ UPGRADE_MESSAGE           = bersion ket maiyulogen!
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 
-JOB_IS_RUNNING            = Adda ti agtartaray
+JOB_IS_RUNNING            = Adda ti nakaandar
 
 ; Strings for system tray icon context menu.
 

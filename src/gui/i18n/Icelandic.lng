@@ -4,11 +4,8 @@
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 1900} by {Replace with your name}
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Icelandic.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -63,7 +60,10 @@ REPORTS                   = Skýrslur
 
 ; --- --- Language submenu
 
-TRANSLATIONS_FOLDER       = Þýðingar möppu
+TRANSLATIONS_CHANGE_LOG   = &Skoða breyta þig inn
+TRANSLATIONS_REPORT       = Skoða &þýðingu skýrslu
+TRANSLATIONS_FOLDER       = &Þýðingar möppu
+TRANSLATIONS_SUBMIT       = Senda &núverandi þýðingu
 
 ; --- --- Graphical interface submenu
 
@@ -81,8 +81,14 @@ CONTENTS                  = Efnisyfirlit
 BEST_PRACTICE             = Best practice
 FAQ                       = Spurt og svarað
 CM_LEGEND                 = Cluster kort þjóðsaga
+DEBUG                     = Kemba
 CHECK_UPDATE              = Athugaðu að uppfærslu
 ABOUT                     = Um
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Opnaðu þig
+REPORT_BUG                = Senda villuskýrslu
 
 ; --- Toolbar Tooltips
 

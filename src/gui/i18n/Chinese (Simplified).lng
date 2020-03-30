@@ -7,11 +7,8 @@
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 2000} by {Replace with your name}
+; Revised May 23, 2012 by Dandy Cheung
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Chinese+%28Simplified%29.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -34,7 +31,7 @@ ANALYSE                   = 分析
 DEFRAGMENT                = 整理
 QUICK_OPTIMIZE            = 快速优化
 FULL_OPTIMIZE             = 全面优化
-OPTIMIZE_MFT              = 优化MFT
+OPTIMIZE_MFT              = 优化 MFT
 STOP                      = 停止
 REPEAT_ACTION             = 重复操作
 SKIP_REMOVABLE_MEDIA      = 忽略移动磁盘
@@ -66,7 +63,10 @@ REPORTS                   = 报告
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = 查看更新记录(&V)
+TRANSLATIONS_REPORT       = 查看翻译报告(&R)
 TRANSLATIONS_FOLDER       = 语言包文件夹
+TRANSLATIONS_SUBMIT       = 提交当前翻译(&S)
 
 ; --- --- Graphical interface submenu
 
@@ -84,8 +84,14 @@ CONTENTS                  = 目录
 BEST_PRACTICE             = 最佳方法
 FAQ                       = 常见问题解答
 CM_LEGEND                 = 群集地图图例
+DEBUG                     = 调试(&B)
 CHECK_UPDATE              = 检查更新
 ABOUT                     = 关于
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = 打开日志(&L)
+REPORT_BUG                = 发送错误报告(&R)
 
 ; --- Toolbar Tooltips
 
@@ -154,7 +160,7 @@ FRAGMENTED_FILES_ON       = 碎片文件
 
 VISIT_HOMEPAGE            = 访问我们的主页
 VIEW_REPORT_OPTIONS       = 查看报告选项
-POWERED_BY_LUA            = 由Lua技术支持
+POWERED_BY_LUA            = 由 Lua 技术支持
 
 FRAGMENTS                 = 碎片
 SIZE                      = 大小

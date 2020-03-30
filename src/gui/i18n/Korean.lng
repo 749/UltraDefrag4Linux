@@ -9,9 +9,6 @@
 ; Revised Jan. 24, 2011 by Haein Jung
 ;------------------------------------------------------------------------------
 
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Korean.lng
-
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
 
@@ -35,8 +32,8 @@ QUICK_OPTIMIZE            = 빠른 최적화(&Q)
 FULL_OPTIMIZE             = 전체 최적화(&F)
 OPTIMIZE_MFT              = MFT 최적화(&O)
 STOP                      = 멈춤(&S)
-REPEAT_ACTION             = 다시 작업(&P)
-SKIP_REMOVABLE_MEDIA      = 이동식 디스크 제외(&M)
+REPEAT_ACTION             = 작업 반복(&P)
+SKIP_REMOVABLE_MEDIA      = 이동식 디스크 건너뛰기(&M)
 RESCAN_DRIVES             = 드라이브 다시 검색(&R)
 REPAIR_DRIVES             = 드라이브 복구
 WHEN_DONE                 = 작업을 마치면...(&W)
@@ -48,7 +45,7 @@ WHEN_DONE_NONE            = 아무 것도 안함(&N)
 WHEN_DONE_EXIT            = 끝내기(&X)
 WHEN_DONE_STANDBY         = 대기 모드(&D)
 WHEN_DONE_HIBERNATE       = 최대 절전 모드(&H)
-WHEN_DONE_LOGOFF          = 로그 오프(&L)
+WHEN_DONE_LOGOFF          = 로그오프(&L)
 WHEN_DONE_REBOOT          = 리부팅(&R)
 WHEN_DONE_SHUTDOWN        = 시스템 종료(&S)
 
@@ -65,7 +62,10 @@ REPORTS                   = 조각화 보고서 옵션(&R)
 
 ; --- --- Language submenu
 
-TRANSLATIONS_FOLDER       = 번역 언어 폴더(&T)
+TRANSLATIONS_CHANGE_LOG   = 변경 내역 보기(&V)
+TRANSLATIONS_REPORT       = 번역 보고서 보기(&R)
+TRANSLATIONS_FOLDER       = 번역 파일 폴더(&T)
+TRANSLATIONS_SUBMIT       = 현재 번역 제출(&S)
 
 ; --- --- Graphical interface submenu
 
@@ -83,8 +83,14 @@ CONTENTS                  = 도움말 내용(&C)
 BEST_PRACTICE             = 우수 사례(&P)
 FAQ                       = 질문과 답변(&F)
 CM_LEGEND                 = 클러스터 맵 설명(&L)
+DEBUG                     = 디버그(&B)
 CHECK_UPDATE              = 업데이트 확인(&U)
 ABOUT                     = 정보(&A)
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = 기록(로그) 열기(&L)
+REPORT_BUG                = 버그 보고서 보내기(&R)
 
 ; --- Toolbar Tooltips
 
@@ -92,11 +98,11 @@ BOOT_TIME_SCRIPT          = 부팅시 스크립트
 
 ; Drives list items.
 
-VOLUME                    = 볼륨
+VOLUME                    = 드라이브(볼륨)
 STATUS                    = 상태
-TOTAL                     = 전체 용량
-FREE                      = 여유 용량
-PERCENT                   = 여유 용량 비율
+TOTAL                     = 전체 공간
+FREE                      = 여유 공간
+PERCENT                   = 여유 공간 비율
 
 ; Status messages
 
@@ -124,11 +130,11 @@ LICENSE                   = 라이센스(&L)
 PLEASE_CONFIRM            = 다시 확인하세요.
 REALLY_SHUTDOWN_WHEN_DONE = 작업을 마치면, 시스템 종료를 할까요?
 REALLY_HIBERNATE_WHEN_DONE= 작업을 마치면, 최대 절전 모드를 할까요?
-REALLY_LOGOFF_WHEN_DONE   = 작업을 마치면, 로그 오프할까요?
+REALLY_LOGOFF_WHEN_DONE   = 작업을 마치면, 로그오프할까요?
 REALLY_REBOOT_WHEN_DONE   = 작업을 마치면, 리부팅할까요?
 SECONDS_TILL_SHUTDOWN     = 시스템 종료까지 남은 시간(초)
 SECONDS_TILL_HIBERNATION  = 최대 절전 모드까지 남은 시간(초)
-SECONDS_TILL_LOGOFF       = 로그 오프까지 남은 시간(초)
+SECONDS_TILL_LOGOFF       = 로그오프까지 남은 시간(초)
 SECONDS_TILL_REBOOT       = 리부팅까지 남은 시간(초)
 YES                       = 예(&Y)
 NO                        = 아니오(&N)

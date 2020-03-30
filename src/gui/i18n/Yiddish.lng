@@ -4,11 +4,8 @@
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 1900} by {Replace with your name}
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Yiddish.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -63,7 +60,10 @@ REPORTS                   = מעלדונג
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = &View change log
+TRANSLATIONS_REPORT       = View translation &report
 TRANSLATIONS_FOLDER       = טעקע פון איבערזעצונג
+TRANSLATIONS_SUBMIT       = פאָרלייגן קראַנט איבערזעצונג
 
 ; --- --- Graphical interface submenu
 
@@ -81,8 +81,14 @@ CONTENTS                  = ינהאַלט
 BEST_PRACTICE             = בעסטער פיר
 FAQ                       = שאלות נפוצות
 CM_LEGEND                 = האגדה פון דער קאַרטע
+DEBUG                     = דעבוג
 CHECK_UPDATE              = טשעק פֿאַר דערהייַנטיקן
 ABOUT                     = וועגן
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = עפענען קלאָץ
+REPORT_BUG                = שיקן זשוק מעלדונג
 
 ; --- Toolbar Tooltips
 

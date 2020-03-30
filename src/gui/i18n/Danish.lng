@@ -7,9 +7,6 @@
 ; Revised May  31, 2010 by Benny Stütz
 ;------------------------------------------------------------------------------
 
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Danish.lng
-
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
 
@@ -32,7 +29,7 @@ DEFRAGMENT                = Defragmenter
 QUICK_OPTIMIZE            = Hurtig optimering
 FULL_OPTIMIZE             = Fuld optimering
 OPTIMIZE_MFT              = Optimer MFT
-STOP                      = Stop
+STOP                      = Stands
 REPEAT_ACTION             = Gentag handling
 SKIP_REMOVABLE_MEDIA      = Kun faste drev
 RESCAN_DRIVES             = Opdater drevlisten
@@ -63,7 +60,10 @@ REPORTS                   = Rapporter
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = Se ændre log
+TRANSLATIONS_REPORT       = Vis oversættelse &rapport
 TRANSLATIONS_FOLDER       = Oversættelsesmappe
+TRANSLATIONS_SUBMIT       = Indsend nuværende oversættelse
 
 ; --- --- Graphical interface submenu
 
@@ -81,8 +81,14 @@ CONTENTS                  = Indhold
 BEST_PRACTICE             = Bedste praksis
 FAQ                       = Ofte stillede spørgsmål
 CM_LEGEND                 = Cluster kort legende
-CHECK_UPDATE              = Check for opdatering
+DEBUG                     = Fejlsøg
+CHECK_UPDATE              = Kontroller for opdatering
 ABOUT                     = Om
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Åbn &log
+REPORT_BUG                = Send fejl&rapport
 
 ; --- Toolbar Tooltips
 
@@ -151,7 +157,7 @@ FRAGMENTED_FILES_ON       = Fragmenterede filer på
 
 VISIT_HOMEPAGE            = Besøg vores hjemmeside
 VIEW_REPORT_OPTIONS       = Se rapport muligheder
-POWERED_BY_LUA            = Powered by Lua
+POWERED_BY_LUA            = Understøttet af Lua
 
 FRAGMENTS                 = fragmenter
 SIZE                      = størrelse

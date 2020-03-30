@@ -1,15 +1,12 @@
 ﻿;------------------------------------------------------------------------------
 ; UltraDefrag GUI Indonesian (Bahasa Indonesia) Language Pack.
-; Copyright (C) 2011 Taufan Nur Hidayat.
+; Copyright (C) 2011-2012 Taufan Nur Hidayat.
 ; Copyright (C) 2012 Djati Satria.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 1900} by {Replace by Name of Reviser}
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Indonesian+%28Bahasa+Indonesia%29.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -37,7 +34,7 @@ STOP                      = &Berhenti
 REPEAT_ACTION             = &Ulangi aksi
 SKIP_REMOVABLE_MEDIA      = &Hindari media lepas
 RESCAN_DRIVES             = S&can ulang drives
-REPAIR_DRIVES             = Perbaikan drive
+REPAIR_DRIVES             = Perbaiki drive
 WHEN_DONE                 = &Ketika selesai
 EXIT                      = K&eluar
 
@@ -64,7 +61,10 @@ REPORTS                   = &Laporan
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = &Lihat perubahan log
+TRANSLATIONS_REPORT       = Lihat laporan &penerjemahan
 TRANSLATIONS_FOLDER       = &Map terjemah
+TRANSLATIONS_SUBMIT       = &Kirim terjemahan saat ini
 
 ; --- --- Graphical interface submenu
 
@@ -81,9 +81,15 @@ SCRIPT                    = &Naskah
 CONTENTS                  = &Konten
 BEST_PRACTICE             = &Praktek Terbaik
 FAQ                       = &FAQ
-CM_LEGEND                 = Peta Cluster &legenda
-CHECK_UPDATE              = Tinjau Pem&baruan
+CM_LEGEND                 = Keterangan &Peta Cluster
+DEBUG                     = De&bug
+CHECK_UPDATE              = Tinjau Pem&baharuan
 ABOUT                     = &Tentang
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Buka &log
+REPORT_BUG                = &Kirim laporan bug
 
 ; --- Toolbar Tooltips
 
@@ -108,7 +114,7 @@ STATUS_DIRTY              = Disk perlu diperbaiki
 ; Status bar messages.
 
 DIRS                      = map
-FILES                     = berkass
+FILES                     = berkas
 FRAGMENTED                = terfragmentasi
 COMPRESSED                = termampatkan
 
@@ -151,7 +157,7 @@ HIDE                      = Sembunyikan
 FRAGMENTED_FILES_ON       = Berkas terberai di
 
 VISIT_HOMEPAGE            = Lihat situs
-VIEW_REPORT_OPTIONS       = Lihat setelan laporan
+VIEW_REPORT_OPTIONS       = Lihat opsi laporan
 POWERED_BY_LUA            = Diberdayakan oleh Lua
 
 FRAGMENTS                 = potongan

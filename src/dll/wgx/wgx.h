@@ -124,6 +124,8 @@ BOOL WgxSaveFont(char *wgx_font_path,PWGX_FONT pFont);
 
 BOOL IncreaseGoogleAnalyticsCounter(char *hostname,char *path,char *account);
 
+typedef void (*WGX_DBG_PRINT_HANDLER)(char *format, ...);
+void WgxSetDbgPrintHandler(WGX_DBG_PRINT_HANDLER h);
 void WgxDbgPrint(char *format, ...);
 void WgxDbgPrintLastError(char *format, ...);
 int WgxDisplayLastError(HWND hParent,UINT msgbox_flags, char *format, ...);

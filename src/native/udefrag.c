@@ -74,6 +74,8 @@ int GetDebugLevel()
     return result;
 }
 
+char old_op_name[15] = {0};
+
 /**
  * @brief Redraws the progress information.
  * @note Old dash based progress indication has wrong
@@ -90,18 +92,18 @@ void RedrawProgress(udefrag_progress_info *pi)
 
     /* TODO: optimize for speed to make redraw faster */
     switch(pi->current_operation){
-    case VOLUME_ANALYSIS:
-        op_name = "Analyze:  ";
-        break;
-    case VOLUME_DEFRAGMENTATION:
-        op_name = "Defrag:   ";
-        break;
-    case VOLUME_OPTIMIZATION:
-        op_name = "Optimize: ";
-        break;
-    default:
-        op_name = "          ";
-        break;
+        case VOLUME_ANALYSIS:
+            op_name = "Analyze:  ";
+            break;
+        case VOLUME_DEFRAGMENTATION:
+            op_name = "Defrag:   ";
+            break;
+        case VOLUME_OPTIMIZATION:
+            op_name = "Optimize: ";
+            break;
+        default:
+            op_name = "          ";
+            break;
     }
     if(pi->completion_status == 0 || abort_flag){
         p1 = (int)(__int64)(pi->percentage * 100.00);
@@ -131,6 +133,12 @@ void RedrawProgress(udefrag_progress_info *pi)
                 _snprintf(s,sizeof(s),"%s%3u.%02u%% completed, fragmented/total = %lu/%lu",op_name,p1,p2,pi->fragmented,pi->files);
         }
     }
+
+    if(!winx_stristr(old_op_name,op_name)){
+        winx_printf("\n");
+        strncpy(old_op_name,op_name,sizeof(old_op_name)-1);
+    }
+
     s[sizeof(s) - 1] = 0;
     _snprintf(format,sizeof(format),"\r%%-%us",progress_line_length);
     format[sizeof(format) - 1] = 0;

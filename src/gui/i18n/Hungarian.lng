@@ -2,16 +2,13 @@
 ; UltraDefrag GUI Hungarian Language Pack.
 ; Copyright (C) 2008-2010 Nagy Zsolt.
 ; Copyright (C) 2010 Áron Hegedüs.
-; Copyright (C) 2011 Gellért Lukács.
+; Copyright (C) 2011-2012 Gellért Lukács.
 ; Copyright (C) 2012 Brechler Zsolt.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
 ; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Hungarian.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -66,7 +63,10 @@ REPORTS                   = Jelentések
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = &Változásnapló megtekintése
+TRANSLATIONS_REPORT       = Fo&rdítási napló megtekintése
 TRANSLATIONS_FOLDER       = Fordítások mappa
+TRANSLATIONS_SUBMIT       = Aktuális fordítás beküldé&se
 
 ; --- --- Graphical interface submenu
 
@@ -84,8 +84,14 @@ CONTENTS                  = Tartalom
 BEST_PRACTICE             = Bevált gyakorlat
 FAQ                       = GYIK (FAQ)
 CM_LEGEND                 = Klaszter térkép &magyarázat
+DEBUG                     = Hi&bakeresés
 CHECK_UPDATE              = &Frissítés ellenőrzése
 ABOUT                     = Névjegy
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Nap&ló megnyitása
+REPORT_BUG                = Hibajelentés küldése
 
 ; --- Toolbar Tooltips
 

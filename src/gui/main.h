@@ -21,11 +21,14 @@
 #define _UDEFRAG_GUI_MAIN_H_
 
 /*
-* We use STATUS_WAIT_0...
-* #define WIN32_NO_STATUS
+* To include ICC_STANDARD_CLASSES definition on mingw
+* the _WIN32_WINNT constant must be set at least to 0x501.
 */
-
+#if defined(__GNUC__)
+#define _WIN32_WINNT 0x501
+#endif
 #include <windows.h>
+
 /*
 * Next definition is very important for mingw:
 * _WIN32_IE must be no less than 0x0400

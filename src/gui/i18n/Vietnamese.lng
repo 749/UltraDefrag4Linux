@@ -1,14 +1,11 @@
 ﻿;------------------------------------------------------------------------------
-; UltraDefrag GUI Vietnamese (VI) Language Pack.
+; UltraDefrag GUI Vietnamese Language Pack.
 ; Copyright (C) 2010 Vietnamize Team.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised Nov. 14, 2010 by Vietnamize Team
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Vietnamese+%28VI%29.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -63,7 +60,10 @@ REPORTS                   = Báo cáo
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = Thay đổi đăng nhập
+TRANSLATIONS_REPORT       = Xem báo cáo dịch
 TRANSLATIONS_FOLDER       = Thư mục bản dịch
+TRANSLATIONS_SUBMIT       = Gửi dịch hiện tại
 
 ; --- --- Graphical interface submenu
 
@@ -81,8 +81,14 @@ CONTENTS                  = Nội dung trợ giúp
 BEST_PRACTICE             = Hướng dẫn trực tuyến
 FAQ                       = Hỏi đáp
 CM_LEGEND                 = Cụm bản đồ huyền thoại
+DEBUG                     = Gỡ rối
 CHECK_UPDATE              = Kiểm tra cho cập nhật
 ABOUT                     = Giới thiệu
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Mở đăng nhập
+REPORT_BUG                = Gửi báo cáo lỗi
 
 ; --- Toolbar Tooltips
 

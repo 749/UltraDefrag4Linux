@@ -1,14 +1,11 @@
 ﻿;------------------------------------------------------------------------------
-; UltraDefrag GUI Bosanski Language Pack.
+; UltraDefrag GUI Bosnian Language Pack.
 ; Copyright (C) 2012 Timur Ljubunčić.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 1900} by {Replace by Name of Reviser}
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Bosanski.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -63,7 +60,10 @@ REPORTS                   = &Izvještaji
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = &View change log
+TRANSLATIONS_REPORT       = View translation &report
 TRANSLATIONS_FOLDER       = &Prevodi
+TRANSLATIONS_SUBMIT       = &Submit current translation
 
 ; --- --- Graphical interface submenu
 
@@ -81,8 +81,14 @@ CONTENTS                  = &Sadržaj
 BEST_PRACTICE             = Najbolja &praksa
 FAQ                       = &Česta pitanja i odgovori
 CM_LEGEND                 = Cluster map &legend
+DEBUG                     = De&bug
 CHECK_UPDATE              = Provjerite ima li nova &verzija
 ABOUT                     = &O programu
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Open &log
+REPORT_BUG                = Send bug &report
 
 ; --- Toolbar Tooltips
 

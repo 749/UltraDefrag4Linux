@@ -26,8 +26,6 @@
 
 #include "zenwinx.h"
 
-int winx_debug_print(char *string);
-
 HANDLE hGlobalHeap = NULL;
 
 /**
@@ -102,7 +100,6 @@ int winx_create_global_heap(void)
     }
     if(hGlobalHeap == NULL){
         /* DebugPrint cannot be used here */
-        winx_debug_print("Cannot create global memory heap!");
         /* winx_printf cannot be used here */
         winx_print("\nCannot create global memory heap!\n");
         return (-1);

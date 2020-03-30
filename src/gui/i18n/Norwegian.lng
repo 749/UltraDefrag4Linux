@@ -8,9 +8,6 @@
 ; Revised Sept. 20, 2011 by Harald Arnesen
 ;------------------------------------------------------------------------------
 
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Norwegian.lng
-
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
 
@@ -64,7 +61,10 @@ REPORTS                   = &Rapporter
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = &Vis endre logg
+TRANSLATIONS_REPORT       = Vis &Rapporter
 TRANSLATIONS_FOLDER       = &Oversettelser
+TRANSLATIONS_SUBMIT       = &Send nåværende oversettelse
 
 ; --- --- Graphical interface submenu
 
@@ -82,8 +82,14 @@ CONTENTS                  = &Innhold
 BEST_PRACTICE             = &Anbefalinger
 FAQ                       = Spørs&mål og svar
 CM_LEGEND                 = &Cluster kart legende
+DEBUG                     = &Feilsøk
 CHECK_UPDATE              = &Se etter oppdatering
 ABOUT                     = &Om
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Åpne &logg
+REPORT_BUG                = Send &feilrapport
 
 ; --- Toolbar Tooltips
 

@@ -48,7 +48,7 @@ int winx_get_proc_address(short *libname,char *funcname,PVOID *proc_addr)
     *proc_addr = NULL;
     
     RtlInitUnicodeString(&uStr,libname);
-    Status = LdrGetDllHandle(0,0,&uStr,(HMODULE *)&base_addr);
+    Status = LdrGetDllHandle(0,0,&uStr,&base_addr);
     if(!NT_SUCCESS(Status)){
         DebugPrint("winx_get_proc_address: cannot get %ls handle: %x",libname,(UINT)Status);
         return (-1);
@@ -56,8 +56,9 @@ int winx_get_proc_address(short *libname,char *funcname,PVOID *proc_addr)
     RtlInitAnsiString(&aStr,funcname);
     Status = LdrGetProcedureAddress(base_addr,&aStr,0,proc_addr);
     if(!NT_SUCCESS(Status)){
-        DebugPrint("winx_get_proc_address: cannot get address of %s: %x",funcname,(UINT)Status);
         *proc_addr = NULL;
+        if(strcmp(funcname,"RtlGetVersion")) /* reduce amount of debugging output on NT4 */
+            DebugPrint("winx_get_proc_address: cannot get address of %s: %x",funcname,(UINT)Status);
         return (-1);
     }
     return 0;

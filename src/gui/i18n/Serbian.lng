@@ -5,11 +5,8 @@
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 1900} by {Replace with your name}
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Serbian.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -30,14 +27,14 @@ HELP                      = Помоћ
 
 ANALYSE                   = Анализираj
 DEFRAGMENT                = Дефрагментуј
-QUICK_OPTIMIZE            = Брзи оптимизацију
+QUICK_OPTIMIZE            = Брзa оптимизацијa
 FULL_OPTIMIZE             = Пуна оптимизација
 OPTIMIZE_MFT              = Оптимизујте МФТ
 STOP                      = Стоп
-REPEAT_ACTION             = Поновите акција
+REPEAT_ACTION             = Поновите акцију
 SKIP_REMOVABLE_MEDIA      = Прескочити преносиве медијe
 RESCAN_DRIVES             = Освежи
-REPAIR_DRIVES             = Поправити дискови
+REPAIR_DRIVES             = Поправи дискове
 WHEN_DONE                 = Када завршите
 EXIT                      = Излаз
 
@@ -64,7 +61,10 @@ REPORTS                   = Извештаји
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = Погледај променити дневник
+TRANSLATIONS_REPORT       = Погледајте извештај за превођење
 TRANSLATIONS_FOLDER       = Преводи директоријум
+TRANSLATIONS_SUBMIT       = Пошаљи тренутни превод
 
 ; --- --- Graphical interface submenu
 
@@ -82,8 +82,14 @@ CONTENTS                  = Садржај
 BEST_PRACTICE             = Најбоља пракса
 FAQ                       = Питања
 CM_LEGEND                 = Картова легенда
+DEBUG                     = Отклонити неисправност
 CHECK_UPDATE              = Проверите да ли постоје исправке
 ABOUT                     = О програму
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Отвори дневник
+REPORT_BUG                = Пошаљи извештај о грешци
 
 ; --- Toolbar Tooltips
 

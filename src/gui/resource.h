@@ -96,6 +96,9 @@
 #define IDM_IGNORE_REMOVABLE_MEDIA      1140
 #define IDM_RESCAN                      1150
 #define IDM_REPAIR                      1155
+#define IDM_DEBUG                       1156
+#define IDM_OPEN_LOG                    1157
+#define IDM_REPORT_BUG                  1158
 
 #define IDM_WHEN_DONE                   1160
 #define IDM_WHEN_DONE_NONE              1161
@@ -113,7 +116,10 @@
 
 #define IDM_SETTINGS                    1400
 
-#define IDM_TRANSLATIONS_FOLDER         1405
+#define IDM_TRANSLATIONS_CHANGE_LOG     1405
+#define IDM_TRANSLATIONS_REPORT         1406
+#define IDM_TRANSLATIONS_FOLDER         1407
+#define IDM_TRANSLATIONS_SUBMIT         1408
 #define IDM_LANGUAGE                    1410
 /* IDM_CFG_GUI must follow IDM_LANGUAGE */
 #define IDM_CFG_GUI                     2680

@@ -4,11 +4,8 @@
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 1900} by {Replace by Name of Reviser}
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Tamil.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -63,7 +60,10 @@ REPORTS                   = &அறிக்கைகள்
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = &பதிவு மாற்ற காண்க
+TRANSLATIONS_REPORT       = மொழிபெயர்ப்பு &அறிக்கை காண்க
 TRANSLATIONS_FOLDER       = &மொழிமாற்ற கோப்புறை
+TRANSLATIONS_SUBMIT       = &Submit current translation
 
 ; --- --- Graphical interface submenu
 
@@ -80,9 +80,15 @@ SCRIPT                    = &ஸ்கிரிப்ட்
 CONTENTS                  = &பொருளடக்கம்
 BEST_PRACTICE             = &சிறந்த பயிற்சி
 FAQ                       = &கேள்விகள்
-CM_LEGEND                 = கொத்து வரைபடத்தை விளக்கவுரை
+CM_LEGEND                 = கொத்து &வரைபடத்தை விளக்கவுரை
+DEBUG                     = வழு &நீக்கு
 CHECK_UPDATE              = மேம்படுத்தல் சோதிக்க
 ABOUT                     = &பற்றி
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = &பதிவு திறக்க
+REPORT_BUG                = &பிழை அறிக்கை அனுப்பவும்
 
 ; --- Toolbar Tooltips
 

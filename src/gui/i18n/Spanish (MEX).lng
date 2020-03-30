@@ -9,9 +9,6 @@
 ; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
 
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Spanish+%28MEX%29.lng
-
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
 
@@ -65,7 +62,10 @@ REPORTS                   = Reportes
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = Ver el cambiode registro
+TRANSLATIONS_REPORT       = Ver informe de la traducción
 TRANSLATIONS_FOLDER       = Carpeta de traducciones
+TRANSLATIONS_SUBMIT       = Enviar traducción actual
 
 ; --- --- Graphical interface submenu
 
@@ -82,9 +82,15 @@ SCRIPT                    = Comandos
 CONTENTS                  = Contenido
 BEST_PRACTICE             = Mejores prácticas
 FAQ                       = Preguntas frequentes
-CM_LEGEND                 = Cluster map &legend
+CM_LEGEND                 = Grupoleyenda del mapa
+DEBUG                     = Depurar
 CHECK_UPDATE              = Buscar actualización
 ABOUT                     = Acerca de...
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Abrir &registro
+REPORT_BUG                = Enviar informe de error
 
 ; --- Toolbar Tooltips
 
@@ -104,7 +110,7 @@ STATUS_RUNNING            = Trabajando
 STATUS_ANALYSED           = Analizado
 STATUS_DEFRAGMENTED       = Desfragmentado
 STATUS_OPTIMIZED          = Optimizado
-STATUS_DIRTY              = Disk needs to be repaired
+STATUS_DIRTY              = Disco que necesita ser reparado
 
 ; Status bar messages.
 

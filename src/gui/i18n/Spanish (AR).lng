@@ -5,10 +5,8 @@
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
 ; Revised Feb. 02, 2010 by José Luis Farías
+; Revised May  18, 2012 by Gerardo Venier
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Spanish+%28AR%29.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -18,14 +16,14 @@
 ; Use an ampersand (&) before a letter to make it a keyboard accelerator
 
 
-; Main Menu // Menu Principal
+; Main Menu // Menú Principal
 
 ACTION                    = &Comandos
 REPORT                    = &Reporte
 SETTINGS                  = &Opciones
 HELP                      = &Ayuda
 
-; --- Action Menu // Menu de Acciones
+; --- Action Menu // Menú de Acciones
 
 ANALYSE                   = &Analizar
 DEFRAGMENT                = &Desfragmentar
@@ -40,7 +38,7 @@ REPAIR_DRIVES             = Repair drives
 WHEN_DONE                 = Al &Terminar
 EXIT                      = Salir
 
-; --- --- When done submenu // Submenu 'al terminar'
+; --- --- When done submenu // Submenú 'al terminar'
 
 WHEN_DONE_NONE            = &Nada
 WHEN_DONE_EXIT            = &Salir
@@ -63,7 +61,10 @@ REPORTS                   = &Reportes
 
 ; --- --- Language submenu // Submenu Idioma
 
+TRANSLATIONS_CHANGE_LOG   = &Ver registro de cambios
+TRANSLATIONS_REPORT       = Ver reporte de traducciones
 TRANSLATIONS_FOLDER       = &Carpeta de Traducciones
+TRANSLATIONS_SUBMIT       = &Enviar traducción actual
 
 ; --- --- Graphical interface submenu // Submenu Interfaz Gráfica
 
@@ -81,8 +82,14 @@ CONTENTS                  = &Contenido
 BEST_PRACTICE             = &Práctica óptima
 FAQ                       = Preguntas &Frecuentes
 CM_LEGEND                 = Mapa de Cluster &leyenda
-CHECK_UPDATE              = Buscar &actualizaciones
+DEBUG                     = &Depurar
+CHECK_UPDATE              = &Buscar actualizaciones
 ABOUT                     = &Acerca de...
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = &Abrir registro
+REPORT_BUG                = Enviar &reporte de errores
 
 ; --- Toolbar Tooltips // Descripciones Emergentes en Barra de Herramientas
 

@@ -6,11 +6,8 @@
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised Apr. 23, 2012 by Alper Tiryakioglu
+; Revised May. 17, 2012 by Alper Tiryakioglu
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Turkish.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -65,7 +62,10 @@ REPORTS                   = Raporlar
 
 ; --- --- Language submenu
 
-TRANSLATIONS_FOLDER       = &Çeviri Klasörü
+TRANSLATIONS_CHANGE_LOG   = &Çeviri değişikliklerini görüntüle
+TRANSLATIONS_REPORT       = Çeviri &raporunu görüntle
+TRANSLATIONS_FOLDER       = &Çeviri klasörü
+TRANSLATIONS_SUBMIT       = &Şimdiki çeviriyi gönder
 
 ; --- --- Graphical interface submenu
 
@@ -83,8 +83,14 @@ CONTENTS                  = &Yardım konuları
 BEST_PRACTICE             = &En doğru kullanım şekli
 FAQ                       = &Sıkça sorulan sorular
 CM_LEGEND                 = &Küme haritası işaretleri
+DEBUG                     = &Hata ayıklama
 CHECK_UPDATE              = &Güncellemeleri denetle
 ABOUT                     = &Hakkında
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = &Günlüğü görüntüle
+REPORT_BUG                = Hata raporu &gönder
 
 ; --- Toolbar Tooltips
 
@@ -122,9 +128,9 @@ LICENSE                   = Lisans
 ; Shutdown confirmation
 
 PLEASE_CONFIRM            = Lütfen Onaylayın
-REALLY_SHUTDOWN_WHEN_DONE = Bittiğinde gerçekten kapatmayı istiyor musunuz?
-REALLY_HIBERNATE_WHEN_DONE= Bittiğinde gerçekten beklemeye almayı istiyor musunuz?
-REALLY_LOGOFF_WHEN_DONE   = Bittiğinde gerçekten sizin oturumunu kapatmayı istiyor musunuz?
+REALLY_SHUTDOWN_WHEN_DONE = Bittiğinde gerçekten kapatmak istiyor musunuz?
+REALLY_HIBERNATE_WHEN_DONE= Bittiğinde gerçekten beklemeye almak istiyor musunuz?
+REALLY_LOGOFF_WHEN_DONE   = Bittiğinde gerçekten oturumunuzu kapatmak istiyor musunuz?
 REALLY_REBOOT_WHEN_DONE   = Bittiğinde gerçekten yeniden başlatmak istiyor musunuz?
 SECONDS_TILL_SHUTDOWN     = saniye içinde kapatılacak
 SECONDS_TILL_HIBERNATION  = saniye içinde beklemeye alınacak

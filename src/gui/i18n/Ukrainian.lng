@@ -4,11 +4,8 @@
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 1900} by {Replace with your name}
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Ukrainian.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -63,7 +60,10 @@ REPORTS                   = &Звіти
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = Перегляд &журналу зміниться
+TRANSLATIONS_REPORT       = Показати переклад &звіт
 TRANSLATIONS_FOLDER       = &Папка з перекладами
+TRANSLATIONS_SUBMIT       = &Надіслати поточний переклад
 
 ; --- --- Graphical interface submenu
 
@@ -81,8 +81,14 @@ CONTENTS                  = &Зміст
 BEST_PRACTICE             = &Кращі практики
 FAQ                       = Питання та &відповіді (FAQ)
 CM_LEGEND                 = &Легенда карти
+DEBUG                     = &Налагоджувати
 CHECK_UPDATE              = Перевірити &оновлення
 ABOUT                     = &Про програму
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = &Відкрийте журнал
+REPORT_BUG                = &Надіслати повідомлення про помилку
 
 ; --- Toolbar Tooltips
 

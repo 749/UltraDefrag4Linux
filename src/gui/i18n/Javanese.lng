@@ -1,14 +1,11 @@
 ﻿;------------------------------------------------------------------------------
 ; UltraDefrag GUI Javanese Language Pack.
-; Copyright (C) 2011 Taufan Nur Hidayat.
+; Copyright (C) 2011-2012 Taufan Nur Hidayat.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 1900} by {Replace by Name of Reviser}
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Javanese.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -22,21 +19,21 @@
 
 ACTION                    = &Aksi
 REPORT                    = &Laporan
-SETTINGS                  = &Setingan
+SETTINGS                  = &Aturan
 HELP                      = &Tulungan
 
 ; --- Action Menu
 
 ANALYSE                   = &Analisa
 DEFRAGMENT                = &Defragmentasi
-QUICK_OPTIMIZE            = &Pengoptimalan cepet
-FULL_OPTIMIZE             = P&engoptimalan penuh
-OPTIMIZE_MFT              = Optimize MFT
+QUICK_OPTIMIZE            = Ngo&ptimalne cepet
+FULL_OPTIMIZE             = N&goptimalne penuh
+OPTIMIZE_MFT              = Ngoptimalne MFT
 STOP                      = &Mandek
 REPEAT_ACTION             = &Ngulangi aksi
 SKIP_REMOVABLE_MEDIA      = Le&wati media copotan
 RESCAN_DRIVES             = &Scan ulang drev
-REPAIR_DRIVES             = Repair drives
+REPAIR_DRIVES             = Benerne drev
 WHEN_DONE                 = &Leg mari
 EXIT                      = Me&tu
 
@@ -56,14 +53,17 @@ SHOW_REPORT               = &Sudoke laporan
 
 ; --- Settings Menu
 
-LANGUAGE                  = &Bahasa
+LANGUAGE                  = &Basa
 GRAPHICAL_INTERFACE       = &Gambar tampilan
 BOOT_TIME_SCAN            = &Wektu nyeken wayake boot
 REPORTS                   = &Laporan
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = &View change log
+TRANSLATIONS_REPORT       = View translation &report
 TRANSLATIONS_FOLDER       = &Folder terjemahan
+TRANSLATIONS_SUBMIT       = &Submit current translation
 
 ; --- --- Graphical interface submenu
 
@@ -79,10 +79,16 @@ SCRIPT                    = &Naskah
 
 CONTENTS                  = &Konten
 BEST_PRACTICE             = &Praktek terapik
-FAQ                       = &FAQ
-CM_LEGEND                 = Cluster map &legend
-CHECK_UPDATE              = Check for &update
+FAQ                       = &Pitakon
+CM_LEGEND                 = Ke&terangane peta cluster
+DEBUG                     = De&bug
+CHECK_UPDATE              = &Cek pengapikan
 ABOUT                     = &Tentang
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Open &log
+REPORT_BUG                = Send bug &report
 
 ; --- Toolbar Tooltips
 
@@ -90,31 +96,31 @@ BOOT_TIME_SCRIPT          = Wektu boot naskah
 
 ; Drives list items.
 
-VOLUME                    = Volume
-STATUS                    = Status
+VOLUME                    = Volum
+STATUS                    = Kodisi
 TOTAL                     = Total Ruang
 FREE                      = Ruang Kosong
 PERCENT                   = % bebas
 
 ; Status messages
 
-STATUS_RUNNING            = Mengeksekusi
+STATUS_RUNNING            = Ngeksekusi
 STATUS_ANALYSED           = Keanalisa
-STATUS_DEFRAGMENTED       = Kedefragmentasi
-STATUS_OPTIMIZED          = Teroptimalno
-STATUS_DIRTY              = Disk needs to be repaired
+STATUS_DEFRAGMENTED       = Kedefrag
+STATUS_OPTIMIZED          = Keoptimalno
+STATUS_DIRTY              = Disk butuh didandani
 
 ; Status bar messages.
 
 DIRS                      = folder
-FILES                     = file
+FILES                     = fel
 FRAGMENTED                = fragmentasi
 COMPRESSED                = dikompres
 
 ; About window.
 
 ABOUT_WIN_TITLE           = Tentang Ultra Defragmenter
-CREDITS                   = &Penyusun
+CREDITS                   = &Sing nyusun
 LICENSE                   = &Lisensi
 
 ; Shutdown confirmation
@@ -133,33 +139,33 @@ NO                        = &Gak
 
 ; Upgrade dialog
 
-UPGRADE_CAPTION           = You can upgrade me ^-^
-UPGRADE_MESSAGE           = release is available for download!
+UPGRADE_CAPTION           = Penganyaran ditemokno
+UPGRADE_MESSAGE           = Penganyaran siap diunduh!
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 
-JOB_IS_RUNNING            = A job is running
+JOB_IS_RUNNING            = Sek mlaku
 
 ; Strings for system tray icon context menu.
 
-SHOW                      = Show
-HIDE                      = Hide
+SHOW                      = Sudoke
+HIDE                      = Delikne
 
 ; Strings for the file fragmentation reports.
 
-FRAGMENTED_FILES_ON       = Fragmented files on
+FRAGMENTED_FILES_ON       = Fel fragmentasi nag
 
-VISIT_HOMEPAGE            = Visit our Homepage
-VIEW_REPORT_OPTIONS       = View report options
-POWERED_BY_LUA            = Powered by Lua
+VISIT_HOMEPAGE            = Kunjungi Homepage
+VIEW_REPORT_OPTIONS       = Opsi gae delok laporan
+POWERED_BY_LUA            = Diperkuat karo Lua
 
-FRAGMENTS                 = fragments
-SIZE                      = size
-FILENAME                  = filename
-COMMENT                   = comment
+FRAGMENTS                 = fragmen
+SIZE                      = ukuran
+FILENAME                  = jenenge fel
+COMMENT                   = komen
 
-LOCKED                    = locked
-MOVE_FAILED               = move failed
-INVALID                   = invalid
+LOCKED                    = kekunci
+MOVE_FAILED               = ra iso dipindah
+INVALID                   = keliru
 
 ; END OF FILE

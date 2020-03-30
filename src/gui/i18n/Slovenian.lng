@@ -8,9 +8,6 @@
 ; Revised Feb. 12, 2010 by Dmitri Arkhangelski
 ;------------------------------------------------------------------------------
 
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Slovenian.lng
-
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
 
@@ -64,7 +61,10 @@ REPORTS                   = Poročila
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = Poglej dnevnik sprememb
+TRANSLATIONS_REPORT       = Poglej prevod poročila
 TRANSLATIONS_FOLDER       = Ma&pa prevodov
+TRANSLATIONS_SUBMIT       = Pošlji trenutni prevod
 
 ; --- --- Graphical interface submenu
 
@@ -82,8 +82,14 @@ CONTENTS                  = Vsebina
 BEST_PRACTICE             = Najboljša praksa
 FAQ                       = Pogosta vprašanja
 CM_LEGEND                 = Cluster map &legend
+DEBUG                     = De&bug
 CHECK_UPDATE              = Preveri za posodobitve
 ABOUT                     = O programu
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Odpri &dnevnik
+REPORT_BUG                = Pošlji poročilo o hrošču
 
 ; --- Toolbar Tooltips
 
@@ -114,7 +120,7 @@ COMPRESSED                = skompresirano
 
 ; About window.
 
-ABOUT_WIN_TITLE           = O Programu Ultra Defragmenter
+ABOUT_WIN_TITLE           = O programu Ultra Defragmenter
 CREDITS                   = Zasluge
 LICENSE                   = Licenca
 

@@ -130,32 +130,6 @@ ULONGLONG __stdcall _alldiv(ULONGLONG n, ULONGLONG d);
 ULONGLONG __stdcall _aullrem(ULONGLONG u, ULONGLONG v);
 #endif
 
-#ifdef USE_MSVC
-typedef enum _POWER_ACTION
-{
-  PowerActionNone = 0, 
-  PowerActionReserved, 
-  PowerActionSleep, 
-  PowerActionHibernate, 
-  PowerActionShutdown, 
-  PowerActionShutdownReset, 
-  PowerActionShutdownOff, 
-  PowerActionWarmEject
-} POWER_ACTION, *PPOWER_ACTION;
-typedef enum _SYSTEM_POWER_STATE
-{
-  PowerSystemUnspecified = 0, 
-  PowerSystemWorking = 1, 
-  PowerSystemSleeping1 = 2, 
-  PowerSystemSleeping2 = 3, 
-  PowerSystemSleeping3 = 4, 
-  PowerSystemHibernate = 5, 
-  PowerSystemShutdown = 6, 
-  PowerSystemMaximum = 7
-} SYSTEM_POWER_STATE, *PSYSTEM_POWER_STATE;
-#define DWORD_PTR DWORD*
-#endif
-
 /* define status codes */
 /* ifndef directives are used to prevent warnings when gcc on mingw is used */
 typedef LONG NTSTATUS;
@@ -184,7 +158,9 @@ typedef LONG NTSTATUS;
 #ifndef STATUS_INVALID_HANDLE
 #define STATUS_INVALID_HANDLE         ((NTSTATUS)0xC0000008)
 #endif
+#ifndef STATUS_INVALID_PARAMETER
 #define STATUS_INVALID_PARAMETER      ((NTSTATUS)0xC000000D)
+#endif
 #define STATUS_NO_SUCH_DEVICE         ((NTSTATUS)0xC000000E)
 #define STATUS_NO_SUCH_FILE           ((NTSTATUS)0xC000000F)
 #define STATUS_INVALID_DEVICE_REQUEST ((NTSTATUS)0xC0000010)
@@ -223,12 +199,7 @@ typedef LONG NTSTATUS;
 #define STATUS_SHARING_VIOLATION      ((NTSTATUS)0xC0000043)
 #endif
 
-#if defined(__GNUC__)
 #define MAX_WAIT_INTERVAL (-0x7FFFFFFFFFFFFFFFLL)
-#else
-/* c compiler from ms visual studio 6.0 don't supports LL suffix */
-#define MAX_WAIT_INTERVAL (-0x7FFFFFFFFFFFFFFF)
-#endif
 
 /* define base nt structures */
 typedef struct _STRING
@@ -1050,6 +1021,44 @@ typedef struct _PARTITION_INFORMATION {
     BOOLEAN RewritePartition;
 } PARTITION_INFORMATION, *PPARTITION_INFORMATION;
 
+typedef enum _MEDIA_TYPE
+{
+  Unknown, 
+  F5_1Pt2_512, 
+  F3_1Pt44_512, 
+  F3_2Pt88_512, 
+  F3_20Pt8_512, 
+  F3_720_512, 
+  F5_360_512, 
+  F5_320_512, 
+  F5_320_1024, 
+  F5_180_512, 
+  F5_160_512, 
+  RemovableMedia, 
+  FixedMedia, 
+  F3_120M_512, 
+  F3_640_512, 
+  F5_640_512, 
+  F5_720_512, 
+  F3_1Pt2_512, 
+  F3_1Pt23_1024, 
+  F5_1Pt23_1024, 
+  F3_128Mb_512, 
+  F3_230Mb_512, 
+  F8_256_128, 
+  F3_200Mb_512, 
+  F3_240M_512, 
+  F3_32M_512
+} MEDIA_TYPE;
+
+typedef struct _DISK_GEOMETRY {
+    LARGE_INTEGER Cylinders;
+    MEDIA_TYPE MediaType;
+    DWORD TracksPerCylinder;
+    DWORD SectorsPerTrack;
+    DWORD BytesPerSector;
+} DISK_GEOMETRY;
+
 #define IOCTL_DISK_BASE                 FILE_DEVICE_DISK
 #define IOCTL_DISK_GET_DRIVE_GEOMETRY   CTL_CODE(IOCTL_DISK_BASE, 0x0000, METHOD_BUFFERED, FILE_ANY_ACCESS)
 #define IOCTL_DISK_GET_PARTITION_INFO   CTL_CODE(IOCTL_DISK_BASE, 0x0001, METHOD_BUFFERED, FILE_READ_ACCESS)
@@ -1207,6 +1216,7 @@ HANDLE      NTAPI    RtlDestroyHeap(HANDLE);
 BOOLEAN     NTAPI    RtlDosPathNameToNtPathName_U(PCWSTR,PUNICODE_STRING,PCWSTR*,CURDIR*);
 /* VOID     NTAPI    RtlExitUserThread(NTSTATUS); - NEVER use this unreliable call! */
 NTSTATUS    NTAPI    RtlExpandEnvironmentStrings_U(PWSTR,const UNICODE_STRING*,UNICODE_STRING*,ULONG*);
+NTSTATUS    NTAPI    RtlFindMessage(PVOID BaseAddress,ULONG Type,ULONG Language,ULONG MessageId,MESSAGE_RESOURCE_ENTRY **MessageResourceEntry);
 VOID        NTAPI    RtlFreeAnsiString(PANSI_STRING);
 BOOLEAN     NTAPI    RtlFreeHeap(HANDLE,SIZE_T,PVOID);
 VOID        NTAPI    RtlFreeUnicodeString(PUNICODE_STRING);
@@ -1219,42 +1229,13 @@ NTSTATUS    NTAPI    RtlSetEnvironmentVariable(PWSTR,PUNICODE_STRING,PUNICODE_ST
 NTSTATUS    NTAPI    RtlSystemTimeToLocalTime(const LARGE_INTEGER* SystemTime,PLARGE_INTEGER LocalTime);
 VOID        NTAPI    RtlTimeToTimeFields(PLARGE_INTEGER Time,PTIME_FIELDS TimeFields);
 NTSTATUS    NTAPI    RtlUnicodeStringToAnsiString(PANSI_STRING,PUNICODE_STRING,SIZE_T);
+NTSTATUS    NTAPI    RtlUnicodeToMultiByteN(PCHAR,ULONG,PULONG,PCWCH,ULONG);
 
 VOID        NTAPI    DbgBreakPoint(VOID);
 NTSTATUS    NTAPI    LdrGetDllHandle(SIZE_T,SIZE_T,const UNICODE_STRING*,HMODULE*);
 NTSTATUS    NTAPI    LdrGetProcedureAddress(PVOID,PANSI_STRING,SIZE_T,PVOID *);
 NTSTATUS    NTAPI    ZwQuerySystemInformation(IN SYSTEM_INFORMATION_CLASS,PVOID,SIZE_T,PULONG);
 NTSTATUS    NTAPI    ZwTerminateThread(HANDLE,NTSTATUS);
-
-/*
-typedef enum _LATENCY_TIME {
-    LT_DONT_CARE,
-    LT_LOWEST_LATENCY
-} LATENCY_TIME, *PLATENCY_TIME;
-
-typedef enum _SYSTEM_POWER_STATE {
-    PowerSystemUnspecified,
-    PowerSystemWorking,
-    PowerSystemSleeping1,
-    PowerSystemSleeping2,
-    PowerSystemSleeping3,
-    PowerSystemHibernate,
-    PowerSystemShutdown,
-    PowerSystemMaximum
-} SYSTEM_POWER_STATE, *PSYSTEM_POWER_STATE;
-#define POWER_SYSTEM_MAXIMUM PowerSystemMaximum
-
-typedef enum {
-    PowerActionNone,
-    PowerActionReserved,
-    PowerActionSleep,
-    PowerActionHibernate,
-    PowerActionShutdown,
-    PowerActionShutdownReset,
-    PowerActionShutdownOff,
-    PowerActionWarmEject
-} POWER_ACTION, *PPOWER_ACTION;
-*/
 
 /*
 * This is the definition for the data structure that is passed in to

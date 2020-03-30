@@ -1,14 +1,12 @@
 ﻿;------------------------------------------------------------------------------
 ; UltraDefrag GUI Bulgarian Language Pack.
 ; Copyright (C) 2010-2012 Dmitri Arkhangelski.
+; Copyright (C) 2012 Georgi Dimov.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 1900} by {Replace with your name}
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Bulgarian.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -20,146 +18,155 @@
 
 ; Main Menu
 
-ACTION                    = &Действие
-REPORT                    = До&клад
-SETTINGS                  = &Настройки
-HELP                      = &Помощ
+ACTION                    = Действие
+REPORT                    = Доклад
+SETTINGS                  = На&стройки
+HELP                      = Помощ
 
 ; --- Action Menu
 
 ANALYSE                   = &Анализ
 DEFRAGMENT                = &Дефрагментация
-QUICK_OPTIMIZE            = &Бърза оптимизация
-FULL_OPTIMIZE             = &Пълна оптимизация
-OPTIMIZE_MFT              = Оптимизация MFT
+QUICK_OPTIMIZE            = Бърза оптимизация
+FULL_OPTIMIZE             = Пълна оптимизация
+OPTIMIZE_MFT              = Оптимизация на MFT
 STOP                      = &Стоп
-REPEAT_ACTION             = Позволи повторение
-SKIP_REMOVABLE_MEDIA      = Пропуск сменяеми &носители
-RESCAN_DRIVES             = &Обнови
-REPAIR_DRIVES             = Поправям дискове
-WHEN_DONE                 = След &работи
-EXIT                      = &Изход
+REPEAT_ACTION             = Повтаряне
+SKIP_REMOVABLE_MEDIA      = Пропускане на с&меняеми носители
+RESCAN_DRIVES             = Ново сканиране на ди&скове
+REPAIR_DRIVES             = Поправка на дискове
+WHEN_DONE                 = След завършване
+EXIT                      = Из&ход
 
 ; --- --- When done submenu
 
 WHEN_DONE_NONE            = &Нищо
-WHEN_DONE_EXIT            = &Изход
-WHEN_DONE_STANDBY         = &Сън
-WHEN_DONE_HIBERNATE       = &Хибернация
-WHEN_DONE_LOGOFF          = И&зход от системата
-WHEN_DONE_REBOOT          = &Рестартиране
-WHEN_DONE_SHUTDOWN        = Из&ключване
+WHEN_DONE_EXIT            = Из&ход
+WHEN_DONE_STANDBY         = За&спиване
+WHEN_DONE_HIBERNATE       = Замразяване
+WHEN_DONE_LOGOFF          = Изход от системата
+WHEN_DONE_REBOOT          = &Рестарт
+WHEN_DONE_SHUTDOWN        = Изключване
 
 ; --- Report Menu
 
-SHOW_REPORT               = &Показват доклад
+SHOW_REPORT               = Показване на доклад
 
 ; --- Settings Menu
 
-LANGUAGE                  = &Език
-GRAPHICAL_INTERFACE       = &Графичен интерфейс
-BOOT_TIME_SCAN            = &Работа при стартиране Windows
-REPORTS                   = &Доклади
+LANGUAGE                  = Език
+GRAPHICAL_INTERFACE       = Графичен интерфейс
+BOOT_TIME_SCAN            = Сканиране преди зареждане на Windows
+REPORTS                   = Доклади
 
 ; --- --- Language submenu
 
-TRANSLATIONS_FOLDER       = &Папка с преводи
+TRANSLATIONS_CHANGE_LOG   = &Виж дневника с промени
+TRANSLATIONS_REPORT       = Виж доклада с п&реводи
+TRANSLATIONS_FOLDER       = Папка с преводи
+TRANSLATIONS_SUBMIT       = Приемане на текущия превод
 
 ; --- --- Graphical interface submenu
 
-FONT                      = &Шрифт
+FONT                      = Шрифт
 OPTIONS                   = &Опции
 
 ; --- --- Boot time scan submenu
 
-ENABLE                    = &Включи
+ENABLE                    = Разр&еши
 SCRIPT                    = &Сценарий
 
 ; --- Help Menu
 
 CONTENTS                  = &Съдържание
-BEST_PRACTICE             = &Най-добри практики
-FAQ                       = &ЧЗВ (FAQ)
+BEST_PRACTICE             = Най-добри &практики
+FAQ                       = ЧЗВ (FAQ)
 CM_LEGEND                 = &Легенда на картата
-CHECK_UPDATE              = &Проверка за актуализации
-ABOUT                     = &За програмата
+DEBUG                     = Де&бъг
+CHECK_UPDATE              = Проверка за акт&уализации
+ABOUT                     = За програмата
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Отваряне на дневника
+REPORT_BUG                = Изпращане на доклад за бъгове
 
 ; --- Toolbar Tooltips
 
-BOOT_TIME_SCRIPT          = Сценарий при стартиране Windows
+BOOT_TIME_SCRIPT          = Сценарий преди зареждане на Windows
 
 ; Drives list items.
 
 VOLUME                    = Диск
-STATUS                    = Статус
-TOTAL                     = Общо пространство
-FREE                      = Свободно пространство
+STATUS                    = Състояние
+TOTAL                     = Общо
+FREE                      = Свободно
 PERCENT                   = Процент
 
 ; Status messages
 
-STATUS_RUNNING            = Извършени
+STATUS_RUNNING            = Извършено
 STATUS_ANALYSED           = Анализиран
 STATUS_DEFRAGMENTED       = Дефрагментиран
 STATUS_OPTIMIZED          = Оптимизиран
-STATUS_DIRTY              = Диск трябва да бъдат поправя 
+STATUS_DIRTY              = Дискът трябва да се ремонтира
 
 ; Status bar messages.
 
 DIRS                      = папки
-FILES                     = файлове
-FRAGMENTED                = фрагментиран
-COMPRESSED                = компресиран
+FILES                     = файла
+FRAGMENTED                = фрагментирани
+COMPRESSED                = компресирани
 
 ; About window.
 
 ABOUT_WIN_TITLE           = За Ultra Defragmenter
-CREDITS                   = &Авторите
+CREDITS                   = За &Авторите
 LICENSE                   = &Лиценз
 
 ; Shutdown confirmation
 
 PLEASE_CONFIRM            = Моля, потвърдете
-REALLY_SHUTDOWN_WHEN_DONE = Наистина ли желаете изключване след работи?
-REALLY_HIBERNATE_WHEN_DONE= Наистина ли желаете хибернации след работи?
-REALLY_LOGOFF_WHEN_DONE   = Наистина ли желаете изхода от системата след работи?
-REALLY_REBOOT_WHEN_DONE   = Наистина ли желаете рестартирани след работи?
-SECONDS_TILL_SHUTDOWN     = секунди преди изключване
-SECONDS_TILL_HIBERNATION  = секунди преди хибернации
-SECONDS_TILL_LOGOFF       = секунди преди изхода от системата
-SECONDS_TILL_REBOOT       = секунди преди рестартирани
-YES                       = &Да
+REALLY_SHUTDOWN_WHEN_DONE = Наистина ли желаете изключване след завършване?
+REALLY_HIBERNATE_WHEN_DONE= Наистина ли желаете замразяване след завършване?
+REALLY_LOGOFF_WHEN_DONE   = Наистина ли желаете изход от системата след завършване?
+REALLY_REBOOT_WHEN_DONE   = Наистина ли желаете рестарт след завършване?
+SECONDS_TILL_SHUTDOWN     = секунди до изключване
+SECONDS_TILL_HIBERNATION  = секунди до замразяване
+SECONDS_TILL_LOGOFF       = секунди до изход от системата
+SECONDS_TILL_REBOOT       = секунди до рестарт
+YES                       = Да
 NO                        = &Не
 
 ; Upgrade dialog
 
-UPGRADE_CAPTION           = Можете да ме актуализира ^-^
+UPGRADE_CAPTION           = Може да ме актуализирате ^-^
 UPGRADE_MESSAGE           = версия е достъпна за изтегляне!
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 
-JOB_IS_RUNNING            = Работа
+JOB_IS_RUNNING            = Работя...
 
 ; Strings for system tray icon context menu.
 
 SHOW                      = Показване
-HIDE                      = Скрий
+HIDE                      = Скриване
 
 ; Strings for the file fragmentation reports.
 
 FRAGMENTED_FILES_ON       = Фрагментирани файлове на
 
 VISIT_HOMEPAGE            = Посетете нашия сайт
-VIEW_REPORT_OPTIONS       = Отчитане опции
-POWERED_BY_LUA            = Работи на Lua
+VIEW_REPORT_OPTIONS       = Преглед на опции
+POWERED_BY_LUA            = Работи под Lua
 
-FRAGMENTS                 = броят на фрагментите
+FRAGMENTS                 = фрагменти
 SIZE                      = размер
 FILENAME                  = име на файла
 COMMENT                   = коментар
 
-LOCKED                    = блокиран
+LOCKED                    = заключен
 MOVE_FAILED               = не успя да премести
-INVALID                   = грешка в алгоритъма или в файловата система
+INVALID                   = грешка в алгоритъма или във файловата система
 
 ; END OF FILE

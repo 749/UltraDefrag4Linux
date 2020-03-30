@@ -35,9 +35,11 @@
  * @htmlonly
  * <table style="border:none; margin-left:20px;">
  * <tr><td>• Arabic                       </td><td>-</td><td> Ahmed Arbaoui</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Awadh A Al-Ghaamdi</td></tr>
  * <tr><td>• Belarusian                   </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
  * <tr><td>• Bosanski                     </td><td>-</td><td> Timur Ljubunčić</td></tr>
  * <tr><td>• Bulgarian                    </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Georgi Dimov</td></tr>
  * <tr><td>• Burmese (Padauk)             </td><td>-</td><td> Muhammed Widuya</td></tr>
  * <tr><td>• Catalan                      </td><td>-</td><td> Illes Balears</td></tr>
  * <tr><td>                               </td><td>-</td><td> Joseph S. B. Maza</td></tr>
@@ -67,7 +69,7 @@
  * <tr><td>                               </td><td>-</td><td> Stefan Pendl</td></tr>
  * <tr><td>• Finnish                      </td><td>-</td><td> jtl</td></tr>
  * <tr><td>                               </td><td>-</td><td> Stefan Pendl</td></tr>
- * <tr><td>• French (FR)                  </td><td>-</td><td> Pascal Crozet</td></tr>
+ * <tr><td>• French                       </td><td>-</td><td> Pascal Crozet</td></tr>
  * <tr><td>                               </td><td>-</td><td> Jérôme Blum</td></tr>
  * <tr><td>                               </td><td>-</td><td> Mathieu Van Weersch</td></tr>
  * <tr><td>                               </td><td>-</td><td> Marina Louwrier-Johannsen</td></tr>
@@ -80,6 +82,7 @@
  * <tr><td>• Greek                        </td><td>-</td><td> Konstantinos Kapoukranidis</td></tr>
  * <tr><td>• Hebrew                       </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
  * <tr><td>• Hindi                        </td><td>-</td><td> Gaurav Chatterjee</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Utkarsh Ray</td></tr>
  * <tr><td>• Hungarian                    </td><td>-</td><td> Nagy Zsolt</td></tr>
  * <tr><td>                               </td><td>-</td><td> Áron Hegedüs</td></tr>
  * <tr><td>                               </td><td>-</td><td> Gellért Lukács</td></tr>
@@ -104,12 +107,12 @@
  * <tr><td>                               </td><td>-</td><td> 4Li</td></tr>
  * <tr><td>• Latin                        </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
  * <tr><td>• Latvian                      </td><td>-</td><td> Sevelyr</td></tr>
- * <tr><td>                               </td><td>-</td><td> Vladislav Stuzhnev</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Vladislav Stuznev</td></tr>
  * <tr><td>• Macedonian                   </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
  * <tr><td>• Norwegian                    </td><td>-</td><td> Sveinung Heggen</td></tr>
  * <tr><td>                               </td><td>-</td><td> Stefan Pendl</td></tr>
  * <tr><td>• Polish                       </td><td>-</td><td> Andrzej Rudnik</td></tr>
- * <tr><td>                               </td><td>-</td><td> Krzysztof Swiderski</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Krzysztof Świderski</td></tr>
  * <tr><td>                               </td><td>-</td><td> Ireneusz Chorosz</td></tr>
  * <tr><td>                               </td><td>-</td><td> Mateusz Kacprzak</td></tr>
  * <tr><td>• Portuguese (BR)              </td><td>-</td><td> Depeo da Masol</td></tr>
@@ -139,7 +142,7 @@
  * <tr><td>                               </td><td>-</td><td> Vedat Odabasioglu</td></tr>
  * <tr><td>                               </td><td>-</td><td> Şahin Salincakli</td></tr>
  * <tr><td>• Ukrainian                    </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
- * <tr><td>• Vietnamese (VI)              </td><td>-</td><td> Vietnamize Team</td></tr>
+ * <tr><td>• Vietnamese                   </td><td>-</td><td> Vietnamize Team</td></tr>
  * <tr><td>• Wáray-Wáray                  </td><td>-</td><td> Harvey Fiji</td></tr>
  * <tr><td>•                              </td><td>-</td><td> Voltaire Oyzon</td></tr>
  * <tr><td>• Yiddish                      </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
@@ -149,9 +152,11 @@
  * @latexonly
  * \par\begin{Indent}\begin{xtabular}{p{0.4\linewidth}cl}
  * • Arabic                        & - & Ahmed Arbaoui \\
+ *                                 & - & Awadh A Al-Ghaamdi \\
  * • Belarusian                    & - & Dmitri Arkhangelski \\
- * • Bosanski                      & - & Timur Ljubuncic \\
+ * • Bosanski                      & - & Timur Ljubunčić \\
  * • Bulgarian                     & - & Dmitri Arkhangelski \\
+ *                                 & - & Georgi Dimov \\
  * • Burmese (Padauk)              & - & Muhammed Widuya \\
  * • Catalan                       & - & Illes Balears \\
  *                                 & - & Joseph S. B. Maza \\
@@ -164,7 +169,7 @@
  *                                 & - & Ryan Ping Chih Ko \\
  *                                 & - & rexx \\
  *                                 & - & James Bond \\
- * • Croatian                      & - & Denis Jelicic \\
+ * • Croatian                      & - & Denis Jeličić \\
  *                                 & - & Dmitri Arkhangelski \\
  *                                 & - & Mladen Ivošević \\
  * • Czech                         & - & David Horák /Dave MacBlack/ \\
@@ -181,7 +186,7 @@
  *                                 & - & Stefan Pendl \\
  * • Finnish                       & - & jtl \\
  *                                 & - & Stefan Pendl \\
- * • French (FR)                   & - & Pascal Crozet \\
+ * • French                        & - & Pascal Crozet \\
  *                                 & - & Jérôme Blum \\
  *                                 & - & Mathieu Van Weersch \\
  *                                 & - & Marina Louwrier-Johannsen \\
@@ -194,6 +199,7 @@
  * • Greek                         & - & Konstantinos Kapoukranidis \\
  * • Hebrew                        & - & Dmitri Arkhangelski \\
  * • Hindi                         & - & Gaurav Chatterjee \\
+ *                                 & - & Utkarsh Ray \\
  * • Hungarian                     & - & Nagy Zsolt \\
  *                                 & - & Áron Hegedüs \\
  *                                 & - & Gellért Lukács \\
@@ -218,12 +224,12 @@
  *                                 & - & 4Li \\
  * • Latin                         & - & Dmitri Arkhangelski \\
  * • Latvian                       & - & Sevelyr \\
- *                                 & - & Vladislav Stuzhnev \\
+ *                                 & - & Vladislav Stuznev \\
  * • Macedonian                    & - & Dmitri Arkhangelski \\
  * • Norwegian                     & - & Sveinung Heggen \\
  *                                 & - & Stefan Pendl \\
  * • Polish                        & - & Andrzej Rudnik \\
- *                                 & - & Krzysztof Swiderski \\
+ *                                 & - & Krzysztof Świderski \\
  *                                 & - & Ireneusz Chorosz \\
  *                                 & - & Mateusz Kacprzak \\
  * • Portuguese (BR)               & - & Depeo da Masol \\
@@ -251,9 +257,9 @@
  * • Thai                          & - & Pat Taweewat \\
  * • Turkish                       & - & Huseyin Kozan \\
  *                                 & - & Vedat Odabasioglu \\
- *                                 & - & Sahin Salincakli \\
+ *                                 & - & Şahin Salincakli \\
  * • Ukrainian                     & - & Dmitri Arkhangelski \\
- * • Vietnamese (VI)               & - & Vietnamize Team \\
+ * • Vietnamese                    & - & Vietnamize Team \\
  * • Wáray-Wáray                   & - & Harvey Fiji \\
  * •                               & - & Voltaire Oyzon \\
  * • Yiddish                       & - & Dmitri Arkhangelski \\
@@ -498,23 +504,28 @@
  *
  * Special thanks for correcting and updating translations (in alphabetical order):
  *
- * - Alessandro Visentin
+ * - Alper Tiryakioglu
+ * - Antonio Vivace
  * - Benny Stütz
- * - Christoffer Ekberg
  * - Connection
+ * - Dandy Cheung
+ * - Daniel Rodríguez
  * - Dionisios Klonaris
  * - Erwin Dokter
+ * - Fabrizio Marana
  * - Francisco Ortega Olivos
  * - FS
- * - Gellért Lukács
  * - Giulio Fornasar
  * - Haein Jung
  * - Harald Arnesen
  * - Jan Iemhoff
+ * - Luigi C.
+ * - Denis Jeličić
+ * - Javier Valdivieso
  * - Joseph S. B. Maza
+ * - Joseph S. Maza
  * - José Carlos Taveira de Souza
  * - José Luis Farías
- * - kako
  * - Ken Choy
  * - Latino
  * - Leo Smulders
@@ -523,9 +534,12 @@
  * - Patrick Palm
  * - Reynald Didier
  * - Robert Jr
+ * - Rodrigo Lopes Paitach
+ * - Seph
  * - SMHA
  * - Timo VJ Lähde
  * - translucens
+ * - Zirikkanen
  *
  * Special thanks for extensive testing (in alphabetical order):
  *

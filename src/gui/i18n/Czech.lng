@@ -6,11 +6,7 @@
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
 ; Revised Apr. 17, 2012 by Jiri Sedlak
-; Revised Apr. 22, 2012 by Pavel Kinkor
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Czech.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -65,7 +61,10 @@ REPORTS                   = Zprávy
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = Zobrazit změny překladu
+TRANSLATIONS_REPORT       = Zobrazit protokol překladu
 TRANSLATIONS_FOLDER       = Jazyková složka
+TRANSLATIONS_SUBMIT       = Potvrdit aktuální překlad
 
 ; --- --- Graphical interface submenu
 
@@ -83,8 +82,14 @@ CONTENTS                  = Obsah
 BEST_PRACTICE             = Osvědčené postupy
 FAQ                       = Často kladené otázky
 CM_LEGEND                 = Legenda k mapě svazku
+DEBUG                     = Ladit
 CHECK_UPDATE              = Zjistit aktualizace
 ABOUT                     = O aplikaci
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Otevřít log
+REPORT_BUG                = Odeslat chybový protokol
 
 ; --- Toolbar Tooltips
 

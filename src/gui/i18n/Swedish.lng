@@ -9,9 +9,6 @@
 ; Revised Aug. 17, 2010 by Patrick Palm
 ;------------------------------------------------------------------------------
 
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Swedish.lng
-
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
 
@@ -65,7 +62,10 @@ REPORTS                   = Rapporter
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = &Visa Ändra logg
+TRANSLATIONS_REPORT       = Visa översättning &rapport
 TRANSLATIONS_FOLDER       = Översättningsmapp
+TRANSLATIONS_SUBMIT       = &Lämna ström översättning
 
 ; --- --- Graphical interface submenu
 
@@ -83,8 +83,14 @@ CONTENTS                  = Innehåll
 BEST_PRACTICE             = Tips och råd
 FAQ                       = Vanliga frågor
 CM_LEGEND                 = Förklaring av klusterkarta
+DEBUG                     = De&bug
 CHECK_UPDATE              = Sök efter uppdatering
 ABOUT                     = Om
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Öppna &logg
+REPORT_BUG                = Skicka &felrapport
 
 ; --- Toolbar Tooltips
 

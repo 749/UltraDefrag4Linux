@@ -4,11 +4,8 @@
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 1900} by {Replace by Name of Reviser}
+; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Georgian.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -63,7 +60,10 @@ REPORTS                   = &ანგარიშები
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = &ცვლილებების ნახვა
+TRANSLATIONS_REPORT       = თარგმანის ანგარიშის ნახვა
 TRANSLATIONS_FOLDER       = &თარგმანების საქაღალდე
+TRANSLATIONS_SUBMIT       = &მიმდინარე თარგმანის გაგზავნა
 
 ; --- --- Graphical interface submenu
 
@@ -81,8 +81,14 @@ CONTENTS                  = &დახმარების ფაილი
 BEST_PRACTICE             = &სასარგებლო რჩევები
 FAQ                       = &ხშირად დასმული კითხვები
 CM_LEGEND                 = კლასტერების რუკის ლეგენდა
+DEBUG                     = გას&წორება
 CHECK_UPDATE              = განახლების შემოწმება
 ABOUT                     = &პროგრამის შესახებ
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = ჟურნალის &გახსნა
+REPORT_BUG                = შეცდომის &შეტყობინება
 
 ; --- Toolbar Tooltips
 

@@ -327,6 +327,8 @@ Function .onInstSuccess
 
     ${UpdateUninstallSizeValue}
 
+    ${RegisterInstallationFolder}
+
 FunctionEnd
 
 Function un.onUninstSuccess
@@ -337,6 +339,8 @@ Function un.onUninstSuccess
 
     DetailPrint "Cleanup registry..."
     DeleteRegKey HKLM ${UD_UNINSTALL_REG_KEY}
+
+    ${UnRegisterInstallationFolder}
 
 FunctionEnd
 

@@ -6,12 +6,9 @@
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised Nov.  1, 2010 by translucens
-; Revised Nov.  5, 2011 by Dmitri Arkhangelski
+; Revised Nov. 01, 2010 by translucens
+; Revised Nov. 05, 2011 by Dmitri Arkhangelski
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Japanese.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -66,7 +63,10 @@ REPORTS                   = レポートファイルの設定
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = ログを変更して表示
+TRANSLATIONS_REPORT       = 翻訳レポートを表示する
 TRANSLATIONS_FOLDER       = 言語ファイルのフォルダ
+TRANSLATIONS_SUBMIT       = 現在の翻訳文を提出する
 
 ; --- --- Graphical interface submenu
 
@@ -84,8 +84,14 @@ CONTENTS                  = 目次
 BEST_PRACTICE             = 使い方のヒント
 FAQ                       = FAQ
 CM_LEGEND                 = クラスタマップの凡例
+DEBUG                     = デバッグ
 CHECK_UPDATE              = アップデートを確認(&U)
 ABOUT                     = UltraDefrag について
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = ログを開きます。
+REPORT_BUG                = バグレポートを送る
 
 ; --- Toolbar Tooltips
 

@@ -4,11 +4,8 @@
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised Apr. 25, 2012 by Dionisios Klonaris
+; Revised May 17, 2012 by Dionisios Klonaris
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Greek.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -63,7 +60,10 @@ REPORTS                   = Αναφορές
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = &Επισκόπηση αρχείου καταγραφής
+TRANSLATIONS_REPORT       = Επισκόπηση αναφοράς &μετραφράσεων
 TRANSLATIONS_FOLDER       = Φάκελος μεταφράσεων
+TRANSLATIONS_SUBMIT       = &Υποβολή ενημερωμένης μετάφρασης
 
 ; --- --- Graphical interface submenu
 
@@ -81,8 +81,14 @@ CONTENTS                  = Περιεχόμενα
 BEST_PRACTICE             = Καλύτερη πρακτική
 FAQ                       = ΣΕΑ(FAQ)
 CM_LEGEND                 = Χάρτης συστοιχιών και υπόμνημα
+DEBUG                     = &Αποσφαλμάτωση
 CHECK_UPDATE              = Έλεγχος για ενημερώσεις
 ABOUT                     = Σχετικά
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Άνοιγμα αρχείου &καταγραφής
+REPORT_BUG                = Αποστολή αναφοράς &σφαλμάτων
 
 ; --- Toolbar Tooltips
 

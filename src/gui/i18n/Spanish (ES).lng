@@ -1,17 +1,15 @@
 ﻿;------------------------------------------------------------------------------
 ; UltraDefrag GUI Spanish (ES) Language Pack.
 ; Copyright (C) 2010 Txusti.
+; Copyright (C) 2010, 2011 Juan C. Mendez Valledor.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised Nov. 30, 2010 by Juan C. Mendez Valledor
 ; Revised Mar. 18, 2011 by Joseph S. Maza
-; Revised Aug.  3, 2011 by Francisco Ortega Olivos
-; Revised Nov. 12, 2011 by Juan C. Mendez Valledor
+; Revised Aug. 03, 2011 by Francisco Ortega Olivos
+; Revised May  06, 2012 by Javier Valdivieso
+; Revised June 06, 2012 by Daniel Rodríguez
 ;------------------------------------------------------------------------------
-
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Spanish+%28ES%29.lng
 
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
@@ -31,15 +29,15 @@ HELP                      = Ay&uda
 ; --- Action Menu
 
 ANALYSE                   = &Analizar
-DEFRAGMENT                = &Desfragmentar
+DEFRAGMENT                = &Defragmentar
 QUICK_OPTIMIZE            = &Optimización rápida
 FULL_OPTIMIZE             = Optimización &completa
 OPTIMIZE_MFT              = Optimización de &MFT
 STOP                      = &Detener
 REPEAT_ACTION             = Re&petir acción
 SKIP_REMOVABLE_MEDIA      = Ignorar discos e&xtraíbles
-RESCAN_DRIVES             = Actuali&zar
-REPAIR_DRIVES             = las unidades de reparación
+RESCAN_DRIVES             = &Escanear particiones
+REPAIR_DRIVES             = &Reparar particiones
 WHEN_DONE                 = Al &finalizar...
 EXIT                      = &Salir
 
@@ -66,7 +64,10 @@ REPORTS                   = Infor&mes
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = &Ver lista de cambios
+TRANSLATIONS_REPORT       = Ver &informes de tranducción
 TRANSLATIONS_FOLDER       = &Carpeta de traducciones
+TRANSLATIONS_SUBMIT       = &Enviar traducción actual
 
 ; --- --- Graphical interface submenu
 
@@ -83,9 +84,15 @@ SCRIPT                    = &Comandos
 CONTENTS                  = &Contenidos
 BEST_PRACTICE             = &Procedimientos recomendados
 FAQ                       = Preguntas &frecuentes
-CM_LEGEND                 = Grupo leyenda del mapa
-CHECK_UPDATE              = Buscar actualizaciones
+CM_LEGEND                 = &Grupo leyenda del mapa
+DEBUG                     = De&bug
+CHECK_UPDATE              = &Buscar actualizaciones
 ABOUT                     = &Acerca de...
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Abrir &log
+REPORT_BUG                = Enviar &informe de fallo
 
 ; --- Toolbar Tooltips
 
@@ -103,16 +110,16 @@ PERCENT                   = % libre
 
 STATUS_RUNNING            = Ejecutando
 STATUS_ANALYSED           = Analizado
-STATUS_DEFRAGMENTED       = Desfragmentado
+STATUS_DEFRAGMENTED       = Defragmentado
 STATUS_OPTIMIZED          = Optimizado
 STATUS_DIRTY              = Disco que necesita ser reparado
 
 ; Status bar messages.
 
-DIRS                      = carpetas
-FILES                     = archivos
-FRAGMENTED                = fragmentados
-COMPRESSED                = comprimidos
+DIRS                      = Directorios
+FILES                     = Archivos
+FRAGMENTED                = Fragmentados
+COMPRESSED                = Comprimidos
 
 ; About window.
 
@@ -127,21 +134,21 @@ REALLY_SHUTDOWN_WHEN_DONE = ¿Desea apagar el equipo al terminar?
 REALLY_HIBERNATE_WHEN_DONE= ¿Desea hibernar el equipo al terminar?
 REALLY_LOGOFF_WHEN_DONE   = ¿Desea cerrar la sesión al terminar?
 REALLY_REBOOT_WHEN_DONE   = ¿Desea reiniciar el equipo al terminar?
-SECONDS_TILL_SHUTDOWN     = segundos para apagar
-SECONDS_TILL_HIBERNATION  = segundos para hibernar
-SECONDS_TILL_LOGOFF       = segundos para cerrar sesión
-SECONDS_TILL_REBOOT       = segundos para reiniciar
+SECONDS_TILL_SHUTDOWN     = Segundos para apagar
+SECONDS_TILL_HIBERNATION  = Segundos para hibernar
+SECONDS_TILL_LOGOFF       = Segundos para cerrar sesión
+SECONDS_TILL_REBOOT       = Segundos para reiniciar
 YES                       = &Sí
 NO                        = &No
 
 ; Upgrade dialog
 
-UPGRADE_CAPTION           = Usted me puede actualizar ^-^
-UPGRADE_MESSAGE           = versión está disponible para su descarga!
+UPGRADE_CAPTION           = Actualizar leyenda
+UPGRADE_MESSAGE           = Actualizar mensaje
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 
-JOB_IS_RUNNING            = Un trabajo se está ejecutando
+JOB_IS_RUNNING            = Ejecutando operación
 
 ; Strings for system tray icon context menu.
 
@@ -150,19 +157,19 @@ HIDE                      = Ocultar
 
 ; Strings for the file fragmentation reports.
 
-FRAGMENTED_FILES_ON       = Los archivos fragmentados en
+FRAGMENTED_FILES_ON       = Archivos fragmentados en
 
 VISIT_HOMEPAGE            = Visita nuestra página de inicio
-VIEW_REPORT_OPTIONS       = Ver las opciones de informe
-POWERED_BY_LUA            = Desarrollado por Lua
+VIEW_REPORT_OPTIONS       = Ver las opciones del informe
+POWERED_BY_LUA            = Desarrollado por LUA
 
-FRAGMENTS                 = fragmentos
-SIZE                      = tamaño
-FILENAME                  = nombre de archivo
-COMMENT                   = comentario
+FRAGMENTS                 = Fragmentos
+SIZE                      = Tamaño
+FILENAME                  = Nombre de archivo
+COMMENT                   = Comentario
 
-LOCKED                    = cerrado
-MOVE_FAILED               = no se mueven
-INVALID                   = inválido
+LOCKED                    = Cerrado
+MOVE_FAILED               = Error al mover
+INVALID                   = Inválido
 
 ; END OF FILE

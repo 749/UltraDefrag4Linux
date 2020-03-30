@@ -29,11 +29,10 @@
 void kb_close(void);
 int winx_create_global_heap(void);
 void winx_destroy_global_heap(void);
-int winx_init_synch_objects(void);
-void winx_destroy_synch_objects(void);
+int winx_dbg_init(void);
+void winx_dbg_close(void);
 void MarkWindowsBootAsSuccessful(void);
 char *winx_get_error_description(unsigned long status);
-void flush_dbg_log(int already_synchronized);
 
 /**
  * @internal
@@ -121,7 +120,7 @@ int winx_init_library(void *peb)
 
     if(winx_create_global_heap() < 0)
         return (-1);
-    if(winx_init_synch_objects() < 0)
+    if(winx_dbg_init() < 0)
         return (-1);
     initialization_failed = 0;
     return 0;
@@ -147,7 +146,7 @@ int winx_init_failed(void)
  */
 void winx_unload_library(void)
 {
-    winx_destroy_synch_objects();
+    winx_dbg_close();
     winx_destroy_global_heap();
 }
 
@@ -183,7 +182,7 @@ void winx_exit(int exit_code)
     NTSTATUS Status;
     
     kb_close();
-    flush_dbg_log(0);
+    winx_flush_dbg_log();
     winx_unload_library();
     Status = NtTerminateProcess(NtCurrentProcess(),exit_code);
     if(!NT_SUCCESS(Status)){
@@ -204,7 +203,7 @@ void winx_reboot(void)
     kb_close();
     MarkWindowsBootAsSuccessful();
     (void)winx_enable_privilege(SE_SHUTDOWN_PRIVILEGE);
-    flush_dbg_log(0);
+    winx_flush_dbg_log();
     Status = NtShutdownSystem(ShutdownReboot);
     if(!NT_SUCCESS(Status)){
         print_post_scriptum("winx_reboot: cannot reboot the computer",Status);
@@ -224,7 +223,7 @@ void winx_shutdown(void)
     kb_close();
     MarkWindowsBootAsSuccessful();
     (void)winx_enable_privilege(SE_SHUTDOWN_PRIVILEGE);
-    flush_dbg_log(0);
+    winx_flush_dbg_log();
     Status = NtShutdownSystem(ShutdownPowerOff);
     if(!NT_SUCCESS(Status)){
         print_post_scriptum("winx_shutdown: cannot shut down the computer",Status);

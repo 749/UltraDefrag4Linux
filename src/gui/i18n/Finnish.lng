@@ -8,9 +8,6 @@
 ; Revised Jan. 01, 2012 by Timo VJ Lähde
 ;------------------------------------------------------------------------------
 
-; This translation can be updated/corrected at
-; http://ultradefrag.wikispaces.com/Finnish.lng
-
 ; Please keep the header and comments in English and use Latin letters,
 ; so everyone understands them
 
@@ -64,13 +61,15 @@ REPORTS                   = &Raportit
 
 ; --- --- Language submenu
 
+TRANSLATIONS_CHANGE_LOG   = &Näytä muutos loki
+TRANSLATIONS_REPORT       = Näytä käännös &raportti
 TRANSLATIONS_FOLDER       = &Kielitiedostojen kansio
+TRANSLATIONS_SUBMIT       = &Lähetä nykyinen käännös
 
 ; --- --- Graphical interface submenu
 
 FONT                      = &Fontti
-OPTIONS                   = &Optiot
-
+OPTIONS                   = &Vaihtoehdot
 ; --- --- Boot time scan submenu
 
 ENABLE                    = &Käytä
@@ -82,8 +81,14 @@ CONTENTS                  = &Sisältö
 BEST_PRACTICE             = &Parhaat käytännöt
 FAQ                       = &Usein kysytyt kysymykset
 CM_LEGEND                 = Cluster kartta &legenda
+DEBUG                     = De&bug
 CHECK_UPDATE              = &Tarkista päivitykset
 ABOUT                     = &Ohjelmasta
+
+; --- --- Debug submenu
+
+OPEN_LOG                  = Open &log
+REPORT_BUG                = Send bug &report
 
 ; --- Toolbar Tooltips
 
@@ -103,7 +108,7 @@ STATUS_RUNNING            = Käynnissä
 STATUS_ANALYSED           = Analysoitu
 STATUS_DEFRAGMENTED       = Eheytetty
 STATUS_OPTIMIZED          = Optimoitu
-STATUS_DIRTY              = Levyn pitää korjata
+STATUS_DIRTY              = Levy pitää korjata
 
 ; Status bar messages.
 
@@ -134,7 +139,7 @@ NO                        = Ei
 
 ; Upgrade dialog
 
-UPGRADE_CAPTION           = Voit päivittää minua ^-^
+UPGRADE_CAPTION           = Voit päivittää minut ^-^
 UPGRADE_MESSAGE           = julkaisu on ladattavissa!
 
 ; A string for the taskbar icon overlay, needed for accessibility.
@@ -143,15 +148,15 @@ JOB_IS_RUNNING            = Työ on käynnissä
 
 ; Strings for system tray icon context menu.
 
-SHOW                      = Näyttää
-HIDE                      = Piiloutua
+SHOW                      = Näytä
+HIDE                      = Piilota
 
 ; Strings for the file fragmentation reports.
 
 FRAGMENTED_FILES_ON       = Pirstoutuneet tiedostot
 
 VISIT_HOMEPAGE            = Käy kotisivuillamme
-VIEW_REPORT_OPTIONS       = Näytä raportti vaihtoehtoja
+VIEW_REPORT_OPTIONS       = Näytä raportti vaihtoehdot
 POWERED_BY_LUA            = Powered by Lua
 
 FRAGMENTS                 = sirpaleet
@@ -160,7 +165,7 @@ FILENAME                  = tiedoston nimi
 COMMENT                   = kommentti
 
 LOCKED                    = lukittu
-MOVE_FAILED               = siirrä epäonnistui
+MOVE_FAILED               = siirto epäonnistui
 INVALID                   = pätemätön
 
 ; END OF FILE
