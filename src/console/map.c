@@ -172,6 +172,7 @@ void RedrawMap(udefrag_progress_info *pi)
         if (buf) buf[0] = glyphs[W];
         for(j = 0; j < map_symbols_per_line; j++){
             count = (int)cluster_map[i * map_symbols_per_line + j];
+            color = count;
             switch(count) {
             case UNUSED_MAP_SPACE : c = '/'; break;
             case FREE_SPACE : c = '.'; break;
@@ -188,8 +189,15 @@ void RedrawMap(udefrag_progress_info *pi)
             case MFT_ZONE_SPACE : c = 'm'; break;
             case MFT_SPACE : c = 'M'; break;
             default :
+                color = 14;
             case TEMPORARY_SYSTEM_SPACE : c = 't'; break;
             }
+#ifdef CURSES
+            if(prev_color != colors[color]) {
+                settextcolor(colors[color]);
+                prev_color = colors[color];
+            }
+#endif
             set_map(i+1,j+1,c);
             if (buf) buf[j+1] = c;
         }

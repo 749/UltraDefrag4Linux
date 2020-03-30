@@ -18,13 +18,14 @@
 % : %.s
 
 GCC=gcc
+GCC_VERSION=$(shell expr `$(GCC) -dumpversion`)
 LD=ld
 AR=ar
 INCL=-I/usr/include -Iinclude
 COPT=-DLXGC=1 -O2
 GCCOPT=-DLXGC=1 -O2
 LIB1=/usr/lib64
-LIB2=/usr/lib/gcc/x86_64-redhat-linux/4.9.2
+LIB2=/usr/lib/gcc/x86_64-pc-linux-gnu/$(GCC_VERSION)
 NTFSLIB=/lib64/libntfs-3g.so.*.0.0
 
 A=console.a udefrag.a zenwinx.a wincalls.a

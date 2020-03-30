@@ -51,6 +51,11 @@ extern int trace;
 pthread_mutex_t curseslock;
 #endif
 
+void init_colorpairs(void);
+int colortrans(WORD input);
+int colornum(int fg, int bg);
+short curs_color(int fg);
+
 /*
  *			Console output
  */
@@ -69,6 +74,11 @@ HANDLE WINAPI GetStdHandle(DWORD num)
 		nonl();
 		cbreak();
 		curs_set(0);
+    	if (has_colors()) {
+			start_color();
+	    	use_default_colors();
+			init_colorpairs();
+		}
 		h = (HANDLE)stdscr;
 #ifndef UNTHREADED
 	pthread_mutex_init(&curseslock,(pthread_mutexattr_t*)NULL);
@@ -113,6 +123,13 @@ BOOL WINAPI SetConsoleTextAttribute(HANDLE h, WORD attr)
 #endif
 {
 	/* do not use : multhreading might lead to wrong association to text */
+#ifndef UNTHREADED
+    pthread_mutex_lock(&curseslock);
+#endif
+    attron(COLOR_PAIR(colortrans(attr)));
+#ifndef UNTHREADED
+    pthread_mutex_unlock(&curseslock);
+#endif
 	return (TRUE);
 }
 
@@ -178,6 +195,57 @@ void WINAPI close_console(HANDLE h)
 	curs_set(1);
 	wgetch(stdscr);
 	endwin();
+}
+
+void init_colorpairs(void)
+{
+    int fg, bg;
+    int colorpair;
+
+    for (bg = 0; bg <= 7; bg++) {
+        for (fg = 0; fg <= 7; fg++) {
+            colorpair = colornum(fg, bg);
+            init_pair(colorpair, curs_color(fg), curs_color(bg));
+        }
+    }
+}
+
+int colortrans(WORD input)
+{
+	return (1 << 7) | (input & 7);
+}
+
+int colornum(int fg, int bg)
+{
+    int B, bbb, ffff;
+
+    B = 1 << 7;
+    bbb = (7 & bg) << 4;
+    ffff = 7 & fg;
+
+    return (B | bbb | ffff);
+}
+
+short curs_color(int fg)
+{
+    switch (7 & fg) {           /* RGB */
+    case 0:                     /* 000 */
+        return (COLOR_BLACK);
+    case 1:                     /* 001 */
+        return (COLOR_BLUE);
+    case 2:                     /* 010 */
+        return (COLOR_GREEN);
+    case 3:                     /* 011 */
+        return (COLOR_CYAN);
+    case 4:                     /* 100 */
+        return (COLOR_RED);
+    case 5:                     /* 101 */
+        return (COLOR_MAGENTA);
+    case 6:                     /* 110 */
+        return (COLOR_YELLOW);
+    case 7:                     /* 111 */
+        return (COLOR_WHITE);
+    }
 }
 
 #endif /* CURSES */
