@@ -1,7 +1,7 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 by Dmitri Arkhangelski (dmitriar@gmail.com).
- *  Copyright (c) 2010-2012 by Stefan Pendl (stefanpe@users.sourceforge.net).
+ *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2012 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
  *  under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -16,13 +16,12 @@
  * Freshly used drives can be defragmented immediately; any drive,
  * which has been in use for a long time without maintenance, should
  * be checked for consistency first.
- * <dl>
- * <dt>CHKDSK {Drive:} /F /V</dt>
- * <dd>this checks the drive and repairs it if needed</dd>
- * <dt>CHKDSK {Drive:} /R /F /V</dt>
- * <dd>this checks the drive, repairs it and collects lost clusters
- * if needed (takes quite long, but is the safest)</dd>
- * </dl>
+ * @par CHKDSK {Drive:} /F /V
+ * this checks the drive and repairs it if needed
+ *
+ * @par CHKDSK {Drive:} /R /F /V
+ * this checks the drive, repairs it and collects lost clusters
+ * if needed (takes quite long, but is the safest)
  *
  * <h1>Flash and SSD Drives</h1>
  * The use of disk defragmentation is not recommended on
@@ -43,34 +42,35 @@
  * <h1>Prevent the system from endless boot processing</h1>
  * To prevent the system from a situation where it is not possible to boot into Windows,
  * it is best to turn off boot processing at the top of the boot-time-script.
- * This is done with the <b>boot off</b> command.
+ * This is done with the <b>boot-off</b> command.
  * The boot processing is still executed, but the next boot will not cause another run
  * of the boot time interface.
  *
  * <h1>Performance Considerations</h1>
  * <h2>Performance of UltraDefrag from best to worst</h2>
- * <dl>
- * <dt>Running at Boot Time</dt>
- * <dd>this is the fastest, since there are no other processes running</dd>
- * <dt>Running in Safe Mode</dt>
- * <dd>here are only a limited number of processes running,
- * which are essential to operate Windows</dd>
- * <dt>Running with Anti-virus Software disabled</dt>
- * <dd>read and write operations are not interrupted by the AV process</dd>
- * <dt>Running when the System is fully used</dt>
- * <dd>this is the worst and not recommended at all,
+ * @par Running at Boot Time
+ * this is the fastest, since there are no other processes running
+ *
+ * @par Running in Safe Mode
+ * here are only a limited number of processes running,
+ * which are essential to operate Windows
+ *
+ * @par Running with Anti-virus Software disabled
+ * read and write operations are not interrupted by the AV process
+ *
+ * @par Running when the System is fully used
+ * this is the worst and not recommended at all,
  * since many files are locked by running applications.
- * You should never use this to process entire disks.</dd>
- * <dt>Using quick instead of full optimization</dt>
- * <dd>Quick optimization is much faster than full optimization due to only
+ * You should never use this to process entire disks.
+ *
+ * @par Using quick instead of full optimization
+ * Quick optimization is much faster than full optimization due to only
  * moving fragmented files to the end of the disk first.<br/>
- * This makes it perfectly suited for system and boot drives.</dd>
- * </dl>
- * <span style="color: darkred">
- * You must disable your virus detection software 
- * before using UltraDefrag. Any virus scanner 
- * running during the defragmentation extremely slows down the process.
- * </span>
+ * This makes it perfectly suited for system and boot drives.
+ *
+ * @note
+ * You must disable your virus detection software before using UltraDefrag.
+ * Any virus scanner running during the defragmentation extremely slows down the process.
  *
  * Some Anti-virus programs allow to exclude processes from being
  * monitored, if your Anti-virus program supports this, you can use
@@ -111,11 +111,57 @@
  * Highly fragmented disks will have to be defragmented several
  * times until you will see an improvement.
  *
+ * Sometimes a fragmented USN journal can prevent UltraDefrag from consolidating
+ * free space.
+ * In such a case you can remove the USN journal by executing the
+ * <a href="http://technet.microsoft.com/en-us/library/cc788042%28WS.10%29.aspx">fsutil</a>
+ * command as shown below from an administrative command prompt.
+ * It is recommended to recreate the USN journal after the drive has been processed.
+ *
+ * @par Query USN journal
+ * Use the command line below to get the current settings of the USN journal of drive C:.
+ * Write them down to use them for recreating the USN journal.
+ * @code
+ * fsutil usn queryjournal C:
+ * @endcode
+ *
+ * @par Delete USN journal
+ * Use the command line below to delete the USN journal of drive C:.
+ * @code
+ * fsutil usn deletejournal /n C:
+ * @endcode
+ *
+ * @par Create USN journal
+ * Use the command line below to create the USN journal of drive C:.
+ * A reasonable size of the USN journal is 85Mb for each 100Gb, the delta should be
+ * between
+ * @htmlonly
+ * <sup>1</sup>/<sub>8</sub>
+ * @endhtmlonly
+ * @latexonly
+ * \begin{math}^1/_8\end{math}
+ * @endlatexonly
+ * and
+ * @htmlonly
+ * <sup>1</sup>/<sub>4</sub>
+ * @endhtmlonly
+ * @latexonly
+ * \begin{math}^1/_4\end{math}
+ * @endlatexonly
+ * of the maximum size.
+ * The default values are usually 32Mb maximum size and 4Mb delta.
+ * The example creates an USN journal of default size.
+ * @code
+ * fsutil usn createjournal m=33554432 a=4194304 C:
+ * @endcode
+ *
+ * @htmlonly
  * <HR>
- *  <TABLE BORDER="0" STYLE="width: 97%; margin:auto;">
+ *  <TABLE STYLE="border: none; width: 97%; margin:auto;">
  *    <TR>
- *      <TD STYLE="text-align: left; width: 50%;">Previous: @ref Reports</TD>
- *      <TD STYLE="text-align: right; width: 50%;">Next: @ref FAQ</TD>
+ *      <TD STYLE="text-align: left; width: 50%;">Previous: <a href="Reports.html">File Fragmentation Reports</a></TD>
+ *      <TD STYLE="text-align: right; width: 50%;">Next: <a href="FAQ.html">Frequently Asked Questions</a></TD>
  *    </TR>
  *  </TABLE>
+ * @endhtmlonly
  */

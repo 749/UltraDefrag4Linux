@@ -1,7 +1,7 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 by Dmitri Arkhangelski (dmitriar@gmail.com).
- *  Copyright (c) 2010-2012 by Stefan Pendl (stefanpe@users.sourceforge.net).
+ *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2012 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
  *  under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -40,13 +40,14 @@
  * to configure the development environment
  * - <a href="http://www.7-zip.org/">7-zip file archiver</a> to compress the source code and portable packages
  * - <a href="http://www.doxygen.org/">Doxygen</a> to create the documentation
+ * - <a href="http://www.miktex.org/">Basic MiKTeX Installer</a> to create the optional PDF documentation
  * - <a href="http://www.etree.org/md5com.html">md5sum tool</a> to create the checksums
  * - <a href="http://upx.sf.net/">UPX</a> to reduce the size of the installers
  * 
  * All listed packages can be downloaded from the
  * <a href="http://ultradefrag.sourceforge.net/devtools/">UltraDefrag web site</a>.
  *
- * - Install NSIS, 7-zip, Doxygen and optionally "Lua for Windows".
+ * - Install NSIS, 7-zip, Doxygen and optionally "Lua for Windows" and MiKTeX.
  * - If you did not install "Lua for Windows",
  * extract Lua, IUP and CD to some directory on your \%PATH\%, e.g. to C:\\Windows.
  * - Place md5sum.exe into the src\\tools folder of the source code distribution.

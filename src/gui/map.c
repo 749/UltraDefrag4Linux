@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 by Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ int grid_color_b = 0;
 
 COLORREF colors[NUM_OF_SPACE_STATES] = 
 {
-    RGB(102,102,102),               /* unused map block */
+    RGB(178,175,168),               /* unused map block */
     RGB(255,255,255),               /* free */
     /*RGB(0,180,60),RGB(0,90,30),*/ /* dark green is too dark here... */
     RGB(0,215,32),RGB(4,164,0),     /* system */

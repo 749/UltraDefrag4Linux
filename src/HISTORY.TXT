@@ -1,5 +1,24 @@
 HISTORY
 
+  Version 5.0.2  2012-01-31
+  ------------------------------------------------------------------------------
+    - representation of disk clusters on the cluster map was improved
+    - one little bug in MFT Zone redraw was fixed
+    - registry is now queried for the number of installed keyboards
+      to guarantee detection of all installed keyboards
+    - Installer: forced default action for .luar files to be "view"
+    - the following translations were added:
+
+      Bosanski, Arabic
+
+    - the following translations were updated:
+
+      Dutch
+
+    - some additions to the intro and GUI section of the documentation
+    - PDF version of the documentation is now available as separate download
+
+
   Version 5.0.1  2012-01-08
   ------------------------------------------------------------------------------
     - few important bugs in disk processing routines were fixed

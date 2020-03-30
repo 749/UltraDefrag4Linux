@@ -1,7 +1,7 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 by Dmitri Arkhangelski (dmitriar@gmail.com).
- *  Copyright (c) 2010-2012 by Stefan Pendl (stefanpe@users.sourceforge.net).
+ *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2012 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
  *  under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -12,39 +12,26 @@
 /**
  * @page Introduction Introduction
  *
- * <h1>About disk fragmentation</h1>
- * <h2>What is disk fragmentation</h2>
- * <a href="http://en.wikipedia.org/wiki/File_system_fragmentation">Disk fragmentation</a>
- * is generally described as files and free space being divided into separate chunks, which
- * are scattered around the disk.
- * This usually happens by deleting, truncating or extending files, which
- * is done regularly during a files life. File fragmentation increases
- * time needed for file access, since additional time is needed to move the
- * drive's head from one file fragment to another. So, it decreases an overall
- * system performance.
+ * <h1>Preface</h1>
+ * UltraDefrag speeds up the computer by defragmentation of files.
  *
- * <h2>How to repair disk fragmentation</h2>
- * <a href="http://en.wikipedia.org/wiki/Defragmentation">Defragmentation</a>
- * is the process used to correct disk and file fragmentation by concatenating
- * the files into one contiguous chunk and consolidating free space.
- * Disk defragmentation eliminates the need to move drive's head from one file
- * fragment to another, so it reduces amount of mechanical work needed to 
- * access files on disk. So, it speeds things up. 
+ * When files consist of many little fragments scattered around the disk
+ * the computer needs more mechanical work to read them. Because of that
+ * the disk access becomes slower.
+ *
+ * UltraDefrag reduces the file fragmentation, thus it makes disk
+ * operations faster. Also the program can optimize a whole disk
+ * placing all the files to the fastest part of the disk - to its
+ * beginning.
+ *
+ * In contrast with the most other disk defragmenters UltraDefrag
+ * can defragment locked files by running during the Windows boot.
+ * Actually all files including registry hives and page-file 
+ * can be defragmented there.
+ *
+ * Also UltraDefrag aims to be fast, simple, reliable and efficient.
  *
  * <h1>About the software</h1>
- * UltraDefrag is the first open source disk defragmenter for
- * Windows which supports defragmentation of locked system files
- * by running during the Windows boot process. Actually all files
- * including registry hives and page-file can be defragmented
- * at Windows boot time.
- *
- * Also one of the primary goals of the UltraDefrag design is
- * doing the job as fast as possible.
- *
- * UltraDefrag aims to be also the most reliable and small disk
- * defragmenter. We're trying to keep a reasonable balance between
- * algorithms complexity and effectiveness.
- *
  * UltraDefrag has the following features:
  * - system files defragmentation (registry, page-file, ...)
  * - MFT (master file table) defragmentation (on XP and later systems)
@@ -115,9 +102,7 @@
  *
  * <h1>Processing algorithms</h1>
  *
- * <span style="color: darkred">
- * Both optimization algorithms ignore any size, name and fragment count filters.
- * </span>
+ * @note Both optimization algorithms ignore any size, name and fragment count filters.
  *
  * <h2>Defragmentation algorithm</h2>
  * <ol>
@@ -182,6 +167,9 @@
  *
  * <h1>Web resources</h1>
  * The Ultra Defragmenter's home page is at:
+ * @latexonly
+ * \\
+ * @endlatexonly
  * http://ultradefrag.sourceforge.net
  *
  * Please be sure to visit this site for information,
@@ -189,13 +177,19 @@
  * related things are available there.
  *
  * For help requests visit our forum:
+ * @latexonly
+ * \\
+ * @endlatexonly
  * http://ultradefrag.sourceforge.net/forum
  *
  * Please report all problems and bugs via our bug tracker:
+ * @latexonly
+ * \\
+ * @endlatexonly
  * http://ultradefrag.sourceforge.net/bugs
  *
  * To participate in UltraDefrag translation
- * visit please <a href="http://ultradefrag.wikispaces.com/">WikiSpaces.com</a>.
+ * please visit <a href="http://ultradefrag.wikispaces.com/">WikiSpaces.com</a>.
  *
  * The most recent version of this handbook can be obtained
  * from the program's <a href="http://ultradefrag.svn.sourceforge.net/viewvc/ultradefrag/trunk/doc/html/handbook.tar.gz?view=tar">SVN repository</a>. 
@@ -206,11 +200,13 @@
  * in your browser to view the latest version of
  * the documentation.
  *
+ * @htmlonly
  * <HR>
- *  <TABLE BORDER="0" STYLE="width: 97%; margin:auto;">
+ *  <TABLE STYLE="border: none; width: 97%; margin:auto;">
  *    <TR>
- *      <TD STYLE="text-align: left; width: 50%;">Previous: @ref index</TD>
- *      <TD STYLE="text-align: right; width: 50%;">Next: @ref Installation</TD>
+ *      <TD STYLE="text-align: left; width: 50%;">Previous: <a href="index.html">The UltraDefrag Handbook</a></TD>
+ *      <TD STYLE="text-align: right; width: 50%;">Next: <a href="Installation.html">Installation</a></TD>
  *    </TR>
  *  </TABLE>
+ * @endhtmlonly
  */

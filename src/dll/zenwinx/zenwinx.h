@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2012 by Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -42,6 +42,10 @@
 #define NtCloseSafe(h) { if(h) { NtClose(h); h = NULL; } }
 #define DebugPrint winx_dbg_print
 #define DebugPrintEx winx_dbg_print_ex
+
+#define TraceEnter  { DebugPrint("Inside function '%s'...",__FUNCTION__); }
+#define TraceExit   { DebugPrint("Leaving function '%s'...",__FUNCTION__); }
+#define TraceSource { DebugPrint("Source file '%s' at line %d ...",__FILE__,__LINE__); }
 
 /*
 * DbgCheckN macro definitions are used

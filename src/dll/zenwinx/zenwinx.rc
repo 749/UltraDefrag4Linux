@@ -1,6 +1,6 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2012 by Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ BEGIN
             VALUE "FileDescription", "ZenWINX library\0"
             VALUE "FileVersion", ZENWINX_VERSION2
             VALUE "InternalName", "zenwinx.dll\0"
-            VALUE "LegalCopyright", "Copyright © 2007-2012 Dmitri Arkhangelski\0"
+            VALUE "LegalCopyright", "Copyright © 2007-2012 UltraDefrag Development Team\0"
             VALUE "OriginalFilename", "zenwinx.dll\0"
             VALUE "ProductName", "ZenWINX\0"
             VALUE "ProductVersion", ZENWINX_VERSION2

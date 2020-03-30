@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2010-2012 by Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,7 +31,19 @@
 
 #include "main.h"
 
-#define VERSION_URL "http://ultradefrag.sourceforge.net/version.ini"
+/*
+* On Windows NT 4.0 and Windows 2000 the program
+* will check the version.ini file for the most
+* recent UltraDefrag 5.0.x release.
+*/
+#define VERSION_URL    "http://ultradefrag.sourceforge.net/version.ini"
+/*
+* On Windows XP and more recent Windows editions
+* the program will check the version_xp.ini file
+* for the most recent UltraDefrag release
+* (starting from 6.0 and so on).
+*/
+#define VERSION_URL_XP "http://ultradefrag.sourceforge.net/version_xp.ini"
 #define MAX_VERSION_FILE_LEN 32
 #define MAX_ANNOUNCEMENT_LEN 128
 
@@ -62,6 +74,8 @@ static char *GetLatestVersion(void)
     HMODULE hUrlmonDLL = NULL;
     HRESULT result;
     FILE *f;
+    OSVERSIONINFO osvi;
+    BOOL bIsWindowsXPorLater;
     int res;
     int i;
     
@@ -79,8 +93,21 @@ static char *GetLatestVersion(void)
         return NULL;
     }
     
+    ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
+    osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+
+    GetVersionEx(&osvi);
+
+    bIsWindowsXPorLater = 
+       ( (osvi.dwMajorVersion > 5) ||
+       ( (osvi.dwMajorVersion == 5) && (osvi.dwMinorVersion >= 1) ));
+
     /* download a file */
-    result = pURLDownloadToCacheFile(NULL,VERSION_URL,version_ini_path,MAX_PATH,0,NULL);
+    if(bIsWindowsXPorLater)
+        result = pURLDownloadToCacheFile(NULL,VERSION_URL_XP,version_ini_path,MAX_PATH,0,NULL);
+    else
+        result = pURLDownloadToCacheFile(NULL,VERSION_URL,version_ini_path,MAX_PATH,0,NULL);
+
     version_ini_path[MAX_PATH] = 0;
     if(result != S_OK){
         if(result == E_OUTOFMEMORY)

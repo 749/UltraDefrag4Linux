@@ -1,4 +1,4 @@
-The Ultra Defragmenter Version 5.0.1
+The Ultra Defragmenter Version 5.0.2
 ------------------------------------
 
 UltraDefrag is a powerful disk defragmentation tool for Windows.
@@ -57,8 +57,13 @@ Additional Copyright Information
 
 UltraDefrag includes portions of a few open source libraries 
 (Lua, GNU C Library, GNU libavl) as well as portions of ReactOS source code.
-Most of these libraries are not distributed under the terms of the GPL, but
-rather some other free, GPL-compatible license. For detailed information 
-read the `Credits and License' chapter of the UltraDefrag Handbook. You 
-should have received a copy of it along with this program; if not, go to
+
+UltraDefrag GUI includes icons made by third-party persons/organizations.
+
+Most of these libraries and icons are not distributed under the terms 
+of the GPL, but rather some other free, GPL-compatible license.
+
+For detailed information read the `Credits and License' chapter of the 
+UltraDefrag Handbook. You should have received a copy of it along with 
+this program; if not, go to 
 http://ultradefrag.sourceforge.net/handbook/Credits.html

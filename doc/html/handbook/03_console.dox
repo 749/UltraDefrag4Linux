@@ -1,0 +1,336 @@
+/*
+ *  UltraDefrag - a powerful defragmentation tool for Windows NT.
+ *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2012 Stefan Pendl (stefanpe@users.sourceforge.net).
+ *
+ *  Permission is granted to copy, distribute and/or modify this document
+ *  under the terms of the GNU Free Documentation License, Version 1.3 or
+ *  any later version published by the Free Software Foundation; with no
+ *  Invariant Sections.
+ */
+
+/**
+ * @page Console Console Interface
+ *
+ * The UltraDefrag installer places the command line tool <b>udefrag.exe</b> 
+ * into the System32 directory. Therefore it may be run
+ * without specifying the full path.
+ * <a href="http://ultradefrag.sourceforge.net/screenshots.html">View screenshots...</a>
+ *
+ * <h1>Command line options</h1>
+ * Usage:
+ * @code
+ * udefrag [command] [options] [driveletter:] [path(s)]
+ * @endcode
+ *
+ * Commands:
+ * @par -a, --analyze
+ * Analyze the disk.
+ *
+ * @par --defragment
+ * Defragment the disk. This key is optional. Specifying just 
+ * the drive letter will cause UltraDefrag to defragment the disk.
+ *
+ * @par -o, --optimize
+ * Optimize the disk space by moving all files to the beginning of the disk.
+ *
+ * @par -q, --quick-optimize
+ * Optimize the disk space by moving not fragmented files to the beginning of the disk.
+ *
+ * @par --optimize-mft
+ * Concatenate the MFT into one single chunk.
+ *
+ * @par -l, --list-available-volumes
+ * List all disks available for defragmentation, except removable. Each line of the
+ * output contains a drive letter, filesystem name, total space and amount of 
+ * free space.
+ *
+ * @par -la, --list-available-volumes=all
+ * List all disks available for defragmentation, including removable.
+ *
+ * @par -h, -?, --help
+ * Show help screen. Running UltraDefrag without arguments has the same effect.
+ *
+ * Options:
+ * @par -r, --repeat
+ * Defragment or optimize the disk until there is nothing left that can be moved.
+ * This will process the disk multiple times in a row.
+ *
+ * @par -b, --use-system-color-scheme
+ * Use system color scheme (usually black/white) instead of the green color.
+ *
+ * @par -p, --suppress-progress-indicator
+ * Hide progress indicator.
+ *
+ * @par -v, --show-volume-information
+ * Show disk information after a job completes.
+ *
+ * @par -m, --show-cluster-map
+ * Show a map representing clusters of the disk.
+ *
+ * @par --map-border-color=color
+ * Set cluster map border color. Available values: black, white, red, green,
+ * blue, yellow, magenta, cyan, darkred, darkgreen, darkblue, darkyellow, darkmagenta,
+ * darkcyan, gray. Yellow color is used by default.
+ *
+ * @par --map-symbol=x
+ * Set the character used for the map drawing. There are two accepted formats:
+ * a character may be typed directly, or its hexadecimal number may be used. For 
+ * example, --map-symbol=0x1 forces UltraDefrag to use a smile character for the
+ * map drawing. Valid numbers are in the range of 0x1 to 0xFF. The \% symbol is used by default.
+ *
+ * @par --map-rows=n
+ * Number of rows of the cluster map. Default value is 10.
+ *
+ * @par --map-symbols-per-line=n
+ * Number of map symbols contained in each row of the map. Default value is 68.
+ *
+ * @par --use-entire-window
+ * Expand cluster map to use entire console window.
+ *
+ * @par --wait
+ * Wait until already running instance of UltraDefrag completes before 
+ * starting the job (useful for the scheduled defragmentation).
+ *
+ * @par --shellex
+ * This option forces to list objects to be processed and display a prompt 
+ * to hit any key after a job completion. It is intended for use 
+ * in Explorer's context menu handler.
+ *
+ * Drive letter:
+ * <ul>
+ * <li>Specifying just the drive letter will cause UltraDefrag to defragment the disk.</li>
+ * <li>It is possible to specify multiple drive letters. Like this: udefrag c: d: x:</li>
+ * <li>Also the following keys can be used instead of the drive letter:
+ *
+ * @par --all
+ * Process all available disks.
+ *
+ * @par --all-fixed
+ * Process all disks except removable.
+ *
+ * Note that the --all-fixed key has higher precedence, if both keys are specified
+ * UltraDefrag will process fixed drives only.</li>
+ * </ul>
+ *
+ * Path:
+ *
+ * - Specifying a path will cause UltraDefrag to defragment only the specified path.
+ * - It is possible to specify multiple paths separated by spaces.
+ * - Paths including spaces must be enclosed by double quotes (").
+ * - Relative and absolute paths are supported.<br/>
+ * Example:
+ * @code
+ * udefrag "%USERPROFILE%" ..\Test "My Documents" C:\WINDOWS\WindowsUpdate.log
+ * @endcode
+ * - Short paths (like C:\\PROGRA~1\\SOMEFI~1.TXT) aren't accepted on NT4.
+ *
+ * <h1>Environment variables</h1>
+ * <h2>Filter variables</h2>
+ * @latexonly
+ * \begin{Indent}
+ * @endlatexonly
+ * @par UD_IN_FILTER
+ * List of files to be included in defragmentation process. File names 
+ * must be separated by semicolons.
+ *
+ * @par UD_EX_FILTER
+ * List of files to be excluded from defragmentation process. File names 
+ * must be separated by semicolons.
+ *
+ * @par UD_SIZELIMIT
+ * Exclude all files larger than the specified size.<br/>The following 
+ * size suffixes are accepted: Kb, Mb, Gb, Tb, Pb, Eb.
+ *
+ * @par UD_FRAGMENTS_THRESHOLD
+ * Exclude all files which have less fragments than the specified number.
+ * @latexonly
+ * \end{Indent}
+ * @endlatexonly
+ *
+ * <h2>Process variables</h2>
+ * @latexonly
+ * \begin{Indent}
+ * @endlatexonly
+ * @par UD_TIME_LIMIT
+ * When the specified time interval elapses the job will be terminated 
+ * automatically.<br/> The following time format is accepted: Ay Bd Ch Dm Es.<br/>
+ * Here A,B,C,D,E  represent any integer number, y,d,h,m,s - suffixes represent
+ * years, days, hours, minutes and seconds.
+ *
+ * @par UD_REFRESH_INTERVAL
+ * Progress refresh interval, in milliseconds. The default value is 100.
+ *
+ * @par UD_DISABLE_REPORTS
+ * If this environment variable is set to 1 (one), no 
+ * file fragmentation report will be generated.
+ * @latexonly
+ * \end{Indent}
+ * @endlatexonly
+ *
+ * <h2>Debug variables</h2>
+ * @latexonly
+ * \begin{Indent}
+ * @endlatexonly
+ * @par UD_DBGPRINT_LEVEL
+ * Control amount of the debugging output. NORMAL is used by default,
+ * DETAILED may be used to collect information for the bug report,
+ * PARANOID turns on a really huge amount of debugging information.
+ *
+ * @par UD_LOG_FILE_PATH
+ * If this variable is set, it should contain the path (including filename)
+ * to the log file to save debugging output into.<br/>If the variable is not set, 
+ * no logging to a file will be performed.
+ *
+ * @par UD_DRY_RUN
+ * If this environment variable is set to 1 (one) the files are not physically moved.
+ * This allows testing the algorithm without changing the content of the disk.
+ * @latexonly
+ * \end{Indent}
+ * @endlatexonly
+ *
+ * Note that all filters are case insensitive. Each filter substring represents a pattern,
+ * UltraDefrag will compare with paths. For example, the "*temp*;*tmp*" filter
+ * will be applied both to temporary folders and to Internet Explorer's cache.
+ *
+ * Both '?' and '*' wildcards are accepted by filters. '?' character matches any one
+ * character, '*' - any zero or more characters. *.* pattern matches any file
+ * with an extension. An asterisk alone (*) matches anything (with or without an extension).
+ *
+ * Note that files marked temporary by system are always excluded regardless of filters
+ * because usually they take no effect on system performance.
+ *
+ * Note that files excluded from processing are never treated as fragmented.
+ * Because only files affecting system performance should get our attention.
+ *
+ * <h1>Examples</h1>
+ * @par include only paths, which include one of these words
+ * @code
+ * set UD_IN_FILTER=*windows*;*winnt*
+ * @endcode
+ *
+ * @par process only files below 50 MB in size
+ * @code
+ * set UD_SIZELIMIT=50Mb
+ * @endcode
+ *
+ * @par process only files with more than 6 fragments
+ * @code
+ * set UD_FRAGMENTS_THRESHOLD=6
+ * @endcode
+ *
+ * @par terminate processing after 6 hours and 30 minutes
+ * @code
+ * set UD_TIME_LIMIT=6h 30m
+ * @endcode
+ *
+ * @par save debugging information to the specified file
+ * @code
+ * set UD_LOG_FILE_PATH=C:\Windows\Temp\defrag_native.log
+ * @endcode
+ *
+ * @par defragment drive C:
+ * @code
+ * udefrag C:
+ * @endcode
+ *
+ * @par list all available drives
+ * @code
+ * udefrag -la
+ * @endcode
+ *
+ * @par analyze all drives excluding removable ones
+ * @code
+ * udefrag -a --all-fixed
+ * @endcode
+ *
+ * @par optimize drives E: and K:
+ * @code
+ * udefrag -o E: K:
+ * @endcode
+ *
+ * @par optimize the MFT of drives O: and Q:
+ * @code
+ * udefrag --optimize-mft O: Q:
+ * @endcode
+ *
+ * @par defragment the specified file and folder
+ * @code
+ * udefrag C:\Windows\WindowsUpdate.log "C:\Program Files"
+ * @endcode
+ *
+ * <h1>Example batch scripts</h1>
+ * The following example illustrates defragmentation of a few
+ * different disks in series adjusting parameters separately for
+ * each disk.
+ * @code
+ * @echo off
+ *
+ * set UD_EX_FILTER=*system volume information*;*temp*;*tmp*;*recycle*;*.zip;*.7z;*.rar
+ * set UD_SIZELIMIT=50Mb
+ * udefrag c: > c:\ud.log
+ *
+ * set UD_IN_FILTER=D:\My Documents\*
+ * udefrag d: >> c:\ud.log
+ *
+ * set UD_IN_FILTER=
+ * udefrag e: >> c:\ud.log
+ * @endcode
+ * Notice that we are excluding archives in the script above. Because they
+ * are usually rarely accessed and may be left fragmented therefore
+ * without noticeable system performance degradation.
+ *
+ * The next example demonstrates how the complex disk defragmentation
+ * job may be automated easily.
+ * @code
+ * @echo off
+ *
+ * rem Defragment small files.
+ *
+ * set UD_SIZELIMIT=50Mb
+ * udefrag c:
+ *
+ * rem Defragment large files 
+ * rem which have at least 5 fragments.
+ *
+ * set UD_SIZELIMIT=
+ * set UD_FRAGMENTS_THRESHOLD=5
+ * udefrag c:
+ * @endcode
+ *
+ * The following three commands are very useful
+ * in disk defragmentation scripts too:
+ * - <b>chkdsk</b> checks disks for errors and corrects them
+ * - <b>shutdown -s -t 00</b> automatically shuts down the computer
+ * - <b>hibernate4win now</b> hibernates the computer
+ *
+ * The last command is included in the UltraDefrag package. It was
+ * especially created to hibernate the computer through the command line
+ * after a disk defragmentation, which may take some time to finish.
+ *
+ * <h1>Explorer's context menu handler</h1>
+ * The UltraDefrag command line tool is also used as an Explorer's context
+ * menu handler. When you right click a drive, folder or file icon in Explorer,
+ * you can select an appropriate menu item to defragment the
+ * selected object.
+ *
+ * To stop the defragmentation press Ctrl+C keys or close
+ * the command prompt.
+ *
+ * Note that both UD_IN_FILTER and UD_EX_FILTER environment variables
+ * are ignored by the context menu handler. It is intended to defragment
+ * exactly what is selected.
+ *
+ * Currently the context menu handler is not available in the portable
+ * version of the program.
+ *
+ * @htmlonly
+ * <HR>
+ *  <TABLE STYLE="border: none; width: 97%; margin:auto;">
+ *    <TR>
+ *      <TD STYLE="text-align: left; width: 50%;">Previous: <a href="Installation.html">Installation</a></TD>
+ *      <TD STYLE="text-align: right; width: 50%;">Next: <a href="Schedule.html">Scheduled Defragmentation</a></TD>
+ *    </TR>
+ *  </TABLE>
+ * @endhtmlonly
+ */

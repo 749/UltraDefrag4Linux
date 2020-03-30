@@ -1,6 +1,7 @@
 /*
  *  ZenWINX - WIndows Native eXtended library.
- *  Copyright (c) 2007-2012 by Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2012 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,11 +24,6 @@
  * @addtogroup Keyboard
  * @{
  */
-
-/*
-* Revised by Stefan Pendl, 2010
-* <stefanpe@users.sourceforge.net>
-*/
 
 #include "zenwinx.h"
 
@@ -67,8 +63,9 @@ int kb_wait_for_input_threads = 0;
 /* prototypes */
 void kb_close(void);
 static int kb_check(HANDLE hKbDevice);
-static int kb_open_internal(int device_number);
+static int kb_open_internal(int device_number, int kbd_count);
 char *winx_get_error_description(unsigned long status);
+static int query_keyboard_count(void);
 
 /**
  * @internal
@@ -188,8 +185,10 @@ done:
 int winx_kb_init(void)
 {
     short event_name[64];
-    int i, j;
-    
+    int i, j, kbdCount;
+
+    kbdCount = query_keyboard_count();
+
     /* create synchronization event for safe access to kids array */
     _snwprintf(event_name,64,L"\\winx_kb_synch_event_%u",
         (unsigned int)(DWORD_PTR)(NtCurrentTeb()->ClientId.UniqueProcess));
@@ -213,8 +212,8 @@ int winx_kb_init(void)
        for any keyboard that fails detection.
        required for USB devices, which can change ports */
     for(i = 0; i < MAX_NUM_OF_KEYBOARDS; i++) {
-        if (kb_open_internal(i) == -1) {
-            if (i < 2) {
+        if (kb_open_internal(i, kbdCount) == -1) {
+            if (i < kbdCount) {
                 winx_printf("Wait 10 seconds for keyboard initialization ");
                 
                 for(j = 0; j < 10; j++){
@@ -223,7 +222,7 @@ int winx_kb_init(void)
                 }
                 winx_printf("\n\n");
 
-                (void)kb_open_internal(i);
+                (void)kb_open_internal(i, kbdCount);
             }
         }
     }
@@ -355,9 +354,10 @@ int kb_read(PKEYBOARD_INPUT_DATA pKID,int msec_timeout)
  * @internal
  * @brief Opens the keyboard.
  * @param[in] device_number the number of the keyboard device.
+ * @param[in] kbd_count the number of registered keyboards.
  * @return Zero for success, negative value otherwise.
  */
-static int kb_open_internal(int device_number)
+static int kb_open_internal(int device_number, int kbd_count)
 {
     short device_name[32];
     short event_name[32];
@@ -378,13 +378,11 @@ static int kb_open_internal(int device_number)
                 &ObjectAttributes,&IoStatusBlock,NULL,FILE_ATTRIBUTE_NORMAL/*0x80*/,
                 0,FILE_OPEN/*1*/,FILE_DIRECTORY_FILE/*1*/,NULL,0);
     if(!NT_SUCCESS(Status)){
-        if(device_number < 2){
+        if(device_number < kbd_count){
             DebugPrintEx(Status,"Cannot open the keyboard %ws",device_name);
             winx_printf("\nCannot open the keyboard %ws: %x!\n",
                 device_name,(UINT)Status);
             winx_printf("%s\n",winx_get_error_description((ULONG)Status));
-            
-            if (Status == STATUS_OBJECT_NAME_NOT_FOUND && winx_get_os_version() < WINDOWS_XP) return (-2);
         }
         return (-1);
     }
@@ -499,6 +497,73 @@ static int kb_check(HANDLE hKbDevice)
 
     (void)kb_light_up_indicators(hKbDevice,LedFlags);
     return 0;
+}
+
+/**
+ * @internal
+ * @brief Queries the registry for the number of installed keyboards.
+ * @return The number of installed keyboards, default is 2.
+ */
+static int query_keyboard_count(void)
+{
+    UNICODE_STRING us;
+    OBJECT_ATTRIBUTES oa;
+    NTSTATUS status;
+    HANDLE hKey;
+    KEY_VALUE_PARTIAL_INFORMATION *data_buffer = NULL;
+    DWORD data_size = 0;
+    DWORD data_size2 = 0;
+    int kbdCount = 2;
+
+    RtlInitUnicodeString(&us,L"\\Registry\\Machine\\SYSTEM\\"
+                             L"CurrentControlSet\\Services\\Kbdclass\\Enum");
+    InitializeObjectAttributes(&oa,&us,OBJ_CASE_INSENSITIVE,NULL,NULL);
+    status = NtOpenKey(&hKey,KEY_QUERY_VALUE,&oa);
+    if(status != STATUS_SUCCESS){
+        DebugPrintEx(status,"query_keyboard_count: cannot open %ws",us.Buffer);
+        return kbdCount;
+    }
+
+    RtlInitUnicodeString(&us,L"Count");
+    status = NtQueryValueKey(hKey,&us,KeyValuePartialInformation,
+            NULL,0,&data_size);
+    if(status != STATUS_BUFFER_TOO_SMALL){
+        DebugPrintEx(status,"query_keyboard_count: cannot query Count value size");
+        NtCloseSafe(hKey);
+        return kbdCount;
+    }
+    data_buffer = (KEY_VALUE_PARTIAL_INFORMATION *)winx_heap_alloc(data_size);
+    if(data_buffer == NULL){
+        DebugPrint("query_keyboard_count: cannot allocate %u bytes of memory",data_size);
+        NtCloseSafe(hKey);
+        return kbdCount;
+    }
+
+    RtlZeroMemory(data_buffer,data_size);
+    status = NtQueryValueKey(hKey,&us,KeyValuePartialInformation,
+            data_buffer,data_size,&data_size2);
+    if(status != STATUS_SUCCESS){
+        DebugPrintEx(status,"query_keyboard_count: cannot query Count value");
+        winx_heap_free(data_buffer);
+        NtCloseSafe(hKey);
+        return kbdCount;
+    }
+
+    if(data_buffer->Type != REG_DWORD){
+        DebugPrint("query_keyboard_count: Count value has wrong type 0x%x",
+                data_buffer->Type);
+        winx_heap_free(data_buffer);
+        NtCloseSafe(hKey);
+        return kbdCount;
+    }
+
+    kbdCount = (int)*(DWORD *)data_buffer->Data;
+    DebugPrint("query_keyboard_count: keyboard count is %u",kbdCount);
+
+    winx_heap_free(data_buffer);
+    NtCloseSafe(hKey);
+
+    return kbdCount;
 }
 
 /** @} */

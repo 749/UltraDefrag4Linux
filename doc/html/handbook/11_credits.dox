@@ -1,7 +1,7 @@
 ﻿/*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2012 by Dmitri Arkhangelski (dmitriar@gmail.com).
- *  Copyright (c) 2010-2012 by Stefan Pendl (stefanpe@users.sourceforge.net).
+ *  Copyright (c) 2007-2012 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2012 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
  *  under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -12,29 +12,31 @@
 /**
  * @page Credits Credits and License
  *
- * <b>Program and Documentation Copyright (c) 2007-2008</b>
+ * <b>Program and Documentation Copyright &copy; 2007-2008</b>
  * 
  * - Dmitri Arkhangelski <span class="simple">(dmitriar@users.sourceforge.net)</span>
  * - Justin Dearing      <span class="simple">(zippy1981@users.sourceforge.net)</span>
  *
- * <b>Program and Documentation Copyright (c) 2009</b>
+ * <b>Program and Documentation Copyright &copy; 2009</b>
  * 
  * - Dmitri Arkhangelski <span class="simple">(dmitriar@users.sourceforge.net)</span>
  *
- * <b>Program and Documentation Copyright (c) 2010-2012</b>
+ * <b>Program and Documentation Copyright &copy; 2010-2012</b>
  * 
  * - Dmitri Arkhangelski <span class="simple">(dmitriar@users.sourceforge.net)</span>
  * - Stefan Pendl        <span class="simple">(stefanpe@users.sourceforge.net)</span>
  *
- * <b>Web Design Copyright (c) 2009, 2011</b>
+ * <b>Web Design Copyright &copy; 2009, 2011</b>
  *
  * - Sayem Chaklader     <span class="simple">(gearspec@gmail.com)</span>
  *
- * <b>Translations Copyright (c) 2008-2012</b>
+ * <b>Translations Copyright &copy; 2008-2012</b>
  *
  * @htmlonly
  * <table style="border:none; margin-left:20px;">
+ * <tr><td>• Arabic                       </td><td>-</td><td> Ahmed Arbaoui</td></tr>
  * <tr><td>• Belarusian                   </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
+ * <tr><td>• Bosanski                     </td><td>-</td><td> Timur Ljubunčić</td></tr>
  * <tr><td>• Bulgarian                    </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
  * <tr><td>• Burmese                      </td><td>-</td><td> Muhammed Widuya</td></tr>
  * <tr><td>• Catalan                      </td><td>-</td><td> Illes Balears</td></tr>
@@ -128,7 +130,105 @@
  * </table>
  * @endhtmlonly
  *
- * <b>Portions Copyright (c)</b>
+ * @latexonly
+ * \par\begin{Indent}\begin{xtabular}{p{0.4\linewidth}cl}
+ * • Arabic                        & - & Ahmed Arbaoui \\
+ * • Belarusian                    & - & Dmitri Arkhangelski \\
+ * • Bosanski                      & - & Timur Ljubuncic \\
+ * • Bulgarian                     & - & Dmitri Arkhangelski \\
+ * • Burmese                       & - & Muhammed Widuya \\
+ * • Catalan                       & - & Illes Balears \\
+ *                                 & - & Joseph S. B. Maza \\
+ *                                 & - & TurboHz \\
+ * • Chinese (Simplified)          & - & muzuiget \\
+ *                                 & - & HPJ \\
+ *                                 & - & Tommy He \\
+ * • Chinese (Traditional)         & - & muzuiget \\
+ *                                 & - & Ryan Ping Chih Ko \\
+ *                                 & - & rexx \\
+ *                                 & - & James Bond \\
+ * • Croatian                      & - & Denis Jelicic \\
+ *                                 & - & Dmitri Arkhangelski \\
+ * • Czech                         & - & David Horák /Dave MacBlack/ \\
+ *                                 & - & Pavel Kinkor \\
+ * • Danish                        & - & Patrick Paludan-Müller \\
+ * • Dutch                         & - & Wim Kerstens \\
+ *                                 & - & Klaas Nekeman \\
+ *                                 & - & Tom Louwrier \\
+ * • English (GB)                  & - & Andrew Smith \\
+ * • English (US)                  & - & Dmitri Arkhangelski \\
+ * • Estonian                      & - & Olav Mägi \\
+ * • Farsi                         & - & Ali Jafari \\
+ * • Filipino (Ilokano)            & - & Joseph S. B. Maza \\
+ * • Filipino (Tagalog)            & - & Joseph S. B. Maza \\
+ *                                 & - & Stefan Pendl \\
+ * • Finnish                       & - & jtl \\
+ *                                 & - & Stefan Pendl \\
+ * • French                        & - & Pascal Crozet \\
+ *                                 & - & Jérôme Blum \\
+ *                                 & - & Mathieu Van Weersch \\
+ *                                 & - & Marina Louwrier-Johannsen \\
+ * • Galician                      & - & Julio Mojón Fuentes \\
+ * • Georgian                      & - & UGLT.org \\
+ * • German                        & - & Stefan Geuken \\
+ *                                 & - & Stefan Pendl \\
+ * • Greek                         & - & Konstantinos Kapoukranidis \\
+ * • Hebrew                        & - & Dmitri Arkhangelski \\
+ * • Hindi                         & - & Gaurav Chatterjee \\
+ * • Hungarian                     & - & Nagy Zsolt \\
+ *                                 & - & Áron Hegedüs \\
+ * • Icelandic                     & - & Stefan Pendl \\
+ * • Indonesian                    & - & Imanuel Novian \\
+ * • Indonesian (Bahasa Indonesia) & - & Taufan Nur Hidayat \\
+ * • Italian                       & - & Paolo Loggia \\
+ *                                 & - & Sherpya \\
+ *                                 & - & Edoardo Brunetti \\
+ * • Japanese                      & - & ao3 \\
+ *                                 & - & Masao Kajiwara \\
+ * • Javanese                      & - & Taufan Nur Hidayat \\
+ * • Kapampangan                   & - & Edwin N. Camaya \\
+ * • Korean                        & - & Alex Han \\
+ *                                 & - & Inhwan Hwang \\
+ *                                 & - & 4Li \\
+ * • Latin                         & - & Dmitri Arkhangelski \\
+ * • Latvian                       & - & Sevelyr \\
+ *                                 & - & Vladislav Stuzhnev \\
+ * • Macedonian                    & - & Dmitri Arkhangelski \\
+ * • Norwegian                     & - & Sveinung Heggen \\
+ *                                 & - & Stefan Pendl \\
+ * • Polish                        & - & Andrzej Rudnik \\
+ *                                 & - & Krzysztof Swiderski \\
+ *                                 & - & Ireneusz Chorosz \\
+ * • Portuguese                    & - & Ricardo A. Garcia \\
+ *                                 & - & Carlos Rodrigues \\
+ *                                 & - & Sérgio Marques \\
+ * • Portuguese (BR)               & - & Depeo da Masol \\
+ *                                 & - & Felipe \\
+ * • Romanian                      & - & Micu Dumitru \\
+ * • Russian                       & - & Dmitri Arkhangelski \\
+ * • Serbian                       & - & Damjan Daljevic \\
+ *                                 & - & Dmitri Arkhangelski \\
+ * • Slovak                        & - & Milan Cerovský \\
+ * • Slovenian                     & - & Miha Mlakar \\
+ *                                 & - & Dmitri Arkhangelski \\
+ * • Spanish (AR)                  & - & Daniel Testa \\
+ * • Spanish (ES)                  & - & Txusti \\
+ *                                 & - & Juan C. Mendez Valledor \\
+ * • Spanish (MEX)                 & - & Conrad Flyckt \\
+ * • Swedish                       & - & Magnus Rostedt \\
+ *                                 & - & Per-Eric Jenshagen \\
+ * • Tamil                         & - & Vinod V. \\
+ * • Thai                          & - & Pat Taweewat \\
+ * • Turkish                       & - & Huseyin Kozan \\
+ *                                 & - & Vedat Odabasioglu \\
+ *                                 & - & Sahin Salincakli \\
+ * • Ukrainian                     & - & Dmitri Arkhangelski \\
+ * • Vietnamese (VI)               & - & Vietnamize Team \\
+ * • Yiddish                       & - & Dmitri Arkhangelski \\
+ * \end{xtabular}\end{Indent}\par
+ * @endlatexonly
+ *
+ * <b>Portions Copyright &copy;</b>
  *
  * UltraDefrag includes portions of the following open source libraries:
  * <a href="http://www.lua.org/">Lua</a>, 
@@ -136,7 +236,8 @@
  * <a href="http://www.stanford.edu/~blp/avl/">GNU libavl</a>. Also 
  * UltraDefrag includes portions of <a href="http://www.reactos.org/">ReactOS</a> code.
  *
- * - Portions Copyright © 1994-2007 Lua.org, PUC-Rio
+ * <ul>
+ * <li> Portions Copyright &copy; 1994-2007 Lua.org, PUC-Rio
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in the
@@ -155,9 +256,9 @@
  * OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
  * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. </li>
  * 
- * - Portions Copyright (C) 1989,90,91,92,93,94,96,97 Free Software Foundation, Inc.
+ * <li> Portions Copyright &copy; 1989,90,91,92,93,94,96,97 Free Software Foundation, Inc.
  *
  * The GNU C Library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public License as
@@ -171,9 +272,9 @@
  * 
  * You should have received a copy of the GNU Library General Public
  * License along with this program. If not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. </li>
  *
- * - Portions Copyright (C) 1998, 1999, 2000, 2001, 2002, 2004 Free Software Foundation, Inc.
+ * <li> Portions Copyright &copy; 1998, 1999, 2000, 2001, 2002, 2004 Free Software Foundation, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -188,9 +289,9 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA.
+ * 02110-1301 USA. </li>
  *
- * - Portions Copyright (C) 2002 ReactOS Team
+ * <li> Portions Copyright &copy; 2002 ReactOS Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -204,7 +305,63 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. </li>
+ * </ul>
+ *
+ * UltraDefrag GUI includes icons made by third-party persons/organizations.
+ *
+ * Analysis and help icons were copied from 
+ * <a href="http://nsis.sourceforge.net">NSIS</a>
+ * compiler's frontend.
+ *
+ * <ul>
+ * <li> Portions Copyright &copy; 2002 Robert Rainwater <rrainwater@yahoo.com>
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty.  In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ * 
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ * 
+ * -# The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * -# Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * -# This notice may not be removed or altered from any source distribution.</li>
+ * </ul>
+ *
+ * Stop, configuration, terminal, MFT optimization icons were copied
+ * from <a href="http://www.famfamfam.com/lab/icons/silk/">FamFamFam Silk</a> icon set.
+ *
+ * <ul>
+ * <li> Portions Copyright &copy; 2006 Mark James
+ *
+ * This work is licensed under a <a href="http://creativecommons.org/licenses/by/2.5/">Creative Commons Attribution 2.5 License</a>.
+ *
+ * The icons can also be used under
+ * <a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 License</a>
+ * with the following requirements:
+ *
+ * As an author, I would appreciate a reference to my authorship 
+ * of the Silk icon set contents within a readme file or equivalent
+ * documentation for the software which includes the set or a subset
+ * of the icons contained within.</li>
+ * </ul>
+ * 
+ * Repeat icon was copied from <a href="http://www.interactivemania.com/content/default-icon">Default Icon</a> set.
+ *
+ * <ul>
+ * <li> Portions Copyright &copy; 2011 interactivemania
+ *
+ * Default Icon by interactivemania is licensed under
+ * a <a href="http://creativecommons.org/licenses/by-nd/3.0/">Creative Commons Attribution-No Derivative Works 3.0</a>.</li>
+ * </ul>
+ *
+ * <center>***</center>
  *
  * <b>Chief Architect</b>
  *
@@ -218,11 +375,19 @@
  *
  * @htmlonly
  * <table style="border:none; margin-left:20px;">
- * <tr><td>• Justin Dearing          </td><td>-</td><td> An initial version of this handbook and other documentation files.</td></tr>
- * <tr><td>                          </td><td> </td><td> UltraDefrag Scheduler .NET application.</td></tr>
- * <tr><td>• Tiago Filipe Silva      </td><td>-</td><td> Optimization of web images and udsorting.js script.</td></tr>
+ * <tr><td>• Justin Dearing     </td><td>-</td><td> An initial version of this handbook and other documentation files.</td></tr>
+ * <tr><td>                     </td><td> </td><td> UltraDefrag Scheduler .NET application.</td></tr>
+ * <tr><td>• Tiago Filipe Silva </td><td>-</td><td> Optimization of web images and udsorting.js script.</td></tr>
  * </table>
  * @endhtmlonly
+ *
+ * @latexonly
+ * \par\begin{Indent}\begin{tabular}{lcp{0.6\linewidth}}
+ * • Justin Dearing     & - & An initial version of this handbook and other documentation files. \\
+ *                      &   & UltraDefrag Scheduler .NET application. \\
+ * • Tiago Filipe Silva & - & Optimization of web images and udsorting.js script. \\
+ * \end{tabular}\end{Indent}\par
+ * @endlatexonly
  *
  * Special thanks for good suggestions (in alphabetical order):
  *
@@ -255,6 +420,35 @@
  * </table>
  * @endhtmlonly
  *
+ * @latexonly
+ * \par\begin{Indent}\begin{xtabular}{p{0.35\linewidth}cp{0.5\linewidth}}
+ * • Alexander Peter Kowalski & - & Process priority control (not implemented yet). \\
+ * • Alexander Vedyakin       & - & Disk type detection improvements. \\
+ *                            &   & More effective defragmenting algorithms. \\
+ * • Andrei Maksimov          & - & GUI improvements. \\
+ *                            &   & A lot of other interesting ideas. \\
+ * • Bryan Kirk               & - & Better GUI appearance (new list of drives). \\
+ *                            &   & Autodefrag feature (not implemented yet). \\
+ * • Christopher Naegel       & - & A partial solution for kernel mode driver loading problem on Vista. \\
+ * • Craig Oakes              & - & Hint about case mismatch of configuration dialog help files. \\
+ *                            &   & Hint about problem with .lua file open action registration. \\
+ * • Dario Raparelli          & - & NT 4.0 support. \\
+ * • Jan Loncik               & - & x64 native support. Better default values for filters. \\
+ * • Jim Laski                & - & System fonts and visual styles for graphical interface. \\
+ * • Justin Dearing           & - & Boot time defragmentation. \\
+ * • Kalle Koseck             & - & Disk analysis speedup. GUI improvements. \\
+ * • Kerem Gümrükcü           & - & Manifests for Vista User Account Control (UAC). \\
+ * • Leland G. Whitlock       & - & Progress bar. More effective defragmenting algorithms. \\
+ * • Markus Elfring           & - & Strong error handling. \\
+ * • Mike Braca               & - & Reducing driver's memory usage by the new cluster map internal representation. \\
+ * • Nagy Zsolt               & - & Internationalization support. Installer improvements. \\
+ * • Parvez Reza              & - & Various interesting programming tricks. \\
+ * • Steve Lawrence           & - & Shutdown when done option. \\
+ * • Vasily Smirnov           & - & FAT directories defragmentation algorithm. \\
+ *                            &   & Various important GUI improvements. \\
+ * \end{xtabular}\end{Indent}\par
+ * @endlatexonly
+ *
  * Special thanks for correcting and updating translations (in alphabetical order):
  *
  * - Alessandro Visentin
@@ -268,6 +462,7 @@
  * - Giulio Fornasar
  * - Haein Jung
  * - Harald Arnesen
+ * - Jan Iemhoff
  * - Joseph S. B. Maza
  * - José Carlos Taveira de Souza
  * - José Luis Farías
@@ -312,8 +507,9 @@
  * - <a href="http://www.codeproject.com/Members/Mumtaz-Zaheer">Mumtaz Zaheer</a>
  * - <a href="http://chibios.sourceforge.net/">Giovanni Di Sirio</a>
  * - <a href="http://www.catch22.net/">James Brown</a>
- * - <a href="http://forum.pellesc.de/index.php?topic=3265.0">timovjl</a>
+ * - <a href="http://forum.pellesc.de/index.php?topic=3265.0">Timo VJ Lähde</a>
  * - <a href="http://www.lokeshdhakar.com/projects/lightbox2/">Lokesh Dhakar</a>
+ * - <a href="http://www.famfamfam.com/lab/icons/flags/">Mark James</a>
  *
  * Also many thanks to all the people who helped us improve UltraDefrag.
  *
@@ -321,11 +517,13 @@
  *
  * The program is licensed under the terms of the @ref GPL.
  *
+ * @htmlonly
  * <HR>
- *  <TABLE BORDER="0" STYLE="width: 97%; margin:auto;">
+ *  <TABLE STYLE="border: none; width: 97%; margin:auto;">
  *    <TR>
- *      <TD STYLE="text-align: left; width: 50%;">Previous: @ref ReportingBugs</TD>
- *      <TD STYLE="text-align: right; width: 50%;">Next: @ref index</TD>
+ *      <TD STYLE="text-align: left; width: 50%;">Previous: <a href="ReportingBugs.html">Reporting Bugs</a></TD>
+ *      <TD STYLE="text-align: right; width: 50%;">Next: <a href="index.html">The UltraDefrag Handbook</a></TD>
  *    </TR>
  *  </TABLE>
+ * @endhtmlonly
  */
