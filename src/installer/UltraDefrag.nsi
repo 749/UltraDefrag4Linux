@@ -62,7 +62,7 @@
  * Compress installer exehead with an executable compressor
  */
 
-!packhdr temp.dat '"${ROOTDIR}\src\tools\upx\upx" --best -q temp.dat'
+!packhdr temp.dat 'upx --best -q temp.dat'
 
 /*
  * Include additional plug-in folders

@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -171,7 +171,6 @@ BEGIN
     VK_F10,        IDM_CFG_GUI_SETTINGS,        VIRTKEY, NOINVERT
     VK_F11,        IDM_CFG_BOOT_ENABLE,         VIRTKEY, NOINVERT
     VK_F12,        IDM_CFG_BOOT_SCRIPT,         VIRTKEY, NOINVERT
-    "R",           IDM_CFG_REPORTS,             VIRTKEY, CONTROL, NOINVERT
     VK_F1,         IDM_CONTENTS,                VIRTKEY, NOINVERT
     VK_F2,         IDM_BEST_PRACTICE,           VIRTKEY, NOINVERT
     VK_F3,         IDM_FAQ,                     VIRTKEY, NOINVERT

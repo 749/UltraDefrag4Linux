@@ -1,5 +1,5 @@
 /*
-* Ultra Defragmenter report sorting engine.
+* UltraDefrag reports sorting engine.
 * Copyright (C) 2008-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
 *
 * This program is free software; you can redistribute it and/or modify
@@ -24,9 +24,6 @@
 *  {"fragments" | "size" | "name" | "comment" | "status"}
 */
 
-/* Mozilla 1.5.0-3.6.3, IE 5.0 and 6.0 were tested. */
-/* IE 3.0 is not supported. */
-
 /* global variables */
 var
  table,
@@ -40,8 +37,7 @@ var
  comment_order = 1,
  status_order = 1,
  msie_browser = false, // true for ms internet explorer
- // $xxx constant becomes replaced by actual markup by the report converter
- table_head = "$TABLE_HEAD";
+ table_head = "$TABLE_HEAD";  // the report converter adjusts it
 
 function init_sorting_engine()
 {
@@ -104,12 +100,13 @@ function sort_items(criteria)
   items = table.getElementsByTagName("tr"),
   header = "<tr>" + items[0].innerHTML + "</tr>\n";
 
- // convert collection to array
+ // convert the collection to an array
  for(i = 1; i < items.length; i++)
   a[i-1] = items[i];
 
  // sort items
- // Note that sorting is slow: about 1.5 seconds for 550 items on 1.8GHz CPU.
+ // Note that sorting is slow: about 1.5
+ // seconds for 550 items on 1.8GHz CPU.
  if(criteria === 'fragments'){
   a.sort(sort_by_fragments);
   fragments_order = fragments_order ? 0 : 1;
@@ -137,12 +134,12 @@ function sort_items(criteria)
    blacklist += "<tr class=\"f\">" + data + "</tr>\n";
  }
 
- // replace old contents with new sorted
+ // replace the old contents with the new sorted one
  if(!msie_browser){
   table.innerHTML = header + whitelist + blacklist;
  } else {
-  // On f...ed Internet Explorer table.innerHTML is read only !!!
-  // and we need to replace the whole table ...
+  // On Internet Explorer the table.innerHTML is read only,
+  // so we need to replace the whole table ...
   document.getElementById("for_msie").innerHTML =
    table_head + header + whitelist + blacklist + "</table>";
   table = document.getElementById("main_table");

@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -343,8 +343,6 @@ SkipMove:
         File "${ROOTDIR}\src\installer\ud-help.cmd"
 
     SetOutPath "$INSTDIR"
-        File "${ROOTDIR}\src\LICENSE.TXT"
-        File "${ROOTDIR}\src\CREDITS.TXT"
         File "${ROOTDIR}\src\HISTORY.TXT"
         File "README.TXT"
 
@@ -354,18 +352,23 @@ SkipMove:
     SetOutPath "$INSTDIR\scripts"
         File "${ROOTDIR}\src\scripts\udreportcnv.lua"
         File "${ROOTDIR}\src\scripts\udsorting.js"
-        File "${ROOTDIR}\src\scripts\upgrade-rptopts.lua"
-        File "${ROOTDIR}\src\scripts\upgrade-guiopts.lua"
+        File "${ROOTDIR}\src\scripts\upgrade-options.lua"
 
-    DetailPrint "Upgrade report options and GUI preferences..."
+    DetailPrint "Upgrade configuration files..."
     ; ensure that target directory exists
     CreateDirectory "$INSTDIR\options"
+    Push $R1
+    ClearErrors
+    FileOpen $R1 "$INSTDIR\options\readme.txt" w
+    ${Unless} ${Errors}
+        FileWrite $R1 "This folder contains internal configuration files only.$\r$\n"
+        FileClose $R1
+    ${EndUnless}
+    Pop $R1
     ${If} ${Silent}
-        ExecWait '"$INSTDIR\lua5.1a_gui.exe" -s "$INSTDIR\scripts\upgrade-rptopts.lua" "$INSTDIR"'
-        ExecWait '"$INSTDIR\lua5.1a_gui.exe" -s "$INSTDIR\scripts\upgrade-guiopts.lua" "$INSTDIR"'
+        ExecWait '"$INSTDIR\lua5.1a_gui.exe" -s "$INSTDIR\scripts\upgrade-options.lua" "$INSTDIR"'
     ${Else}
-        ExecWait '"$INSTDIR\lua5.1a_gui.exe" "$INSTDIR\scripts\upgrade-rptopts.lua" "$INSTDIR"'
-        ExecWait '"$INSTDIR\lua5.1a_gui.exe" "$INSTDIR\scripts\upgrade-guiopts.lua" "$INSTDIR"'
+        ExecWait '"$INSTDIR\lua5.1a_gui.exe" "$INSTDIR\scripts\upgrade-options.lua" "$INSTDIR"'
     ${EndIf}
 
     ; install default CSS for file fragmentation reports
@@ -399,8 +402,6 @@ SkipMove:
     ${DisableX64FSRedirection}
 
     DetailPrint "Removing core files..."
-    Delete "$INSTDIR\LICENSE.TXT"
-    Delete "$INSTDIR\CREDITS.TXT"
     Delete "$INSTDIR\HISTORY.TXT"
     Delete "$INSTDIR\README.TXT"
     Delete "$INSTDIR\lua5.1a.exe"
@@ -1054,10 +1055,18 @@ SkipMove:
     Delete "$INSTDIR\i18n\Bosanski.lng"
 
     Delete "$INSTDIR\scripts\udctxhandler.lua"
+    Delete "$INSTDIR\scripts\upgrade-guiopts.lua"
+    Delete "$INSTDIR\scripts\upgrade-rptopts.lua"
 
+    Delete "$INSTDIR\options\guiopts.lua"
+    Delete "$INSTDIR\options\guiopts.lua.old"
+    Delete "$INSTDIR\options\udreportopts.lua"
+    Delete "$INSTDIR\options\udreportopts.lua.old"
     Delete "$INSTDIR\options\udreportopts-custom.lua"
 
     Delete "$INSTDIR\dfrg.exe"
+    Delete "$INSTDIR\CREDITS.TXT"
+    Delete "$INSTDIR\LICENSE.TXT"
     Delete "$INSTDIR\INSTALL.TXT"
     Delete "$INSTDIR\FAQ.TXT"
     Delete "$INSTDIR\UltraDefragScheduler.NET.exe"

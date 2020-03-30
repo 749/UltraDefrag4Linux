@@ -943,6 +943,7 @@ _toupper
 _ultoa
 _ultow
 _vsnprintf
+_vsnwprintf
 _wcsicmp
 _wcslwr
 _wcsnicmp

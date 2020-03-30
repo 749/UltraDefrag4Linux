@@ -1,18 +1,16 @@
-TYPE(1)             Ultradefrag Development Team              TYPE(1)
+TYPE(1)            UltraDefrag Boot Time Commands             TYPE(1)
 
 NAME
-        type - manual page for type v4.4.0
+        type - manual page for type v6.1.0
 
 SYNOPSIS
         type [OPTION]
 
 DESCRIPTION
-        'type' displays the contents of any file.
-        The default action is to display the contents of the
-        "ud-boot-time.cmd" command script.
-        In scripting mode the contents are displayed without
-        interruption and in interactive mode they are displayed
-        page-wise.
+        'type' displays a file. In scripting mode it will be
+        displayed without interruption, in interactive mode
+        it will be displayed page-wise. The default action
+        is to display the main boot time script.
 
 OPTIONS
         {file path}
@@ -20,19 +18,20 @@ OPTIONS
 
 EXAMPLES
         type
-                display the contents of
-                "%SystemRoot%\System32\ud-boot-time.cmd"
+                display "%SystemRoot%\System32\ud-boot-time.cmd"
 
         type C:\Temp\MyCustom.cmd
-                display the contents of "C:\Temp\MyCustom.cmd"
+                display "C:\Temp\MyCustom.cmd"
 
 AUTHOR
-        Written by Ultradefrag Development Team
+        Written by UltraDefrag Development Team.
 
 COPYRIGHT
-        Copyright (C) 2010-2013 Ultradefrag Development Team
-        This is free software; see the source for copying conditions.
-        There is NO warranty; not even for MERCHANTABILITY
-        or FITNESS FOR A PARTICULAR PURPOSE.
+        Copyright (C) 2010-2015 UltraDefrag Development Team
+        This is free software. You may redistribute copies of
+        it under the terms of the GNU General Public License
+        <http://www.gnu.org/licenses/gpl.html>. There is NO
+        warranty; not even for MERCHANTABILITY or FITNESS
+        FOR A PARTICULAR PURPOSE.
 
-type                        September 2010                          1
+type                          April 2015                            1

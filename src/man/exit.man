@@ -1,15 +1,14 @@
-EXIT(1)             Ultradefrag Development Team              EXIT(1)
+EXIT(1)            UltraDefrag Boot Time Commands             EXIT(1)
 
 NAME
-        exit - manual page for exit v4.4.0
+        exit - manual page for exit v6.1.0
 
 SYNOPSIS
         exit [OPTION]
 
 DESCRIPTION
-        'exit' terminates the session and continues with the Windows
-        boot process.
-        By default the error code zero is returned.
+        'exit' terminates the session and returns control back to
+        the Windows boot process. The exit code is zero by default.
 
 OPTIONS
         {number}
@@ -23,12 +22,14 @@ EXAMPLES
                 terminate and return '1' as the exit code
 
 AUTHOR
-        Written by Ultradefrag Development Team
+        Written by UltraDefrag Development Team.
 
 COPYRIGHT
-        Copyright (C) 2010-2013 Ultradefrag Development Team
-        This is free software; see the source for copying conditions.
-        There is NO warranty; not even for MERCHANTABILITY
-        or FITNESS FOR A PARTICULAR PURPOSE.
+        Copyright (C) 2010-2015 UltraDefrag Development Team
+        This is free software. You may redistribute copies of
+        it under the terms of the GNU General Public License
+        <http://www.gnu.org/licenses/gpl.html>. There is NO
+        warranty; not even for MERCHANTABILITY or FITNESS
+        FOR A PARTICULAR PURPOSE.
 
-exit                        September 2010                          1
+exit                          April 2015                            1

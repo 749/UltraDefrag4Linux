@@ -181,7 +181,7 @@ void __stdcall NtProcessStartup(PPEB Peb)
     ProcessScript(NULL);
 
     /* start interactive mode */
-    winx_printf("\nInteractive mode:\nType 'help' for a list of supported commands.\n");
+    winx_printf("\nInteractive mode:\nType 'help' to list available commands.\n");
     winx_printf("\nOnly the English keyboard layout is available.\n\n");
     scripting_mode = 0;
     abort_flag = 0;

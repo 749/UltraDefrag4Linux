@@ -455,7 +455,7 @@ int udefrag_handler(int argc,wchar_t **argv,wchar_t **envp)
             for(another_path = path->next; another_path; another_path = another_path->next){
                 if(another_path == paths) break;
                 if(winx_toupper(letter) == winx_toupper((char)another_path->path[0])){
-                    /* try to append it to %UD_IN_FILTER% */
+                    /* try to append it to %UD_CUT_FILTER% */
                     n = _snwprintf(aux_buffer,MAX_ENV_VARIABLE_LENGTH + 1,L"%ls;%ls",cut_filter,another_path->path);
                     if(n >= 0){
                         aux_buffer[MAX_ENV_VARIABLE_LENGTH] = 0;

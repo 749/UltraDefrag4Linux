@@ -1,7 +1,7 @@
-HISTORY(1)          Ultradefrag Development Team           HISTORY(1)
+HISTORY(1)         UltraDefrag Boot Time Commands          HISTORY(1)
 
 NAME
-        history - manual page for history v4.4.0
+        history - manual page for history v6.1.0
 
 SYNOPSIS
         history
@@ -9,25 +9,19 @@ SYNOPSIS
 DESCRIPTION
         'history' displays the list of all manually entered commands.
         You can reuse previously entered commands in interactive mode
-        by using the up/down cursor/arrow keys.
-        In scripting mode the list is empty, since there is no way to
-        enter commands manually.
-        In interactive mode the list is displayed page-wise.
-
-OPTIONS
-        none
-
-EXAMPLES
-        history
-                display the list of manually entered commands
+        by using the up/down cursor/arrow keys. In scripting mode
+        the list is empty, since there is no way to enter commands
+        manually. In interactive mode the list is displayed page-wise.
 
 AUTHOR
-        Written by Ultradefrag Development Team
+        Written by UltraDefrag Development Team.
 
 COPYRIGHT
-        Copyright (C) 2010-2013 Ultradefrag Development Team
-        This is free software; see the source for copying conditions.
-        There is NO warranty; not even for MERCHANTABILITY
-        or FITNESS FOR A PARTICULAR PURPOSE.
+        Copyright (C) 2010-2015 UltraDefrag Development Team
+        This is free software. You may redistribute copies of
+        it under the terms of the GNU General Public License
+        <http://www.gnu.org/licenses/gpl.html>. There is NO
+        warranty; not even for MERCHANTABILITY or FITNESS
+        FOR A PARTICULAR PURPOSE.
 
-history                     September 2010                          1
+history                       April 2015                            1

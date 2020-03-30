@@ -1,4 +1,4 @@
-# Doxyfile 1.8.4
+﻿# Doxyfile 1.8.4
 
 # This file describes the settings to be used by the documentation system
 # doxygen (www.doxygen.org) for a project.
@@ -1368,19 +1368,17 @@ LATEX_EXTRA_FILES      = ./rsc/About.png \
                          ./rsc/Defragment.png \
                          ./rsc/Directory.png \
                          ./rsc/fixed.png \
-                         ./rsc/fixed-dirty.png \
                          ./rsc/Fragmented.png \
                          ./rsc/FreeSpace.png \
                          ./rsc/FullOptimize.png \
                          ./rsc/Help.png \
-                         ./rsc/MFT.png \
+                         ./rsc/MFTzone.png \
                          ./rsc/NotFragmented.png \
                          ./rsc/OptimizeMFT.png \
                          ./rsc/Options.png \
                          ./rsc/Pause.png \
                          ./rsc/QuickOptimize.png \
                          ./rsc/removable.png \
-                         ./rsc/removable-dirty.png \
                          ./rsc/Repeat.png \
                          ./rsc/Report.png \
                          ./rsc/Stop.png \

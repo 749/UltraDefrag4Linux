@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -390,10 +390,10 @@ static void VolListUpdateStatusFieldInternal(int index,volume_processing_job *jo
         if(job->pi.completion_status == 0 || stop_pressed){
             if(job->pi.pass_number > 1){
                 if(job->pi.current_operation == VOLUME_OPTIMIZATION){
-                    text = wgx_swprintf(L"%5.2lf %% %ls, Pass %d, %I64u moves total",
+                    text = wgx_swprintf(L"%5.2lf %% %ls, pass %d, %I64u moves total",
                         job->pi.percentage,caption,job->pi.pass_number,job->pi.total_moves);
                 } else {
-                    text = wgx_swprintf(L"%5.2lf %% %ls, Pass %d",
+                    text = wgx_swprintf(L"%5.2lf %% %ls, pass %d",
                         job->pi.percentage,caption,job->pi.pass_number);
                 }
             } else {
@@ -407,7 +407,7 @@ static void VolListUpdateStatusFieldInternal(int index,volume_processing_job *jo
             }
         } else {
             if(job->pi.pass_number > 1)
-                text = wgx_swprintf(L"%ls, %d passes needed",caption,job->pi.pass_number);
+                text = wgx_swprintf(L"%ls, in %d passes",caption,job->pi.pass_number);
             else
                 text = wgx_swprintf(L"%ls",caption);
         }

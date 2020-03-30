@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ struct toolbar_button buttons[] = {
     {7,  IDM_PAUSE,            TBSTATE_ENABLED, TBSTYLE_BUTTON, "PAUSE",            "Space"   },
     {8,  IDM_STOP,             TBSTATE_ENABLED, TBSTYLE_BUTTON, "STOP",             "Ctrl+C"  },
     {0,  0,                    TBSTATE_ENABLED, TBSTYLE_SEP,    NULL,                NULL     },
-    {9,  IDM_SHOW_REPORT,      TBSTATE_ENABLED, TBSTYLE_BUTTON, "REPORT",           "F8"      },
+    {9,  IDM_SHOW_REPORT,      TBSTATE_ENABLED, TBSTYLE_BUTTON, "SHOW_REPORT",      "F8"      },
     {0,  0,                    TBSTATE_ENABLED, TBSTYLE_SEP,    NULL,                NULL     },
     {10, IDM_CFG_GUI_SETTINGS, TBSTATE_ENABLED, TBSTYLE_BUTTON, "OPTIONS",          "F10"     },
     {0,  0,                    TBSTATE_ENABLED, TBSTYLE_SEP,    NULL,                NULL     },

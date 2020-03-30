@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -185,8 +185,7 @@ BOOL CALLBACK AboutDlgProc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
                     OpenWebPage("Credits.html", NULL);
                     break;
                 case IDC_LICENSE:
-                    (void)WgxShellExecute(hWindow,L"open",L".\\LICENSE.TXT",
-                        NULL,NULL,SW_SHOW,WSH_ALLOW_DEFAULT_ACTION);
+                    OpenWebPage("GPL.html", NULL);
                     break;
                 case IDC_HOMEPAGE:
                     (void)SetFocus(GetDlgItem(hWnd,IDC_CREDITS));

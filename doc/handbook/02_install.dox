@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
@@ -12,122 +12,140 @@
 /**
  * @page Installation Installation
  *
- * To obtain the latest version of the program please visit the 
- * <a href="http://sourceforge.net/projects/ultradefrag/files/">project's download page</a>.
+ * The latest version of the program can be obtained at
+ * <a href="http://sourceforge.net/projects/ultradefrag/files/">SourceForge</a>. Both installers 
+ * and <a href="http://en.wikipedia.org/wiki/Portable_application">portable packages</a>
+ * are available. The latter require no installation, thus can be used directly from USB
+ * sticks. They include all the components except of the boot time defragmenter.
+ *
+ * All the binaries are available for three processor architectures: x86, AMD64 and IA64.
+ * The first one is for 32-bit editions of Windows. The next one is for 64-bit editions.
+ * The last one is for Intel Itanium driven computers running Itanium editions of Windows.
+ *
+ * For example, if you need UltraDefrag for Windows XP 32-bit edition download the x86 installer.
+ * If you need it for Windows 7 64-bit edition, download the AMD64 installer regardless of the
+ * processor you have.
  *
  * @note
- * You must be an administrator to install and run UltraDefrag.<br /><br />
- * You must have a 64-bit version of Windows to run the 64-bit versions of the program.
- * The IA-64 version was never tested by the authors. It requires the Intel Itanium processor
- * and an appropriate 64-bit edition of Windows.
+ * You must be an administrator to install and run UltraDefrag.
  *
- * There are two different types of packages available for download:
- * @par Full-featured installer
- * It installs all of the program features, but requires installation
- * therefore cannot be used directly from USB sticks.<br/><br/>
- * The installer allows installing the <b>UltraDefrag Micro Edition</b> too, which is a lightweight version
- * of the program containing only the command line tool and the boot time defragmenter.
- * It is intended to be used from the console only.
+ * The installation process is pretty straightforward, only one thing deserves
+ * to be mentioned. During startup the program sends a bit of usage statistics
+ * to the <a href="http://www.google.com/analytics/">Google Analytics</a>
+ * service. It helps us to understand better your needs. However, you may turn
+ * this feature off during the installation.
  *
- * @par Portable package
- * Download it, unpack it and use without an installation. 
- * Copy it on an USB stick and you will be able to use UltraDefrag everywhere by simply
- * running it from there.
- * @note
- * The boot time defragmenter is missing from the portable 
- * packages, but all other features are included. 
- * You can find more information about portable applications
- * <a href="http://en.wikipedia.org/wiki/Portable_application">here</a>.<br/><br/>
- * 
- * To expand usage statistics gathering by the website UltraDefrag sends also
- * requests to the <a href="http://www.google.com/analytics/">Google Analytics</a> 
- * service during startup. It takes no negative effect on security - many thousands
- * of websites around the world use the same service to gather basic statistics
- * of use. However, the UltraDefrag usage tracking can be turned off during an 
- * installation.
+ * <h1>Silent mode</h1>
+ * UltraDefrag can be installed silently (without graphical dialogs)
+ * using additional command line switches:
  *
- * <h1>Silent Installation</h1>
- * UltraDefrag can be installed in silent mode by adding the <b>/S</b> switch to the installer's command line
- * at the command prompt. In this case no dialogs will be shown and the program will be installed 
- * to the hard drive completely with all the features enabled.<br/>
- * @note
- * For easier debugging of installation problems a log file will be created when an error is encontered.
- * The log file is located in the temporary folder of the executing user: <b>\%TMP\%\\UltraDefrag_Install.log</b>
- *
- * The following additional command line switches are supported:
- * @par /LANG
- * Select the language to be installed. For example, 
- * use <b>/LANG="German"</b> to install the German language pack.
+ * @par /S
+ * Install the program silently.
  *
  * @par /FULL=1
- * Install the full edition, which includes all components and icons.
+ * Install all the components.
  *
  * @par /MICRO=1
- * Install the micro edition, which includes only the core components and the shell extension.
+ * Install the console and boot time interfaces only.
  *
- * @par /ICONS=(0|1)
- * Install or remove all shortcut icons. Example: <b>/ICONS=0</b> removes all icons.
+ * @par /GUI=(1|0)
+ * Install or remove the graphical interface.
  *
- * @par /BOOT=(0|1)
- * Install or remove the boot components. Example: <b>/BOOT=1</b> installs the boot components.
+ * @par /CONSOLE=(1|0)
+ * Install or remove the console interface.
  *
- * @par /CONSOLE=(0|1)
- * Install or remove the console components. Example: <b>/CONSOLE=1</b> installs the console components.
+ * @par /BOOT=(1|0)
+ * Install or remove the boot time interface.
  *
- * @par /GUI=(0|1)
- * Install or remove the GUI components. Example: <b>/GUI=1</b> installs the GUI components.
+ * @par /HELP=(1|0)
+ * Install or remove this handbook.
  *
- * @par /HELP=(0|1)
- * Install or remove the documentation. Example: <b>/HELP=0</b> removes the documentation.
+ * @par /SHELLEXTENSION=(1|0)
+ * Install or remove the Explorer's context menu handler.
  *
- * @par /SHELLEXTENSION=(0|1)
- * Install or remove the Explorer context menu handler.
- * Example: <b>/SHELLEXTENSION=0</b> removes the Explorer context menu handler.<br/>
- * Installing the context menu handler forces the console interface it depends on to be installed.
+ * @par /ICONS=(1|0)
+ * Install or remove all the shortcut icons.
  *
- * @par /STARTMENUICON=(0|1)
- * Install or remove the start menu icon. Example: <b>/STARTMENUICON=1</b> installs the start menu icon.<br/>
- * Installing the start menu icon forces the GUI interface it depends on to be installed.
+ * @par /STARTMENUICON=(1|0)
+ * Install or remove the start menu icon.
  *
- * @par /DESKTOPICON=(0|1)
- * Install or remove the desktop icon. Example: <b>/DESKTOPICON=0</b> removes the desktop icon.<br/>
- * Installing the desktop icon forces the GUI interface it depends on to be installed.
+ * @par /DESKTOPICON=(1|0)
+ * Install or remove the desktop icon.
  *
- * @par /QUICKLAUNCHICON=(0|1)
- * Install or remove the quick launch icon. Example: <b>/QUICKLAUNCHICON=1</b> installs the quick launch icon.<br/>
- * Installing the quick launch icon forces the GUI interface it depends on to be installed.
+ * @par /QUICKLAUNCHICON=(1|0)
+ * Install or remove the quick launch icon.
  *
- * @par /DISABLE_USAGE_TRACKING=(0|1)
- * Enable or disable tracking the usage of UltraDefrag. Example: <b>/DISABLE_USAGE_TRACKING=1</b> disables usage tracking.<br/>
- * Usage tracking is done by accessing a simple text file on the UltraDefrag home page.
+ * @par /DISABLE_USAGE_TRACKING=(1|0)
+ * Enable or disable the usage tracking mentioned above.
  *
- * @par /D={Install Location}
- * This sets the installation folder for UltraDefrag. Example: <b>/D=C:\\Program Files\\UltraDefrag</b>.<br/>
- * It must be the last parameter used in the command line and must not contain any quotes, even if the path contains spaces.<br/>
+ * @par /LANG={Language}
+ * Select language for the graphical interface.
+ *
+ * @par /D={Installation Folder}
+ * Set the installation folder.
+ * It must be the last parameter used in the command line and must not contain any quotes, even if the path contains spaces.
  * Only absolute paths are supported. The destination folder must be empty or contain a previous UltraDefrag installation.
  *
- * Example command line to silently install the full edition in "Burmese (Padauk)" with only the start menu icon:
- * @code
- * ultradefrag.bin.i386.exe /S /LANG="Burmese (Padauk)" /FULL=1 /ICONS=0 /STARTMENUICON=1
- *     /D=C:\Program Files\UltraDefrag
- * @endcode
- * To check the result of the command line switches omit the <b>/S</b> switch,
- * which opens the interactive installer and allows checking the selections
- * on the component page.
+ * @note
+ * The shortcut icons force installation of the graphical interface they depend on.<br />
+ * The same way the context menu handler forces installation of the console interface.
  *
- * There is also a silent mode for the uninstaller program.
- * At the command prompt type:
- * @code
- * %UD_INSTALL_DIR%\uninstall.exe /S
- * @endcode
- * to automatically remove the program from the hard drive without any graphical dialogs.
+ * The following samples illustrate use of the command line switches:
+ *
+ * @htmlonly
+ * <div class="fragment">
+ * <div class="line"><span class="comment">:: install everything except of desktop and quick launch icons</span></div>
+ * <div class="line"><span class="keyword">ultradefrag-7.0.0.bin.i386.exe</span> /S /FULL=1 /ICONS=0 /STARTMENUICON=1</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: install the console and boot time interfaces only along with this handbook</span></div>
+ * <div class="line"><span class="keyword">ultradefrag-7.0.0.bin.i386.exe</span> /S /MICRO=1 /HELP=1</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: remove the boot time interface from the previous installation</span></div>
+ * <div class="line"><span class="keyword">ultradefrag-7.0.0.bin.i386.exe</span> /S /BOOT=0</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: change the installation folder</span></div>
+ * <div class="line"><span class="keyword">ultradefrag-7.0.0.bin.i386.exe</span> /S /D=H:\Software\UltraDefrag</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: select Burmese language for the graphical interface</span></div>
+ * <div class="line"><span class="keyword">ultradefrag-7.0.0.bin.i386.exe</span> /S /LANG="Burmese (Padauk)"</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: uninstall the program silently</span></div>
+ * <div class="line">%UD_INSTALL_DIR%\<span class="keyword">uninstall.exe</span> /S</div>
+ * </div>
+ * @endhtmlonly
+ *
+ * @latexonly
+ * \begin{DoxyCode}
+ * \rem{:: install everything except of desktop and quick launch icons}
+ * \cmd{ultradefrag-7.0.0.bin.i386.exe} /S /FULL=1 /ICONS=0 /STARTMENUICON=1
+ *
+ * \rem{:: install the console and boot time interfaces only along with this handbook}
+ * \cmd{ultradefrag-7.0.0.bin.i386.exe} /S /MICRO=1 /HELP=1
+ *
+ * \rem{:: remove the boot time interface from the previous installation}
+ * \cmd{ultradefrag-7.0.0.bin.i386.exe} /S /BOOT=0
+ *
+ * \rem{:: change the installation folder}
+ * \cmd{ultradefrag-7.0.0.bin.i386.exe} /S /D=H:\(\backslash\)Software\(\backslash\)UltraDefrag
+ *
+ * \rem{:: select Burmese language for the graphical interface}
+ * \cmd{ultradefrag-7.0.0.bin.i386.exe} /S /LANG="Burmese (Padauk)"
+ *
+ * \rem{:: uninstall the program silently}
+ * %UD\_INSTALL\_DIR%\(\backslash\)\cmd{uninstall.exe} /S
+ * \end{DoxyCode}
+ * @endlatexonly
+ *
+ * For troubleshooting omit the /S switch and check out dialogs to ensure
+ * that the installation parameters are adjusted properly. In case of errors
+ * check out the following file as well: <b>\%TMP\%\\UltraDefrag_Install.log</b>
  *
  * @htmlonly
  * <HR>
  *  <TABLE STYLE="border: none; width: 97%; margin:auto;">
  *    <TR>
  *      <TD STYLE="text-align: left; width: 50%;">Previous: <a href="Introduction.html">Introduction</a></TD>
- *      <TD STYLE="text-align: right; width: 50%;">Next: <a href="Console.html">Console Interface</a></TD>
+ *      <TD STYLE="text-align: right; width: 50%;">Next: <a href="GUI.html">Graphical Interface</a></TD>
  *    </TR>
  *  </TABLE>
  * @endhtmlonly

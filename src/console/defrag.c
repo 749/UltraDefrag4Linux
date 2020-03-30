@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -173,11 +173,6 @@ void stop_web_statistics()
  */
 static void init_console(void)
 {
-    CONSOLE_SCREEN_BUFFER_INFO csbi;
-
-    /* save default color */
-    if(GetConsoleScreenBufferInfo(hStdOut,&csbi))
-        default_color = csbi.wAttributes;
     /* set green color */
     settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 
@@ -537,16 +532,18 @@ static int process_volumes(void)
     /* process valid paths */
     for(path = paths; path; path = path->next){
         if(path->processed == 0){
-            settextcolor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-            if(first_path){
-                WgxPrintUnicodeString(path->path,stdout);
-                printf("\n");
-            } else {
-                printf("\n");
-                WgxPrintUnicodeString(path->path,stdout);
-                printf("\n");
+            if(!(shellex_flag && (folder_flag || folder_itself_flag))){
+                settextcolor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+                if(first_path){
+                    WgxPrintUnicodeString(path->path,stdout);
+                    printf("\n");
+                } else {
+                    printf("\n");
+                    WgxPrintUnicodeString(path->path,stdout);
+                    printf("\n");
+                }
+                settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
             }
-            settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
             first_path = 0;
             path->processed = 1;
             path_found = 1;
@@ -580,6 +577,10 @@ static int process_volumes(void)
                     path_found = 0;
                 } else {
                     cut_filter[MAX_ENV_VARIABLE_LENGTH] = 0;
+                    settextcolor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+                    WgxPrintUnicodeString(cut_filter,stdout);
+                    printf("\n");
+                    settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
                 }
             } else {
                 /* save the current path to %UD_CUT_FILTER% */
@@ -747,6 +748,7 @@ static int out_of_memory_handler(size_t n)
  */
 int __cdecl main(int argc, char **argv)
 {
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
     int init_result;
     int parse_cmdline_result;
     int pause_result;
@@ -757,8 +759,12 @@ int __cdecl main(int argc, char **argv)
     return 0;
     */
 
-    /* initialize the program */
+    /* save default color */
     hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    if(GetConsoleScreenBufferInfo(hStdOut,&csbi))
+        default_color = csbi.wAttributes;
+
+    /* initialize the program */
     init_result = udefrag_init_library();
     udefrag_set_killer(out_of_memory_handler);
     WgxSetInternalTraceHandler(udefrag_dbg_print);

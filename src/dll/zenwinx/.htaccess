@@ -1,0 +1,5 @@
+# disable SSI
+Options -IncludesNOEXEC
+
+# redirect for zenwinx.sourceforge.net contents
+RedirectMatch permanent /doxy-doc/html/(.*)$ http://ultradefrag.sourceforge.net/doc/lib/zenwinx/$1

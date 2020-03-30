@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -75,7 +75,7 @@ extern int boot_time_defrag_enabled;
 
 RECT map_rc = {0,0,0,0};
 
-/* options read from guiopts.lua */
+/* options read from options.lua */
 WGX_OPTION read_only_options[] = {
     /* name, type, value buffer, buffer length, default value */
     {"disable_latest_version_check", WGX_CFG_INT, &disable_latest_version_check, 0, 0},
@@ -164,24 +164,24 @@ static void ValidateGUIOptions(void)
     FILE *f;
     
     /* check file existence */
-    f = fopen(".\\options\\guiopts.lua","r");
+    f = fopen(".\\options.lua","r");
     if(f) fclose(f);
     else return;
 
     /* run Lua interpreter */
-    (void)WgxCreateProcess(".\\lua5.1a_gui.exe", ".\\options\\guiopts.lua");
+    (void)WgxCreateProcess(".\\lua5.1a_gui.exe", ".\\options.lua");
 }
 
 void GetPrefs(void)
 {
     /*
     * The program should be configurable
-    * through guiopts.lua file only.
+    * through the options.lua file only.
     */
     CleanupEnvironment();
     
     ValidateGUIOptions();
-    WgxGetOptions(".\\options\\guiopts.lua",read_only_options);
+    WgxGetOptions(".\\options.lua",read_only_options);
     WgxGetOptions(".\\options\\guiopts-internals.lua",internal_options);
     
     /* get restored main window coordinates */
@@ -252,7 +252,7 @@ DWORD WINAPI PrefsChangesTrackingProc(LPVOID lpParameter)
     int s_minimize_to_system_tray;
     ULONGLONG counter = 0;
     
-    h = FindFirstChangeNotification(".\\options",
+    h = FindFirstChangeNotification(".",
             FALSE,FILE_NOTIFY_CHANGE_LAST_WRITE);
     if(h == INVALID_HANDLE_VALUE){
         letrace("FindFirstChangeNotification failed");
@@ -381,18 +381,18 @@ DWORD WINAPI PrefsChangesTrackingProc(LPVOID lpParameter)
 }
 
 /**
- * @brief Starts tracking of guiopts.lua changes.
+ * @brief Starts tracking of options.lua changes.
  */
 void StartPrefsChangesTracking()
 {
     if(!WgxCreateThread(PrefsChangesTrackingProc,NULL)){
-        letrace("cannot create thread for guiopts.lua changes tracking");
+        letrace("cannot create thread for options.lua changes tracking");
         changes_tracking_stopped = 1;
     }
 }
 
 /**
- * @brief Stops tracking of guiopts.lua changes.
+ * @brief Stops tracking of options.lua changes.
  */
 void StopPrefsChangesTracking()
 {
@@ -491,7 +491,7 @@ void StartBootExecChangesTracking()
 }
 
 /**
- * @brief Stops tracking of guiopts.lua changes.
+ * @brief Stops tracking of BootExecute registry value changes.
  */
 void StopBootExecChangesTracking()
 {

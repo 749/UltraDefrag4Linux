@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -100,6 +100,7 @@
 #define IDM_OPTIMIZE_MFT                1132
 #define IDM_PAUSE                       1134
 #define IDM_STOP                        1135
+#define IDM_SHOW_REPORT                 1136
 #define IDM_REPEAT_ACTION               1137
 #define IDM_IGNORE_REMOVABLE_MEDIA      1140
 #define IDM_RESCAN                      1150
@@ -119,15 +120,9 @@
 /* IDM_EXIT must follow the last IDM_WHEN_DONE_xxx */
 #define IDM_EXIT                        1170
 
-#define IDM_REPORT                      1300
-#define IDM_SHOW_REPORT                 1310
-
 #define IDM_SETTINGS                    1400
 
-//#define IDM_TRANSLATIONS_CHANGE_LOG     1405
-//#define IDM_TRANSLATIONS_REPORT         1406
 #define IDM_TRANSLATIONS_FOLDER         1407
-//#define IDM_TRANSLATIONS_SUBMIT         1408
 #define IDM_LANGUAGE                    1410
 /* IDM_CFG_GUI must follow IDM_LANGUAGE */
 #define IDM_CFG_GUI                     2680
@@ -136,7 +131,6 @@
 #define IDM_CFG_BOOT                    2685
 #define IDM_CFG_BOOT_ENABLE             2686
 #define IDM_CFG_BOOT_SCRIPT             2687
-#define IDM_CFG_REPORTS                 2690
 enum {
     IDM_CFG_SORTING = 2700,
     IDM_CFG_SORTING_SORT_BY_PATH,

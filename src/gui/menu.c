@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -57,6 +57,8 @@ WGX_MENU action_menu[] = {
     {MF_SEPARATOR,0,NULL,NULL,0},
     {MF_STRING | MF_ENABLED | MF_UNCHECKED,IDM_REPEAT_ACTION,        NULL, L"Re&peat action\tShift+R",       -1 },
     {MF_SEPARATOR,0,NULL,NULL,0},
+    {MF_STRING | MF_ENABLED,IDM_SHOW_REPORT,                         NULL, L"&Show report\tF8",               6 },
+    {MF_SEPARATOR,0,NULL,NULL,0},
     {MF_STRING | MF_ENABLED | MF_CHECKED,IDM_IGNORE_REMOVABLE_MEDIA, NULL, L"Skip removable &media\tCtrl+M", -1 },
     {MF_STRING | MF_ENABLED,IDM_RESCAN,                              NULL, L"&Rescan drives\tCtrl+D",        -1 },
     {MF_SEPARATOR,0,NULL,NULL,0},
@@ -68,30 +70,10 @@ WGX_MENU action_menu[] = {
     {0,0,NULL,NULL,0}
 };
 
-WGX_MENU report_menu[] = {
-    {MF_STRING | MF_ENABLED,IDM_SHOW_REPORT, NULL, L"&Show report\tF8", 6 },
-    {0,0,NULL,NULL,0}
-};
-
 WGX_MENU language_menu[] = {
-//    {MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_CHANGE_LOG,     NULL, L"&View change log",            -1 },
-//    {MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_REPORT,         NULL, L"View translation &report",    -1 },
     {MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_FOLDER,         NULL, L"&Translations folder",        -1 },
-//    {MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_SUBMIT,         NULL, L"&Submit current translation", -1 },
     {MF_SEPARATOR,0,NULL,NULL,0},
     {MF_STRING | MF_ENABLED | MF_CHECKED,IDM_LANGUAGE + 0x1, NULL, L"English (US)", -1 },
-    {0,0,NULL,NULL,0}
-};
-
-WGX_MENU gui_config_menu[] = {
-    {MF_STRING | MF_ENABLED,IDM_CFG_GUI_FONT,     NULL, L"&Font\tF9"    , -1 },
-    {MF_STRING | MF_ENABLED,IDM_CFG_GUI_SETTINGS, NULL, L"&Options\tF10",  7 },
-    {0,0,NULL,NULL,0}
-};
-
-WGX_MENU boot_config_menu[] = {
-    {MF_STRING | MF_ENABLED | MF_UNCHECKED,IDM_CFG_BOOT_ENABLE, NULL, L"&Enable\tF11", -1 },
-    {MF_STRING | MF_ENABLED,               IDM_CFG_BOOT_SCRIPT, NULL, L"&Script\tF12",  8 },
     {0,0,NULL,NULL,0}
 };
 
@@ -107,12 +89,23 @@ WGX_MENU sorting_menu[] = {
     {0,0,NULL,NULL,0}
 };
 
+WGX_MENU gui_config_menu[] = {
+    {MF_STRING | MF_ENABLED,IDM_CFG_GUI_FONT,             NULL,              L"&Font\tF9",            -1 },
+    {MF_STRING | MF_ENABLED,IDM_CFG_GUI_SETTINGS,         NULL,              L"&Options\tF10",         7 },
+    {MF_STRING | MF_ENABLED | MF_POPUP, IDM_CFG_SORTING,  sorting_menu,      L"&Sorting",             -1 },
+    {0,0,NULL,NULL,0}
+};
+
+WGX_MENU boot_config_menu[] = {
+    {MF_STRING | MF_ENABLED | MF_UNCHECKED,IDM_CFG_BOOT_ENABLE, NULL, L"&Enable\tF11", -1 },
+    {MF_STRING | MF_ENABLED,               IDM_CFG_BOOT_SCRIPT, NULL, L"&Script\tF12",  8 },
+    {0,0,NULL,NULL,0}
+};
+
 WGX_MENU settings_menu[] = {
     {MF_STRING | MF_ENABLED | MF_POPUP, IDM_LANGUAGE,     language_menu,     L"&Language",            -1 },
     {MF_STRING | MF_ENABLED | MF_POPUP, IDM_CFG_GUI,      gui_config_menu,   L"&Graphical interface", -1 },
     {MF_STRING | MF_ENABLED | MF_POPUP, IDM_CFG_BOOT,     boot_config_menu,  L"&Boot time scan",      -1 },
-    {MF_STRING | MF_ENABLED,            IDM_CFG_REPORTS,  NULL,              L"&Reports\tCtrl+R",     -1 },
-    {MF_STRING | MF_ENABLED | MF_POPUP, IDM_CFG_SORTING,  sorting_menu,      L"&Sorting",             -1 },
     {0,0,NULL,NULL,0}
 };
 
@@ -144,7 +137,6 @@ WGX_MENU preview_menu[] = {
 
 WGX_MENU main_menu[] = {
     {MF_STRING | MF_ENABLED | MF_POPUP, IDM_ACTION,   action_menu,   L"&Action",   -1 },
-    {MF_STRING | MF_ENABLED | MF_POPUP, IDM_REPORT,   report_menu,   L"&Report",   -1 },
     {MF_STRING | MF_ENABLED | MF_POPUP, IDM_SETTINGS, settings_menu, L"&Settings", -1 },
     {MF_STRING | MF_ENABLED | MF_POPUP, IDM_HELP,     help_menu,     L"&Help",     -1 },
 #ifndef _UD_HIDE_PREVIEW_

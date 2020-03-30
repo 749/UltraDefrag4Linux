@@ -472,8 +472,6 @@
 \allsectionsfont{\usefont{OT1}{phv}{bc}{n}\selectfont\color{darkgray}}
 \stepcounter{secnumdepth}
 \stepcounter{tocdepth}
-\definecolor{comment}{rgb}{0.5,0.0,0.0}
-\definecolor{keyword}{rgb}{0.0,0.5,0.0}
 \definecolor{keywordtype}{rgb}{0.38,0.25,0.125}
 \definecolor{keywordflow}{rgb}{0.88,0.5,0.0}
 \definecolor{preprocessor}{rgb}{0.5,0.38,0.125}
@@ -483,3 +481,12 @@
 \definecolor{vhdlkeyword}{rgb}{0.43,0.0,0.43}
 \definecolor{vhdllogic}{rgb}{1.0,0.0,0.0}
 \definecolor{vhdlchar}{rgb}{0.0,0.0,0.0}
+
+% custom stuff for batch scripts colorization
+\definecolor{comment}{rgb}{0.0,0.5,0.0}
+\definecolor{keyword}{rgb}{0.13,0.31,1.0}
+\newcommand{\rem}[1]{\textcolor{comment}{#1}}
+\newcommand{\cmd}[1]{\textbf{\textcolor{keyword}{#1}}}
+
+% ensure that icons have correct size
+\newcommand{\includeicon}[1]{\includegraphics[scale=0.75]{#1}}

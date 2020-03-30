@@ -18,17 +18,10 @@
  */
 
 /**
- * @mainpage WGX
- * @author Dmitri Arkhangelski (dmitriar@users.sourceforge.net).
+ * @mainpage WGX Library
  *
- * <h2>Introduction</h2>
- * WGX (Windows GUI Extended) Library is a little framework
+ * WGX (Windows GUI Extended) library is a little framework
  * simplifying Windows graphical interfaces development.
- *
- * <h2>License</h2>
- * WGX is a <a href="http://www.gnu.org/copyleft/gpl.html">GPL</a>-
- * licensed product. Feel free to redistribute it under certain
- * conditions.
  */
 
 /**

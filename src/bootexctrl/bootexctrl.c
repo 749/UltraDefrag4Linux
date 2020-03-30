@@ -120,7 +120,11 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nS
             silent = 1;
     }
 
-    /* strongly required! to be compatible with manifest */
+    /*
+    * This call is mandatory for all applications
+    * depending on comctl32 library, even through
+    * the application manifest.
+    */
     InitCommonControls();
 
     if(udefrag_init_library() < 0){

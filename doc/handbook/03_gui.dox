@@ -1,0 +1,671 @@
+/*
+ *  UltraDefrag - a powerful defragmentation tool for Windows NT.
+ *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
+ *
+ *  Permission is granted to copy, distribute and/or modify this document
+ *  under the terms of the GNU Free Documentation License, Version 1.3 or
+ *  any later version published by the Free Software Foundation; with no
+ *  Invariant Sections.
+ */
+
+/**
+ * @page GUI Graphical Interface
+ *
+ * UltraDefrag GUI is pretty straightforward: you select disks
+ * and then either analyze, or defragment, or optimize them.
+ * If multiple disks are selected they will be processed one by one.
+ * After the job completion you may open a @ref Reports "file fragmentation report"
+ * to check out which files are still fragmented and why.
+ *
+ * @htmlonly
+ * <p>The program lists all disks available for defragmentation,
+ * marked by the following icons:</p>
+ * <table class="doxtable" style="width: 90%; margin:auto;"><tr><td>
+ * @endhtmlonly
+ * @image html "fixed.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * <dl class="section user"><dt>Fixed drives</dt><dd></dd></dl>
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @image html "removable.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * <dl class="section user"><dt>Removable drives</dt><dd></dd></dl>
+ * </td></tr></table>
+ * <p>Criss-crossed icons mark dirty ones. Click <b>Action > Repair drives</b> to clean 'em up.</p>
+ * @endhtmlonly
+ *
+ * @latexonly
+ * The program lists all disks available for defragmentation, marked by the following icons\-:
+ * \raisebox{-0.2\height}{\includeicon{fixed.png}} - fixed drives, 
+ * \raisebox{-0.1\height}{\includeicon{removable.png}} - removable drives.
+ * Criss-\/crossed icons mark dirty ones. Click \textbf{Action $>$ Repair drives} to clean 'em up.
+ * @endlatexonly
+ *
+ * To select multiple disks use the same rules as in Windows Explorer. For instance, hit <b>Ctrl+A</b> to select them all.
+ *
+ * Double-click a drive or select it and hit <b>Enter</b> to start its analysis (repair if it's dirty one).
+ *
+ * @anchor cluster_map_legend
+ * <h1>Cluster map</h1>
+ * The bottom part of the window shows the cluster map of the selected
+ * disk. It represents disk clusters by little colored squares.
+ * The top left square represents the first cluster, the bottom 
+ * right - the last one. All the clusters in between are
+ * organized by rows. The colors have the following meaning:
+ *
+ * @htmlonly
+ * <table style="border: none; margin:auto;"><tr><td>
+ * @endhtmlonly
+ * @image html "Fragmented.png"
+ * @htmlonly
+ * </td><td> Fragmented </td><td>
+ * @endhtmlonly
+ * @image html "Blank.png"
+ * @htmlonly
+ * </td><td>
+ * @endhtmlonly
+ * @image html "NotFragmented.png"
+ * @htmlonly
+ * </td><td> Not fragmented </td><td>
+ * @endhtmlonly
+ * @image html "Blank.png"
+ * @htmlonly
+ * </td><td>
+ * @endhtmlonly
+ * @image html "Compressed.png"
+ * @htmlonly
+ * </td><td> Compressed </td></tr><tr><td>
+ * @endhtmlonly
+ * @image html "Directory.png"
+ * @htmlonly
+ * </td><td> Directory </td><td></td><td>
+ * @endhtmlonly
+ * @image html "System.png"
+ * @htmlonly
+ * </td><td> Locked (system) </td><td></td><td>
+ * @endhtmlonly
+ * @image html "MFTzone.png"
+ * @htmlonly
+ * </td><td> MFT </td></tr><tr><td>
+ * @endhtmlonly
+ * @image html "FreeSpace.png"
+ * @htmlonly
+ * </td><td> Free space </td><td></td><td>
+ * </td><td></td><td></td><td>
+ * @endhtmlonly
+ * @image html "UnusedBlock.png"
+ * @htmlonly
+ * </td><td> Unused map cell </td></tr></table>
+ * @endhtmlonly
+ *
+ * @latexonly
+ * \begin{center}\begin{tabular}{clcclccl}
+ * \includegraphics{Fragmented.png} & Fragmented & &
+ * \includegraphics{NotFragmented.png} & Not fragmented & &
+ * \includegraphics{Compressed.png} & Compressed \\
+ * \includegraphics{Directory.png} & Directory &
+ * \raisebox{-0.3\height}{\includegraphics{Blank.png}} &
+ * \includegraphics{System.png} & Locked (system) &
+ * \raisebox{-0.3\height}{\includegraphics{Blank.png}} &
+ * \includegraphics{MFTzone.png} & MFT \\
+ * \includegraphics{FreeSpace.png} & Free space & &
+ * & & &
+ * \includegraphics{UnusedBlock.png} & Unused map cell \\
+ * \end{tabular}\end{center}
+ * @endlatexonly
+ *
+ * @par Files and directories
+ * When there are two different colors assigned to the same item, the
+ * darker one marks objects above the size threshold, if one
+ * is set.
+ *
+ * @par MFT
+ * Dark magenta represents the master file table (MFT), light magenta - the space
+ * reserved for its <a href="http://support.microsoft.com/kb/174619">expansion</a>.
+ *
+ * @par Unused map cells
+ * Each cell reflects an integer number of clusters. So, for 
+ * instance, if a disk has 1000 clusters, but its map contains 
+ * a bit more cells those redundand cells will be not used at all.
+ * On the other hand, if the map has exactly 2000 cells they
+ * will be all in use, reflecting 2 clusters each.
+ *
+ * @note
+ * Unused map cells are <b>not</b> to be confused with free space.
+ *
+ * @par Free space color
+ * The default is white as shown above, but it can be
+ * changed through a background color option.
+ *
+ * It does make sense to set <b>grid_line_width = 0</b>
+ * if you set <b>map_block_size = 1</b> to use the screen space
+ * more efficiently. This is especially useful, if you have
+ * drives bigger than 500GB in size. To set both options
+ * click <b>Settings > Options</b> and edit the appropriate
+ * lines in the opened configuration file.
+ *
+ * <h1>Menu</h1>
+ * <h2>Action</h2>
+ * @htmlonly
+ * <table class="doxtable" style="width: 90%; margin:auto;"><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \begin{center}\begin{longtable}{|c|p{0.9\linewidth}|}
+ * \hline
+ * @endlatexonly
+ * @image html "Analysis.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.5\height}{\includegraphics{Analysis.png}} &
+ * @endlatexonly
+ * @par Analyze (F5; Enter)
+ * Analyze the selected disk(s).
+ *
+ * @htmlonly
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * @endlatexonly
+ * @image html "Defragment.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.7\height}{\includegraphics{Defragment.png}} &
+ * @endlatexonly
+ * @par Defragment (F6)
+ * Defragment the selected disk(s).
+ *
+ * @htmlonly
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * @endlatexonly
+ * @image html "QuickOptimize.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.7\height}{\includegraphics{QuickOptimize.png}} &
+ * @endlatexonly
+ * @par Quick optimization (F7)
+ * Perform quick optimization of the selected disk(s).
+ *
+ * @htmlonly
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * @endlatexonly
+ * @image html "FullOptimize.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.7\height}{\includegraphics{FullOptimize.png}} &
+ * @endlatexonly
+ * @par Full optimization (Ctrl+F7)
+ * Perform full optimization of the selected disk(s).
+ *
+ * @htmlonly
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * @endlatexonly
+ * @image html "OptimizeMFT.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.7\height}{\includegraphics{OptimizeMFT.png}} &
+ * @endlatexonly
+ * @par Optimize MFT (Shift+F7)
+ * Optimize the master file table on the selected disk(s).
+ *
+ * @htmlonly
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * @endlatexonly
+ * @image html "Pause.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.7\height}{\includegraphics{Pause.png}} &
+ * @endlatexonly
+ * @par Pause (Space)
+ * Pause or resume the job. The current file movement
+ * will be completed to avoid data corruption.
+ *
+ * @htmlonly
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * @endlatexonly
+ * @image html "Stop.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.7\height}{\includegraphics{Stop.png}} &
+ * @endlatexonly
+ * @par Stop (Ctrl+C)
+ * Abort the job. The current file movement
+ * will be completed to avoid data corruption.
+ *
+ * @htmlonly
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * @endlatexonly
+ * @image html "Report.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.7\height}{\includegraphics{Report.png}} &
+ * @endlatexonly
+ * @par Show report (F8)
+ * Open the file fragmentation report for the selected disk(s).
+ *
+ * @htmlonly
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * @endlatexonly
+ * @image html "Repeat.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-2.1\height}{\includegraphics{Repeat.png}} &
+ * @endlatexonly
+ * @par Repeat action (Shift+R)
+ * Allow to repeat the disk processing multiple times
+ * whenever it makes sense. Usually it increases processing
+ * time, but leads to better results.
+ *
+ * @htmlonly
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * @endlatexonly
+ * @image html "Blank.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.7\height}{\includegraphics{Blank.png}} &
+ * @endlatexonly
+ * @par Skip removable media (Ctrl+M)
+ * Exclude removable drives from the list.
+ *
+ * @htmlonly
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * @endlatexonly
+ * @image html "Blank.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.7\height}{\includegraphics{Blank.png}} &
+ * @endlatexonly
+ * @par Rescan drives (Ctrl+D)
+ * Update the list of drives.
+ *
+ * @htmlonly
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * @endlatexonly
+ * @image html "Blank.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.7\height}{\includegraphics{Blank.png}} &
+ * @endlatexonly
+ * @par Repair drives
+ * Repair the selected disk(s) using the <b>chkdsk</b> command line tool.
+ * Note that you need to rescan the drives manually afterwards to update their status.
+ *
+ * @htmlonly
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * @endlatexonly
+ * @image html "Blank.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.7\height}{\includegraphics{Blank.png}} &
+ * @endlatexonly
+ * @par When done
+ * Set the action to be performed after the job completion.
+ * The default is <b>None</b>, available actions are: <b>Exit, Standby, 
+ * Hibernate, Logoff, Reboot</b> and <b>Shutdown</b>.
+ *
+ * @note
+ * To shut the computer down successfully both your system and
+ * hardware configuration must support shutdown and power off,
+ * otherwise Windows might either reboot the computer or simply
+ * stay idle. The same way neither standby nor hibernation will
+ * work when they aren't supported by the hardware or aren't 
+ * turned on in Windows.
+ *
+ * @htmlonly
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * @endlatexonly
+ * @image html "Blank.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.7\height}{\includegraphics{Blank.png}} &
+ * @endlatexonly
+ * @par Exit (Alt+F4)
+ * Terminate UltraDefrag.
+ *
+ * @htmlonly
+ * </td></tr></table>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * \end{longtable}\end{center}
+ * @endlatexonly
+ *
+ * <h2>Settings</h2>
+ * @htmlonly
+ * <table class="doxtable" style="width: 90%; margin:auto;"><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \begin{center}\begin{longtable}{|c|p{0.9\linewidth}|}
+ * \hline
+ * @endlatexonly
+ * @image html "Blank.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.5\height}{\includegraphics{Blank.png}} &
+ * @endlatexonly
+ * @par Language
+ * Select language or follow additional links to translate the program:
+ * - <b>Translations folder</b> opens the folder containing all the translations.
+ *
+ * @htmlonly
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * @endlatexonly
+ * @image html "Blank.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.7\height}{\includegraphics{Blank.png}} &
+ * @endlatexonly
+ * @par Graphical interface > Font (F9)
+ * Select font. The default is Courier New, 9.
+ *
+ * @htmlonly
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * @endlatexonly
+ * @image html "Options.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.7\height}{\includegraphics{Options.png}} &
+ * @endlatexonly
+ * @par Graphical interface > Options (F10)
+ * Open the main configuration file.
+ *
+ * @htmlonly
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * @endlatexonly
+ * @image html "Blank.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.7\height}{\includegraphics{Blank.png}} &
+ * @endlatexonly
+ * @par Sorting
+ * Set sorting order for the disk optimization.
+ *
+ * @htmlonly
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * @endlatexonly
+ * @image html "BootTimeScan.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.7\height}{\includegraphics{BootTimeScan.png}} &
+ * @endlatexonly
+ * @par Boot time scan &gt; Enable (F11)
+ * Enable or disable the boot time processing
+ * <i>(disabled for portable editions)</i>.
+ *
+ * @htmlonly
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * @endlatexonly
+ * @image html "BootTimeScript.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.7\height}{\includegraphics{BootTimeScript.png}} &
+ * @endlatexonly
+ * @par Boot time scan &gt; Script (F12)
+ * Open the boot time script
+ * <i>(disabled for portable editions)</i>.
+ *
+ * @htmlonly
+ * </td></tr></table>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * \end{longtable}\end{center}
+ * @endlatexonly
+ *
+ * <h2>Help</h2>
+ * @htmlonly
+ * <table class="doxtable" style="width: 90%; margin:auto;"><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \begin{center}\begin{longtable}{|c|p{0.9\linewidth}|}
+ * \hline
+ * @endlatexonly
+ * @image html "Help.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.5\height}{\includegraphics{Help.png}} &
+ * @endlatexonly
+ * @par Contents (F1)
+ * Open this handbook.
+ *
+ * @htmlonly
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * @endlatexonly
+ * @image html "BestPractice.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.7\height}{\includegraphics{BestPractice.png}} &
+ * @endlatexonly
+ * @par Best practice (F2)
+ * Open the @ref Tips chapter of this handbook.
+ *
+ * @htmlonly
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * @endlatexonly
+ * @image html "Blank.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.7\height}{\includegraphics{Blank.png}} &
+ * @endlatexonly
+ * @par FAQ (F3)
+ * Open the @ref FAQ chapter of this handbook.
+ *
+ * @htmlonly
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * @endlatexonly
+ * @image html "Blank.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.7\height}{\includegraphics{Blank.png}} &
+ * @endlatexonly
+ * @par Cluster map legend
+ * Show the @ref cluster_map_legend "Cluster map" section of this chapter.
+ *
+ * @htmlonly
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * @endlatexonly
+ * @image html "Blank.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.7\height}{\includegraphics{Blank.png}} &
+ * @endlatexonly
+ * @par Debug
+ * Get access to debugging information:
+ * - <b>Open log (Alt+L)</b> opens a log file with debugging information if one is enabled.
+ * - <b>Send bug report</b> opens the @ref Troubleshooting chapter of this handbook.
+ *
+ * @htmlonly
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * @endlatexonly
+ * @image html "Blank.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.7\height}{\includegraphics{Blank.png}} &
+ * @endlatexonly
+ * @par Check for update
+ * Check for program updates (helpful when automatic checks are disabled).
+ *
+ * @htmlonly
+ * </td></tr><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * @endlatexonly
+ * @image html "About.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.7\height}{\includegraphics{About.png}} &
+ * @endlatexonly
+ * @par About (F4)
+ * Show general information about the program.
+ *
+ * @htmlonly
+ * </td></tr></table>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * \end{longtable}\end{center}
+ * @endlatexonly
+ *
+ * @if preview_menu_enabled
+ * <h2>Preview</h2>
+ * (available only in alpha and beta releases)
+ * @htmlonly
+ * <table class="doxtable" style="width: 90%; margin:auto;"><tr><td>
+ * @endhtmlonly
+ * @latexonly
+ * \begin{center}\begin{longtable}{|c|p{0.9\linewidth}|}
+ * \hline
+ * @endlatexonly
+ * @image html "Blank.png"
+ * @htmlonly
+ * </td><td style="width: 90%;">
+ * @endhtmlonly
+ * @latexonly
+ * \raisebox{-1.5\height}{\includegraphics{Blank.png}} &
+ * @endlatexonly
+ * @par No preview options
+ * Currently there are no preview options available.
+ *
+ * @htmlonly
+ * </td></tr></table>
+ * @endhtmlonly
+ * @latexonly
+ * \\ \hline
+ * \end{longtable}\end{center}
+ * @endlatexonly
+ * @endif
+ * 
+ * @htmlonly
+ * <HR>
+ *  <TABLE STYLE="border: none; width: 97%; margin:auto;">
+ *    <TR>
+ *      <TD STYLE="text-align: left; width: 50%;">Previous: <a href="Installation.html">Installation</a></TD>
+ *      <TD STYLE="text-align: right; width: 50%;">Next: <a href="Console.html">Console Interface</a></TD>
+ *    </TR>
+ *  </TABLE>
+ * @endhtmlonly
+ */

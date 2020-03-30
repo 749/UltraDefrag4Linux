@@ -31,22 +31,22 @@ FRAGMENTED_FILES_ON = "Fragmented files on"
 VISIT_HOMEPAGE      = "Visit our Homepage"
 VIEW_REPORT_OPTIONS = "View report options"
 POWERED_BY_LUA      = "Powered by Lua"
-FRAGMENTS           = "fragments"
-SIZE                = "size"
-FILENAME            = "filename"
-COMMENT             = "comment"
-STATUS              = "status"
+FRAGMENTS           = "Fragments"
+SIZE                = "Size"
+FILENAME            = "Filename"
+COMMENT             = "Comment"
+STATUS              = "Status"
 LOCKED              = "locked"
 MOVE_FAILED         = "move failed"
 INVALID             = "invalid"
 
 -------------------------------------------------------------------------------
--- Ancillary Procedures
+-- Auxiliary Procedures
 -------------------------------------------------------------------------------
 
 -- converts number of bytes to a human readable format
 function hrsize(n)
-    local suffixes = {"b", "Kb", "Mb", "Gb", "Tb", "Pb", "Eb", "Zb", "Yb"}
+    local suffixes = {"B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"}
     local i = 1
     while n >= 1024 do
         n = n / 1024
@@ -179,7 +179,7 @@ end
 -- Plain Text Output Procedures
 -------------------------------------------------------------------------------
 
--- Plain text reports may be used in batch scripts to extract
+-- Plain text reports can be used in batch scripts to extract
 -- information from. So, let's avoid their localization.
 
 function write_text_header(f)
@@ -270,7 +270,7 @@ footer = [[
     <table class="links_toolbar" width="100%"><tbody>
       <tr>
         <td class="left"><a href="http://ultradefrag.sourceforge.net">$VISIT_HOMEPAGE</a></td>
-        <td class="center"><a href="file:///$instdir_utf8\options\udreportopts.lua">$VIEW_REPORT_OPTIONS</a></td>
+        <td class="center"><a href="file:///$instdir_utf8\options.lua">$VIEW_REPORT_OPTIONS</a></td>
         <td class="right"><a href="http://www.lua.org/">$POWERED_BY_LUA</a></td>
       </tr>
     </tbody></table>
@@ -391,7 +391,7 @@ assert(report_path, usage)
 assert(instdir, usage)
 
 -- get report options
-dofile(instdir .. "\\options\\udreportopts.lua")
+dofile(instdir .. "\\options.lua")
 
 -- read source file
 dofile(report_path)

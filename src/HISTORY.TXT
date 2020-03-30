@@ -1,5 +1,12 @@
 ﻿HISTORY
 
+  Version 6.1.0 2015-04-19
+  ------------------------------------------------------------------------------
+    - documentation was cleaned up
+    - configuration files were superseded by a single options.lua file
+    - few minor bugs were fixed
+
+
   Version 6.0.4 2014-10-25
   ------------------------------------------------------------------------------
     - fixed a bug preventing configuration files creation on Windows 7

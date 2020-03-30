@@ -1,1 +1,1 @@
-This directory contains manual pages for ultradefrag native shell commands.
+This directory contains manual pages for the UltraDefrag boot time interface.

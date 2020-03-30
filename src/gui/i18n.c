@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -49,6 +49,7 @@ WGX_I18N_RESOURCE_ENTRY i18n_table[] = {
     {0, "OPTIMIZE_MFT",             L"&Optimize MFT",            NULL},
     {0, "PAUSE",                    L"&Pause",                   NULL},
     {0, "STOP",                     L"&Stop",                    NULL},
+    {0, "SHOW_REPORT",              L"&Show report",             NULL},
     {0, "REPEAT_ACTION",            L"Re&peat action",           NULL},
     {0, "SKIP_REMOVABLE_MEDIA",     L"Skip removable &media",    NULL},
     {0, "RESCAN_DRIVES",            L"&Rescan drives",           NULL},
@@ -63,24 +64,16 @@ WGX_I18N_RESOURCE_ENTRY i18n_table[] = {
     {0, "WHEN_DONE_SHUTDOWN",       L"&Shutdown",                NULL},
     {0, "EXIT",                     L"E&xit",                    NULL},
 
-    /* report menu */
-    {0, "REPORT",                   L"&Report",                  NULL},
-    {0, "SHOW_REPORT",              L"&Show report",             NULL},
-
     /* settings menu */
     {0, "SETTINGS",                 L"&Settings",                NULL},
     {0, "LANGUAGE",                 L"&Language",                NULL},
-//    {0, "TRANSLATIONS_CHANGE_LOG",  L"&View change log",         NULL},
-//    {0, "TRANSLATIONS_REPORT",      L"View translation &report", NULL},
     {0, "TRANSLATIONS_FOLDER",      L"&Translations folder",     NULL},
-//    {0, "TRANSLATIONS_SUBMIT",      L"&Submit current translation", NULL},
     {0, "GRAPHICAL_INTERFACE",      L"&Graphical interface",     NULL},
     {0, "FONT",                     L"&Font",                    NULL},
     {0, "OPTIONS",                  L"&Options",                 NULL},
     {0, "BOOT_TIME_SCAN",           L"&Boot time scan",          NULL},
     {0, "ENABLE",                   L"&Enable",                  NULL},
     {0, "SCRIPT",                   L"&Script",                  NULL},
-    {0, "REPORTS",                  L"&Reports",                 NULL},
     {0, "SORTING",                  L"&Sorting",                 NULL},
     {0, "SORT_BY_PATH",             L"Sort by &path",            NULL},
     {0, "SORT_BY_SIZE",             L"Sort by &size",            NULL},
@@ -179,6 +172,7 @@ struct menu_item menu_items[] = {
     {IDM_OPTIMIZE_MFT,            "OPTIMIZE_MFT",             "Shift+F7"},
     {IDM_PAUSE,                   "PAUSE",                    "Space"},
     {IDM_STOP,                    "STOP",                     "Ctrl+C"},
+    {IDM_SHOW_REPORT,             "SHOW_REPORT",              "F8"    },
     {IDM_REPEAT_ACTION,           "REPEAT_ACTION",            "Shift+R"},
     {IDM_IGNORE_REMOVABLE_MEDIA,  "SKIP_REMOVABLE_MEDIA",     "Ctrl+M"},
     {IDM_RESCAN,                  "RESCAN_DRIVES",            "Ctrl+D"},
@@ -193,16 +187,11 @@ struct menu_item menu_items[] = {
     {IDM_WHEN_DONE_REBOOT,        "WHEN_DONE_REBOOT",         NULL},
     {IDM_WHEN_DONE_SHUTDOWN,      "WHEN_DONE_SHUTDOWN",       NULL},
     {IDM_EXIT,                    "EXIT",                     "Alt+F4"},
-    {IDM_SHOW_REPORT,             "SHOW_REPORT",              "F8"    },
-//    {IDM_TRANSLATIONS_CHANGE_LOG, "TRANSLATIONS_CHANGE_LOG",  NULL    },
-//    {IDM_TRANSLATIONS_REPORT,     "TRANSLATIONS_REPORT",      NULL    },
     {IDM_TRANSLATIONS_FOLDER,     "TRANSLATIONS_FOLDER",      NULL    },
-//    {IDM_TRANSLATIONS_SUBMIT,     "TRANSLATIONS_SUBMIT",      NULL    },
     {IDM_CFG_GUI_FONT,            "FONT",                     "F9"    },
     {IDM_CFG_GUI_SETTINGS,        "OPTIONS",                  "F10"   },
     {IDM_CFG_BOOT_ENABLE,         "ENABLE",                   "F11"   },
     {IDM_CFG_BOOT_SCRIPT,         "SCRIPT",                   "F12"   },
-    {IDM_CFG_REPORTS,             "REPORTS",                  "Ctrl+R"},
     {IDM_CFG_SORTING,             "SORTING",                  NULL    },
     {IDM_CFG_SORTING_SORT_BY_PATH,              "SORT_BY_PATH",    NULL },
     {IDM_CFG_SORTING_SORT_BY_SIZE,              "SORT_BY_SIZE",    NULL },
@@ -224,7 +213,6 @@ struct menu_item menu_items[] = {
     {IDM_CFG_GUI,                 "GRAPHICAL_INTERFACE",      NULL},
     {IDM_CFG_BOOT,                "BOOT_TIME_SCAN",           NULL},
     {IDM_ACTION,                  "ACTION",                   NULL},
-    {IDM_REPORT,                  "REPORT",                   NULL},
     {IDM_SETTINGS,                "SETTINGS",                 NULL},
     {IDM_HELP,                    "HELP",                     NULL},
     {0, NULL, NULL}
@@ -450,25 +438,6 @@ void BuildLanguageMenu(void)
     }
     
     /* add translation menu items and a separator */
-/*    text = WgxGetResourceString(i18n_table,"TRANSLATIONS_CHANGE_LOG");
-    if(text){
-        if(!AppendMenuW(hLangMenu,MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_CHANGE_LOG,text))
-            letrace("cannot append change log");
-        free(text);
-    } else {
-        if(!AppendMenuW(hLangMenu,MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_CHANGE_LOG,L"&View change log"))
-            letrace("cannot append change log");
-    }
-    text = WgxGetResourceString(i18n_table,"TRANSLATIONS_REPORT");
-    if(text){
-        if(!AppendMenuW(hLangMenu,MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_REPORT,text))
-            letrace("cannot append report");
-        free(text);
-    } else {
-        if(!AppendMenuW(hLangMenu,MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_REPORT,L"View translation &report"))
-            letrace("cannot append report");
-    }
-*/
     text = WgxGetResourceString(i18n_table,"TRANSLATIONS_FOLDER");
     if(text){
         if(!AppendMenuW(hLangMenu,MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_FOLDER,text))
@@ -478,16 +447,6 @@ void BuildLanguageMenu(void)
         if(!AppendMenuW(hLangMenu,MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_FOLDER,L"&Translations folder"))
             letrace("cannot append folder");
     }
-/*    text = WgxGetResourceString(i18n_table,"TRANSLATIONS_SUBMIT");
-    if(text){
-        if(!AppendMenuW(hLangMenu,MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_SUBMIT,text))
-            letrace("cannot append submit");
-        free(text);
-    } else {
-        if(!AppendMenuW(hLangMenu,MF_STRING | MF_ENABLED,IDM_TRANSLATIONS_SUBMIT,L"&Submit current translation"))
-            letrace("cannot append submit");
-    }
-*/
     AppendMenu(hLangMenu,MF_SEPARATOR,0,NULL);
     
     h = _wfindfirst(L".\\i18n\\*.lng",&lng_file);

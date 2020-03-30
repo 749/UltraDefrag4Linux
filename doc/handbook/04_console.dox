@@ -1,0 +1,419 @@
+/*
+ *  UltraDefrag - a powerful defragmentation tool for Windows NT.
+ *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
+ *
+ *  Permission is granted to copy, distribute and/or modify this document
+ *  under the terms of the GNU Free Documentation License, Version 1.3 or
+ *  any later version published by the Free Software Foundation; with no
+ *  Invariant Sections.
+ */
+
+/**
+ * @page Console Console Interface
+ *
+ * UltraDefrag command line (console) interface can be used to automate
+ * defragmentation via batch scripts and scheduled tasks. Also it
+ * can be used instead of the graphical interface by those who prefer
+ * command line environment.
+ *
+ * Also UltraDefrag uses its command line interface to handle its
+ * context menu entries in Windows Explorer. Right click any object
+ * and select <b>Defragment with UltraDefrag</b> to rejoin its clusters.
+ * To stop defragmentation hit <b>Ctrl+C</b> or close the command prompt.
+ * To configure the context menu handler click <b>Settings > Options</b>
+ * in UltraDefrag GUI or edit the following file manually:
+ * <b>{installation folder}\\options.lua</b>.
+ *
+ * @note
+ * The context menu handler is not available from the portable
+ * edition of the program.
+ *
+ * UltraDefrag puts its command line tool to the <b>\%SystemRoot\%\\system32</b>
+ * folder, so it can be used without the full path specification:
+ *
+ * @code
+ * udefrag [command] [options] [driveletter:] [path(s)]
+ * @endcode
+ *
+ * Commands:
+ *
+ * @par -a, \--analyze
+ * Analyze specified objects.
+ *
+ * @par \--optimize-mft
+ * Optimize master file tables only.
+ *
+ * @par -q, \--quick-optimize
+ * Perform quick optimization.
+ *
+ * @par -o, \--optimize
+ * Perform full optimization.
+ *
+ * @par -l, \--list-available-volumes
+ * List all fixed disks available for defragmentation.
+ *
+ * @par -la, \--list-available-volumes=all
+ * List all available disks, including removable.
+ *
+ * @par -h, -?, \--help
+ * Display help.
+ *
+ * @note
+ * The commands are exclusive and can't be combined with each other.
+ * If none is specified the program defragments selected objects.
+ *
+ * Options:
+ * @par -r, \--repeat
+ * Repeat the disk processing multiple times whenever it makes sense.
+ * Usually it increases processing time, but leads to better results.
+ *
+ * @par -b, \--use-system-color-scheme
+ * Disable colorization of output.
+ *
+ * @par -p, \--suppress-progress-indicator
+ * Hide the progress indicator and the cluster map.
+ *
+ * @par -v, \--show-volume-information
+ * Show disk information after the job completion.
+ *
+ * @par -m, \--show-cluster-map
+ * Show the cluster map.
+ *
+ * @par \--map-border-color=color
+ * Set color of the cluster map border. Available colors: black, white, red, green,
+ * blue, yellow, magenta, cyan, darkred, darkgreen, darkblue, darkyellow, darkmagenta,
+ * darkcyan, gray. Yellow is used by default.
+ *
+ * @par \--map-symbol=x
+ * Set the character to draw the cluster map with. Type it directly or
+ * use its hexadecimal number (in range 0x1 ... 0xFF). For instance, use
+ * <b>\--map-symbol=0x1</b> to draw the map with a smile character.
+ * The \% symbol is used by default.
+ *
+ * @par \--map-rows=n
+ * Set height of the cluster map. The default value is 10.
+ *
+ * @par \--map-symbols-per-line=n
+ * Set width of the cluster map. The default value is 68.
+ *
+ * @par \--use-entire-window
+ * Expand the cluster map to use the entire console window.
+ *
+ * @par \--wait
+ * Wait for completion of other UltraDefrag instances before the job startup
+ * (useful for scheduled tasks).
+ *
+ * @par \--shellex
+ * List selected objects and display a prompt to hit any key after
+ * the job completion. This switch is intended to handle the context
+ * menu entries in Windows Explorer, so the program interpretes
+ * the <b>options.lua</b> file mentioned above and ignores all
+ * the environment variables listed below.
+ *
+ * Drive letters:
+ *
+ * List of space separated drive letters or one of the following switches:
+ *
+ * @par \--all
+ * Process all available drives.
+ *
+ * @par \--all-fixed
+ * Process all non-removable drives.
+ *
+ * Paths:
+ *
+ * List of space separated paths which need to be defragmented.
+ * Both absolute and relative paths are supported, as well as wildcards:
+ * the question mark (?) matches any one character, while the asterisk (*) -
+ * any zero or more characters. Thus *.* matches any file with
+ * an extension while a single asterisk (*) matches anything (with
+ * or without an extension). All paths including spaces must be
+ * enclosed by double quotes:
+ *
+ * @htmlonly
+ * <div class="fragment">
+ * <div class="line"><span class="comment">:: defragment drives d: and e:</span></div>
+ * <div class="line"><span class="keyword">udefrag</span> d: e:</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: defragment the contents of the USERPROFILE folder</span></div>
+ * <div class="line"><span class="keyword">udefrag</span> "%USERPROFILE%\*"</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: defragment everything inside of the '..\Test Files' folder</span></div>
+ * <div class="line"><span class="keyword">udefrag</span> "..\Test Files\*"</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: defragment some individual file</span></div>
+ * <div class="line"><span class="keyword">udefrag</span> C:\WINDOWS\WindowsUpdate.log</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: defragment them all at once</span></div>
+ * <div class="line"><span class="keyword">udefrag</span> d: e: "%USERPROFILE%\*" "..\Test Files\*" C:\WINDOWS\WindowsUpdate.log</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: rejoin clusters of the WINDOWS folder</span></div>
+ * <div class="line"><span class="comment">:: (its contents will be left untouched)</span></div>
+ * <div class="line"><span class="keyword">udefrag</span> C:\WINDOWS</div>
+ * </div>
+ * @endhtmlonly
+ *
+ * @latexonly
+ * \begin{DoxyCode}
+ * \rem{:: defragment drives d: and e:}
+ * \cmd{udefrag} d: e:
+ *
+ * \rem{:: defragment the contents of the USERPROFILE folder}
+ * \cmd{udefrag} "%USERPROFILE%\(\backslash\)*"
+ *
+ * \rem{:: defragment everything inside of the '..\(\backslash\)Test Files' folder}
+ * \cmd{udefrag} "..\(\backslash\)Test Files\(\backslash\)*"
+ *
+ * \rem{:: defragment some individual file}
+ * \cmd{udefrag} C:\(\backslash\)WINDOWS\(\backslash\)WindowsUpdate.log
+ *
+ * \rem{:: defragment them all at once}
+ * \cmd{udefrag} d: e: "%USERPROFILE%\(\backslash\)*" "..\(\backslash\)Test Files\(\backslash\)*" C:\(\backslash\)WINDOWS\(\backslash\)WindowsUpdate.log
+ *
+ * \rem{:: rejoin clusters of the WINDOWS folder}
+ * \rem{:: (its contents will be left untouched)}
+ * \cmd{udefrag} C:\(\backslash\)WINDOWS
+ * \end{DoxyCode}
+ * @endlatexonly
+ *
+ * If command line is empty the program displays help.
+ *
+ * <h1>Environment variables</h1>
+ * <h2>Filter variables</h2>
+ * @latexonly
+ * \begin{Indent}
+ * @endlatexonly
+ * @par UD_IN_FILTER
+ * List of semicolon separated paths which need to be defragmented.<br />
+ * Empty list means that everything needs to be defragmented.
+ *
+ * @par UD_EX_FILTER
+ * List of semicolon separated paths which need to be skipped, i.e. left untouched.
+ *
+ * @par UD_FRAGMENT_SIZE_THRESHOLD
+ * Eliminate only fragments smaller than specified.<br/>
+ * The following size suffixes are accepted: KB, MB, GB, TB, PB, EB.
+ *
+ * @par UD_FILE_SIZE_THRESHOLD
+ * Exclude all files larger than specified.<br/>
+ * The following size suffixes are accepted: KB, MB, GB, TB, PB, EB.
+ *
+ * @par UD_OPTIMIZER_FILE_SIZE_THRESHOLD
+ * For optimization only, exclude all files larger than specified.<br/>
+ * The following size suffixes are accepted: KB, MB, GB, TB, PB, EB.<br/>
+ * The default value is 20MB.
+ *
+ * @par UD_FRAGMENTS_THRESHOLD
+ * Exclude files having less fragments than specified.
+ *
+ * @par UD_SORTING
+ * Set sorting criteria for the disk optimization. PATH is used by default,
+ * it forces to sort files by their paths. Four more options are available:
+ * SIZE (sort by size), C_TIME (sort by creation time), M_TIME (sort by last
+ * modification time) and A_TIME (sort by last access time).
+ *
+ * @par UD_SORTING_ORDER
+ * Set sorting order for the disk optimization. ASC (ascending) is used
+ * by default. DESC (descending) forces to sort files in reverse order.
+ *
+ * @par UD_FRAGMENTATION_THRESHOLD
+ * Cancel all tasks except of the MFT optimization when the disk fragmentation
+ * level is below than specified.
+ * @latexonly
+ * \end{Indent}
+ * @endlatexonly
+ *
+ * <h2>Process variables</h2>
+ * @latexonly
+ * \begin{Indent}
+ * @endlatexonly
+ * @par UD_TIME_LIMIT
+ * Terminate the job automatically when the specified time interval elapses.
+ * The following time format is accepted: Ay Bd Ch Dm Es. Here A,B,C,D,E
+ * represent integer numbers while y,d,h,m,s represent years, days,
+ * hours, minutes and seconds.
+ *
+ * @par UD_REFRESH_INTERVAL
+ * The progress refresh interval, in milliseconds. The default value is 100.
+ *
+ * @par UD_DISABLE_REPORTS
+ * Set it to 1 (one) to disable generation of the file fragmentation reports.
+ * @latexonly
+ * \end{Indent}
+ * @endlatexonly
+ *
+ * <h2>Debugging variables</h2>
+ * @latexonly
+ * \begin{Indent}
+ * @endlatexonly
+ * @par UD_DBGPRINT_LEVEL
+ * Set amount of debugging output. NORMAL is used by default,
+ * DETAILED can be used to collect information for a bug report,
+ * PARANOID turns on really huge amount of debugging information.
+ *
+ * @par UD_LOG_FILE_PATH
+ * Set log file path (including file name) to redirect debugging output to a file.
+ *
+ * @par UD_DRY_RUN
+ * Set it to 1 (one) to avoid physical movements of files, i.e. to simulate
+ * the disk processing. This allows to check out algorithms quickly.
+ * @latexonly
+ * \end{Indent}
+ * @endlatexonly
+ *
+ * <h1>Samples</h1>
+ * Batch scripts can be used to automate complex defragmentation tasks:
+ *
+ * @htmlonly
+ * <div class="fragment">
+ * <div class="line">@<span class="keyword">echo</span> off</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: save debugging information for troubleshooting</span></div>
+ * <div class="line"><span class="keyword">set</span> UD_LOG_FILE_PATH=C:\Windows\Temp\udefrag.log</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: terminate the processing after 6 hours and 30 minutes</span></div>
+ * <div class="line"><span class="keyword">set</span> UD_TIME_LIMIT=6h 30m</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: exclude temporary stuff</span></div>
+ * <div class="line"><span class="keyword">set</span> UD_EX_FILTER=*system volume information*;*temp*;*tmp*;*recycle*</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: exclude archives as well</span></div>
+ * <div class="line"><span class="keyword">set</span> UD_EX_FILTER=%UD_EX_FILTER%;*.zip;*.7z;*.rar</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: eliminate only fragments below 20 MB in size</span></div>
+ * <div class="line"><span class="keyword">set</span> UD_FRAGMENT_SIZE_THRESHOLD=20MB</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: list all drives available for defragmentation</span></div>
+ * <div class="line"><span class="keyword">udefrag</span> -la</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: check all available drives for errors</span></div>
+ * <div class="line"><span class="keyword">for</span> /F "tokens=1 skip=8" %%D <span class="keyword">in</span> ('<span class="keyword">udefrag</span> -la') <span class="keyword">do</span> <span class="keyword">chkdsk</span> %%D</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: analyze all fixed drives</span></div>
+ * <div class="line"><span class="keyword">udefrag</span> -a --all-fixed</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: defragment everything on drive c:</span></div>
+ * <div class="line"><span class="keyword">udefrag</span> c:</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: defragment small audio files on drive d:</span></div>
+ * <div class="line"><span class="keyword">set</span> UD_IN_FILTER=*.mp3</div>
+ * <div class="line"><span class="keyword">set</span> UD_FILE_SIZE_THRESHOLD=20MB</div>
+ * <div class="line"><span class="keyword">udefrag</span> "D:\My Docs\Music\*"</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: defragment large video files having at least 10 fragments</span></div>
+ * <div class="line"><span class="keyword">set</span> UD_IN_FILTER=*.avi;*.mkv</div>
+ * <div class="line"><span class="keyword">set</span> UD_FILE_SIZE_THRESHOLD=</div>
+ * <div class="line"><span class="keyword">set</span> UD_FRAGMENTS_THRESHOLD=10</div>
+ * <div class="line"><span class="keyword">udefrag</span> "D:\My Docs\Movies\*"</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: optimize master file tables on drives c: and d:</span></div>
+ * <div class="line"><span class="keyword">udefrag</span> --optimize-mft c: d:</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: reset filters used above</span></div>
+ * <div class="line"><span class="keyword">set</span> UD_IN_FILTER=</div>
+ * <div class="line"><span class="keyword">set</span> UD_FRAGMENTS_THRESHOLD=</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: sort files on drive g: by creation time in descending order</span></div>
+ * <div class="line"><span class="keyword">set</span> UD_SORTING=C_TIME</div>
+ * <div class="line"><span class="keyword">set</span> UD_SORTING_ORDER=DESC</div>
+ * <div class="line"><span class="keyword">udefrag</span> -o -r g:</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: defragment drive h: only if its fragmentation level is above 10%</span></div>
+ * <div class="line"><span class="keyword">set</span> UD_FRAGMENTATION_THRESHOLD=10</div>
+ * <div class="line"><span class="keyword">udefrag</span> h:</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: defragment all fixed disks except of c:, d:, g: and h:</span></div>
+ * <div class="line"><span class="keyword">set</span> UD_EX_FILTER=%UD_EX_FILTER%;C:\*;D:\*;G:\*;H:\*</div>
+ * <div class="line"><span class="keyword">udefrag</span> --all-fixed</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: hibernate the computer using a special</span></div>
+ * <div class="line"><span class="comment">:: command line tool shipped with UltraDefrag</span></div>
+ * <div class="line"><span class="keyword">hibernate4win</span> now</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">:: shut the computer down if hibernation failed</span></div>
+ * <div class="line"><span class="keyword">if errorlevel</span> 1 <span class="keyword">shutdown</span> -s -t 00</div>
+ * </div>
+ * @endhtmlonly
+ *
+ * @latexonly
+ * \begin{DoxyCode}
+ * @\cmd{echo} off
+ *
+ * \rem{:: save debugging information for troubleshooting}
+ * \cmd{set} UD\_LOG\_FILE\_PATH=C:\(\backslash\)Windows\(\backslash\)Temp\(\backslash\)udefrag.log
+ *
+ * \rem{:: terminate the processing after 6 hours and 30 minutes}
+ * \cmd{set} UD\_TIME\_LIMIT=6h 30m
+ *
+ * \rem{:: exclude temporary stuff}
+ * \cmd{set} UD\_EX\_FILTER=*system volume information*;*temp*;*tmp*;*recycle*
+ *
+ * \rem{:: exclude archives as well}
+ * \cmd{set} UD\_EX\_FILTER=%UD\_EX\_FILTER%;*.zip;*.7z;*.rar
+ *
+ * \rem{:: eliminate only fragments below 20 MB in size}
+ * \cmd{set} UD\_FRAGMENT\_SIZE\_THRESHOLD=20MB
+ *
+ * \rem{:: list all drives available for defragmentation}
+ * \cmd{udefrag} -la
+ *
+ * \rem{:: check all available drives for errors}
+ * \cmd{for} /F "tokens=1 skip=8" %%D \cmd{in} ('\cmd{udefrag} -la') \cmd{do} \cmd{chkdsk} %%D
+ *
+ * \rem{:: analyze all fixed drives}
+ * \cmd{udefrag} -a --all-fixed
+ *
+ * \rem{:: defragment everything on drive c:}
+ * \cmd{udefrag} c:
+ *
+ * \rem{:: defragment small audio files on drive d:}
+ * \cmd{set} UD\_IN\_FILTER=*.mp3
+ * \cmd{set} UD\_FILE\_SIZE\_THRESHOLD=20MB
+ * \cmd{udefrag} "D:\(\backslash\)My Docs\(\backslash\)Music\(\backslash\)*"
+ *
+ * \rem{:: defragment large video files having at least 10 fragments}
+ * \cmd{set} UD\_IN\_FILTER=*.avi;*.mkv
+ * \cmd{set} UD\_FILE\_SIZE\_THRESHOLD=
+ * \cmd{set} UD\_FRAGMENTS\_THRESHOLD=10
+ * \cmd{udefrag} "D:\(\backslash\)My Docs\(\backslash\)Movies\(\backslash\)*"
+ *
+ * \rem{:: optimize master file tables on drives c: and d:}
+ * \cmd{udefrag} --optimize-mft c: d:
+ *
+ * \rem{:: reset filters used above}
+ * \cmd{set} UD\_IN_FILTER=
+ * \cmd{set} UD\_FRAGMENTS\_THRESHOLD=
+ *
+ * \rem{:: sort files on drive g: by creation time in descending order}
+ * \cmd{set} UD\_SORTING=C\_TIME
+ * \cmd{set} UD\_SORTING\_ORDER=DESC
+ * \cmd{udefrag} -o -r g:
+ *
+ * \rem{:: defragment drive h: only if its fragmentation level is above 10%}
+ * \cmd{set} UD\_FRAGMENTATION\_THRESHOLD=10
+ * \cmd{udefrag} h:
+ *
+ * \rem{:: defragment all fixed disks except of c:, d:, g: and h:}
+ * \cmd{set} UD\_EX\_FILTER=%UD\_EX\_FILTER%;C:\(\backslash\)*;D:\(\backslash\)*;G:\(\backslash\)*;H:\(\backslash\)*
+ * \cmd{udefrag} --all-fixed
+ *
+ * \rem{:: hibernate the computer using a special}
+ * \rem{:: command line tool shipped with UltraDefrag}
+ * \cmd{hibernate4win} now
+ *
+ * \rem{:: shut the computer down if hibernation failed}
+ * \cmd{if errorlevel} 1 \cmd{shutdown} -s -t 00
+ * \end{DoxyCode}
+ * @endlatexonly
+ *
+ * @htmlonly
+ * <HR>
+ *  <TABLE STYLE="border: none; width: 97%; margin:auto;">
+ *    <TR>
+ *      <TD STYLE="text-align: left; width: 50%;">Previous: <a href="GUI.html">Graphical Interface</a></TD>
+ *      <TD STYLE="text-align: right; width: 50%;">Next: <a href="Schedule.html">Scheduled Defragmentation</a></TD>
+ *    </TR>
+ *  </TABLE>
+ * @endhtmlonly
+ */

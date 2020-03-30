@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
@@ -10,35 +10,41 @@
  */
 
 /*
- * An initial version of this document has been contributed
- * by Justin Dearing <zippy1981@users.sourceforge.net> (2007).
+ * This handbook requires doxygen to be compiled. However, it's always
+ * available online at http://ultradefrag.sourceforge.net/handbook/
+ */
+
+/*
+ * The initial version of this document was contributed in
+ * 2007 by Justin Dearing <zippy1981@users.sourceforge.net>.
  */
 
 /**
- * @mainpage The UltraDefrag Handbook
+ * @mainpage UltraDefrag Handbook
  *
- * @par Authors:
- * Stefan Pendl (stefanpe@users.sourceforge.net),\n
- * Dmitri Arkhangelski (dmitriar@users.sourceforge.net).
+ * <h2>Authors</h2>
+ * @par
+ * Stefan Pendl \<stefanpe@users.sourceforge.net\>\n
+ * Dmitri Arkhangelski \<dmitriar@users.sourceforge.net\>
  *
  * <h2>Table of Contents</h2>
- * -# @subpage Introduction
- * -# @subpage Installation
- * -# @subpage Console
- * -# @subpage Schedule
- * -# @subpage GUI
- * -# @subpage Boot
- * -# @subpage Reports
- * -# @subpage Tips
- * -# @subpage FAQ
- * -# @subpage ReportingBugs
- * -# @subpage Credits
- * -# <a href="http://ultradefrag.sourceforge.net/doxy-doc/html/index.html" class="simple"><b>Development</b></a>
+ * -# @ref Introduction
+ * -# @ref Installation
+ * -# @ref GUI
+ * -# @ref Console
+ * -# @ref Schedule
+ * -# @ref Boot
+ * -# @ref Reports
+ * -# @ref Tips
+ * -# @ref FAQ
+ * -# @ref Troubleshooting
+ * -# @ref Development
+ * -# @ref Credits
  *
  * <h2>License</h2>
- * UltraDefrag is licensed under the terms of the @ref GPL .
+ * UltraDefrag is licensed under the terms of the @ref GPL.
  *
- * This document is licensed under the terms of the @ref FDL .
+ * This document is licensed under the terms of the @ref FDL.
  *
  * Feel free to redistribute them under certain conditions.
  *

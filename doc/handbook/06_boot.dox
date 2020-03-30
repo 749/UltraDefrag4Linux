@@ -1,6 +1,6 @@
 /*
  *  UltraDefrag - a powerful defragmentation tool for Windows NT.
- *  Copyright (c) 2007-2013 Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2007-2015 Dmitri Arkhangelski (dmitriar@gmail.com).
  *  Copyright (c) 2010-2013 Stefan Pendl (stefanpe@users.sourceforge.net).
  *
  *  Permission is granted to copy, distribute and/or modify this document
@@ -12,106 +12,68 @@
 /**
  * @page Boot Boot Time Defragmentation
  *
- * UltraDefrag also includes a new mode that allows you to run it
- * at boot time in a manner similar to chkdsk. This is known as a
- * native application. The primary goal of it is defragmentation
- * of locked files. UltraDefrag runs at Windows boot before any 
- * file locking, so it can defragment almost everything,
- * including page and hibernation files.
- * <a href="http://ultradefrag.sourceforge.net/screenshots.html">View screenshots...</a>
+ * To defragment files locked most of the time UltraDefrag can be launched
+ * inside of the Windows boot process. Being executed there UltraDefrag can
+ * defragment almost everything including paging and hibernation files.
  *
- * If the boot time defragmenter is enabled, it will run
- * at every boot.
- * @note
- * You will have a chance to exit immediately, just press any key when the appropriate
- * prompt is displayed. If no key is pressed during this delay, the boot time script will be executed.
+ * To enable the boot time defragmenter click <b>Settings > Boot time
+ * scan > Enable</b> in UltraDefrag GUI. To configure it click
+ * the <b>Script</b> submenu or edit the following file manually:
+ * <b>\%SystemRoot\%\\system32\\ud-boot-time.cmd</b>.
  *
- * You can always stop the disk analysis/defragmentation by pressing
- * the Pause/Break key on the keyboard.
+ * The following command line tools can be used as well to control it:
+ * <b>boot-on</b>, <b>boot-off</b> and <b>boot-config</b>.
+ * 
+ * Being enabled the boot time defragmenter will run at every boot.
+ * However, you may skip its execution, just press any key when 
+ * the appropriate prompt will be shown on the screen. To stop
+ * any disk operations later hit <b>Pause/Break</b>.
  *
- * The following restrictions exist for the boot time scans:
- * - You may not scan encrypted disks. This is because lsass.exe, the component
- * of the operating system that reads encrypted disks, is still not loaded
- * at a time of the native applications execution.
- * - In Windows Safe Mode the program cannot display text on the boot screen.
- * UltraDefrag checks for boot options and returns immediately, if the
- * Safe Mode flag has been found.
- *
- * The boot time defragmenter can be enabled/disabled either from 
- * the main GUI window or by typing boot-on/boot-off commands in
- * the command prompt.
- *
- * <h1>Boot Time Modes</h1>
- * The boot time defragmenter can be executed in two modes:
- * @par Boot time script
- * The boot time script consists of the disk defragmentation commands,
- * ancillary commands and comments.
- * It is located at <b>\%windir\%\\system32\\ud-boot-time.cmd</b>.
- * To edit this file execute boot-config at the command prompt or simply click
- * the Boot time script button on the UltraDefrag GUI toolbar.
- * <br/><br/>
- * The boot time script simplifies also the use of UltraDefrag on
- * computers running Windows 98. After installing Windows XP as a second
- * operating system, UltraDefrag may be installed too. After adding the
- * shutdown command to the boot time script you may simply boot the XP system
- * (which requires much less resources at boot time!) and safely leave your
- * computer. It will be shut down automatically after the job is completed.
- * <br/><br/>
- * To abort the script execution and enter the interactive mode immediately
- * hit <b>ESC</b> at any time during the boot time script processing.
- *
- * @par Interactive mode
- * When the exit command is missing in the boot time script UltraDefrag
- * runs in interactive mode after the last script command is executed.
- * UltraDefrag displays the following command prompt and waits
- * for the users input:
- * <br/>
+ * <h1>Interactive mode</h1>
+ * Hit <b>Escape</b> at any time to drop into an interactive console.
+ * It will show the following prompt on the screen and wait for
+ * your input:
 @verbatim
 Interactive mode:
-Type 'help' for list of supported commands.
-
+Type 'help' to list available commands.
 #
 @endverbatim
- * <br/>
- * All commands displaying long lists (help, hexview, history, man, set, type)
- * are splitting them into pages in interactive mode.
  *
- * <h1>Available Boot Time Commands</h1>
+ * The same interactive console will be shown on the screen
+ * after the boot time script execution if the <b>exit</b>
+ * command is missing there.
+ *
+ * <h1>Available commands</h1>
+ *
  * @par ; or \#
  * Lines starting with one of these characters are treated as comments.
  *
  * @par \@
- * Do not show the command line preceded by the at-sign on the screen.
- * By default the command line is displayed on the screen.
+ * Lines starting with this character will be not shown on the screen.
  *
  * @par boot-on
- * Turn on the boot time defragmentation to be executed at every boot.
+ * Turns the boot time defragmenter on for the next boots.
  *
  * @par boot-off
- * Turn off the boot time defragmentation. It prevents them from being
- * executed at next reboots. Until you will enable them manually through
- * UltraDefrag Configuration dialog or boot-on.cmd script.
+ * Turns the boot time defragmenter off for the next boots.
  *
  * @par call
- * Similar to the DOS command.
- * Executes the specified script.
- * If no script is specified, the default boot time script is executed.
+ * Similar to the DOS command. Executes a script; if none
+ * is specified the main boot time script will be executed.
  *
  * @par echo
- * Similar to the DOS command.
- * Display a message, empty line, enable/disable showing the command line on the screen
- * or display the status of showing the command line.
+ * Similar to the DOS command. Displays a message, an empty line,
+ * sets whether the commands will be shown on the screen or not
+ * or displays the current setting.
  *
  * @par exit
- * Similar to the DOS command.
- * Break the boot time program execution and return the specified error code or zero.
+ * Similar to the DOS command. Terminates UltraDefrag.
  *
  * @par help
- * Show a list of all available commands.
+ * Lists all available commands.
  *
  * @par hexview
- * Display the contents of the specified file in a HEX viewer layout.
- * <br/>
+ * Displays a file in a HEX viewer layout:
 @verbatim
 000000C0: 0a 00 3b 00 20 00 46 00 |   ;   F
 000000C8: 72 00 61 00 67 00 6d 00 | r a g m
@@ -119,126 +81,156 @@ Type 'help' for list of supported commands.
 @endverbatim
  *
  * @par history
- * Show a list of all manually entered commands.
- * To cycle through the commands use the up/down arrow/cursor keys.
+ * Lists all manually entered commands. To cycle
+ * through them use the up/down arrow/cursor keys.
  *
  * @par man
- * List or display available manual pages.
+ * Lists or displays available manual pages.
  *
  * @par pause
- * Pause the script execution for the specified time interval (in milliseconds, 2147483647 maximum)
- * or till a key is pressed, if no duration is specified.
- * For example, the command <b>pause 1000</b> will pause execution for one second.
+ * Pauses the script execution for the specified
+ * time interval (in milliseconds) or till a key
+ * is pressed if no duration is specified.
+ * For example, the command <b>pause 1000</b>
+ * will pause execution for one second.
  *
  * @par reboot
- * Reboot the computer.
+ * Reboots the computer.
  *
  * @par set
- * Similar to the DOS command.
- * List, set and clear environment variables.
- * For further information about the supported variables consult the @ref Console page.
+ * Similar to the DOS command. Lists,
+ * sets and clears environment variables.
  *
  * @par shutdown
- * Halt the computer.
+ * Shuts the computer down.
  *
  * @par type
- * Similar to the DOS command.
- * Display the contents of a file, the default is the boot time script.
+ * Similar to the DOS command. Displays a file; if none
+ * is specified the main boot time script will be shown.
  *
  * @par udefrag
- * This is the native equivalent of the UltraDefrag command line tool.
- * The following command switches are supported:<br/><br/>
- * <b>-l, -la, -a, -o, -q, \--quick-optimize, \--optimize-mft, \--all, \--all-fixed, -r, \--repeat</b><br/><br/>
- * Multiple drive letters on a single command line are allowed.<br/>
- * You can specify <b>absolute paths</b> to process single files or directories.
- * Paths including spaces must be enclosed by double quotes (").
- * To specify multiple paths separate them by spaces.<br/><br/>
- * Example:
- * @code
- * udefrag "C:\Documents and Settings" C:\WINDOWS\WindowsUpdate.log
- * @endcode
- * <br/>
- * For further information about the command switches and variables consult the @ref Console page.
+ * The boot time equivalent of the @ref Console.
+ * Accepts the following command line switches:
+ * <b>-l, -la, -a, -o, -q, \--quick-optimize, \--optimize-mft,
+ * \--all, \--all-fixed, -r, \--repeat</b>. To process single
+ * files or directories specify their absolute paths. 
+ * If they include spaces enclose them by double quotes:
+ * <br /><br />
+ * @htmlonly
+ * <div class="fragment">
+ * <div class="line"><span class="keyword">udefrag</span> "C:\Documents and Settings\*" C:\WINDOWS\WindowsUpdate.log</div>
+ * </div>
+ * @endhtmlonly
+@latexonly
+\begin{DoxyCode}
+\cmd{udefrag} "C:\(\backslash\)Documents and Settings\(\backslash\)*" C:\(\backslash\)WINDOWS\(\backslash\)WindowsUpdate.log
+\end{DoxyCode}
+@endlatexonly
  *
- * When UltraDefrag encounters the wrong syntax it shows an appropriate
- * message on the screen and continues the script execution.
+ * All commands displaying long lists (help, hexview, history, man,
+ * set, type) are splitting them into pages in the interactive mode.
  *
- * <h1>Environment variable expansion</h1>
- * The boot time script and the interactive mode support environment variable expansion.
- * This allows a more flexible script to be written by using <b>\%SystemDrive\%</b> instead of <b>C:</b>.
- * In addition to the regular variables there are two variables, <b>DATE</b> and <b>TIME</b>,
- * that will be set dynamically.
- * Both are formated to be easily used as part of a file name, so a timestamped log
- * file name can be created.
+ * <h1>Environment variables</h1>
+ * Environment variables can be used the same way as in Windows batch files.
  *
- * @par DATE
- * This will be expanded to the current date in the format <b>YYYY-MM-DD</b>
- * @code
- * echo DATE ... %DATE%
- * @endcode
- * Results in the display of:
+ * Two special variables are supported: <b>DATE</b> for the current date
+ * in the format <b>YYYY-MM-DD</b> and <b>TIME</b> for the current time
+ * in the format <b>HH-MM</b>:
+ *
 @verbatim
-DATE ... 2012-02-14
+2012-02-14
+12-48
 @endverbatim
  *
- * @par TIME
- * This will be expanded to the current time in the format <b>HH-MM</b>
- * @code
- * echo TIME ... %TIME%
- * @endcode
- * Results in the display of:
-@verbatim
-TIME ... 12-04
-@endverbatim
+ * <h1>Restrictions</h1>
+ * Encrypted disks cannot be defragmented at boot time because the
+ * <a href="http://en.wikipedia.org/wiki/Local_Security_Authority_Subsystem_Service">local
+ * security service</a> is inactive on early stages of Windows boot.
  *
- * <h1>Boot time script example</h1>
+ * UltraDefrag terminates immediately in 
+ * <a href="http://en.wikipedia.org/wiki/Safe_mode">Windows safe mode</a>
+ * because it cannot display texts on the screen there.
+ *
+ * <h1>Script samples</h1>
  * The following script is used by default:
- * @code
- * @echo off
- * ;--------------------------------------------------------------------
- * ;                UltraDefrag Boot Time Shell Script
- * ;--------------------------------------------------------------------
- * ; !!! NOTE: THIS FILE MUST BE SAVED IN UNICODE (UTF-16) ENCODING !!!
- * ;--------------------------------------------------------------------
  *
- * set UD_IN_FILTER=*windows*;*winnt*;*ntuser*;*pagefile.sys;*hiberfil.sys
- * set UD_EX_FILTER=*temp*;*tmp*;*.zip;*.7z;*.rar;*dllcache*;*ServicePackFiles*
+ * @htmlonly
+ * <div class="fragment">
+ * <div class="line">@<span class="keyword">echo</span> off</div>
+ * <div class="line"><span class="comment">;------------------------------------------------------------------------------</span></div>
+ * <div class="line"><span class="comment">;                     UltraDefrag Boot Time Shell Script                       </span></div>
+ * <div class="line"><span class="comment">;------------------------------------------------------------------------------</span></div>
+ * <div class="line"><span class="comment">;      !!! NOTE: THIS FILE MUST BE SAVED IN UNICODE (UTF-16) ENCODING !!!      </span></div>
+ * <div class="line"><span class="comment">;------------------------------------------------------------------------------</span></div>
+ * <div class="line"></div>
+ * <div class="line"><span class="keyword">set</span> UD_IN_FILTER=*windows*;*winnt*;*ntuser*;*pagefile.sys;*hiberfil.sys</div>
+ * <div class="line"><span class="keyword">set</span> UD_EX_FILTER=*temp*;*tmp*;*.zip;*.7z;*.rar;*dllcache*;*ServicePackFiles*</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">; uncomment the following line to increase amount of debugging output</span></div>
+ * <div class="line"><span class="comment">; set UD_DBGPRINT_LEVEL=DETAILED</span></div>
+ * <div class="line"></div>
+ * <div class="line"><span class="comment">; uncomment the following line to save debugging information to a log file</span></div>
+ * <div class="line"><span class="comment">; set UD_LOG_FILE_PATH=%UD_INSTALL_DIR%\logs\defrag_native.log</span></div>
+ * <div class="line"></div>
+ * <div class="line"><span class="keyword">udefrag</span> c:</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="keyword">exit</span></div>
+ * </div>
+ * @endhtmlonly
  *
- * ; uncomment the following line to create debugging output
- * ; set UD_DBGPRINT_LEVEL=DETAILED
+@latexonly
+\begin{DoxyCode}
+@\cmd{echo} off
+\rem{;------------------------------------------------------------------------------}
+\rem{;                     UltraDefrag Boot Time Shell Script                       }
+\rem{;------------------------------------------------------------------------------}
+\rem{;      !!! NOTE: THIS FILE MUST BE SAVED IN UNICODE (UTF-16) ENCODING !!!      }
+\rem{;------------------------------------------------------------------------------}
+
+\cmd{set} UD\_IN\_FILTER=*windows*;*winnt*;*ntuser*;*pagefile.sys;*hiberfil.sys
+\cmd{set} UD\_EX\_FILTER=*temp*;*tmp*;*.zip;*.7z;*.rar;*dllcache*;*ServicePackFiles*
+
+\rem{; uncomment the following line to increase amount of debugging output}
+\rem{; set UD\_DBGPRINT\_LEVEL=DETAILED}
+
+\rem{; uncomment the following line to save debugging information to a log file}
+\rem{; set UD\_LOG\_FILE\_PATH=%UD\_INSTALL\_DIR%\(\backslash\)logs\(\backslash\)defrag\_native.log}
+
+\cmd{udefrag} c:
+
+\cmd{exit}
+\end{DoxyCode}
+@endlatexonly
  *
- * ; uncomment the following line to save debugging information to a log file
- * ; set UD_LOG_FILE_PATH=%UD_INSTALL_DIR%\Logs\defrag_native.log
+ * The next script utilizes environment variables:
  *
- * udefrag c:
+ * @htmlonly
+ * <div class="fragment">
+ * <div class="line"><span class="comment">; create a timestamped log file</span></div>
+ * <div class="line"><span class="keyword">set</span> UD_LOG_FILE_PATH=%UD_INSTALL_DIR%\logs\defrag_native_%DATE%_%TIME%.log</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="keyword">udefrag</span> %SystemDrive%</div>
+ * <div class="line"></div>
+ * <div class="line"><span class="keyword">exit</span></div>
+ * </div>
+ * @endhtmlonly
  *
- * exit
- * @endcode
- *
- * The following script utilizes environment variable expansion:
- * @code
- * ;--------------------------------------------------------------------
- * ;                UltraDefrag Boot Time Shell Script
- * ;--------------------------------------------------------------------
- * ; !!! NOTE: THIS FILE MUST BE SAVED IN UNICODE (UTF-16) ENCODING !!!
- * ;--------------------------------------------------------------------
- *
- * set UD_IN_FILTER=*windows*;*winnt*;*ntuser*;*pagefile.sys;*hiberfil.sys
- * set UD_EX_FILTER=*temp*;*tmp*;*.zip;*.7z;*.rar;*dllcache*;*ServicePackFiles*
- *
- * ;create a timestamped log file
- * set UD_LOG_FILE_PATH=%UD_INSTALL_DIR%\Logs\defrag_native_%DATE%_%TIME%.log
- *
- * udefrag %SystemDrive%
- *
- * exit
- * @endcode
+@latexonly
+\begin{DoxyCode}
+\rem{; create a timestamped log file}
+\cmd{set} UD\_LOG\_FILE\_PATH=%UD\_INSTALL\_DIR%\(\backslash\)logs\(\backslash\)defrag\_native\_%DATE%\_%TIME%.log
+
+\cmd{udefrag} %SystemDrive%
+
+\cmd{exit}
+\end{DoxyCode}
+@endlatexonly
  *
  * @htmlonly
  * <HR>
  *  <TABLE STYLE="border: none; width: 97%; margin:auto;">
  *    <TR>
- *      <TD STYLE="text-align: left; width: 50%;">Previous: <a href="GUI.html">Graphical Interface</a></TD>
+ *      <TD STYLE="text-align: left; width: 50%;">Previous: <a href="Schedule.html">Scheduled Defragmentation</a></TD>
  *      <TD STYLE="text-align: right; width: 50%;">Next: <a href="Reports.html">File Fragmentation Reports</a></TD>
  *    </TR>
  *  </TABLE>
