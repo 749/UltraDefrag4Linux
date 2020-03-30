@@ -1,0 +1,181 @@
+/*
+ *  UltraDefrag - a powerful defragmentation tool for Windows NT.
+ *  Copyright (c) 2007-2011 by Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2011 by Stefan Pendl (stefanpe@users.sourceforge.net).
+ *
+ *  Permission is granted to copy, distribute and/or modify this document
+ *  under the terms of the GNU Free Documentation License, Version 1.3 or
+ *  any later version published by the Free Software Foundation; with no
+ *  Invariant Sections.
+ */
+
+/**
+ * @page Boot Boot Time Defragmentation
+ *
+ * UltraDefrag also includes a new mode that allows you to run it
+ * at boot time in a manner similar to chkdsk. This is known as a
+ * native application. It provides the ability to defragment any
+ * system file. Including page file, registry hives, hiberfil.sys
+ * file and any other files locked by the system or applications. Native
+ * UltraDefrag runs before any file locking, therefore it can
+ * process them as ordinary files.
+ * <a href="http://ultradefrag.sourceforge.net/screenshots.html">View screenshots...</a>
+ *
+ * If the boot time defragmenter is enabled, it will run
+ * at every boot. Note that you will have a chance
+ * to exit immediately, just press any key when the appropriate
+ * prompt is displayed. If no key is pressed during this
+ * delay, the boot time script will be executed.
+ *
+ * You can always stop the disk analysis/defragmentation by pressing
+ * the Pause/Break key on the keyboard.
+ *
+ * The following restrictions exist for the boot time scans:
+ * - You may not scan encrypted disks. This is because lsass.exe, the component
+ * of the operating system that reads encrypted disks, is still not loaded
+ * at a time of the native applications execution.
+ * - In Windows Safe Mode the program cannot display text on the boot screen.
+ * UltraDefrag checks for boot options and returns immediately, if the
+ * Safe Mode flag has been found.
+ *
+ * The boot time defragmenter can be enabled/disabled either from 
+ * the main GUI window or by typing boot-on/boot-off commands in
+ * the command prompt.
+ *
+ * <h1>Boot Time Modes</h1>
+ * The boot time defragmenter can be executed in two modes:
+ * <dl>
+ * <dt>Boot time script</dt>
+ * <dd>The boot time script consists of the disk defragmentation commands,
+ * ancillary commands and comments.
+ * It is located at \%windir\%\\system32\\ud-boot-time.cmd.
+ * To edit this file execute boot-config at the command prompt or simply click
+ * the Boot time script button on the UltraDefrag GUI toolbar.
+ *
+ * The boot time script simplifies also the use of UltraDefrag on
+ * computers running Windows 98. After installing Windows XP as a second
+ * operating system, UltraDefrag may be installed too. After adding the
+ * shutdown command to the boot time script you may simply boot the XP system
+ * (which requires much less resources at boot time!) and safely leave your
+ * computer. It will be shut down automatically after the job is completed.
+ *
+ * To abort the script execution and enter the interactive mode immediately
+ * hit <b>ESC</b> at any time during boot time script processing.</dd>
+ *
+ * <dt>Interactive mode</dt>
+ * <dd>When the exit command is missing in the boot time script UltraDefrag
+ * runs in interactive mode after the last script command is executed.
+ * UltraDefrag displays the following command prompt and waits
+ * for the users input:
+ *
+@verbatim
+Interactive mode:
+Type 'help' for list of supported commands.
+
+#
+@endverbatim
+ *
+ * All commands displaying long lists (help, hexview, history, man, set, type) are splitting them into pages in interactive mode.
+ * </dd>
+ * </dl>
+ *
+ * <h1>Available Boot Time Commands</h1>
+ * <dl>
+ * <dt>; or #</dt>
+ * <dd>Lines starting with one of these characters are treated as comments.</dd>
+ * <dt>\@</dt>
+ * <dd>Do not show the command line preceded by the at-sign on the screen.
+ * By default the command line is displayed on the screen.</dd>
+ * <dt>boot-on</dt>
+ * <dd>Turn on the boot time defragmentation to be executed at every boot.</dd>
+ * <dt>boot-off</dt>
+ * <dd>Turn off the boot time defragmentation. It prevents them from being
+ * executed at next reboots. Until you will enable them manually through
+ * UltraDefrag Configuration dialog or boot-on.cmd script.</dd>
+ * <dt>call</dt>
+ * <dd>Similar to the DOS command.
+ * Executes the specified script.
+ * If no script is specified, the default boot time script is executed.</dd>
+ * <dt>echo</dt>
+ * <dd>Similar to the DOS command.
+ * Display a message, empty line, enable/disable showing the command line on the screen
+ * or display the status of showing the command line.</dd>
+ * <dt>exit</dt>
+ * <dd>Similar to the DOS command.
+ * Break the boot time program execution and return the specified error code or zero.</dd>
+ * <dt>help</dt>
+ * <dd>Show a list of all available commands.</dd>
+ * <dt>hexview</dt>
+ * <dd>Display the contents of the specified file in a HEX viewer layout.</dd>
+ *
+@verbatim
+000000C0: 0a 00 3b 00 20 00 46 00 |   ;   F
+000000C8: 72 00 61 00 67 00 6d 00 | r a g m
+000000D0: 65 00 6e 00 74 00 65 00 | e n t e
+@endverbatim
+ *
+ * <dt>history</dt>
+ * <dd>Show a list of all manually entered commands.
+ * To cycle through the commands use the up/down arrow/cursor keys.</dd>
+ * <dt>man</dt>
+ * <dd>List or display available manual pages.</dd>
+ * <dt>pause</dt>
+ * <dd>Pause the script execution for the specified time interval (in milliseconds, 2147483647 maximum)
+ * or till a key is pressed, if no duration is specified.
+ * For example, the command <b>pause 1000</b> will pause execution for one second.</dd>
+ * <dt>reboot</dt>
+ * <dd>Reboot the computer.</dd>
+ * <dt>set</dt>
+ * <dd>Similar to the DOS command.
+ * List, set and clear environment variables.
+ * For further information about the supported variables consult the @ref Console page.</dd>
+ * <dt>shutdown</dt>
+ * <dd>Halt the computer.</dd>
+ * <dt>type</dt>
+ * <dd>Similar to the DOS command.
+ * Display the contents of a file, the default is the boot time script.</dd>
+ * <dt>udefrag</dt>
+ * <dd>This is the native equivalent of the UltraDefrag command line tool.
+ * The following command switches are supported:<br/>
+ *
+ * <b>-l, -la, -a, -o, -q, --quick-optimize, --optimize-mft, --all, --all-fixed, -r, --repeat</b><br/>
+ *
+ * Multiple drive letters on a single command line are allowed.<br/>
+ * You can specify <b>absolute paths</b> to process single files or directories.
+ * Paths including spaces must be enclosed by double quotes (").
+ * To specify multiple paths separate them by spaces.<br/>
+ *
+ * Example:
+ * udefrag "C:\Documents and Settings" C:\\WINDOWS\\WindowsUpdate.log
+ *
+ * For further information about the command switches and variables consult the @ref Console page.</dd>
+ * </dl>
+ *
+ * When UltraDefrag encounters the wrong syntax it shows an appropriate
+ * message on the screen and continues the script execution.
+ *
+ * <h1>Boot time script example</h1>
+ * The following script is used by default:
+ * @code
+ * ;--------------------------------------------------------------------
+ * ;                UltraDefrag Boot Time Shell Script
+ * ;--------------------------------------------------------------------
+ * ; !!! NOTE: THIS FILE MUST BE SAVED IN UNICODE (UTF-16) ENCODING !!!
+ * ;--------------------------------------------------------------------
+ *
+ * set UD_IN_FILTER=*windows*;*winnt*;*ntuser*;*pagefile.sys;*hiberfil.sys
+ * set UD_EX_FILTER=*temp*;*tmp*;*.zip;*.7z;*.rar
+ *
+ * udefrag c:
+ *
+ * exit
+ * @endcode
+ *
+ * <HR>
+ *  <TABLE BORDER="0" STYLE="width: 97%; margin:auto;">
+ *    <TR>
+ *      <TD STYLE="text-align: left; width: 50%;">Previous: @ref GUI</TD>
+ *      <TD STYLE="text-align: right; width: 50%;">Next: @ref Reports</TD>
+ *    </TR>
+ *  </TABLE>
+ */

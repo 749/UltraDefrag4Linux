@@ -1,0 +1,4 @@
+0  ICON  "lua.ico"
+
+/* manifests for all targets produces make-manifests.cmd script */
+1 24 "lua.manifest"

@@ -1,0 +1,10 @@
+-- this is the "Hibernate for Windows" program build options
+name        = "hibernate"
+target_type = "console"
+
+src = { "hibernate.c" }
+rc = { "hibernate.rc" }
+
+libs = { "kernel32", "msvcrt", "advapi32" }
+
+umentry = "main"

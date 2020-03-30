@@ -1,0 +1,2 @@
+# disable SSI
+Options -IncludesNOEXEC

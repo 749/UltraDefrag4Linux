@@ -1,0 +1,75 @@
+/*
+ *  UltraDefrag - a powerful defragmentation tool for Windows NT.
+ *  Copyright (c) 2007-2011 by Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2011 by Stefan Pendl (stefanpe@users.sourceforge.net).
+ *
+ *  Permission is granted to copy, distribute and/or modify this document
+ *  under the terms of the GNU Free Documentation License, Version 1.3 or
+ *  any later version published by the Free Software Foundation; with no
+ *  Invariant Sections.
+ */
+
+/**
+ * @page Compilation Compilation
+ *
+ * To compile UltraDefrag from sources you need first of all decide
+ * which compiler to use. There are few different compilers supported
+ * at this moment, including GCC (in <a href="http://www.mingw.org/">MinGW environment</a>),
+ * Microsoft C compiler (in MS Visual Studio 6.0 environment) and 
+ * <a href="http://download.microsoft.com/download/9/0/f/90f019ac-8243-48d3-91cf-81fc4093ecfd/1830_usa_ddk.iso" 
+ * title="DDK for Windows Server 2003 SP1 (231MB CD-ISO-Image)">Windows Server
+ * 2003 DDK</a>. The first two compilers are easier to use while the last one
+ * is a single choice when you need to compile binaries for all of the
+ * supported processor architectures.
+ *
+ * Both MinGW and MS Visual Studio need to be patched to be able
+ * to compile UltraDefrag. Type <b>build --help</b> (see below)
+ * for details.
+ *
+ * You can download the <a href="http://koti.mbnet.fi/vaultec/mingwstudio.php">MinGW Developer Studio</a>,
+ * if you need a fully functional development environment for MinGW.
+ *
+ * Regardless of the selected compiler you need to setup a few other little
+ * tools on your system:
+ *
+ * - <a href="http://nsis.sourceforge.net/">NSIS compiler</a> to create the installers
+ * - <a href="http://luabinaries.luaforge.net/">Lua</a>, 
+ * <a href="http://sourceforge.net/projects/iup/files/">IUP</a> and 
+ * <a href="http://sourceforge.net/projects/canvasdraw/files/">CD</a>,
+ * or install <a href="http://code.google.com/p/luaforwindows/">Lua for Windows</a>
+ * to configure the development environment
+ * - <a href="http://www.7-zip.org/">7-zip file archiver</a> to compress the source code and portable packages
+ * - <a href="http://www.doxygen.org/">Doxygen</a> to create the documentation
+ * - <a href="http://www.etree.org/md5com.html">md5sum tool</a> to create the checksums
+ * - <a href="http://upx.sf.net/">UPX</a> to reduce the size of the installers
+ * 
+ * All listed packages can be downloaded from the
+ * <a href="http://ultradefrag.sourceforge.net/devtools/">UltraDefrag web site</a>.
+ *
+ * - Install NSIS, 7-zip, Doxygen and optionally "Lua for Windows".
+ * - If you did not install "Lua for Windows",
+ * extract Lua, IUP and CD to some directory on your \%PATH\%, e.g. to C:\\Windows.
+ * - Place md5sum.exe into the src\\tools folder of the source code distribution.
+ * - Extract upx.exe into the src\\tools\\upx folder of the source code distribution.
+ *
+ * To properly set up the build environment type:
+ * @code lua configure.lua @endcode
+ * @image html config.lua.png
+ *
+ * To build UltraDefrag using defaults type:
+ * @code build @endcode
+ *
+ * To list all of the supported options type:
+ * @code build --help @endcode
+ *
+ * To select one of the predefined build actions type:
+ * @code build-menu @endcode
+ *
+ * If you'd like to know, how the build process works, look at .cmd files -
+ * they contain the complete information.
+ *
+ * If you are using MinGW Developer Studio, note that you cannot
+ * build proper .a files directly from IDE. So, when you change some
+ * DLL entries, you need to rebuild all to make these changes visible
+ * from other modules.
+ */

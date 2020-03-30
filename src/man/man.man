@@ -1,0 +1,36 @@
+MAN(1)              Ultradefrag Development Team               MAN(1)
+
+NAME
+        man - manual page for man v4.4.0
+
+SYNOPSIS
+        man [OPTION]
+
+DESCRIPTION
+        'man' displays the manual page for the specified command.
+        The default action is to list all available manual pages.
+        In scripting mode the manuals are displayed without
+        interruption and in interactive mode they are displayed
+        page-wise.
+
+OPTIONS
+        {command}
+                display the manual page for {command}
+
+EXAMPLES
+        man
+                list all available manual pages
+        
+        man udefrag
+                display the manual page for the "udefrag" command
+
+AUTHOR
+        Written by Ultradefrag Development Team
+
+COPYRIGHT
+        Copyright (C) 2010-2011 Ultradefrag Development Team
+        This is free software; see the source for copying conditions.
+        There is NO warranty; not even for MERCHANTABILITY
+        or FITNESS FOR A PARTICULAR PURPOSE.
+
+man                         September 2010                          1

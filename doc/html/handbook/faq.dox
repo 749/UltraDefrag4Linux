@@ -1,0 +1,138 @@
+/*
+ *  UltraDefrag - a powerful defragmentation tool for Windows NT.
+ *  Copyright (c) 2007-2011 by Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2011 by Stefan Pendl (stefanpe@users.sourceforge.net).
+ *
+ *  Permission is granted to copy, distribute and/or modify this document
+ *  under the terms of the GNU Free Documentation License, Version 1.3 or
+ *  any later version published by the Free Software Foundation; with no
+ *  Invariant Sections.
+ */
+
+/**
+ * @page FAQ Frequently Asked Questions
+ * <h1>General Usage</h1>
+ * <h3>How frequently to defragment?</h3>
+ * Defragment your system disk only when you notice system slowdown -
+ * approximately on a monthly basis, not frequently. Data drives have even less
+ * need to be defragmented, especially if they contain primarily music, 
+ * pictures and videos.
+ *
+ * Optimization is reasonable when you have free space heavily fragmented
+ * on your system disk. To determine whether to run optimizer or not execute
+ * the analysis and look at the cluster map. If you see white space
+ * heavily scattered around the disk - it's time for an optimization.
+ *
+ * And, once again, don't crave to defrag/optimize data files -
+ * music/video has no need to be continues on disk, other files have
+ * tendency for temporary living on the disk.
+ *
+ * <h3>After defragmentation I see my restore points disappeared, what happens?</h3>
+ * This is a normal situation when restore points disappear after an
+ * intensive disk processing. Windows limits amount of disk space
+ * reserved for restore points. When you perform intensive disk
+ * processing, Windows tracks changes through system restore, therefore
+ * the mentioned limit may be easily exceeded which results in old
+ * restore points deletion.
+ *
+ * We would recommend to avoid the use of restore points for serious
+ * purposes, because Windows can never guarantee that some point saved in
+ * the past will be available in the next moment. Use backup software
+ * instead, Windows already has such a program and there are also lots of
+ * 3-rd party programs of such kind.
+ *
+ * <h1>Graphical Interface</h1>
+ * <h3>Where can I find a legend of the cluster map colors?</h3>
+ * The colors are described in the <b>Cluster Map</b> section of the @ref GUI page. 
+ *
+ * <h3>When cluster map will become interactive, so I'll be able to know where
+ * individual files are locating on disk?</h3>
+ * When defragmentation algorithms are quite effective, this is not necessary
+ * to know location of individual files - anyway you'll get your drive optimized
+ * quite well. Maybe we'll implement the discussed feature later, but now we prefer
+ * to concentrate our forces on a disk optimization algorithm improvements.
+ *
+ * <h3>Why configuration files editing is better than one settings window with tabs?</h3>
+ * It is much easier and reliable to use the
+ * standard Notepad application to edit
+ * configuration files.
+ *
+ * <h3>Why does the progress percentage update irregularly?</h3>
+ * The progress percentage measures disk space, not the number of files. So when few 
+ * big files are analyzed, the progress will increase very fast. 
+ * Conversely, when thousands of small files are analyzed, progress will 
+ * be relatively slow.
+ *
+ * <h3>Why is the progress exceeding 100\%, when processing FAT disks?</h3>
+ * On FAT disks space is immediately released after a file is moved,
+ * so it happens, that more files can be fully defragmented, than initially
+ * calculated. 
+ *
+ * <h3>Why is the disk name not displayed?</h3>
+ * Explorer replaces an empty disk name by <b>Local Disk</b> or similar, 
+ * UltraDefrag does not replace an empty disk name with any default. 
+ *
+ * <h3>Why is only the last report displayed, if I choose to display multiple reports?</h3>
+ * Browsers which do not support tabbed browsing are reusing the same window.
+ * This is a limitation of the way a HTML page is opened from within Explorer.
+ *
+ * <h3>Why are multiple windows opened, if I choose to display multiple reports?</h3>
+ * If your browser supports tabbed browsing open one instance of your default browser
+ * before you display the reports. This will open each report in a new tab depending
+ * on your browsers configuration.
+ *
+ * <h1>Command Line Tool</h1>
+ * <h3>How can I process all disks except a few?</h3>
+ * You can use the filter variables to do this.
+ * For instance you like to defragment all fixed drives except C and S.\n
+ * To achieve this you use <b>set UD_EX_FILTER=C:\\;S:\\</b> and execute
+ * <b>udefrag --all-fixed</b>.\n
+ * The analysis will be executed for any drive, but defragmentation will be
+ * skipped for drive C and S.\n
+ * The analysis will not be complete for excluded FAT disks, because the
+ * driver does only check the root folder of excluded disks.
+ *
+ * <h1>Miscellaneous</h1>
+ * <h3>How can I disable the boot time defragmenter manually?</h3>
+ * If something goes wrong and the boot-off script does not work properly, remove the 
+ * defrag_native entry from the following system registry parameter manually:
+ *
+@verbatim
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\BootExecute
+@endverbatim
+ *
+ * <h3>I have set UD_LOG_FILE_PATH or log_file_path, but the log file is not created?</h3>
+ * If creating the log file fails for any reason, UltraDefrag tries to create
+ * the log file in the temporary folder of the current user.\n
+ * Only if creating the log file in the temporary fails too, there will be no log file
+ * created.\n
+ * The default temporary location for the GUI and console edition is:
+ * <b>\%TMP\%\\UltraDefrag_Logs\\{filename}</b>\n
+ * The default temporary location for boot time defrag is:
+ * <b>\%SystemRoot\%\\UltraDefrag_Logs\\{filename}</b>\n
+ * The file name is the one from the specified log file path variable.
+ *
+ * <h3>How many differences are between the Ultra Defragmenter and well known MyDefrag (previously JkDefrag) application?</h3>
+ * Both programs have similar disk analysis algorithms, but defragmentation is done
+ * in different ways. While MyDefrag tends to give more control over a
+ * files placement, UltraDefrag is designed to be as simple and fast as possible.
+ * So, UltraDefrag never uses a complex disk optimization strategies, because their use
+ * often noticeable increases the processing time.
+ *
+ * The biggest advantages of UltraDefrag are an ability to defragment system files at
+ * boot time, nice graphical interface, handy reports and instant availability of sources
+ * licensed under GPL.
+ *
+ * The main disadvantage of both applications (UltraDefrag and MyDefrag) is that they
+ * are based on the Windows defragmenting interface that has a very ugly implementation. We cannot
+ * change this, because it is part of the filesystem drivers (ntfs.sys, fastfat.sys),
+ * which are too complex and not open source to modify or replace them.
+ *
+ * <HR>
+ *  <TABLE BORDER="0" STYLE="width: 97%; margin:auto;">
+ *    <TR>
+ *      <TD STYLE="text-align: left; width: 50%;">Previous: @ref Tips</TD>
+ *      <TD STYLE="text-align: right; width: 50%;">Next: @ref ReportingBugs</TD>
+ *    </TR>
+ *  </TABLE>
+ */

@@ -1,0 +1,32 @@
+BOOT-OFF(1)         Ultradefrag Development Team          BOOT-OFF(1)
+
+NAME
+        boot-off - manual page for boot-off v4.4.0
+
+SYNOPSIS
+        boot-off
+
+DESCRIPTION
+        'boot-off' turns boot time defragmentation off.
+        In the case, that it is followed by a shutdown or reboot
+        command a flag file is created to apply the change at the
+        next boot, since otherwise the change is not applied due to
+        a limitation of Windows.
+
+OPTIONS
+        none
+
+EXAMPLES
+        boot-off
+                turn boot time defragmentation off
+
+AUTHOR
+        Written by Ultradefrag Development Team
+
+COPYRIGHT
+        Copyright (C) 2010-2011 Ultradefrag Development Team
+        This is free software; see the source for copying conditions.
+        There is NO warranty; not even for MERCHANTABILITY
+        or FITNESS FOR A PARTICULAR PURPOSE.
+
+boot-off                    September 2010                          1

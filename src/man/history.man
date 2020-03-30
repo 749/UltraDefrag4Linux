@@ -1,0 +1,33 @@
+HISTORY(1)          Ultradefrag Development Team           HISTORY(1)
+
+NAME
+        history - manual page for history v4.4.0
+
+SYNOPSIS
+        history
+
+DESCRIPTION
+        'history' displays the list of all manually entered commands.
+        You can reuse previously entered commands in interactive mode
+        by using the up/down cursor/arrow keys.
+        In scripting mode the list is empty, since there is no way to
+        enter commands manually.
+        In interactive mode the list is displayed page-wise.
+
+OPTIONS
+        none
+
+EXAMPLES
+        history
+                display the list of manually entered commands
+        
+AUTHOR
+        Written by Ultradefrag Development Team
+
+COPYRIGHT
+        Copyright (C) 2010-2011 Ultradefrag Development Team
+        This is free software; see the source for copying conditions.
+        There is NO warranty; not even for MERCHANTABILITY
+        or FITNESS FOR A PARTICULAR PURPOSE.
+
+history                     September 2010                          1

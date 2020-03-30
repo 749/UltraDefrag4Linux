@@ -1,0 +1,18 @@
+-- this is the ultradefag console interface build options
+name        = "udefrag"
+target_type = "console"
+
+-- getopt* files are copied by the build.cmd tool to obj\console directory
+-- during the build process, so they become accessible for the compiler
+src = {
+    "defrag.c", "getopt.c", "getopt1.c", "options.c", "map.c"
+}
+rc = { "defrag.rc" }
+
+libs = { "kernel32", "user32", "msvcrt", "shell32" }
+adlibs = { 
+    "$(UDEFRAG_LIB_PATH)\\udefrag",
+    "$(UDEFRAG_LIB_PATH)\\wgx"
+}
+
+umentry = "main"

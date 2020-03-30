@@ -1,0 +1,86 @@
+/*
+ *  UltraDefrag - a powerful defragmentation tool for Windows NT.
+ *  Copyright (c) 2007-2011 by Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2011 by Stefan Pendl (stefanpe@users.sourceforge.net).
+ *
+ *  Permission is granted to copy, distribute and/or modify this document
+ *  under the terms of the GNU Free Documentation License, Version 1.3 or
+ *  any later version published by the Free Software Foundation; with no
+ *  Invariant Sections.
+ */
+
+/**
+ * @page ReportingBugs Reporting Bugs
+ *
+ * If you have encountered a bug please submit your report via the
+ * <a href="http://sourceforge.net/tracker/?atid=969870&group_id=199532&func=browse">bug tracker</a>.
+ * Additional debugging information is always very appreciated.
+ * <br/><br/>
+ * <h2>How to collect debugging information</h2>
+ * <dl>
+ * <dt>Create screen-shots</dt>
+ * <dd>This is highly recommended for reporting display related problems.<br/>
+ * In addition they help to visualize the current state of your disk.</dd>
+ * <dt>Enable debugging output</dt>
+ * <dd>Use the <b>dbgprint_level</b> setting or the <b>UD_DBGPRINT_LEVEL</b> environment variable and set it to <b>DETAILED</b></dd>
+ * <dt>Collect debugging output</dt>
+ * <dd>There are two ways:<br/>
+ * - Using the <a href="http://technet.microsoft.com/en-us/sysinternals/bb896647.aspx">DbgView</a> program<br/>
+ * - Using the <b>log_file_path</b> setting or the <b>UD_LOG_FILE_PATH</b> environment variable</dd>
+ * </dl>
+ * 
+ * <h2>How to create screen-shots</h2>
+ * <dl>
+ * <dt>Taking a screen-shot</dt>
+ * <dd>Hit <b>[Alt]+[Print Screen]</b> to save an image of the currently active window to the clipboard.
+ * You can use your favorite screen-capture tool too, a free one is <a href="http://www.gen.hardcopy.de/">Hardcopy</a>.</dd>
+ * <dt>Create a PNG image file</dt>
+ * <dd>It is recommended to <b>not</b> paste the image from the clipboard into an Office document,
+ * but to create a PNG image of it by pasting into <b>Paint</b> or any other drawing program.<br/>
+ * If you use Hardcopy you can save it directly.</dd>
+ * </dl>
+ * 
+ * <h2>How to enable debugging</h2>
+ * <dl>
+ * <dt>Debugging the GUI</dt>
+ * <dd>The <b>dbgprint_level</b> and <b>log_file_path</b> settings are contained in the options file,
+ * which you can access via the wrench icon of the tool-bar or the settings menu.</dd>
+ * <dt>Debugging the console utility</dt>
+ * <dd>Set the <b>UD_DBGPRINT_LEVEL</b> and <b>UD_LOG_FILE_PATH</b> environment variables before
+ * you execute the udefrag utility in the command prompt.</dd>
+ * <dt>Debugging the boot time utility</dt>
+ * <dd>Set the <b>UD_DBGPRINT_LEVEL</b> and <b>UD_LOG_FILE_PATH</b> variables before
+ * you execute the udefrag command in the boot time script.<br>
+ * The log file <b>\%windir\%\\UltraDefrag\\Logs\\boot-startup-phase.log</b> is used internally
+ * to collect debugging information before the boot time script is executed.</dd>
+ * </dl>
+ * 
+ * <h2>Using the DbgView program</h2>
+ * Don't forget to check the <b>Capture Win32</b> item of the Capture menu of the DbgView program.
+ * Check one of the <b>Log to file</b> items of the <b>File</b> menu to create a log file you can send us.
+ *
+ * Note that DbgView cannot capture information from the user mode driver during the Windows boot process.
+ * This is a well known DbgView limitation. The latest version of DbgView cannot be used on NT 4.0 either,
+ * check <a href="http://doc.sch130.nsc.ru/www.sysinternals.com/ntw2k/freeware/debugview.shtml">this page</a> for an earlier version.
+ * <br/><br/>
+ * <h2>Disable debugging</h2>
+ * For the GUI you just have to set <b>dbgprint_level</b> and <b>log_file_path</b> to an empty string.\n
+ * For the boot time utility comment out the lines containing the definition of the
+ * <b>UD_DBGPRINT_LEVEL</b> and <b>UD_LOG_FILE_PATH</b> variables by adding a semicolon (;) at the beginning
+ * of those lines.
+ *
+ * <h2>Creating a package to submit</h2>
+ * It is best to ZIP your collected files into a single compressed archive, which will reduce the up- and download size immensely.
+ * If you do not own a ZIP utility, check out <a href="http://sourceforge.net/projects/sevenzip/">7-zip</a>.
+ *
+ * Note that the Sourceforge trackers only allow uploading files of 256KB in size.
+ * For bigger files you may use one of the free file hosting services.
+ *
+ * <HR>
+ *  <TABLE BORDER="0" STYLE="width: 97%; margin:auto;">
+ *    <TR>
+ *      <TD STYLE="text-align: left; width: 50%;">Previous: @ref FAQ</TD>
+ *      <TD STYLE="text-align: right; width: 50%;">Next: @ref Credits</TD>
+ *    </TR>
+ *  </TABLE>
+ */

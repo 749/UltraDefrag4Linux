@@ -1,0 +1,28 @@
+BOOT-ON(1)          Ultradefrag Development Team           BOOT-ON(1)
+
+NAME
+        boot-on - manual page for boot-on v4.4.0
+
+SYNOPSIS
+        boot-on
+
+DESCRIPTION
+        'boot-on' turns boot time defragmentation on.
+
+OPTIONS
+        none
+
+EXAMPLES
+        boot-on
+                turn boot time defragmentation on
+
+AUTHOR
+        Written by Ultradefrag Development Team
+
+COPYRIGHT
+        Copyright (C) 2010-2011 Ultradefrag Development Team
+        This is free software; see the source for copying conditions.
+        There is NO warranty; not even for MERCHANTABILITY
+        or FITNESS FOR A PARTICULAR PURPOSE.
+
+boot-on                     September 2010                          1

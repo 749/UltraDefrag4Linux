@@ -1,0 +1,208 @@
+/*
+ *  UltraDefrag - a powerful defragmentation tool for Windows NT.
+ *  Copyright (c) 2007-2011 by Dmitri Arkhangelski (dmitriar@gmail.com).
+ *  Copyright (c) 2010-2011 by Stefan Pendl (stefanpe@users.sourceforge.net).
+ *
+ *  Permission is granted to copy, distribute and/or modify this document
+ *  under the terms of the GNU Free Documentation License, Version 1.3 or
+ *  any later version published by the Free Software Foundation; with no
+ *  Invariant Sections.
+ */
+
+/**
+ * @page GUI Graphical Interface
+ *
+ * The UltraDefrag GUI consists of a single re-sizable window.
+ * <a href="http://ultradefrag.sourceforge.net/screenshots.html">View screenshots...</a>
+ *
+ * <h1>The Menus</h1>
+ * <table><tr><td>
+ * <b>Action</b>
+ * </td><td>
+ * <dl>
+ * <dt>@htmlonly <img src="Analysis.png"> @endhtmlonly Analyze (F5; Enter)</dt>
+ * <dd>This analyzes the currently selected disk(s), constantly updates the cluster map and status bar, and generates a report.<br/>
+ * The process locates free space, folders, fragmented, compressed, regular and system files.</dd>
+ * <dt>@htmlonly <img src="Defragment.png"> @endhtmlonly Defragment (F6)</dt>
+ * <dd>This defragments the currently selected disk(s), constantly updates the cluster map and status bar, and generates a report.<br/>
+ * The process moves fragmented files to free space to concatenate them.</dd>
+ * <dt>@htmlonly <img src="QuickOptimize.png"> @endhtmlonly Quick optimization (F7)</dt>
+ * <dd>This optimizes the currently selected disk(s), constantly updates the cluster map and status bar, and generates a report.<br/>
+ * The process moves fragmented files to the back of the disk to free space at the front and moves them back to the front to concatenate them.</dd>
+ * <dt>@htmlonly <img src="FullOptimize.png"> @endhtmlonly Full optimization (Ctrl+F7)</dt>
+ * <dd>This optimizes the currently selected disk(s), constantly updates the cluster map and status bar, and generates a report.<br/>
+ * The process moves fragmented and regular files to the back of the disk to free space at the front
+ * and moves them back to the front to concatenate them.</dd>
+ * <dt>@htmlonly <img src="OptimizeMFT.png"> @endhtmlonly Optimize MFT (Shift+F7)</dt>
+ * <dd>This concatenates the MFT into one single chunk.</dd>
+ * <dt>@htmlonly <img src="Stop.png"> @endhtmlonly Stop (Ctrl+C)</dt>
+ * <dd>This aborts the currently running process at any stage, currently pending move operations will be completed to avoid corruption.</dd>
+ * <dt>@htmlonly <img src="Repeat.png"> @endhtmlonly Repeat action (Shift+R)</dt>
+ * <dd>If this is set, the current operation will be repeated multiple times in a row. This allows processing as many files as possible.</dd>
+ * <dt>Skip removable media (Ctrl+M)</dt>
+ * <dd>If this is checked, disks located on removable drives are not included in the disk list.</dd>
+ * <dt>Rescan drives (Ctrl+D)</dt>
+ * <dd>This updates the disk list to include disks located on removable drives, which have been plugged in after starting UltraDefrag.</dd>
+ * <dt>When done</dt>
+ * <dd>This allows one to select an action that will be executed after all operations have been performed.<br/>
+ * The default is <b>None</b>, available actions are: <b>Exit, Standby, Hibernate, Logoff, Reboot</b> and <b>Shutdown</b>.</dd>
+ * <dt>Exit (Alt+F4)</dt>
+ * <dd>This terminates UltraDefrag.</dd>
+ * </dl>
+ * </td></tr><tr><td>
+ * <b>Report</b>
+ * </td><td>
+ * <dl>
+ * <dt>@htmlonly <img src="Report.png"> @endhtmlonly Show report (F8)</dt>
+ * <dd>This displays the report generated for the selected disk(s) in a browser window.</dd>
+ * </dl>
+ * </td></tr><tr><td>
+ * <b>Settings</b>
+ * </td><td>
+ * <dl>
+ * <dt>Language</dt>
+ * <dd>This allows selecting the displayed language and to open the <b>Translations folder</b>,
+ * which contains the <b>translation.template</b> and all language files.</dd>
+ * <dt>Graphical interface</dt>
+ * <dd><dl>
+ * <dt>Font (F9)</dt>
+ * <dd>Usually the font must be changed only, if the contents of the disk list are not displayed correctly.</dd>
+ * <dt>@htmlonly <img src="Options.png"> @endhtmlonly Options (F10)</dt>
+ * <dd>This will open a text editor window with the script loaded mentioned in the section <b>Configuring</b> below,
+ * which allows you to change the look and feel of the window as well as the behaviour of the actions.</dd>
+ * </dl></dd>
+ * <dt>Boot time scan (Disabled for portable editions)</dt>
+ * <dd><dl>
+ * <dt>@htmlonly <img src="BootTimeScan.png"> @endhtmlonly Enable (F11)</dt>
+ * <dd>This enables or disables the boot time processing.</dd>
+ * <dt>@htmlonly <img src="BootTimeScript.png"> @endhtmlonly Script (F12)</dt>
+ * <dd>This opens a text editor window with the script loaded mentioned in the chapter @ref Boot,
+ * which allows changing the way the boot time processing behaves.</dd>
+ * </dl></dd>
+ * <dt>Reports (Ctrl+R)</dt>
+ * <dd>This allows changing the look of the reports.</dd>
+ * </dl>
+ * </td></tr><tr><td>
+ * <b>Help</b>
+ * </td><td>
+ * <dl>
+ * <dt>@htmlonly <img src="Help.png"> @endhtmlonly Contents (F1)</dt>
+ * <dd>This launches the handbook you are currently reading.</dd>
+ * <dt>Best practice (F2)</dt>
+ * <dd>This launches the @ref Tips chapter of this handbook.</dd>
+ * <dt>FAQ (F3)</dt>
+ * <dd>This launches the @ref FAQ chapter of this handbook.</dd>
+ * <dt>About (F4)</dt>
+ * <dd>This opens the about window.</dd>
+ * </dl>
+ * </td></tr><tr><td>
+ * <b>Preview</b><br/>(available only in alpha and beta releases)
+ * </td><td>
+ * <dl>
+ * <dt>Find largest free space</dt>
+ * <dd>Always fill the largest free space region first.</dd>
+ * <dt>Find matching free space</dt>
+ * <dd>Always fill a free space region which is similar to the size of the file.</dd>
+ * <dt>Skip partial defragmenting</dt>
+ * <dd>On regular defragmentation skip the final partial defragmentation,
+ * which consolidates small parts of files.</dd>
+ * </dl>
+ * </td></tr>
+ * </table>
+ * 
+ * <h1>The Tool-Bar</h1>
+ * It consists of the most frequently used commands for easy access.
+ *
+ * <h1>List of Disks</h1>
+ * The top part of the window contains a full list of disks
+ * available for defragmentation. Each line of the list contains
+ * disk name, type of filesystem, total amount of space,
+ * amount of free space and, finally, percent of free space
+ * on the disk.
+ *
+ * Fixed drives are marked by @htmlonly <img src="fixed.png"> @endhtmlonly,
+ * removable drives - by @htmlonly <img src="removable.png"> @endhtmlonly.
+ *
+ * Multiple disks can be selected in the list. In this case UltraDefrag
+ * will process them one after the other. The rules for the selection are the same as
+ * in Windows Explorer.
+ *
+ * <h1>Cluster Map</h1>
+ * It represents the disk clusters by little colored squares.
+ * Colors have the following meaning:
+ *
+ * @htmlonly
+ *  <TABLE BORDER="0">
+ *    <TR>
+ *      <TD><img src="Fragmented.png"></TD><TD>Fragmented</TD>
+ *      <TD STYLE="padding: 10px"></TD>
+ *      <TD><img src="NotFragmented.png"></TD><TD>Not Fragmented</TD>
+ *      <TD STYLE="padding: 10px"></TD>
+ *      <TD><img src="Compressed.png"></TD><TD>Compressed</TD>
+ *    </TR>
+ *    <TR>
+ *      <TD><img src="Directory.png"></TD><TD>Directory</TD>
+ *      <TD STYLE="padding: 10px"></TD>
+ *      <TD><img src="System.png"></TD><TD>System (Locked)</TD>
+ *      <TD STYLE="padding: 10px"></TD>
+ *      <TD><img src="MFT.png"></TD><TD>MFT</TD>
+ *    </TR>
+ *    <TR>
+ *      <TD><img src="Temporary.png"></TD><TD>Temporary</TD>
+ *      <TD STYLE="padding: 10px"></TD>
+ *      <TD></TD><TD></TD>
+ *      <TD STYLE="padding: 10px"></TD>
+ *      <TD><img src="FreeSpace.png"></TD><TD>Free Space</TD>
+ *    </TR>
+ *  </TABLE>
+ * @endhtmlonly
+ *
+ * When there are two different colors assigned to the same item, the
+ * darker one marks objects above the size threshold, if one
+ * is set. Dark magenta represents the master file table (MFT),
+ * light magenta - space reserved for the <a href="http://support.microsoft.com/kb/174619">MFT expansion</a>.
+ * The cyan color represents space temporarily allocated by Windows. 
+ * Gray is indicating unused map blocks, because the map is bigger than the number of available clusters.
+ *
+ * Note that files excluded from processing are never treated as fragmented.
+ * Because only files affecting system performance should get our attention.
+ *
+ * Due to the way the amount of clusters per map block is calculated, it can happen
+ * that the last block represents much more clusters than the other ones.
+ * This leads to the effect, that there is a small delay till the clusters are painted,
+ * if they are moved to the end of the disk.
+ *
+ * <h1>When done</h1>
+ * If any of the actions except <b>None</b> is checked, UltraDefrag
+ * will automatically perform that action after the job completes.
+ *
+ * Note that your system and hardware configuration must support
+ * shutdown and power off, otherwise Windows may reboot your PC
+ * or even do nothing. Therefore test this mode before using it
+ * at a regular basis.
+ *
+ * Note that your system must support the selected suspend mode
+ * and it must be turned on. Otherwise Windows
+ * will display a message box containing a brief error description
+ * and the system will not be switched into any suspend mode.
+ *
+ * <h1>Configuring</h1>
+ * The default font is Courier New, 9.
+ *
+ * GUI options are stored in guiopts.lua file. They have the same
+ * meaning as the environment variables accepted by the UltraDefrag
+ * command line tool.
+ *
+ * It does make sense to set <b>grid_line_width = 0</b>,
+ * if you set <b>map_block_size = 1</b> to be able to use the whole
+ * size of the cluster map.\n
+ * This is especially useful, if you have drives of sizes of 500GB and more.
+ *
+ * <HR>
+ *  <TABLE BORDER="0" STYLE="width: 97%; margin:auto;">
+ *    <TR>
+ *      <TD STYLE="text-align: left; width: 50%;">Previous: @ref Schedule</TD>
+ *      <TD STYLE="text-align: right; width: 50%;">Next: @ref Boot</TD>
+ *    </TR>
+ *  </TABLE>
+ */
