@@ -30,8 +30,10 @@
 */
 
 #include "main.h"
+#include <shlwapi.h>
 
 /* global variables */
+int is_nt4 = 0;
 HINSTANCE hInstance;
 char class_name[64];
 HWND hWindow = NULL;
@@ -49,6 +51,11 @@ int boot_time_defrag_enabled = 0;
 extern int init_maximized_window;
 extern int allow_map_redraw;
 extern int lang_ini_tracking_stopped;
+
+// wininet.h defines the following constants
+#define INTERNET_MAX_PATH_LENGTH    2048
+#define INTERNET_MAX_SCHEME_LENGTH    32
+#define INTERNET_MAX_URL_LENGTH     (INTERNET_MAX_SCHEME_LENGTH+sizeof("://")+INTERNET_MAX_PATH_LENGTH)
 
 /*
 * MSDN states that environment variables
@@ -545,12 +552,23 @@ int CreateMainWindow(int nShowCmd)
 void OpenWebPage(char *page, char *anchor)
 {
     int i;
-    wchar_t path[MAX_PATH];
+    DWORD url_length;
+    wchar_t url[INTERNET_MAX_URL_LENGTH];
+    wchar_t path[INTERNET_MAX_URL_LENGTH];
     wchar_t exe[MAX_PATH] = {0};
     char cd[MAX_PATH];
     HINSTANCE hApp;
+    HMODULE hShlwapiDll;
+    typedef HRESULT (WINAPI *URLCANONICALIZEW_PROC)(wchar_t *pszUrl,
+        wchar_t *pszCanonicalized,LPDWORD pcchCanonicalized,DWORD dwFlags);
+    URLCANONICALIZEW_PROC pUrlCanonicalizeW = NULL;
+    
+    hShlwapiDll = LoadLibrary("shlwapi.dll");
+    if(hShlwapiDll){
+        pUrlCanonicalizeW = (URLCANONICALIZEW_PROC)GetProcAddress(hShlwapiDll,"UrlCanonicalizeW");
+    }
 
-    (void)_snwprintf(path,MAX_PATH,L".\\handbook\\%hs",page);
+    (void)_snwprintf(path,INTERNET_MAX_URL_LENGTH,L".\\handbook\\%hs",page);
 
     if (anchor != NULL){
         if(GetModuleFileName(NULL,cd,MAX_PATH)){
@@ -567,27 +585,40 @@ void OpenWebPage(char *page, char *anchor)
 
             (void)FindExecutableW(path,NULL,exe);
 
-            (void)_snwprintf(path,MAX_PATH,L"file://%hs\\handbook\\%hs#%hs",cd,page,anchor);
+            (void)_snwprintf(path,INTERNET_MAX_URL_LENGTH,
+                L"file://%hs\\handbook\\%hs#%hs",cd,page,anchor);
+
+            if(pUrlCanonicalizeW){
+                /* URL-encode spaces */
+                url_length = INTERNET_MAX_URL_LENGTH - 1;
+                if(pUrlCanonicalizeW(path,url,&url_length,URL_ESCAPE_SPACES_ONLY | URL_DONT_ESCAPE_EXTRA_INFO) == S_OK)
+                    (void)_snwprintf(path,INTERNET_MAX_URL_LENGTH,L"%ls",url);
+            }
         }
     }
-    path[MAX_PATH - 1] = 0;
+    path[INTERNET_MAX_URL_LENGTH - 1] = 0;
+    /*WgxDbgPrint("%ws",path);*/
 
     if (anchor != NULL && exe[0] != 0)
         hApp = ShellExecuteW(hWindow,NULL,exe,path,NULL,SW_SHOW);
     else
         hApp = ShellExecuteW(hWindow,L"open",path,NULL,NULL,SW_SHOW);
     if((int)(LONG_PTR)hApp <= 32){
-        if (anchor != NULL)
-            (void)_snwprintf(path,MAX_PATH,L"http://ultradefrag.sourceforge.net/handbook/%hs#%hs",page,anchor);
-        else
-            (void)_snwprintf(path,MAX_PATH,L"http://ultradefrag.sourceforge.net/handbook/%hs",page);
-        path[MAX_PATH - 1] = 0;
+        if (anchor != NULL){
+            (void)_snwprintf(path,INTERNET_MAX_URL_LENGTH,
+                L"http://ultradefrag.sourceforge.net/handbook/%hs#%hs",page,anchor);
+        } else {
+            (void)_snwprintf(path,INTERNET_MAX_URL_LENGTH,
+                L"http://ultradefrag.sourceforge.net/handbook/%hs",page);
+        }
+        path[INTERNET_MAX_URL_LENGTH - 1] = 0;
         (void)WgxShellExecuteW(hWindow,L"open",path,NULL,NULL,SW_SHOW);
     }
 }
 
 /**
  * @brief Opens a page of the translation wiki.
+ * @param[in] page name of the page
  * @param[in] islang 1 indicates a language page, 0 not
  */
 void OpenTranslationWebPage(wchar_t *page, int islang)
@@ -1057,8 +1088,8 @@ LRESULT CALLBACK MainWindowProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
             /* handle language menu */
             if(id > IDM_LANGUAGE && id < IDM_CFG_GUI){
                 /* get name of selected language */
-                memset(&mi,0,sizeof(MENUITEMINFOW));
-                mi.cbSize = sizeof(MENUITEMINFOW);
+                memset(&mi,0,MENUITEMINFOW_SIZE);
+                mi.cbSize = MENUITEMINFOW_SIZE;
                 mi.fMask = MIIM_TYPE;
                 mi.fType = MFT_STRING;
                 mi.dwTypeData = lang_name;
@@ -1244,12 +1275,18 @@ void stop_web_statistics()
  */
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nShowCmd)
 {
+    OSVERSIONINFO osvi;
     HMODULE hComCtlDll;
     typedef BOOL (WINAPI *ICCE_PROC)(LPINITCOMMONCONTROLSEX lpInitCtrls);
     ICCE_PROC pInitCommonControlsEx = NULL;
     INITCOMMONCONTROLSEX icce;
     int result;
     
+    ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
+    osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+    GetVersionEx(&osvi);
+    if(osvi.dwMajorVersion < 5) is_nt4 = 1;
+
     WgxSetDbgPrintHandler(udefrag_dbg_print);
     hInstance = GetModuleHandle(NULL);
     
@@ -1283,7 +1320,6 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nS
     SavePrefs();
     
     if(InitSynchObjects() < 0){
-        DeleteEnvironmentVariables();
         StopCrashInfoCheck();
         return 1;
     }
@@ -1320,7 +1356,6 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nS
         release_jobs();
         WgxDestroyResourceTable(i18n_table);
         stop_web_statistics();
-        DeleteEnvironmentVariables();
         DestroySynchObjects();
         StopCrashInfoCheck();
         return 3;
@@ -1337,7 +1372,6 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nS
 
     /* save settings */
     SavePrefs();
-    DeleteEnvironmentVariables();
     stop_web_statistics();
     StopCrashInfoCheck();
     

@@ -1,11 +1,12 @@
 ﻿;------------------------------------------------------------------------------
 ; UltraDefrag GUI Greek Language Pack.
-; Copyright (C) 2008-2011 Konstantinos Kapoukranidis
+; Copyright (C) 2008-2012 Konstantinos Kapoukranidis
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
 ; Revised May 17, 2012 by Dionisios Klonaris
 ; Revised Oct  5, 2012 by Dionisios Klonaris
+; Revised Oct 20, 2012 by Konstantinos Kapoukranidis
 ;------------------------------------------------------------------------------
 
 ; Please keep the header and comments in English and use Latin letters,
@@ -159,7 +160,7 @@ FRAGMENTED_FILES_ON       = Κατακερματισμένα αρχεία στο
 
 VISIT_HOMEPAGE            = Επίσκεψη του ιστοτόπου μας
 VIEW_REPORT_OPTIONS       = Επισκόπηση επιλογών αναφοράς
-POWERED_BY_LUA            = Βασισμένο στη Lua
+POWERED_BY_LUA            = Βασισμένο στην Lua
 
 FRAGMENTS                 = κατακερματισμένα στοιχεία
 SIZE                      = μέγεθος

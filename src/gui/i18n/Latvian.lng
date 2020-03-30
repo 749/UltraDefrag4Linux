@@ -2,6 +2,7 @@
 ; UltraDefrag GUI Latvian Language Pack.
 ; Copyright (C) 2009 Sevelyr.
 ; Copyright (C) 2009 Vladislav Stuznev.
+; Copyright (C) 2012 Raitis Nugumanovs.
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
@@ -27,26 +28,26 @@ HELP                      = &Palīdzība
 
 ANALYSE                   = &Analizēt
 DEFRAGMENT                = &Defragmentēt
-QUICK_OPTIMIZE            = Ātri &optimizācija
-FULL_OPTIMIZE             = &Pilnu optimizāciju
+QUICK_OPTIMIZE            = Ātrā &optimizācija
+FULL_OPTIMIZE             = &Pilnā optimizācija
 OPTIMIZE_MFT              = Optimizēt &MFT
 STOP                      = Ap&turēt
-REPEAT_ACTION             = Da&rbību atkārtot
-SKIP_REMOVABLE_MEDIA      = Izlaist maināmus datu &nesējus
+REPEAT_ACTION             = Atkā&rtot
+SKIP_REMOVABLE_MEDIA      = Izlaist maināmos datu &nesējus
 RESCAN_DRIVES             = Di&sku meklēšana
-REPAIR_DRIVES             = Remonta diski
+REPAIR_DRIVES             = &Labot diskus
 WHEN_DONE                 = &Kad izdarīts
 EXIT                      = &Iziet
 
 ; --- --- When done submenu
 
-WHEN_DONE_NONE            = &Neviens
+WHEN_DONE_NONE            = &Neko
 WHEN_DONE_EXIT            = &Iziet
-WHEN_DONE_STANDBY         = &Gaidīšanas
+WHEN_DONE_STANDBY         = &Gaidīt
 WHEN_DONE_HIBERNATE       = &Hibernācija
-WHEN_DONE_LOGOFF          = &Aiziet
-WHEN_DONE_REBOOT          = A&tsāknēšana
-WHEN_DONE_SHUTDOWN        = I&zslēgšanas
+WHEN_DONE_LOGOFF          = &Iziet
+WHEN_DONE_REBOOT          = &Pārlādēt datoru
+WHEN_DONE_SHUTDOWN        = I&zslēgt datoru
 
 ; --- Report Menu
 
@@ -56,32 +57,32 @@ SHOW_REPORT               = &Rādīt atskaiti
 
 LANGUAGE                  = &Valodas
 GRAPHICAL_INTERFACE       = &Grafiskais interfeiss
-BOOT_TIME_SCAN            = &Skenēšana Windows iniciēšanas laikā
+BOOT_TIME_SCAN            = Pārbaude Windows &ielādes laikā
 REPORTS                   = &Atskaites
 
 ; --- --- Language submenu
 
-TRANSLATIONS_CHANGE_LOG   = &Skatīt mainīt log
+TRANSLATIONS_CHANGE_LOG   = &Skatīt izmaiņu žurnālu
 TRANSLATIONS_REPORT       = Skatīt tulkošanas &ziņojumu
 TRANSLATIONS_FOLDER       = &Tulkojumi mapi
 TRANSLATIONS_SUBMIT       = &Iesniegt pašreizējo tulkojumu
 
 ; --- --- Graphical interface submenu
 
-FONT                      = &Fontu
+FONT                      = Šri&fts
 OPTIONS                   = &Opcijas
 
 ; --- --- Boot time scan submenu
 
 ENABLE                    = &Atļaut
-SCRIPT                    = &Skriptu
+SCRIPT                    = &Skripts
 
 ; --- Help Menu
 
 CONTENTS                  = &Saturs
 BEST_PRACTICE             = &Labākās prakses
 FAQ                       = &Biežāk uzdotie jautājumi
-CM_LEGEND                 = &Klasteru karte leģenda
+CM_LEGEND                 = &Klasteru karte
 DEBUG                     = &Atkļūdot
 CHECK_UPDATE              = Pārbaudīt &update
 ABOUT                     = &Par programmu
@@ -93,20 +94,20 @@ REPORT_BUG                = &Nosūtīt kļūdu ziņojumu
 
 ; --- Toolbar Tooltips
 
-BOOT_TIME_SCRIPT          = Sāknēšanas laiku skriptu
+BOOT_TIME_SCRIPT          = Ielādes laika skripts
 
 ; Drives list items.
 
 VOLUME                    = Sējums
 STATUS                    = Statuss
-FRAGMENTATION             = Sadrumstalotība
+FRAGMENTATION             = Fragmentācija
 TOTAL                     = Kopā
 FREE                      = Brīvs
 PERCENT                   = Procentos
 
 ; Status messages
 
-STATUS_RUNNING            = Izpildes
+STATUS_RUNNING            = Izpildās
 STATUS_ANALYSED           = Analīze
 STATUS_DEFRAGMENTED       = Defragmented
 STATUS_OPTIMIZED          = Optimizēta
@@ -128,14 +129,14 @@ LICENSE                   = &Licence
 ; Shutdown confirmation
 
 PLEASE_CONFIRM            = Lūdzu, apstipriniet
-REALLY_SHUTDOWN_WHEN_DONE = Vai tiešām vēlaties izslēgšanu, kad izdarīts?
-REALLY_HIBERNATE_WHEN_DONE= Vai tiešām vēlaties pārziemot, kad izdarīts?
-REALLY_LOGOFF_WHEN_DONE   = Vai tiešām vēlaties reģistrēties, kad izdarīts?
-REALLY_REBOOT_WHEN_DONE   = Vai tiešām vēlaties atsāknēšana, kad izdarīts?
-SECONDS_TILL_SHUTDOWN     = sekundes līdz izslēgšanas
-SECONDS_TILL_HIBERNATION  = sekundes līdz pārziemošana
-SECONDS_TILL_LOGOFF       = sekundes līdz aiziet
-SECONDS_TILL_REBOOT       = sekundes līdz atsāknēšana
+REALLY_SHUTDOWN_WHEN_DONE = Vai tiešām vēlaties izslēgt datoru, kad izdarīts?
+REALLY_HIBERNATE_WHEN_DONE= Vai tiešām vēlaties hibernēt, kad izdarīts?
+REALLY_LOGOFF_WHEN_DONE   = Vai tiešām vēlaties beigt darbu, kad izdarīts?
+REALLY_REBOOT_WHEN_DONE   = Vai tiešām vēlaties pārlādēt sistēmu, kad izdarīts?
+SECONDS_TILL_SHUTDOWN     = sekundes līdz izslēgšanai
+SECONDS_TILL_HIBERNATION  = sekundes līdz hibernācijai
+SECONDS_TILL_LOGOFF       = sekundes līdz darba beigām
+SECONDS_TILL_REBOOT       = sekundes līdz pārlādēšanai
 YES                       = &Jā
 NO                        = &Nē
 
@@ -146,7 +147,7 @@ UPGRADE_MESSAGE           = presei ir pieejama lejupielādei!
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 
-JOB_IS_RUNNING            = Darbs darbojas
+JOB_IS_RUNNING            = Process darbojas
 
 ; Strings for system tray icon context menu.
 
@@ -155,9 +156,9 @@ HIDE                      = Slēpt
 
 ; Strings for the file fragmentation reports.
 
-FRAGMENTED_FILES_ON       = Sadrumstalota failus
+FRAGMENTED_FILES_ON       = Fragmentētos failus
 
-VISIT_HOMEPAGE            = Apmeklējiet mūsu mājas lapā
+VISIT_HOMEPAGE            = Apmeklējiet mūsu mājas lapu
 VIEW_REPORT_OPTIONS       = Skatīt atskaišu iespējas
 POWERED_BY_LUA            = Powered by Lua
 

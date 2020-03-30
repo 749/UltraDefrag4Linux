@@ -6,6 +6,7 @@
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
 ; Revised Apr. 17, 2012 by Jiri Sedlak
+; Revised Oct. 21, 2012 by Pavel Kinkor
 ;------------------------------------------------------------------------------
 
 ; Please keep the header and comments in English and use Latin letters,
@@ -99,7 +100,7 @@ BOOT_TIME_SCRIPT          = Skript při startu OS
 
 VOLUME                    = Jednotka
 STATUS                    = Stav
-FRAGMENTATION             = Roztříštění
+FRAGMENTATION             = Fragmentace
 TOTAL                     = Kapacita
 FREE                      = Volné místo
 PERCENT                   = % volného místa

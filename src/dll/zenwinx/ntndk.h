@@ -822,14 +822,11 @@ typedef enum _EVENT_TYPE {
 #pragma pack(push,1)
 typedef struct _PROCESS_DEVICEMAP_INFORMATION
 {
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             HANDLE DirectoryHandle;
         } Set;
-        struct
-        {
+        struct {
             //ULONG DriveMap;
             UINT DriveMap;
             UCHAR DriveType[32];

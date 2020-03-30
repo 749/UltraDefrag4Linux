@@ -109,9 +109,17 @@
  * Only absolute paths are supported. The destination folder must be empty or contain a previous UltraDefrag installation.
  *
  * Example command line to silently install the full edition in "Burmese (Padauk)" with only the start menu icon:
- * @code
- * ultradefrag.bin.i386.exe /S /LANG="Burmese (Padauk)" /FULL=1 /ICONS=0 /STARTMENUICON=1 /D=C:\Program Files\UltraDefrag
- * @endcode
+ * @htmlonly
+ * <div class="fragment">
+ *     <div class="line">ultradefrag.bin.i386.exe /S /LANG=<span class="stringliteral">&quot;Burmese (Padauk)&quot;</span> /FULL=1 /ICONS=0 /STARTMENUICON=1 /D=C:\Program Files\UltraDefrag</div>
+ * </div>
+ * @endhtmlonly
+ * @latexonly
+ * \begin{DoxyCode}
+ * ultradefrag.bin.i386.exe /S /LANG=\textcolor{stringliteral}{"Burmese (Padauk)"} /FULL=1 /ICONS=0 /STARTMENUICON=1
+ *     /D=C:\(\backslash\)Program Files\(\backslash\)UltraDefrag
+ * \end{DoxyCode}
+ * @endlatexonly
  * To check the result of the command line switches omit the <b>/S</b> switch,
  * which opens the interactive installer and allows checking the selections
  * on the component page.

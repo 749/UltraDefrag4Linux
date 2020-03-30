@@ -42,7 +42,7 @@ EXIT                      = &வெளியேறு
 WHEN_DONE_NONE            = &எதுவுமில்லை
 WHEN_DONE_EXIT            = &வெளியேறு
 WHEN_DONE_STANDBY         = &காத்திருப்பு
-WHEN_DONE_HIBERNATE       = (விலங்குகள்) &குளிர் காலம் முழுவதும் துயில் கொள்ளு
+WHEN_DONE_HIBERNATE       = (விலங்குகள்) &குளிர் காலம் முழுவதும் துயில் கொள்ளு
 WHEN_DONE_LOGOFF          = &விடுபதிகை
 WHEN_DONE_REBOOT          = &மறுதுவக்கம் செய்
 WHEN_DONE_SHUTDOWN        = &நிறுத்து
@@ -61,9 +61,9 @@ REPORTS                   = &அறிக்கைகள்
 ; --- --- Language submenu
 
 TRANSLATIONS_CHANGE_LOG   = &பதிவு மாற்ற காண்க
-TRANSLATIONS_REPORT       = மொழிபெயர்ப்பு &அறிக்கை காண்க
+TRANSLATIONS_REPORT       = மொழிபெயர்ப்பு &அறிக்கை காண்க
 TRANSLATIONS_FOLDER       = &மொழிமாற்ற கோப்புறை
-TRANSLATIONS_SUBMIT       = &Submit current translation
+TRANSLATIONS_SUBMIT       = &தற்போதைய மொழிபெயர்ப்பு 'to
 
 ; --- --- Graphical interface submenu
 
@@ -77,12 +77,12 @@ SCRIPT                    = &ஸ்கிரிப்ட்
 
 ; --- Help Menu
 
-CONTENTS                  = &பொருளடக்கம்
+CONTENTS                  = &பொருளடக்கம்
 BEST_PRACTICE             = &சிறந்த பயிற்சி
 FAQ                       = &கேள்விகள்
-CM_LEGEND                 = கொத்து &வரைபடத்தை விளக்கவுரை
+CM_LEGEND                 = கொத்து &வரைபடத்தை விளக்கவுரை
 DEBUG                     = வழு &நீக்கு
-CHECK_UPDATE              = மேம்படுத்தல் சோதிக்க
+CHECK_UPDATE              = மேம்படுத்தல் சோதிக்க
 ABOUT                     = &பற்றி
 
 ; --- --- Debug submenu
@@ -127,10 +127,10 @@ LICENSE                   = &உரிமம்
 ; Shutdown confirmation
 
 PLEASE_CONFIRM            = உறுதி செய்யவும்
-REALLY_SHUTDOWN_WHEN_DONE = செய்த போது நீங்கள் உண்மையில் பணிநிறுத்தம் விரும்புகிறீர்களா?
-REALLY_HIBERNATE_WHEN_DONE= உண்மையில் நீங்கள் செய்த போது உறங்கும் விரும்புகிறீர்களா?
-REALLY_LOGOFF_WHEN_DONE   = உண்மையில் நீங்கள் செய்த போது விடுபதிகை விரும்புகிறீர்களா?
-REALLY_REBOOT_WHEN_DONE   = உண்மையில் நீங்கள் செய்த போது மீண்டும் விரும்புகிறீர்களா?
+REALLY_SHUTDOWN_WHEN_DONE = செய்த போது நீங்கள் உண்மையில் பணிநிறுத்தம் விரும்புகிறீர்களா?
+REALLY_HIBERNATE_WHEN_DONE= உண்மையில் நீங்கள் செய்த போது உறங்கும் விரும்புகிறீர்களா?
+REALLY_LOGOFF_WHEN_DONE   = உண்மையில் நீங்கள் செய்த போது விடுபதிகை விரும்புகிறீர்களா?
+REALLY_REBOOT_WHEN_DONE   = உண்மையில் நீங்கள் செய்த போது மீண்டும் விரும்புகிறீர்களா?
 SECONDS_TILL_SHUTDOWN     = பணிநிறுத்தம் வரை விநாடிகள்
 SECONDS_TILL_HIBERNATION  = செயலற்றிருத்தல் வரை விநாடிகள்
 SECONDS_TILL_LOGOFF       = விடுபதிகை வரை விநாடிகள்
@@ -154,15 +154,15 @@ HIDE                      = மறை
 
 ; Strings for the file fragmentation reports.
 
-FRAGMENTED_FILES_ON       = துண்டுதுண்டாக கோப்புகளை அன்று
+FRAGMENTED_FILES_ON       = துண்டுதுண்டாக கோப்புகளை அன்று
 
 VISIT_HOMEPAGE            = நம் தமிழுக்கு
 VIEW_REPORT_OPTIONS       = அறிக்கை விருப்பங்களை காண்க
-POWERED_BY_LUA            = திருத்தினோம் Lua
+POWERED_BY_LUA            = திருத்தினோம் Lua
 
 FRAGMENTS                 = துண்டுகள்
 SIZE                      = அளவு
-FILENAME                  = கோப்புப்பெயர்
+FILENAME                  = கோப்புப்பெயர்
 COMMENT                   = கருத்து
 
 LOCKED                    = பூட்டப்பட்டுள்ளது

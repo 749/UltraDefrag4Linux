@@ -375,7 +375,7 @@ report_path = arg[1]
 instdir     = arg[2]
 
 instdir_utf8 = os.getenv("UD_INSTALL_DIR")
-if not instdir_utf8 then instdir_utf8 = "" end
+if not instdir_utf8 then instdir_utf8 = instdir end
 
 assert(report_path, usage)
 assert(instdir, usage)
@@ -387,8 +387,8 @@ dofile(instdir .. "\\options\\udreportopts.lua")
 dofile(report_path)
 
 error_msg = [[
-Reports produced by old versions of UltraDefrag are no more supported.
-Update the program at least to the 5.0.5 version.
+Reports produced by old versions of UltraDefrag
+are no more supported. Run the disk analysis again.
 ]]
 
 -- check the report format version

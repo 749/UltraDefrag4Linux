@@ -105,7 +105,7 @@ PERCENT                   = % ti Nawaya
 
 ; Status messages
 
-STATUS_RUNNING            = Uma-andar
+STATUS_RUNNING            = Nakaandar
 STATUS_ANALYSED           = Inusig
 STATUS_DEFRAGMENTED       = Dinagup
 STATUS_OPTIMIZED          = Inkanatad

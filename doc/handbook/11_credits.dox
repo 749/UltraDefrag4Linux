@@ -109,6 +109,7 @@
  * <tr><td>• Latin                        </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
  * <tr><td>• Latvian                      </td><td>-</td><td> Sevelyr</td></tr>
  * <tr><td>                               </td><td>-</td><td> Vladislav Stuznev</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Raitis Nugumanovs</td></tr>
  * <tr><td>• Lithuanian                   </td><td>-</td><td> Eugenijus Januškevičius</td></tr>
  * <tr><td>• Macedonian                   </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
  * <tr><td>• Norwegian                    </td><td>-</td><td> Sveinung Heggen</td></tr>
@@ -231,6 +232,7 @@
  * • Latin                         & - & Dmitri Arkhangelski \\
  * • Latvian                       & - & Sevelyr \\
  *                                 & - & Vladislav Stuznev \\
+ *                                 & - & Raitis Nugumanovs \\
  * • Lithuanian                    & - & Eugenijus Januškevičius \\
  * • Macedonian                    & - & Dmitri Arkhangelski \\
  * • Norwegian                     & - & Sveinung Heggen \\
@@ -538,14 +540,17 @@
  * Special thanks for extensive testing (in alphabetical order):
  *
  * - Andrei Maksimov
+ * - Bear Windows
  * - Brent Jenkins
  * - Fred Schall
  * - Jeff Cubillos
- * - Kalle Koseck, Kerem Gümrükcü
+ * - Kalle Koseck
+ * - Kerem Gümrükcü
  * - Leslie Trenholm
  * - Markus Elfring
  * - Nagy Zsolt
- * - Sachin Kunjikoran, Stefan Pendl
+ * - Sachin Kunjikoran
+ * - Stefan Pendl
  * - Tom Arroyo
  *
  * Also special thanks is going to:

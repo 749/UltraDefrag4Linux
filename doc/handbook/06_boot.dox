@@ -148,14 +148,14 @@ Type 'help' for list of supported commands.
  * @par udefrag
  * This is the native equivalent of the UltraDefrag command line tool.
  * The following command switches are supported:<br/><br/>
- * <b>-l, -la, -a, -o, -q, --quick-optimize, --optimize-mft, --all, --all-fixed, -r, --repeat</b><br/><br/>
+ * <b>-l, -la, -a, -o, -q, \--quick-optimize, \--optimize-mft, \--all, \--all-fixed, -r, \--repeat</b><br/><br/>
  * Multiple drive letters on a single command line are allowed.<br/>
  * You can specify <b>absolute paths</b> to process single files or directories.
  * Paths including spaces must be enclosed by double quotes (").
  * To specify multiple paths separate them by spaces.<br/><br/>
  * Example:
  * @code
- * udefrag "C:\Documents and Settings" C:\\WINDOWS\\WindowsUpdate.log
+ * udefrag "C:\Documents and Settings" C:\WINDOWS\WindowsUpdate.log
  * @endcode
  * <br/>
  * For further information about the command switches and variables consult the @ref Console page.

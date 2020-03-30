@@ -33,15 +33,13 @@
 
 /*
 * On Windows NT 4.0 and Windows 2000 the program
-* will check the version.ini file for the most
-* recent UltraDefrag 5.0.x release.
+* checks the version.ini file for the most recent
+* release compatible with these Windows editions.
 */
 #define VERSION_URL    "http://ultradefrag.sourceforge.net/version.ini"
 /*
 * On Windows XP and more recent Windows editions
-* the program will check the version_xp.ini file
-* for the most recent UltraDefrag release
-* (starting from 6.0 and so on).
+* the program checks the version_xp.ini file.
 */
 #define VERSION_URL_XP "http://ultradefrag.sourceforge.net/version_xp.ini"
 #define MAX_VERSION_FILE_LEN 32

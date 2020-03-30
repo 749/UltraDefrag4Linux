@@ -291,8 +291,8 @@ void ApplyLanguagePack(void)
             else
                 _snwprintf(buffer,256,L"%ws",s);
             buffer[255] = 0;
-            memset(&mi,0,sizeof(MENUITEMINFOW));
-            mi.cbSize = sizeof(MENUITEMINFOW);
+            memset(&mi,0,MENUITEMINFOW_SIZE);
+            mi.cbSize = MENUITEMINFOW_SIZE;
             mi.fMask = MIIM_TYPE;
             mi.fType = MFT_STRING;
             mi.dwTypeData = buffer;
@@ -389,8 +389,8 @@ void BuildLanguageMenu(void)
         wcscpy(selected_lang_name,L"English (US)");
 
     /* get submenu handle */
-    memset(&mi,0,sizeof(MENUITEMINFO));
-    mi.cbSize = sizeof(MENUITEMINFO);
+    memset(&mi,0,MENUITEMINFO_SIZE);
+    mi.cbSize = MENUITEMINFO_SIZE;
     mi.fMask = MIIM_SUBMENU;
     if(!GetMenuItemInfo(hMainMenu,IDM_LANGUAGE,FALSE,&mi)){
         WgxDbgPrintLastError("BuildLanguageMenu: cannot get submenu handle");
@@ -400,8 +400,8 @@ void BuildLanguageMenu(void)
     hLangMenu = mi.hSubMenu;
     
     /* detach submenu */
-    memset(&mi,0,sizeof(MENUITEMINFO));
-    mi.cbSize = sizeof(MENUITEMINFO);
+    memset(&mi,0,MENUITEMINFO_SIZE);
+    mi.cbSize = MENUITEMINFO_SIZE;
     mi.fMask = MIIM_SUBMENU;
     mi.hSubMenu = NULL;
     if(!SetMenuItemInfo(hMainMenu,IDM_LANGUAGE,FALSE,&mi)){
@@ -533,8 +533,8 @@ no_files_found:
     }
     
     /* attach submenu to the Language menu */
-    memset(&mi,0,sizeof(MENUITEMINFO));
-    mi.cbSize = sizeof(MENUITEMINFO);
+    memset(&mi,0,MENUITEMINFO_SIZE);
+    mi.cbSize = MENUITEMINFO_SIZE;
     mi.fMask = MIIM_SUBMENU;
     mi.hSubMenu = hLangMenu;
     if(!SetMenuItemInfo(hMainMenu,IDM_LANGUAGE,FALSE,&mi)){
@@ -581,8 +581,8 @@ DWORD WINAPI LangIniChangesTrackingProc(LPVOID lpParameter)
                 if(CheckMenuItem(hMainMenu,i,MF_BYCOMMAND | MF_UNCHECKED) == -1)
                     break;
                 /* check the selected language */
-                memset(&mi,0,sizeof(MENUITEMINFOW));
-                mi.cbSize = sizeof(MENUITEMINFOW);
+                memset(&mi,0,MENUITEMINFOW_SIZE);
+                mi.cbSize = MENUITEMINFOW_SIZE;
                 mi.fMask = MIIM_TYPE;
                 mi.fType = MFT_STRING;
                 mi.dwTypeData = text;
@@ -653,7 +653,7 @@ DWORD WINAPI I18nFolderChangesTrackingProc(LPVOID lpParameter)
     while(!stop_track_i18n_folder){
         status = WaitForSingleObject(h,100);
         if(status == WAIT_OBJECT_0){
-            if(counter % 2 == 0){
+            if(counter % 2 == 0 && !is_nt4){
                 /*
                 * Do nothing; see comment in 
                 * settings.c::PrefsChangesTrackingProc

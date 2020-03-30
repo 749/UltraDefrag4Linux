@@ -98,10 +98,10 @@ int AllocateClusterMap(void)
 {
     cluster_map = malloc(map_rows * map_symbols_per_line);
     if(cluster_map == NULL){
-        if(!b_flag) settextcolor(FOREGROUND_RED | FOREGROUND_INTENSITY);
+        settextcolor(FOREGROUND_RED | FOREGROUND_INTENSITY);
         fprintf(stderr,"Cannot allocate %i bytes of memory for cluster map!\n\n",
             map_rows * map_symbols_per_line);
-        if(!b_flag) settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+        settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
         return (-1);
     }
     memset(cluster_map,0,map_rows * map_symbols_per_line);
@@ -133,7 +133,7 @@ void RedrawMap(udefrag_progress_info *pi)
 
     printf("\n\n");
     
-    settextcolor(border_color);
+    settextcolor_fc(border_color);
     prev_color = border_color;
     c[0] = 0xC9; c[1] = 0;
     printf(c);
@@ -146,25 +146,28 @@ void RedrawMap(udefrag_progress_info *pi)
     printf("\n");
 
     for(i = 0; i < map_rows; i++){
-        if(border_color != prev_color) settextcolor(border_color);
+        if(border_color != prev_color)
+            settextcolor_fc(border_color);
         prev_color = border_color;
         c[0] = 0xBA; c[1] = 0;
         printf(c);
         for(j = 0; j < map_symbols_per_line; j++){
             color = colors[(int)cluster_map[i * map_symbols_per_line + j]];
-            if(color != prev_color) settextcolor(color);
+            if(color != prev_color) settextcolor_fc(color);
             prev_color = color;
             c[0] = map_symbol; c[1] = 0;
             printf("%s",c);
         }
-        if(border_color != prev_color) settextcolor(border_color);
+        if(border_color != prev_color)
+            settextcolor_fc(border_color);
         prev_color = border_color;
         c[0] = 0xBA; c[1] = 0;
         printf(c);
         printf("\n");
     }
 
-    if(border_color != prev_color) settextcolor(border_color);
+    if(border_color != prev_color)
+        settextcolor_fc(border_color);
     prev_color = border_color;
     c[0] = 0xC8; c[1] = 0;
     printf(c);
@@ -177,8 +180,11 @@ void RedrawMap(udefrag_progress_info *pi)
     printf("\n");
 
     printf("\n");
-    if(!b_flag) settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-    else settextcolor(default_color);
+    if(!b_flag){
+        settextcolor_fc(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+    } else {
+        settextcolor_fc(default_color);
+    }
     map_completed = 1;
 }
 

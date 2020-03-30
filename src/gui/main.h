@@ -29,6 +29,15 @@
 #endif
 #include <windows.h>
 
+#ifndef _WIN64
+/* force menu handling to work on nt4 */
+#define MENUITEMINFO_SIZE  (is_nt4 ? 0x2C : sizeof(MENUITEMINFO))
+#define MENUITEMINFOW_SIZE (is_nt4 ? 0x2C : sizeof(MENUITEMINFOW))
+#else
+#define MENUITEMINFO_SIZE  (sizeof(MENUITEMINFO))
+#define MENUITEMINFOW_SIZE (sizeof(MENUITEMINFOW))
+#endif
+
 /*
 * Next definition is very important for mingw:
 * _WIN32_IE must be no less than 0x0400
@@ -193,8 +202,7 @@ int  ResizeStatusBar(int bottom, int width);
 
 void GetPrefs(void);
 void SavePrefs(void);
-void DeleteEnvironmentVariables(void);
-int IsBootTimeDefragEnabled(void);
+int  IsBootTimeDefragEnabled(void);
 
 void CheckForTheNewVersion(void);
 
@@ -223,6 +231,7 @@ void StartCrashInfoCheck(void);
 void StopCrashInfoCheck(void);
 
 /* common global variables */
+extern int is_nt4;
 extern HINSTANCE hInstance;
 extern HWND hWindow;
 extern HWND hList;

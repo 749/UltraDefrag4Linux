@@ -1,5 +1,16 @@
 ﻿HISTORY
 
+  Version 5.1.1  2012-11-11
+  ------------------------------------------------------------------------------
+    - it is now supported to install over an existing portable package
+    - a problem with launching the cluster map legend from the help menu,
+      if the path to the HTML file contained spaces, is fixed
+
+    - the following translations were updated:
+
+      Czech, Greek, Hungarian, Iloko, Javanese, Latvian, Tamil
+
+
   Version 5.1.0  2012-10-18
   ------------------------------------------------------------------------------
     - added fragmentation level display to all the interfaces

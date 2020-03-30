@@ -103,7 +103,7 @@
  * You can use the filter variables to do this.
  * For instance you like to defragment all fixed drives except C and S.\n
  * To achieve this you use <b>set UD_EX_FILTER=C:\\*;S:\\*</b> and execute
- * <b>udefrag --all-fixed</b>.\n
+ * <b>udefrag \--all-fixed</b>.\n
  * The analysis will be executed for any drive, but defragmentation will be
  * skipped for drive C and S.\n
  * The analysis will not be complete for excluded FAT disks, because the

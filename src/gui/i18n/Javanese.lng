@@ -44,7 +44,7 @@ WHEN_DONE_EXIT            = Me&tu
 WHEN_DONE_STANDBY         = &Siaga
 WHEN_DONE_HIBERNATE       = &Hibernasi
 WHEN_DONE_LOGOFF          = &Log metu
-WHEN_DONE_REBOOT          = Uripno &ulang
+WHEN_DONE_REBOOT          = Uripno &maneh
 WHEN_DONE_SHUTDOWN        = &Pateni
 
 ; --- Report Menu
@@ -54,16 +54,16 @@ SHOW_REPORT               = &Sudoke laporan
 ; --- Settings Menu
 
 LANGUAGE                  = &Basa
-GRAPHICAL_INTERFACE       = &Gambar tampilan
+GRAPHICAL_INTERFACE       = &Tampilan Gambar
 BOOT_TIME_SCAN            = &Wektu nyeken wayake boot
 REPORTS                   = &Laporan
 
 ; --- --- Language submenu
 
-TRANSLATIONS_CHANGE_LOG   = &View change log
-TRANSLATIONS_REPORT       = View translation &report
-TRANSLATIONS_FOLDER       = &Folder terjemahan
-TRANSLATIONS_SUBMIT       = &Submit current translation
+TRANSLATIONS_CHANGE_LOG   = &Nontok pergantian riwayat
+TRANSLATIONS_REPORT       = Nontok &laporane translasi
+TRANSLATIONS_FOLDER       = &Map terjemahan
+TRANSLATIONS_SUBMIT       = &Kirim terjemahan sing saiki
 
 ; --- --- Graphical interface submenu
 
@@ -82,13 +82,13 @@ BEST_PRACTICE             = &Praktek terapik
 FAQ                       = &Pitakon
 CM_LEGEND                 = Ke&terangane peta cluster
 DEBUG                     = De&bug
-CHECK_UPDATE              = &Cek pengapikan
+CHECK_UPDATE              = &Ngecek pengapikan
 ABOUT                     = &Tentang
 
 ; --- --- Debug submenu
 
-OPEN_LOG                  = Open &log
-REPORT_BUG                = Send bug &report
+OPEN_LOG                  = Buka &riwayat
+REPORT_BUG                = Kirim laporan &bug
 
 ; --- Toolbar Tooltips
 
@@ -98,7 +98,7 @@ BOOT_TIME_SCRIPT          = Wektu boot naskah
 
 VOLUME                    = Volum
 STATUS                    = Kodisi
-FRAGMENTATION             = Fragmentation
+FRAGMENTATION             = Fragmentasi
 TOTAL                     = Total Ruang
 FREE                      = Ruang Kosong
 PERCENT                   = % bebas
@@ -113,10 +113,10 @@ STATUS_DIRTY              = Disk butuh didandani
 
 ; Status bar messages.
 
-DIRS                      = folder
+DIRS                      = map
 FILES                     = fel
 FRAGMENTED                = fragmentasi
-COMPRESSED                = dikompres
+COMPRESSED                = kekompres
 
 ; About window.
 

@@ -34,12 +34,17 @@
 *    in the .onInit function.
 */
 
-Var AtLeastXP
-
 !macro LogAndDisplayAbort _Message
 
     ${If} ${Silent}
         Push $R0
+        Push $R1
+        Push $R2
+        Push $R3
+
+        ${WinVerGetMajor} $R1
+        ${WinVerGetMinor} $R2
+        ${WinVerGetBuild} $R3
 
         FileOpen $R0 ${UD_LOG_FILE} w
 
@@ -53,7 +58,8 @@ Var AtLeastXP
             FileWrite $R0 "$\r$\n"
             FileWrite $R0 "Installer Path .... $EXEPATH$\r$\n"
             FileWrite $R0 "Installer Type .... ${ULTRADFGARCH}$\r$\n"
-            FileWrite $R0 "At least XP ....... $AtLeastXP$\r$\n"
+            FileWrite $R0 "$\r$\n"
+            FileWrite $R0 "Windows Version ... $R1.$R2.$R3$\r$\n"
             FileWrite $R0 "$\r$\n"
             FileWrite $R0 "Install Dir ....... $INSTDIR$\r$\n"
             FileWrite $R0 "Output Dir ........ $OUTDIR$\r$\n"
@@ -67,6 +73,9 @@ Var AtLeastXP
             FileClose $R0
         ${EndUnless}
 
+        Pop $R3
+        Pop $R2
+        Pop $R1
         Pop $R0
     ${EndIf}
 
@@ -174,33 +183,24 @@ Var AtLeastXP
 
 !macro CheckWinVersion
 
-    ${If} ${AtLeastWinXP}
-        StrCpy $AtLeastXP 1
-    ${Else}
-        StrCpy $AtLeastXP 0
+    ; we only support Windows NT
+    ${IfNot} ${IsNT}
+        ${LogAndDisplayAbort} \
+            "This program is not supported on Windows 95, 98 and Me!"
+        Abort
     ${EndIf}
 
-    ${Unless} ${IsNT}
-    ${OrUnless} ${AtLeastWinNT4}
-        MessageBox MB_OK|MB_ICONEXCLAMATION \
-        "On Windows 9x and NT 3.x this program is absolutely useless!$\n \
-        If you are running another system then something is corrupt inside it.$\n \
-        Therefore we will try to continue." \
-        /SD IDOK
-        ;Abort
-        /*
-        * Sometimes on modern versions of Windows it fails.
-        * This problem has been encountered on XP SP3 and Vista.
-        * Therefore let's assume that we have at least XP system.
-        * A dirty hack, but should work.
-        */
-        StrCpy $AtLeastXP 1
-    ${EndUnless}
+    ; we only support Windows NT4 and above
+    ${IfNot} ${AtLeastWinNT4}
+        ${LogAndDisplayAbort} \
+            "This program is not supported on Windows versions below NT4!"
+        Abort
+    ${EndIf}
 
     /* this idea was suggested by bender647 at users.sourceforge.net */
     Push $R0
     ClearErrors
-    ;ReadEnvStr $R0 "PROCESSOR_ARCHITECTURE"
+    ; ReadEnvStr $R0 "PROCESSOR_ARCHITECTURE"
     ; On 64-bit systems it always returns 'x86' because the installer
     ; is a 32-bit application and runs on a virtual machine :(((
 
@@ -329,9 +329,18 @@ PathGood:
     SetDetailsPrint both
 
 SkipMove:
+    DetailPrint "Removing old executable files..."
+        Delete "$INSTDIR\*.exe"
+        Delete "$INSTDIR\*.dll"
+
     DetailPrint "Installing core files..."
     SetOutPath "$SYSDIR"
         File "lua5.1a.dll"
+        File "zenwinx.dll"
+        File "udefrag.dll"
+        File "wgx.dll"
+        File /oname=hibernate4win.exe "hibernate.exe"
+        File "${ROOTDIR}\src\installer\ud-help.cmd"
 
     SetOutPath "$INSTDIR"
         File "${ROOTDIR}\src\LICENSE.TXT"
@@ -346,14 +355,17 @@ SkipMove:
         File "${ROOTDIR}\src\scripts\udreportcnv.lua"
         File "${ROOTDIR}\src\scripts\udsorting.js"
         File "${ROOTDIR}\src\scripts\upgrade-rptopts.lua"
+        File "${ROOTDIR}\src\scripts\upgrade-guiopts.lua"
 
-    DetailPrint "Upgrade report options..."
+    DetailPrint "Upgrade report options and GUI preferences..."
     ; ensure that target directory exists
     CreateDirectory "$INSTDIR\options"
     ${If} ${Silent}
         ExecWait '"$INSTDIR\lua5.1a_gui.exe" -s "$INSTDIR\scripts\upgrade-rptopts.lua" "$INSTDIR"'
+        ExecWait '"$INSTDIR\lua5.1a_gui.exe" -s "$INSTDIR\scripts\upgrade-guiopts.lua" "$INSTDIR"'
     ${Else}
         ExecWait '"$INSTDIR\lua5.1a_gui.exe" "$INSTDIR\scripts\upgrade-rptopts.lua" "$INSTDIR"'
+        ExecWait '"$INSTDIR\lua5.1a_gui.exe" "$INSTDIR\scripts\upgrade-guiopts.lua" "$INSTDIR"'
     ${EndIf}
 
     ; install default CSS for file fragmentation reports
@@ -364,13 +376,6 @@ SkipMove:
         ${EndUnless}
     ${EndIf}
     File "${ROOTDIR}\src\scripts\udreport.css"
-
-    SetOutPath "$SYSDIR"
-        File "zenwinx.dll"
-        File "udefrag.dll"
-        File "wgx.dll"
-        File /oname=hibernate4win.exe "hibernate.exe"
-        File "${ROOTDIR}\src\installer\ud-help.cmd"
 
     DetailPrint "Register .luar file extension..."
     WriteRegStr HKCR ".luar" "" "LuaReport"
@@ -553,16 +558,6 @@ SkipMove:
         Delete "$INSTDIR\ultradefrag.exe"
         File "ultradefrag.exe"
 
-    SetOutPath "$INSTDIR\scripts"
-        File "${ROOTDIR}\src\scripts\upgrade-guiopts.lua"
-
-    DetailPrint "Upgrade GUI preferences..."
-    ${If} ${Silent}
-        ExecWait '"$INSTDIR\lua5.1a_gui.exe" -s "$INSTDIR\scripts\upgrade-guiopts.lua" "$INSTDIR"'
-    ${Else}
-        ExecWait '"$INSTDIR\lua5.1a_gui.exe" "$INSTDIR\scripts\upgrade-guiopts.lua" "$INSTDIR"'
-    ${EndIf}
-
     Push $R0
     Push $0
 
@@ -622,7 +617,6 @@ SkipMove:
     RMDir /r "$INSTDIR\i18n"
 
     Delete "$INSTDIR\ultradefrag.exe"
-    Delete "$INSTDIR\scripts\upgrade-guiopts.lua"
 
     Push $R0
 
@@ -742,7 +736,7 @@ SkipMove:
     StrCpy $R2 "[--- &Quickly optimize drive with UltraDefrag ---]"
     StrCpy $R3 "$\"$SYSDIR\udefrag.exe$\" --shellex --folder -q -v $\"%1$\""
 
-    ${If} $AtLeastXP == "1"
+    ${If} ${AtLeastWinXP}
         WriteRegStr HKCR "Drive\shell\udefrag"                         ""     $2
         WriteRegStr HKCR "Drive\shell\udefrag"                         "Icon" $1
         WriteRegStr HKCR "Drive\shell\udefrag\command"                 ""     $3

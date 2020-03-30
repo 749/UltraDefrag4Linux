@@ -180,7 +180,7 @@ static void init_console(void)
     if(GetConsoleScreenBufferInfo(hStdOut,&csbi))
         default_color = csbi.wAttributes;
     /* set green color */
-    if(!b_flag) settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+    settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 
     /* update web statistics */
     start_web_statistics();
@@ -198,7 +198,7 @@ static void init_console(void)
 static void terminate_console(int code)
 {
     /* restore default color */
-    if(!b_flag) settextcolor(default_color);
+    settextcolor(default_color);
 
     /* wait for web statistics request completion */
     stop_web_statistics();
@@ -220,9 +220,9 @@ BOOL WINAPI CtrlHandlerRoutine(DWORD dwCtrlType)
  */
 void display_error(char *string)
 {
-    if(!b_flag) settextcolor(FOREGROUND_RED | FOREGROUND_INTENSITY);
+    settextcolor(FOREGROUND_RED | FOREGROUND_INTENSITY);
     fprintf(stderr,"%s",string);
-    if(!b_flag) settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+    settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 }
 
 /**
@@ -233,7 +233,7 @@ static void display_defrag_error(udefrag_job_type job_type, int error_code)
 {
     char *operation = "optimization";
     
-    if(!b_flag) settextcolor(FOREGROUND_RED | FOREGROUND_INTENSITY);
+    settextcolor(FOREGROUND_RED | FOREGROUND_INTENSITY);
     
     switch(job_type){
     case ANALYSIS_JOB:
@@ -247,12 +247,12 @@ static void display_defrag_error(udefrag_job_type job_type, int error_code)
     }
     fprintf(stderr,"\nDisk %s failed!\n\n",operation);
     
-    if(!b_flag) settextcolor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+    settextcolor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
     fprintf(stderr,"%s\n\n",udefrag_get_error_description(error_code));
     if(error_code == UDEFRAG_UNKNOWN_ERROR)
         fprintf(stderr,"Enable logs or use DbgView program to get more information.\n\n");
     
-    if(!b_flag) settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+    settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 }
 
 /**
@@ -261,9 +261,9 @@ static void display_defrag_error(udefrag_job_type job_type, int error_code)
  */
 static void display_invalid_volume_error(int error_code)
 {
-    if(!b_flag) settextcolor(FOREGROUND_RED | FOREGROUND_INTENSITY);
+    settextcolor(FOREGROUND_RED | FOREGROUND_INTENSITY);
     fprintf(stderr,"The disk cannot be processed.\n\n");
-    if(!b_flag) settextcolor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+    settextcolor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 
     if(error_code == UDEFRAG_UNKNOWN_ERROR){
         fprintf(stderr,"Disk is missing or some unknown error has been encountered.\n");
@@ -272,7 +272,7 @@ static void display_invalid_volume_error(int error_code)
         fprintf(stderr,"%s\n\n",udefrag_get_error_description(error_code));
     }
 
-    if(!b_flag) settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+    settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 }
 
 /**
@@ -288,14 +288,14 @@ void display_last_error(char *caption)
             FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
             NULL,error,MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
             (LPWSTR)(void *)&msg,0,NULL)){
-                if(!b_flag) settextcolor(FOREGROUND_RED | FOREGROUND_INTENSITY);
+                settextcolor(FOREGROUND_RED | FOREGROUND_INTENSITY);
                 if(error == ERROR_COMMITMENT_LIMIT)
                     fprintf(stderr,"\n%s\nNot enough memory.\n\n",caption);
                 else
                     fprintf(stderr,"\n%s\nError code = 0x%x\n\n",caption,(UINT)error);
-                if(!b_flag) settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+                settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
     } else {
-        if(!b_flag) settextcolor(FOREGROUND_RED | FOREGROUND_INTENSITY);
+        settextcolor(FOREGROUND_RED | FOREGROUND_INTENSITY);
         fprintf(stderr,"\n%s\n",caption);
         /* get rid of trailing new line */
         length = wcslen(msg);
@@ -309,7 +309,7 @@ void display_last_error(char *caption)
         }
         WgxPrintUnicodeString(msg,stderr);
         fprintf(stderr,"\n");
-        if(!b_flag) settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+        settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
         LocalFree(msg);
     }
 }
@@ -537,7 +537,7 @@ static int process_volumes(void)
     /* process valid paths */
     for(path = paths; path; path = path->next){
         if(path->processed == 0){
-            if(!b_flag) settextcolor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+            settextcolor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
             if(first_path){
                 WgxPrintUnicodeString(path->path,stdout);
                 printf("\n");
@@ -546,7 +546,7 @@ static int process_volumes(void)
                 WgxPrintUnicodeString(path->path,stdout);
                 printf("\n");
             }
-            if(!b_flag) settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+            settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
             first_path = 0;
             path->processed = 1;
             path_found = 1;
@@ -602,10 +602,10 @@ static int process_volumes(void)
                             aux_buffer[MAX_ENV_VARIABLE_LENGTH] = 0;
                             wcscpy(new_in_filter,aux_buffer);
                             path_found = 1;
-                            if(!b_flag) settextcolor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+                            settextcolor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
                             WgxPrintUnicodeString(another_path->path,stdout);
                             printf("\n");
-                            if(!b_flag) settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+                            settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
                             another_path->processed = 1;
                         }
                     }
@@ -687,14 +687,14 @@ static int show_vollist(void)
     ULONGLONG free, total;
     double d = 0;
 
-    if(!b_flag) settextcolor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+    settextcolor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
     printf("Disks available for defragmentation:\n\n");
     printf("Drive     FS     Capacity       Free   Label\n");
     printf("--------------------------------------------\n");
 
     v = udefrag_get_vollist(la_flag ? FALSE : TRUE);
     if(v == NULL){
-        if(!b_flag) settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+        settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
         return 2;
     }
 
@@ -707,12 +707,12 @@ static int show_vollist(void)
         if(total > 0)
             d = (double)(LONGLONG)free / (double)(LONGLONG)total;
         percent = (int)(100 * d);
-        if(!b_flag) settextcolor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+        settextcolor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
         printf("%c:  %8s %12s %8u %%   %ls\n",
             v[i].letter,v[i].fsname,s,percent,v[i].label);
     }
     udefrag_release_vollist(v);
-    if(!b_flag) settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+    settextcolor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
     return 0;
 }
 
@@ -806,7 +806,7 @@ int __cdecl main(int argc, char **argv)
     
     /* display prompt to hit any key in case of context menu handler */
     if(shellex_flag){
-        if(!b_flag) settextcolor(default_color);
+        settextcolor(default_color);
         printf("\n");
         pause_result = system("pause");
         if(pause_result > 0){

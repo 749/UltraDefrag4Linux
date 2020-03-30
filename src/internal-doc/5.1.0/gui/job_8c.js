@@ -1,0 +1,27 @@
+var job_8c =
+[
+    [ "init_jobs", "job_8c.html#ga448adf8deb50cb72860ff10a3af8bddd", null ],
+    [ "get_job", "job_8c.html#ga78f335ad4c4495f44f37b629572f7f07", null ],
+    [ "update_status_of_all_jobs", "job_8c.html#ga5c16dfa2a547e4f60dca93c2afdbb24f", null ],
+    [ "update_progress", "job_8c.html#ga7a97e8359f1af40b6ab53d6d2681a2e2", null ],
+    [ "terminator", "job_8c.html#gaa6c22cb3fcf4d16f82c87a4dafc7cca3", null ],
+    [ "DisplayInvalidVolumeError", "job_8c.html#gaa1eeff1dcc33de221f6d0e6c73e2f236", null ],
+    [ "DisplayDefragError", "job_8c.html#ga1eecd45ddb094b99aedd974bf8b452c7", null ],
+    [ "ProcessSingleVolume", "job_8c.html#ga0cad17d12acc15a5e61bfe68f67f11a8", null ],
+    [ "StartJobsThreadProc", "job_8c.html#ga5095b1b4eb461bb7877d4e078bfe24b6", null ],
+    [ "start_selected_jobs", "job_8c.html#ga3b99f0d67b42ae4719ffb7b428f3b69d", null ],
+    [ "stop_all_jobs", "job_8c.html#ga6b9d3de28743198d1c2021333a1e54ec", null ],
+    [ "release_jobs", "job_8c.html#gaaa5491bc62c055484ff905fa2dbb0b05", null ],
+    [ "RepairSelectedVolumes", "job_8c.html#gad2e0918813b87a200db28e2da720f6dc", null ],
+    [ "jobs", "job_8c.html#ga487326c9088439dfbfd808e114fdd9fa", null ],
+    [ "current_job", "job_8c.html#ga6896659bc8e87748ae6919ea5d3731a4", null ],
+    [ "hMapEvent", "job_8c.html#ga5a43a2d01f7b4e10671a62c61ebf9b44", null ],
+    [ "busy_flag", "job_8c.html#gab0275e894ac6db7515ec8a96a6d177c7", null ],
+    [ "stop_pressed", "job_8c.html#ga3be48990012dd44fb89da11d23eb8a18", null ],
+    [ "exit_pressed", "job_8c.html#gaa2084cac1634ff3d5194b9a6dc531408", null ],
+    [ "job_is_running", "job_8c.html#ga8ed646c0de350b9874dafdb75e26de7a", null ],
+    [ "map_blocks_per_line", "job_8c.html#gaa7a13ae067ea51d8d5ccaed7624b8429", null ],
+    [ "map_lines", "job_8c.html#gabffa8333a32fd400a24a150b7c8def31", null ],
+    [ "args", "job_8c.html#gaa1a244c2eaef80c5699a2bde4f47e5b9", null ],
+    [ "buffer", "job_8c.html#gad488fb8d0bfbe3c01fafe188079da4ab", null ]
+];

@@ -136,11 +136,14 @@ int winx_get_drive_type(char letter)
             return drive_type;
         }
     } else {
-        if(Status != STATUS_INVALID_INFO_CLASS){ /* on NT4 this is always false */
-            DebugPrintEx(Status,"winx_get_drive_type: cannot get device map");
-            winx_heap_free(ppdi);
-            winx_heap_free(pffdi);
-            return (-1);
+        if(Status != STATUS_INVALID_INFO_CLASS){ /* exclude common NT4 error code */
+            /* exclude common NT4 Terminal Server Edition error code */
+            if(Status != STATUS_INFO_LENGTH_MISMATCH){
+                DebugPrintEx(Status,"winx_get_drive_type: cannot get device map");
+                winx_heap_free(ppdi);
+                winx_heap_free(pffdi);
+                return (-1);
+            }
         }
     }
     

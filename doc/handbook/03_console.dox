@@ -24,78 +24,78 @@
  * @endcode
  *
  * Commands:
- * @par -a, --analyze
+ * @par -a, \--analyze
  * Analyze the disk.
  *
- * @par --defragment
+ * @par \--defragment
  * Defragment the disk. This is the default action.
  *
- * @par --optimize-mft
+ * @par \--optimize-mft
  * Optimize the MFT by placing its fragments as close to each other as possible.
  * This is also included in full and quick optimization.
  *
- * @par -q, --quick-optimize
+ * @par -q, \--quick-optimize
  * Optimize the disk space by moving not fragmented files to the beginning of the disk.
  *
- * @par -o, --optimize
+ * @par -o, \--optimize
  * Optimize the disk space by moving all files to the beginning of the disk.
  *
- * @par -l, --list-available-volumes
+ * @par -l, \--list-available-volumes
  * List all disks available for defragmentation, except removable. Each line of the
  * output contains a drive letter, filesystem name, total space and amount of 
  * free space.
  *
- * @par -la, --list-available-volumes=all
+ * @par -la, \--list-available-volumes=all
  * List all disks available for defragmentation, including removable.
  *
- * @par -h, -?, --help
+ * @par -h, -?, \--help
  * Show help screen. Running UltraDefrag without arguments has the same effect.
  *
  * @note
  * The commands are exclusive and can't be combined with each other.
  *
  * Options:
- * @par -r, --repeat
+ * @par -r, \--repeat
  * Defragment or optimize the disk until there is nothing left that can be moved.
  * This will process the disk multiple times in a row.
  *
- * @par -b, --use-system-color-scheme
+ * @par -b, \--use-system-color-scheme
  * Use system color scheme (usually black/white) instead of the green color.
  *
- * @par -p, --suppress-progress-indicator
+ * @par -p, \--suppress-progress-indicator
  * Hide progress indicator.
  *
- * @par -v, --show-volume-information
+ * @par -v, \--show-volume-information
  * Show disk information after a job completes.
  *
- * @par -m, --show-cluster-map
+ * @par -m, \--show-cluster-map
  * Show a map representing clusters of the disk.
  *
- * @par --map-border-color=color
+ * @par \--map-border-color=color
  * Set cluster map border color. Available values: black, white, red, green,
  * blue, yellow, magenta, cyan, darkred, darkgreen, darkblue, darkyellow, darkmagenta,
  * darkcyan, gray. Yellow color is used by default.
  *
- * @par --map-symbol=x
+ * @par \--map-symbol=x
  * Set the character used for the map drawing. There are two accepted formats:
  * a character may be typed directly, or its hexadecimal number may be used. For 
- * example, --map-symbol=0x1 forces UltraDefrag to use a smile character for the
+ * example, \--map-symbol=0x1 forces UltraDefrag to use a smile character for the
  * map drawing. Valid numbers are in the range of 0x1 to 0xFF. The \% symbol is used by default.
  *
- * @par --map-rows=n
+ * @par \--map-rows=n
  * Number of rows of the cluster map. Default value is 10.
  *
- * @par --map-symbols-per-line=n
+ * @par \--map-symbols-per-line=n
  * Number of map symbols contained in each row of the map. Default value is 68.
  *
- * @par --use-entire-window
+ * @par \--use-entire-window
  * Expand cluster map to use entire console window.
  *
- * @par --wait
+ * @par \--wait
  * Wait until already running instance of UltraDefrag completes before 
  * starting the job (useful for the scheduled defragmentation).
  *
- * @par --shellex
+ * @par \--shellex
  * This option forces to list objects to be processed and display a prompt 
  * to hit any key after a job completion. It is intended for use 
  * in Explorer's context menu handler.
@@ -106,14 +106,14 @@
  * <li>It is possible to specify multiple drive letters. Like this: udefrag c: d: x:</li>
  * <li>Also the following keys can be used instead of the drive letter:
  *
- * @par --all
+ * @par \--all
  * Process all available disks.
  *
- * @par --all-fixed
+ * @par \--all-fixed
  * Process all disks except removable.
  *
  * @note
- * The --all-fixed key has higher precedence, if both keys are specified
+ * The \--all-fixed key has higher precedence, if both keys are specified
  * UltraDefrag will process fixed drives only.</li>
  * </ul>
  *
@@ -233,7 +233,7 @@
  *
  * @par process only disks with fragmentation level above 10%
  * @code
- * set UD_FRAGMENTATION_THRESHOLD=10%
+ * set UD_FRAGMENTATION_THRESHOLD=10
  * @endcode
  *
  * @par terminate processing after 6 hours and 30 minutes
@@ -280,19 +280,36 @@
  * The following example illustrates defragmentation of a few
  * different disks in series adjusting parameters separately for
  * each disk.
- * @code
+ * @htmlonly
+ * <div class="fragment">
+ *     <div class="line">@echo off</div>
+ *     <div class="line"></div>
+ *     <div class="line"><span class="keyword">set</span> UD_EX_FILTER=*system volume information*;*temp*;*tmp*;*recycle*;*.zip;*.7z;*.rar</div>
+ *     <div class="line"><span class="keyword">set</span> UD_FILE_SIZE_THRESHOLD=50MB</div>
+ *     <div class="line">udefrag c: &gt; c:\ud.log</div>
+ *     <div class="line"></div>
+ *     <div class="line"><span class="keyword">set</span> UD_IN_FILTER=D:\My Documents\*</div>
+ *     <div class="line">udefrag d: &gt;&gt; c:\ud.log</div>
+ *     <div class="line"></div>
+ *     <div class="line"><span class="keyword">set</span> UD_IN_FILTER=</div>
+ *     <div class="line">udefrag e: &gt;&gt; c:\ud.log</div>
+ * </div>
+ * @endhtmlonly
+ * @latexonly
+ * \begin{DoxyCode}
  * @echo off
  *
- * set UD_EX_FILTER=*system volume information*;*temp*;*tmp*;*recycle*;*.zip;*.7z;*.rar
- * set UD_FILE_SIZE_THRESHOLD=50MB
- * udefrag c: > c:\ud.log
+ * \textcolor{keyword}{set} UD\_EX\_FILTER=*system volume information*;*temp*;*tmp*;*recycle*;*.zip;*.7z;*.rar
+ * \textcolor{keyword}{set} UD\_FILE\_SIZE\_THRESHOLD=50MB
+ * udefrag c: > c:\(\backslash\)ud.log
  *
- * set UD_IN_FILTER=D:\My Documents\*
- * udefrag d: >> c:\ud.log
+ * \textcolor{keyword}{set} UD\_IN\_FILTER=D:\(\backslash\)My Documents\(\backslash\)*
+ * udefrag d: >> c:\(\backslash\)ud.log
  *
- * set UD_IN_FILTER=
- * udefrag e: >> c:\ud.log
- * @endcode
+ * \textcolor{keyword}{set} UD\_IN\_FILTER=
+ * udefrag e: >> c:\(\backslash\)ud.log
+ * \end{DoxyCode}
+ * @endlatexonly
  * Notice that we are excluding archives in the script above. Because they
  * are usually rarely accessed and may be left fragmented therefore
  * without noticeable system performance degradation.
