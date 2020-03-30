@@ -115,6 +115,11 @@ void ResizeMap(int x, int y, int width, int height)
     int border_width, border_height;
     long dx, dy, threshold;
     
+    if(WaitForSingleObject(hMapEvent,INFINITE) != WAIT_OBJECT_0){
+        WgxDbgPrintLastError("ResizeMap: wait on hMapEvent failed");
+        return;
+    }
+    
     /* get coordinates of the map field, without borders */
     border_width = GetSystemMetrics(SM_CXEDGE);
     border_height = GetSystemMetrics(SM_CYEDGE);
@@ -151,6 +156,7 @@ void ResizeMap(int x, int y, int width, int height)
         map_width + 2 * border_width,
         map_height + 2 * border_height,
         SWP_NOZORDER);
+    SetEvent(hMapEvent);
 }
 
 /**
@@ -276,8 +282,14 @@ void RedrawMap(volume_processing_job *job, int map_refill_required)
     /* if volume bitmap is empty or have improper size, recreate it */
     if(job->map.hdc == NULL || job->map.hbitmap == NULL ||
         job->map.width != map_width || job->map.height != map_height){
-        if(job->map.hdc) (void)DeleteDC(job->map.hdc);
-        if(job->map.hbitmap) (void)DeleteObject(job->map.hbitmap);
+        if(job->map.hdc){
+            (void)DeleteDC(job->map.hdc);
+            job->map.hdc = NULL;
+        }
+        if(job->map.hbitmap){
+            (void)DeleteObject(job->map.hbitmap);
+            job->map.hbitmap = NULL;
+        }
         hMainDC = GetDC(hWindow);
         hDC = CreateCompatibleDC(hMainDC);
         hBitmap = CreateCompatibleBitmap(hMainDC,map_width,map_height);

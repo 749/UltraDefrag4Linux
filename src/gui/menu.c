@@ -48,13 +48,13 @@ WGX_MENU when_done_menu[] = {
 
 WGX_MENU action_menu[] = {
     {MF_STRING | MF_ENABLED,IDM_ANALYZE,                             NULL, L"&Analyze\tF5",                   0 },
-    {MF_STRING | MF_ENABLED,IDM_DEFRAG,                              NULL, L"&Defragment\tF6",                3 },
-    {MF_STRING | MF_ENABLED,IDM_QUICK_OPTIMIZE,                      NULL, L"&Quick optimization\tF7",        4 },
-    {MF_STRING | MF_ENABLED,IDM_FULL_OPTIMIZE,                       NULL, L"&Full optimization\tCtrl+F7",    5 },
-    {MF_STRING | MF_ENABLED,IDM_OPTIMIZE_MFT,                        NULL, L"&Optimize MFT\tShift+F7",        6 },
-    {MF_STRING | MF_ENABLED,IDM_STOP,                                NULL, L"&Stop\tCtrl+C",                  7 },
+    {MF_STRING | MF_ENABLED,IDM_DEFRAG,                              NULL, L"&Defragment\tF6",                1 },
+    {MF_STRING | MF_ENABLED,IDM_QUICK_OPTIMIZE,                      NULL, L"&Quick optimization\tF7",        2 },
+    {MF_STRING | MF_ENABLED,IDM_FULL_OPTIMIZE,                       NULL, L"&Full optimization\tCtrl+F7",    3 },
+    {MF_STRING | MF_ENABLED,IDM_OPTIMIZE_MFT,                        NULL, L"&Optimize MFT\tShift+F7",        4 },
+    {MF_STRING | MF_ENABLED,IDM_STOP,                                NULL, L"&Stop\tCtrl+C",                  5 },
     {MF_SEPARATOR,0,NULL,NULL,0},
-    {MF_STRING | MF_ENABLED | MF_UNCHECKED,IDM_REPEAT_ACTION,        NULL, L"Re&peat action\tShift+R",        1 },
+    {MF_STRING | MF_ENABLED | MF_UNCHECKED,IDM_REPEAT_ACTION,        NULL, L"Re&peat action\tShift+R",       -1 },
     {MF_SEPARATOR,0,NULL,NULL,0},
     {MF_STRING | MF_ENABLED | MF_CHECKED,IDM_IGNORE_REMOVABLE_MEDIA, NULL, L"Skip removable &media\tCtrl+M", -1 },
     {MF_STRING | MF_ENABLED,IDM_RESCAN,                              NULL, L"&Rescan drives\tCtrl+D",        -1 },
@@ -66,7 +66,7 @@ WGX_MENU action_menu[] = {
 };
 
 WGX_MENU report_menu[] = {
-    {MF_STRING | MF_ENABLED,IDM_SHOW_REPORT, NULL, L"&Show report\tF8", 8 },
+    {MF_STRING | MF_ENABLED,IDM_SHOW_REPORT, NULL, L"&Show report\tF8", 6 },
     {0,0,NULL,NULL,0}
 };
 
@@ -79,13 +79,13 @@ WGX_MENU language_menu[] = {
 
 WGX_MENU gui_config_menu[] = {
     {MF_STRING | MF_ENABLED,IDM_CFG_GUI_FONT,     NULL, L"&Font\tF9"    , -1 },
-    {MF_STRING | MF_ENABLED,IDM_CFG_GUI_SETTINGS, NULL, L"&Options\tF10",  9 },
+    {MF_STRING | MF_ENABLED,IDM_CFG_GUI_SETTINGS, NULL, L"&Options\tF10",  7 },
     {0,0,NULL,NULL,0}
 };
 
 WGX_MENU boot_config_menu[] = {
-    {MF_STRING | MF_ENABLED | MF_UNCHECKED,IDM_CFG_BOOT_ENABLE, NULL, L"&Enable\tF11", 10 },
-    {MF_STRING | MF_ENABLED,IDM_CFG_BOOT_SCRIPT,                NULL, L"&Script\tF12", 11 },
+    {MF_STRING | MF_ENABLED | MF_UNCHECKED,IDM_CFG_BOOT_ENABLE, NULL, L"&Enable\tF11", -1 },
+    {MF_STRING | MF_ENABLED,IDM_CFG_BOOT_SCRIPT,                NULL, L"&Script\tF12",  8 },
     {0,0,NULL,NULL,0}
 };
 
@@ -98,7 +98,7 @@ WGX_MENU settings_menu[] = {
 };
 
 WGX_MENU help_menu[] = {
-    {MF_STRING | MF_ENABLED,IDM_CONTENTS,      NULL, L"&Contents\tF1",      12 },
+    {MF_STRING | MF_ENABLED,IDM_CONTENTS,      NULL, L"&Contents\tF1",       9 },
     {MF_SEPARATOR,0,NULL,NULL,0},
     {MF_STRING | MF_ENABLED,IDM_BEST_PRACTICE, NULL, L"Best &practice\tF2", -1 },
     {MF_STRING | MF_ENABLED,IDM_FAQ,           NULL, L"&FAQ\tF3",           -1 },
@@ -131,40 +131,40 @@ WGX_MENU main_menu[] = {
  */
 int CreateMainMenu(void)
 {
-    HBITMAP hBMtoolbar = NULL, hBMtoolbarMasked = NULL;
-    int id;
+    HBITMAP hBitmap = NULL;
+    HBITMAP hBitmapMasked = NULL;
     OSVERSIONINFO osvi;
-
-    ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
-    osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-
-    GetVersionEx(&osvi);
-
-    if(osvi.dwMajorVersion > 5)
-        id = IDB_TOOLBAR;
-    else
-        id = IDB_MENU;
+    int cx, id;
 
     WgxDbgPrint("Menu row height ........ %d",GetSystemMetrics(SM_CYMENU));
     WgxDbgPrint("Menu button size ....... %d x %d",GetSystemMetrics(SM_CXMENUSIZE),GetSystemMetrics(SM_CYMENUSIZE));
     WgxDbgPrint("Menu check-mark size ... %d x %d",GetSystemMetrics(SM_CXMENUCHECK),GetSystemMetrics(SM_CYMENUCHECK));
 
-    hBMtoolbar = LoadBitmap(hInstance, MAKEINTRESOURCE(id));
-
-    if(osvi.dwMajorVersion > 5)
-        hBMtoolbarMasked = WgxCreateMenuBitmapMasked(hBMtoolbar, (COLORREF)-1);
-        
-    /* create menu */
-    /* if(hBMtoolbarMasked == NULL)
-        hMainMenu = WgxBuildMenu(main_menu,hBMtoolbar);
-    else
-        hMainMenu = WgxBuildMenu(main_menu,hBMtoolbarMasked); */
+    ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
+    osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+    GetVersionEx(&osvi);
+    /* for DPI > 125% better icons are needed: in 24x24 and 32x32 sizes */
+    cx = GetSystemMetrics(SM_CXMENUCHECK);
+    if(osvi.dwMajorVersion > 5 && cx < 20 && show_menu_icons){
+        /* menu icons look nicely on Vista and above */
+        if(cx < 19){
+            /* 100% DPI */
+            id = IDB_MENU_ICONS_15;
+        } else {
+            /* 125% DPI */
+            id = IDB_MENU_ICONS_19;
+        }
+        hBitmap = LoadBitmap(hInstance, MAKEINTRESOURCE(id));
+        hBitmapMasked = WgxCreateMenuBitmapMasked(hBitmap, (COLORREF)-1);
+        hMainMenu = WgxBuildMenu(main_menu,hBitmapMasked);
+        if(hBitmap != NULL)
+            DeleteObject(hBitmap);
+        if(hBitmapMasked != NULL)
+            DeleteObject(hBitmapMasked);
+    } else {
+        /* on systems below Vista avoid icons use */
         hMainMenu = WgxBuildMenu(main_menu,NULL);
-    
-    if(hBMtoolbar != NULL)
-        DeleteObject(hBMtoolbar);
-    if(hBMtoolbarMasked != NULL)
-        DeleteObject(hBMtoolbarMasked);
+    }
     
     /* attach menu to the window */
     if(!SetMenu(hWindow,hMainMenu)){

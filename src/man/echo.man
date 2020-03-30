@@ -19,20 +19,20 @@ OPTIONS
 
         on/off
                 enable/disable command line display
-        
+
         .
                 display an empty line
-        
+
 EXAMPLES
         echo
                 show the command line display status
-        
+
         echo.
                 display an empty line
-        
+
         echo I am here ;-)
                 display 'I am here ;-)'
-        
+
         echo off
                 disable command line display
 

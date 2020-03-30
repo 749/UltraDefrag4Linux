@@ -245,6 +245,7 @@ extern int list_height;
 extern int dry_run;
 extern int job_flags;
 extern int repeat_action;
+extern int show_menu_icons;
 
 /*
 * Note:

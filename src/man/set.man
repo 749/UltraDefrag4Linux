@@ -19,21 +19,21 @@ OPTIONS
         {name}={value}
                 create or change the variable {name} and assign
                 {value} to it
-        
+
         {name}=
                 delete the variable {name}
-        
+
 EXAMPLES
         set
                 List all environment variables
-        
+
         set u
                 List all environment variables starting with 'u'
-        
+
         set UD_SIZELIMIT=50Mb
                 Create or change variable 'UD_SIZELIMIT' and assign
                 value '50Mb' to it
-        
+
         set UD_EX_FILTER=
                 Delete the variable 'UD_EX_FILTER'
 

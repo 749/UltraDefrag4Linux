@@ -36,7 +36,8 @@ OPTIONS
                 can not be used with the '-a' and '-o' option
 
         --optimize-mft
-                concatenate the MFT into one single chunk
+                optimize the MFT by placing its fragments as close
+                to each other as possible
 
         -r, --repeat
                 repeat defragmentation or optimization until there is

@@ -5,18 +5,28 @@
 -------------------------------------------------------------------------------
 
 -------------------------------------------------------------------------------
--- All these options were primarily designed to achieve better compatibility
--- with old web browsers.
+-- Set this parameter to zero to disable HTML reports generation.
+-------------------------------------------------------------------------------
+produce_html_report = 1
+
+-------------------------------------------------------------------------------
+-- Set this parameter to 1 to enable generation of plain text reports.
+-------------------------------------------------------------------------------
+produce_plain_text_report = 0
+
+-------------------------------------------------------------------------------
+-- All the following options were primarily designed to achieve better
+-- compatibility with old web browsers.
 -------------------------------------------------------------------------------
 
 -------------------------------------------------------------------------------
 -- Set enable_sorting to zero if your web browser is too old
--- and you have error messages about ivalid javascript code.
+-- and you have error messages about invalid javascript code.
 -------------------------------------------------------------------------------
 enable_sorting = 1
 
 -------------------------------------------------------------------------------
--- Set this parameter to 1 if you prefer to look at filenames splitted
+-- Set this parameter to 1 if you prefer to look at filenames split
 -- into few short lines. If you prefer to use fullscreen mode of your
 -- web browser then set this parameter to zero.
 -------------------------------------------------------------------------------

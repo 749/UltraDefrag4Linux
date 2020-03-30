@@ -35,7 +35,7 @@
  * UltraDefrag has the following features:
  * - system files defragmentation (registry, page-file, ...)
  * - MFT (master file table) defragmentation (on XP and later systems)
- * - internal NTFS files defragmentation (on Windows 2000 and later systems)
+ * - NTFS metafiles defragmentation (on Windows 2000 and later systems)
  * - ultra fast NTFS analysis
  * - fast defragmentation algorithm
  * - effective disk optimization algorithm (two strategies available)

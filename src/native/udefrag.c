@@ -52,7 +52,7 @@ wchar_t aux_buffer[MAX_ENV_VARIABLE_LENGTH + 1];
 wchar_t aux_buffer2[MAX_ENV_VARIABLE_LENGTH + 1];
 
 /* forward declarations */
-static void search_for_paths(int argc,short **argv,short **envp);
+static void search_for_paths(int argc,wchar_t **argv,wchar_t **envp);
 static void add_path(wchar_t *buffer);
 
 /**
@@ -61,10 +61,10 @@ static void add_path(wchar_t *buffer);
 int GetDebugLevel()
 {
     int result = DBG_NORMAL;
-    short buffer[128];
+    wchar_t buffer[128];
     
     if(winx_query_env_variable(L"UD_DBGPRINT_LEVEL",
-      buffer,sizeof(buffer) / sizeof(short)) >= 0){
+      buffer,sizeof(buffer) / sizeof(wchar_t)) >= 0){
         (void)_wcsupr(buffer);
         if(!wcscmp(buffer,L"DETAILED"))
             result = DBG_DETAILED;
@@ -190,7 +190,7 @@ void ProcessVolume(char letter)
 {
     int status;
     char *message = "";
-    short *buffer;
+    wchar_t *buffer;
 
     /* validate the volume before any processing */
     status = udefrag_validate_volume(letter,FALSE);
@@ -228,7 +228,7 @@ void ProcessVolume(char letter)
         break;
     }
     /* display the time limit if possible */
-    buffer = winx_heap_alloc(MAX_ENV_VARIABLE_LENGTH * sizeof(short));
+    buffer = winx_heap_alloc(MAX_ENV_VARIABLE_LENGTH * sizeof(wchar_t));
     if(buffer != NULL){
         if(winx_query_env_variable(L"UD_TIME_LIMIT",buffer,MAX_ENV_VARIABLE_LENGTH) >= 0)
             winx_printf("\nProcess will be terminated in %ws automatically.\n",buffer);
@@ -273,7 +273,7 @@ static int DisplayAvailableVolumes(int skip_removable)
 /**
  * @brief udefrag command handler.
  */
-int udefrag_handler(int argc,short **argv,short **envp)
+int udefrag_handler(int argc,wchar_t **argv,wchar_t **envp)
 {
     int a_flag = 0, o_flag = 0;
     int quick_optimize_flag = 0;
@@ -505,7 +505,7 @@ fail:
     return (-1);
 }
 
-static void search_for_paths(int argc,short **argv,short **envp)
+static void search_for_paths(int argc,wchar_t **argv,wchar_t **envp)
 {
     int leading_quote_found = 0;
     int i, n;

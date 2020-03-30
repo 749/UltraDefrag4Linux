@@ -38,7 +38,7 @@
  * Optimize the disk space by moving not fragmented files to the beginning of the disk.
  *
  * @par --optimize-mft
- * Concatenate the MFT into one single chunk.
+ * Optimize the MFT by placing its fragments as close to each other as possible.
  *
  * @par -l, --list-available-volumes
  * List all disks available for defragmentation, except removable. Each line of the
@@ -138,7 +138,7 @@
  * List of files to be excluded from defragmentation process. File names 
  * must be separated by semicolons.
  *
- * @par UD_SIZELIMIT
+ * @par UD_FILE_SIZE_THRESHOLD
  * Exclude all files larger than the specified size.<br/>The following 
  * size suffixes are accepted: Kb, Mb, Gb, Tb, Pb, Eb.
  *
@@ -211,7 +211,7 @@
  *
  * @par process only files below 50 MB in size
  * @code
- * set UD_SIZELIMIT=50Mb
+ * set UD_FILE_SIZE_THRESHOLD=50Mb
  * @endcode
  *
  * @par process only files with more than 6 fragments
@@ -267,7 +267,7 @@
  * @echo off
  *
  * set UD_EX_FILTER=*system volume information*;*temp*;*tmp*;*recycle*;*.zip;*.7z;*.rar
- * set UD_SIZELIMIT=50Mb
+ * set UD_FILE_SIZE_THRESHOLD=50Mb
  * udefrag c: > c:\ud.log
  *
  * set UD_IN_FILTER=D:\My Documents\*
@@ -287,13 +287,13 @@
  *
  * rem Defragment small files.
  *
- * set UD_SIZELIMIT=50Mb
+ * set UD_FILE_SIZE_THRESHOLD=50Mb
  * udefrag c:
  *
  * rem Defragment large files 
  * rem which have at least 5 fragments.
  *
- * set UD_SIZELIMIT=
+ * set UD_FILE_SIZE_THRESHOLD=
  * set UD_FRAGMENTS_THRESHOLD=5
  * udefrag c:
  * @endcode

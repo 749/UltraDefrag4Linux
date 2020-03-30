@@ -17,10 +17,10 @@ OPTIONS
 EXAMPLES
         pause
                 halt execution till a key is pressed
-        
+
         pause 1000
                 halt execution for one second
-        
+
 AUTHOR
         Written by Ultradefrag Development Team
 

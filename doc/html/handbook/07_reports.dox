@@ -18,23 +18,24 @@
  * disk.
  *
  * UltraDefrag saves file fragmentation reports in the
- * following two formats: LuaReport and Plain Text. The first
- * is used to generate HTML reports from. The second 
- * format is used to ensure that the report will 
+ * LuaReport format. This raw report format will be used
+ * to generate HTML and plain text reports from.
+ * You can configure the generated report type through the
+ * udreportopts.lua file described below.
+ * Plain text reports are used to ensure that the report will 
  * be accessible even on machines without any web browser installed.
  *
  * UltraDefrag saves all reports to the root directories of
  * the processed disks. To open LuaReport click the fraglist.luar
  * file in Explorer or simply click the Report button in the
- * UltraDefrag GUI after a disk defragmentation/analysis job has
- * completed. To open the Plain Text report click the fraglist.txt
- * file in Explorer.
+ * UltraDefrag GUI after a disk processing/analysis job has
+ * completed.
  *
  * To distinguish between old and new reports, the date and time is
  * included in the header of the report.
  *
- * When you are opening the LuaReport a single HTML page is
- * generated and opened in your default web browser. It contains the
+ * When you are opening the LuaReport a single HTML page or plain text file is
+ * generated and opened in your default web browser or text editor. It contains the
  * list of fragmented files. The meaning of the columns are described below.
  *
  * By default, all files are sorted by number of fragments
@@ -59,8 +60,8 @@
  *
  * @par Status
  * This is the reason the file is still fragmented. The following states are displayed:<br/>
- * <b>locked, move failed</b> (file moving failed), <b>too big</b> (block of free space too small),<br/>
- * <b>improper state</b> (the file system needs to be checked - run <i>CHKDSK {Driveletter} /F /R</i>)
+ * <b>locked, move failed, invalid</b> (the file system needs to be checked - run <i>CHKDSK {Driveletter} /F /R</i>)<br/>
+ * If no reason is specified the file simply requires more continuous free space in order to be processed.
  *
  * @par Filename
  * This is the full path of the file.
@@ -83,11 +84,23 @@
  *
 @verbatim
 -------------------------------------------------------------------------------
--- Ultra Defragmenter report options
+-- Ultra Defragmenter report options (default).
+-- Save your personal preferences as udreportopts-custom.lua
+-- to ensure that they will not be overwritten on upgrade.
 -------------------------------------------------------------------------------
 
 -------------------------------------------------------------------------------
--- All these options were primarily designed to achieve better
+-- Set this parameter to zero to disable HTML reports generation.
+-------------------------------------------------------------------------------
+produce_html_report = 1
+
+-------------------------------------------------------------------------------
+-- Set this parameter to 1 to enable generation of plain text reports.
+-------------------------------------------------------------------------------
+produce_plain_text_report = 0
+
+-------------------------------------------------------------------------------
+-- All the following options were primarily designed to achieve better
 -- compatibility with old web browsers.
 -------------------------------------------------------------------------------
 
@@ -99,7 +112,7 @@ enable_sorting = 1
 
 -------------------------------------------------------------------------------
 -- Set this parameter to 1 if you prefer to look at filenames split
--- into few short lines. If you prefer to use full-screen mode of your
+-- into few short lines. If you prefer to use fullscreen mode of your
 -- web browser then set this parameter to zero.
 -------------------------------------------------------------------------------
 split_long_names = 0
@@ -110,7 +123,7 @@ split_long_names = 0
 max_chars_per_line = 50
 
 -------------------------------------------------------------------------------
--- A web page style can be set through udreport.css style sheet.
+-- The web page style can be set through udreport.css style sheet.
 -------------------------------------------------------------------------------
 @endverbatim
  *

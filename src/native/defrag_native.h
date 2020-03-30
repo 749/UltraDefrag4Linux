@@ -67,11 +67,11 @@ typedef struct _object_path {
 
 /* prototypes */
 void NativeAppExit(int exit_code);
-int parse_command(short *cmdline);
-int ProcessScript(short *filename);
+int parse_command(wchar_t *cmdline);
+int ProcessScript(wchar_t *filename);
 int ExecPendingBootOff(void);
-int exit_handler(int argc,short **argv,short **envp);
-int udefrag_handler(int argc,short **argv,short **envp);
+int exit_handler(int argc,wchar_t **argv,wchar_t **envp);
+int udefrag_handler(int argc,wchar_t **argv,wchar_t **envp);
 
 extern PEB *peb;
 extern winx_history history;

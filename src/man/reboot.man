@@ -15,7 +15,7 @@ OPTIONS
 EXAMPLES
         reboot
                 reboot the system
-        
+
 AUTHOR
         Written by Ultradefrag Development Team
 

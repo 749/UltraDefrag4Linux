@@ -37,10 +37,10 @@ int escape_flag = 0;
  * @return Zero for success, negative
  * value otherwise.
  */
-int ProcessScript(short *filename)
+int ProcessScript(wchar_t *filename)
 {
     char path[MAX_PATH];
-    unsigned short *buffer;
+    wchar_t *buffer;
     size_t filesize, i, n;
     int line_detected;
     KBD_RECORD kbd_rec;
@@ -66,7 +66,7 @@ int ProcessScript(short *filename)
         return 0; /* file is empty or some error */
 
     /* get file size, in characters */
-    n = filesize / sizeof(short);
+    n = filesize / sizeof(wchar_t);
     if(n == 0)
         goto cleanup; /* file has no valuable contents */
 

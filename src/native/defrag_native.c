@@ -122,7 +122,7 @@ void __stdcall NtProcessStartup(PPEB Peb)
     * keys will work properly with winx_prompt() function.
     */
     char buffer[MAX_LINE_WIDTH + 1];
-    short wbuffer[MAX_LINE_WIDTH + 1];
+    wchar_t wbuffer[MAX_LINE_WIDTH + 1];
     int i;
     
     /* initialize the program */

@@ -12,37 +12,26 @@
 /**
  * @page Schedule Scheduled Defragmentation
  *
- * The completely automatic disk defragmentation can be easily set
- * through standard <a href="http://en.wikipedia.org/wiki/Task_Scheduler">Windows Task Scheduler</a>.
+ * When some important files are frequently modifying
+ * the <a href="http://en.wikipedia.org/wiki/Task_Scheduler">Windows Task Scheduler</a>
+ * can help to automate their defragmentation.
+ * Set up scheduled tasks and you'll save a lot of your time.
  *
- * The following scheduling scheme looks quite reasonable:
- *
- * - Every 30 minutes:
+ * Examples of commands:
+ * @par Defragment Firefox cache
  * @code
  * udefrag "%APPDATA%\Mozilla*"
  * @endcode
  *
- * - Every day:
+ * @par Defragment Google Earth cache
  * @code
  * udefrag "%APPDATA%\Google\GoogleEarth*"
  * @endcode
  *
- * - Every week:
+ * @par Defragment small files on all non-removable disks
  * @code
- * udefrag cmd.exe /C "set UD_IN_FILTER="%often_accessed_folders%" && udefrag --wait --all-fixed"
+ * cmd.exe /C "set UD_SIZELIMIT=100M && udefrag --wait --all-fixed"
  * @endcode
- *
- * - Every two months:
- * @code
- * cmd.exe /C "set UD_EX_FILTER="system volume information;temp;recycle;.zip;.7z;.rar" && set UD_SIZELIMIT=100M && udefrag --wait --all-fixed"
- * @endcode
- *
- * This scheme of running automatically may save a lot of time eliminating the need 
- * to start the defragmenter manually.
- *
- * The variable <b>often_accessed_folders</b> is just a placeholder.
- * It must be created by yourself or replaced by a list of folders.
- * Example: *documents*;*pictures*;*music*
  *
  * Visit <a href="http://ultradefrag.wikispaces.com/">ultradefrag.wikispaces.com</a> 
  * for tutorials and more examples.

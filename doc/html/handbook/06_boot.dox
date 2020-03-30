@@ -59,7 +59,7 @@
  * computer. It will be shut down automatically after the job is completed.
  * <br/><br/>
  * To abort the script execution and enter the interactive mode immediately
- * hit <b>ESC</b> at any time during boot time script processing.
+ * hit <b>ESC</b> at any time during the boot time script processing.
  *
  * @par Interactive mode
  * When the exit command is missing in the boot time script UltraDefrag
@@ -164,6 +164,34 @@ Type 'help' for list of supported commands.
  * When UltraDefrag encounters the wrong syntax it shows an appropriate
  * message on the screen and continues the script execution.
  *
+ * <h1>Environment variable expansion</h1>
+ * The boot time script and the interactive mode support environment variable expansion.
+ * This allows a more flexible script to be written by using <b>\%SystemDrive\%</b> instead of <b>C:</b>.
+ * In addition to the regular variables there are two variables, <b>DATE</b> and <b>TIME</b>,
+ * that will be set dynamically.
+ * Both are formated to be easily used as part of a file name, so a timestamped log
+ * file name can be created.
+ *
+ * @par DATE
+ * This will be expanded to the current date in the format <b>YYYY-MM-DD</b>
+ * @code
+ * echo DATE ... %DATE%
+ * @endcode
+ * Results in the display of:
+@verbatim
+DATE ... 2012-02-14
+@endverbatim
+ *
+ * @par TIME
+ * This will be expanded to the current time in the format <b>HH-MM</b>
+ * @code
+ * echo TIME ... %TIME%
+ * @endcode
+ * Results in the display of:
+@verbatim
+TIME ... 12-04
+@endverbatim
+ *
  * <h1>Boot time script example</h1>
  * The following script is used by default:
  * @code
@@ -174,9 +202,28 @@ Type 'help' for list of supported commands.
  * ;--------------------------------------------------------------------
  *
  * set UD_IN_FILTER=*windows*;*winnt*;*ntuser*;*pagefile.sys;*hiberfil.sys
- * set UD_EX_FILTER=*temp*;*tmp*;*.zip;*.7z;*.rar
+ * set UD_EX_FILTER=*temp*;*tmp*;*.zip;*.7z;*.rar;*dllcache*;*ServicePackFiles*
  *
  * udefrag c:
+ *
+ * exit
+ * @endcode
+ *
+ * The following script utilizes environment variable expansion:
+ * @code
+ * ;--------------------------------------------------------------------
+ * ;                UltraDefrag Boot Time Shell Script
+ * ;--------------------------------------------------------------------
+ * ; !!! NOTE: THIS FILE MUST BE SAVED IN UNICODE (UTF-16) ENCODING !!!
+ * ;--------------------------------------------------------------------
+ *
+ * set UD_IN_FILTER=*windows*;*winnt*;*ntuser*;*pagefile.sys;*hiberfil.sys
+ * set UD_EX_FILTER=*temp*;*tmp*;*.zip;*.7z;*.rar;*dllcache*;*ServicePackFiles*
+ *
+ * ;create a timestamped log file
+ * set UD_LOG_FILE_PATH=%SystemRoot%\UltraDefrag\Logs\defrag_native_%DATE%_%TIME%.log
+ *
+ * udefrag %SystemDrive%
  *
  * exit
  * @endcode

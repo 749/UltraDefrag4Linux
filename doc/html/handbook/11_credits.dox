@@ -38,7 +38,7 @@
  * <tr><td>• Belarusian                   </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
  * <tr><td>• Bosanski                     </td><td>-</td><td> Timur Ljubunčić</td></tr>
  * <tr><td>• Bulgarian                    </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
- * <tr><td>• Burmese                      </td><td>-</td><td> Muhammed Widuya</td></tr>
+ * <tr><td>• Burmese (Padauk)             </td><td>-</td><td> Muhammed Widuya</td></tr>
  * <tr><td>• Catalan                      </td><td>-</td><td> Illes Balears</td></tr>
  * <tr><td>                               </td><td>-</td><td> Joseph S. B. Maza</td></tr>
  * <tr><td>                               </td><td>-</td><td> TurboHz</td></tr>
@@ -61,12 +61,11 @@
  * <tr><td>• English (US)                 </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
  * <tr><td>• Estonian                     </td><td>-</td><td> Olav Mägi</td></tr>
  * <tr><td>• Farsi                        </td><td>-</td><td> Ali Jafari</td></tr>
- * <tr><td>• Filipino (Ilokano)           </td><td>-</td><td> Joseph S. B. Maza</td></tr>
  * <tr><td>• Filipino (Tagalog)           </td><td>-</td><td> Joseph S. B. Maza</td></tr>
  * <tr><td>                               </td><td>-</td><td> Stefan Pendl</td></tr>
  * <tr><td>• Finnish                      </td><td>-</td><td> jtl</td></tr>
  * <tr><td>                               </td><td>-</td><td> Stefan Pendl</td></tr>
- * <tr><td>• French                       </td><td>-</td><td> Pascal Crozet</td></tr>
+ * <tr><td>• French (FR)                  </td><td>-</td><td> Pascal Crozet</td></tr>
  * <tr><td>                               </td><td>-</td><td> Jérôme Blum</td></tr>
  * <tr><td>                               </td><td>-</td><td> Mathieu Van Weersch</td></tr>
  * <tr><td>                               </td><td>-</td><td> Marina Louwrier-Johannsen</td></tr>
@@ -80,8 +79,9 @@
  * <tr><td>• Hungarian                    </td><td>-</td><td> Nagy Zsolt</td></tr>
  * <tr><td>                               </td><td>-</td><td> Áron Hegedüs</td></tr>
  * <tr><td>• Icelandic                    </td><td>-</td><td> Stefan Pendl</td></tr>
- * <tr><td>• Indonesian                   </td><td>-</td><td> Imanuel Novian</td></tr>
+ * <tr><td>• Iloko                        </td><td>-</td><td> Joseph S. B. Maza</td></tr>
  * <tr><td>• Indonesian (Bahasa Indonesia)</td><td>-</td><td> Taufan Nur Hidayat</td></tr>
+ * <tr><td>• Indonesian                   </td><td>-</td><td> Imanuel Novian</td></tr>
  * <tr><td>• Italian                      </td><td>-</td><td> Paolo Loggia</td></tr>
  * <tr><td>                               </td><td>-</td><td> Sherpya</td></tr>
  * <tr><td>                               </td><td>-</td><td> Edoardo Brunetti</td></tr>
@@ -101,11 +101,11 @@
  * <tr><td>• Polish                       </td><td>-</td><td> Andrzej Rudnik</td></tr>
  * <tr><td>                               </td><td>-</td><td> Krzysztof Swiderski</td></tr>
  * <tr><td>                               </td><td>-</td><td> Ireneusz Chorosz</td></tr>
+ * <tr><td>• Portuguese (BR)              </td><td>-</td><td> Depeo da Masol</td></tr>
+ * <tr><td>                               </td><td>-</td><td> Felipe</td></tr>
  * <tr><td>• Portuguese                   </td><td>-</td><td> Ricardo A. Garcia</td></tr>
  * <tr><td>                               </td><td>-</td><td> Carlos Rodrigues</td></tr>
  * <tr><td>                               </td><td>-</td><td> Sérgio Marques</td></tr>
- * <tr><td>• Portuguese (BR)              </td><td>-</td><td> Depeo da Masol</td></tr>
- * <tr><td>                               </td><td>-</td><td> Felipe</td></tr>
  * <tr><td>• Romanian                     </td><td>-</td><td> Micu Dumitru</td></tr>
  * <tr><td>• Russian                      </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
  * <tr><td>• Serbian                      </td><td>-</td><td> Damjan Daljevic</td></tr>
@@ -126,6 +126,7 @@
  * <tr><td>                               </td><td>-</td><td> Şahin Salincakli</td></tr>
  * <tr><td>• Ukrainian                    </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
  * <tr><td>• Vietnamese (VI)              </td><td>-</td><td> Vietnamize Team</td></tr>
+ * <tr><td>• Wáray-Wáray                  </td><td>-</td><td> Harvey Fiji</td></tr>
  * <tr><td>• Yiddish                      </td><td>-</td><td> Dmitri Arkhangelski</td></tr>
  * </table>
  * @endhtmlonly
@@ -136,7 +137,7 @@
  * • Belarusian                    & - & Dmitri Arkhangelski \\
  * • Bosanski                      & - & Timur Ljubuncic \\
  * • Bulgarian                     & - & Dmitri Arkhangelski \\
- * • Burmese                       & - & Muhammed Widuya \\
+ * • Burmese (Padauk)              & - & Muhammed Widuya \\
  * • Catalan                       & - & Illes Balears \\
  *                                 & - & Joseph S. B. Maza \\
  *                                 & - & TurboHz \\
@@ -159,12 +160,11 @@
  * • English (US)                  & - & Dmitri Arkhangelski \\
  * • Estonian                      & - & Olav Mägi \\
  * • Farsi                         & - & Ali Jafari \\
- * • Filipino (Ilokano)            & - & Joseph S. B. Maza \\
  * • Filipino (Tagalog)            & - & Joseph S. B. Maza \\
  *                                 & - & Stefan Pendl \\
  * • Finnish                       & - & jtl \\
  *                                 & - & Stefan Pendl \\
- * • French                        & - & Pascal Crozet \\
+ * • French (FR)                   & - & Pascal Crozet \\
  *                                 & - & Jérôme Blum \\
  *                                 & - & Mathieu Van Weersch \\
  *                                 & - & Marina Louwrier-Johannsen \\
@@ -178,8 +178,9 @@
  * • Hungarian                     & - & Nagy Zsolt \\
  *                                 & - & Áron Hegedüs \\
  * • Icelandic                     & - & Stefan Pendl \\
- * • Indonesian                    & - & Imanuel Novian \\
+ * • Iloko                         & - & Joseph S. B. Maza \\
  * • Indonesian (Bahasa Indonesia) & - & Taufan Nur Hidayat \\
+ * • Indonesian                    & - & Imanuel Novian \\
  * • Italian                       & - & Paolo Loggia \\
  *                                 & - & Sherpya \\
  *                                 & - & Edoardo Brunetti \\
@@ -199,11 +200,11 @@
  * • Polish                        & - & Andrzej Rudnik \\
  *                                 & - & Krzysztof Swiderski \\
  *                                 & - & Ireneusz Chorosz \\
+ * • Portuguese (BR)               & - & Depeo da Masol \\
+ *                                 & - & Felipe \\
  * • Portuguese                    & - & Ricardo A. Garcia \\
  *                                 & - & Carlos Rodrigues \\
  *                                 & - & Sérgio Marques \\
- * • Portuguese (BR)               & - & Depeo da Masol \\
- *                                 & - & Felipe \\
  * • Romanian                      & - & Micu Dumitru \\
  * • Russian                       & - & Dmitri Arkhangelski \\
  * • Serbian                       & - & Damjan Daljevic \\
@@ -224,6 +225,7 @@
  *                                 & - & Sahin Salincakli \\
  * • Ukrainian                     & - & Dmitri Arkhangelski \\
  * • Vietnamese (VI)               & - & Vietnamize Team \\
+ * • Wáray-Wáray                   & - & Harvey Fiji \\
  * • Yiddish                       & - & Dmitri Arkhangelski \\
  * \end{xtabular}\end{Indent}\par
  * @endlatexonly

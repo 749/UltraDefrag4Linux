@@ -15,7 +15,7 @@ OPTIONS
 EXAMPLES
         shutdown
                 shut the system down
-        
+
 AUTHOR
         Written by Ultradefrag Development Team
 

@@ -1203,6 +1203,7 @@ NTSTATUS    NTAPI    RtlCreateUserThread(HANDLE,PSECURITY_DESCRIPTOR,SIZE_T,SIZE
 HANDLE      NTAPI    RtlDestroyHeap(HANDLE);
 BOOLEAN     NTAPI    RtlDosPathNameToNtPathName_U(PCWSTR,PUNICODE_STRING,PCWSTR*,CURDIR*);
 /* VOID     NTAPI    RtlExitUserThread(NTSTATUS); - NEVER use this unreliable call! */
+NTSTATUS    NTAPI    RtlExpandEnvironmentStrings_U(PWSTR,const UNICODE_STRING*,UNICODE_STRING*,ULONG*);
 VOID        NTAPI    RtlFreeAnsiString(PANSI_STRING);
 BOOLEAN     NTAPI    RtlFreeHeap(HANDLE,SIZE_T,PVOID);
 VOID        NTAPI    RtlFreeUnicodeString(PUNICODE_STRING);

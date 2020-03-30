@@ -20,7 +20,7 @@ OPTIONS
 EXAMPLES
         man
                 list all available manual pages
-        
+
         man udefrag
                 display the manual page for the "udefrag" command
 

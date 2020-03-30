@@ -32,7 +32,7 @@ var
  table,
  whitelist,
  blacklist,
-// order = 0 - descending; 1 - ascending
+ // order = 0 - descending; 1 - ascending
  order = 0,
  fragments_order = 1,
  size_order = 1,
@@ -40,15 +40,12 @@ var
  comment_order = 1,
  status_order = 1,
  msie_browser = false, // true for ms internet explorer
- x, // for debugging purposes
-    // TODO: get this from html page
- table_head =
-"<table id=\"main_table\" border=\"1\" color=\"#FFAA55\" cellspacing=\"0\" width=\"100%\">";
+ // $xxx constant becomes replaced by actual markup by the report converter
+ table_head = "$TABLE_HEAD";
 
 function init_sorting_engine()
 {
  table = document.getElementById("main_table");
- //alert(window.navigator.appName);
  if(window.navigator.appName === "Microsoft Internet Explorer")
   msie_browser = true;
 }
@@ -131,9 +128,6 @@ function sort_items(criteria)
  } else
   return; // invalid criteria
 
- //alert(x);
- //dump_array_of_items(a);
-
  // loop through the array of sorted items
  for(i = 0; i < a.length; i++){
   data = a[i].innerHTML;
@@ -153,20 +147,4 @@ function sort_items(criteria)
    table_head + header + whitelist + blacklist + "</table>";
   table = document.getElementById("main_table");
  }
-}
-
-// for debugging purposes
-function dump_table()
-{
- alert(table.innerHTML);
-}
-
-function dump_array_of_items(a)
-{
- var
-  i,
-  result = "";
- for(i = 0; i < a.length; i++)
-  result += a[i].innerHTML + "\n";
- alert(result);
 }

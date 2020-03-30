@@ -1,4 +1,30 @@
-HISTORY
+﻿HISTORY
+
+  Version 5.0.3  2012-02-26
+  ------------------------------------------------------------------------------
+    - produce_html_report and produce_plain_text_report options were added
+      to the udreportopts.lua file; now the program generates text reports
+      only when they're enabled explicitly
+    - GUI was forced to open plain text reports in case of turned off
+      HTML reports generation
+    - size of plain text reports was reduced by use of UTF-8 encoding
+      instead of UTF-16
+    - one bug preventing language selection saving on installation was fixed
+    - menu icons were added for Vista and more recent Windows editions;
+      they can be enabled/disabled through the show_menu_icons GUI option
+    - one bug in GUI cluster map draw was fixed
+    - few bugs in disk optimization algorithm were fixed
+    - UD_SIZELIMIT environment variable superseded by UD_FILE_SIZE_THRESHOLD,
+      sizelimit GUI option superseded by file_size_threshold option
+    - environment variables expansion support was added to the boot time shell
+    - the following translations were added:
+
+      Wáray-Wáray
+
+    - the following translations were updated:
+
+      Iloko
+
 
   Version 5.0.2  2012-01-31
   ------------------------------------------------------------------------------

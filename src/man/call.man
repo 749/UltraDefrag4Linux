@@ -18,7 +18,7 @@ OPTIONS
 EXAMPLES
         call
                 execute "%SystemRoot%\System32\ud-boot-time.cmd"
-        
+
         call C:\Temp\MyCustom.cmd
                 execute "C:\Temp\MyCustom.cmd"
 

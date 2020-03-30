@@ -22,7 +22,7 @@ EXAMPLES
         type
                 display the contents of
                 "%SystemRoot%\System32\ud-boot-time.cmd"
-        
+
         type C:\Temp\MyCustom.cmd
                 display the contents of "C:\Temp\MyCustom.cmd"
 

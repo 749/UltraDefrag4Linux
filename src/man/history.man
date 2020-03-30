@@ -20,7 +20,7 @@ OPTIONS
 EXAMPLES
         history
                 display the list of manually entered commands
-        
+
 AUTHOR
         Written by Ultradefrag Development Team
 

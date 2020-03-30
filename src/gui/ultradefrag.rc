@@ -64,7 +64,26 @@ IDB_TOOLBAR_16_BIT             BITMAP  DISCARDABLE     "res/toolbar16.bmp"
 IDB_TOOLBAR_DISABLED_16_BIT    BITMAP  DISCARDABLE     "res/toolbar16d.bmp"
 IDB_TOOLBAR_HIGHLIGHTED_16_BIT BITMAP  DISCARDABLE     "res/toolbar16h.bmp"
 
-IDB_MENU                       BITMAP  DISCARDABLE     "res/menu_monochrome.bmp"
+/*
+* All menu icons must be in 24bpp format.
+* To be nicely rendered on 16bpp screens they
+* should use less colors though.
+*/
+
+/* Windows 7, DPI = 100% */
+IDB_MENU_ICONS_15              BITMAP  DISCARDABLE     "res/menu_icons_15.bmp"
+/* DPI = 125% */
+IDB_MENU_ICONS_19              BITMAP  DISCARDABLE     "res/menu_icons_19.bmp"
+
+/*
+* For higher DPI better icons are needed,
+* available in 16x16, 24x24 and 32x32 sizes.
+*/
+
+/* DPI = 150% */
+/*IDB_MENU_ICONS_25              BITMAP  DISCARDABLE     "res/menu_icons_25.bmp"*/
+/* DPI = 200% */
+/*IDB_MENU_ICONS_31              BITMAP  DISCARDABLE     "res/menu_icons_31.bmp"*/
 
 IDD_ABOUT DIALOG DISCARDABLE  0, 0, 239, 93
 STYLE DS_CENTER | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU

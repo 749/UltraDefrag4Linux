@@ -49,21 +49,27 @@ ReserveFile "lang.ini"
 !macro CollectOldLang
 
     Push $R0
-    
+
+    ${DisableX64FSRedirection}
+
     ClearErrors
     ReadRegStr $R0 HKLM "Software\UltraDefrag" "Language"
     ${Unless} ${Errors}
         WriteINIStr "$INSTDIR\lang.ini" "Language" "Selected" $R0
+        FlushINI "$INSTDIR\lang.ini"
     ${EndUnless}
-    
+
     SetRegView 64
     ClearErrors
     ReadRegStr $R0 HKLM "Software\UltraDefrag" "Language"
     ${Unless} ${Errors}
         WriteINIStr "$INSTDIR\lang.ini" "Language" "Selected" $R0
+        FlushINI "$INSTDIR\lang.ini"
     ${EndUnless}
     SetRegView 32
-    
+
+    ${EnableX64FSRedirection}
+
     Pop $R0
 
 !macroend
@@ -103,6 +109,7 @@ Function LangShow
     ${EndUnless}
 
     WriteINIStr "$PLUGINSDIR\lang.ini" "Field 2" "State" $LanguagePack
+    FlushINI "$PLUGINSDIR\lang.ini"
 
     InstallOptions::initDialog /NOUNLOAD "$PLUGINSDIR\lang.ini"
     Pop $R0
@@ -148,7 +155,11 @@ Function LangLeave
 
     ; save selected language to $INSTDIR\lang.ini file before exit
     ReadINIStr $LanguagePack "$PLUGINSDIR\lang.ini" "Field 2" "State"
+    ${DisableX64FSRedirection}
+    CreateDirectory "$INSTDIR"
     WriteINIStr "$INSTDIR\lang.ini" "Language" "Selected" $LanguagePack
+    FlushINI "$INSTDIR\lang.ini"
+    ${EnableX64FSRedirection}
     Pop $R0
 
 FunctionEnd
