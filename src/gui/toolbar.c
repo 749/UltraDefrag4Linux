@@ -222,7 +222,7 @@ void UpdateToolbarTooltips(void)
         ti.hinst = hInstance;
         ti.uId = i;
         s = WgxGetResourceString(i18n_table,buttons[i].tooltip_key);
-        if(text){
+        if(s){
             _snwprintf(buffer,256,L"%ws (%hs)",s,
                 buttons[i].hotkeys);
             buffer[255] = 0;

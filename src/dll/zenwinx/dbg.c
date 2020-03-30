@@ -123,7 +123,7 @@ static void add_dbg_log_entry(char *msg)
  */
 typedef struct _DBG_OUTPUT_DEBUG_STRING_BUFFER {
     ULONG ProcessId;
-    UCHAR Msg[4096-sizeof(ULONG)];
+    char  Msg[4096-sizeof(ULONG)];
 } DBG_OUTPUT_DEBUG_STRING_BUFFER, *PDBG_OUTPUT_DEBUG_STRING_BUFFER;
 
 #define DBG_OUT_BUFFER_SIZE (4096-sizeof(ULONG))
@@ -217,6 +217,77 @@ done:
 /**
  * @internal
  */
+typedef struct _NT_STATUS_DESCRIPTION {
+    unsigned long status;
+    char *desc;
+} NT_STATUS_DESCRIPTION, *PNT_STATUS_DESCRIPTION;
+
+/**
+ * @internal
+ */
+NT_STATUS_DESCRIPTION descriptions[] = {
+    { STATUS_SUCCESS,                "operation successful"           },
+    { STATUS_OBJECT_NAME_INVALID,    "object name invalid"            },
+    { STATUS_OBJECT_NAME_NOT_FOUND,  "object name not found"          },
+    { STATUS_OBJECT_NAME_COLLISION,  "object name already exists"     },
+    { STATUS_OBJECT_PATH_INVALID,    "path is invalid"                },
+    { STATUS_OBJECT_PATH_NOT_FOUND,  "path not found"                 },
+    { STATUS_OBJECT_PATH_SYNTAX_BAD, "bad syntax in path"             },
+    { STATUS_BUFFER_TOO_SMALL,       "buffer is too small"            },
+    { STATUS_ACCESS_DENIED,          "access denied"                  },
+    { STATUS_NO_MEMORY,              "not enough memory"              },
+    { STATUS_UNSUCCESSFUL,           "operation failed"               },
+    { STATUS_NOT_IMPLEMENTED,        "not implemented"                },
+    { STATUS_INVALID_INFO_CLASS,     "invalid info class"             },
+    { STATUS_INFO_LENGTH_MISMATCH,   "info length mismatch"           },
+    { STATUS_ACCESS_VIOLATION,       "access violation"               },
+    { STATUS_INVALID_HANDLE,         "invalid handle"                 },
+    { STATUS_INVALID_PARAMETER,      "invalid parameter"              },
+    { STATUS_NO_SUCH_DEVICE,         "device not found"               },
+    { STATUS_NO_SUCH_FILE,           "file not found"                 },
+    { STATUS_INVALID_DEVICE_REQUEST, "invalid device request"         },
+    { STATUS_END_OF_FILE,            "end of file reached"            },
+    { STATUS_WRONG_VOLUME,           "wrong volume"                   },
+    { STATUS_NO_MEDIA_IN_DEVICE,     "no media in device"             },
+    { STATUS_UNRECOGNIZED_VOLUME,    "cannot recognize file system"   },
+    { STATUS_VARIABLE_NOT_FOUND,     "environment variable not found" },
+    
+    /* A file cannot be opened because the share access flags are incompatible. */
+    { STATUS_SHARING_VIOLATION,      "file is locked by another process"},
+    
+    /* A file cannot be moved because target clusters are in use. */
+    { STATUS_ALREADY_COMMITTED,      "target clusters are already in use"},
+    
+    { 0xffffffff,                    NULL                             }
+};
+
+/**
+ * @internal
+ * @brief Returns NT status description.
+ * @param[in] status the NT status code.
+ * @note This function returns descriptions
+ * only for well known codes. Otherwise it
+ * returns an empty string.
+ * @par Example:
+ * @code
+ * printf("%s\n",winx_get_status_description(STATUS_ACCESS_VIOLATION));
+ * // prints "access violation"
+ * @endcode
+ */
+char *winx_get_status_description(unsigned long status)
+{
+    int i;
+    
+    for(i = 0; descriptions[i].desc; i++){
+        if(descriptions[i].status == status)
+            return descriptions[i].desc;
+    }
+    return "";
+}
+
+/**
+ * @internal
+ */
 enum {
     ENC_ANSI,
     ENC_UTF16
@@ -228,27 +299,24 @@ enum {
  * @param[in] error the error code.
  * @param[out] encoding pointer to variable
  * receiving the string encoding.
- * The buffer length must be equal
- * to <b>DBG_OUT_BUFFER_SIZE</b>.
- * @note Returned string should be
- * freed by winx_heap_free call.
  */
-static void *get_description(ULONG error,int *encoding)
+static void *winx_get_error_description(ULONG error,int *encoding)
 {
     UNICODE_STRING uStr;
     NTSTATUS Status;
     HMODULE base_addr;
     MESSAGE_RESOURCE_ENTRY *mre;
 
-    /* kernel32.dll has much better messages than ntdll.dll */
+    /*
+    * ntdll.dll returns wrong messages,
+    * so we always use kernel32.dll
+    * library giving us a great deal
+    * better information.
+    */
     RtlInitUnicodeString(&uStr,L"kernel32.dll");
     Status = LdrGetDllHandle(0,0,&uStr,&base_addr);
-    if(!NT_SUCCESS(Status)){
-        RtlInitUnicodeString(&uStr,L"ntdll.dll");
-        Status = LdrGetDllHandle(0,0,&uStr,&base_addr);
-        if(!NT_SUCCESS(Status))
-            return NULL; /* this case is very extraordinary */
-    }
+    if(!NT_SUCCESS(Status))
+        return NULL; /* this case is usual for boot time executables */
     Status = RtlFindMessage(base_addr,(ULONG)(DWORD_PTR)RT_MESSAGETABLE,
         MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),error,&mre);
     if(!NT_SUCCESS(Status))
@@ -319,7 +387,12 @@ void winx_dbg_print(char *format, ...)
     }
     
     if(ns_flag || le_flag){
-        err_msg = get_description(error,&encoding);
+        err_msg = winx_get_error_description(error,&encoding);
+        if(err_msg == NULL && ns_flag){
+            /* for boot time executables we have a good recovery */
+            err_msg = winx_get_status_description(status);
+            encoding = ENC_ANSI;
+        }
         if(err_msg){
             if(encoding == ENC_ANSI){
                 ext_msg = winx_sprintf("%s: 0x%x %s: %s",
@@ -461,76 +534,6 @@ void winx_dbg_print_header(char ch, int width, char *format, ...)
         }
         va_end(arg);
     }
-}
-
-/* the following code is intended to be used with winx_printf */
-
-typedef struct _NT_STATUS_DESCRIPTION {
-    unsigned long status;
-    char *desc;
-} NT_STATUS_DESCRIPTION, *PNT_STATUS_DESCRIPTION;
-
-NT_STATUS_DESCRIPTION descriptions[] = {
-    { STATUS_SUCCESS,                "operation successful"           },
-    { STATUS_OBJECT_NAME_INVALID,    "object name invalid"            },
-    { STATUS_OBJECT_NAME_NOT_FOUND,  "object name not found"          },
-    { STATUS_OBJECT_NAME_COLLISION,  "object name already exists"     },
-    { STATUS_OBJECT_PATH_INVALID,    "path is invalid"                },
-    { STATUS_OBJECT_PATH_NOT_FOUND,  "path not found"                 },
-    { STATUS_OBJECT_PATH_SYNTAX_BAD, "bad syntax in path"             },
-    { STATUS_BUFFER_TOO_SMALL,       "buffer is too small"            },
-    { STATUS_ACCESS_DENIED,          "access denied"                  },
-    { STATUS_NO_MEMORY,              "not enough memory"              },
-    { STATUS_UNSUCCESSFUL,           "operation failed"               },
-    { STATUS_NOT_IMPLEMENTED,        "not implemented"                },
-    { STATUS_INVALID_INFO_CLASS,     "invalid info class"             },
-    { STATUS_INFO_LENGTH_MISMATCH,   "info length mismatch"           },
-    { STATUS_ACCESS_VIOLATION,       "access violation"               },
-    { STATUS_INVALID_HANDLE,         "invalid handle"                 },
-    { STATUS_INVALID_PARAMETER,      "invalid parameter"              },
-    { STATUS_NO_SUCH_DEVICE,         "device not found"               },
-    { STATUS_NO_SUCH_FILE,           "file not found"                 },
-    { STATUS_INVALID_DEVICE_REQUEST, "invalid device request"         },
-    { STATUS_END_OF_FILE,            "end of file reached"            },
-    { STATUS_WRONG_VOLUME,           "wrong volume"                   },
-    { STATUS_NO_MEDIA_IN_DEVICE,     "no media in device"             },
-    { STATUS_UNRECOGNIZED_VOLUME,    "cannot recognize file system"   },
-    { STATUS_VARIABLE_NOT_FOUND,     "environment variable not found" },
-    
-    /* A file cannot be opened because the share access flags are incompatible. */
-    { STATUS_SHARING_VIOLATION,      "file is locked by another process"},
-    
-    /* A file cannot be moved because target clusters are in use. */
-    { STATUS_ALREADY_COMMITTED,      "target clusters are already in use"},
-    
-    { 0xffffffff,                    NULL                             }
-};
-
-/**
- * @internal
- * @brief Retrieves a human readable
- * explanation of the NT status code.
- * @param[in] status the NT status code.
- * @return A pointer to string containing
- * the status explanation.
- * @note This function returns explanations
- * only for well known codes. Otherwise 
- * it returns an empty string.
- * @par Example:
- * @code
- * printf("%s\n",winx_get_error_description(STATUS_ACCESS_VIOLATION));
- * // prints "access violation"
- * @endcode
- */
-char *winx_get_error_description(unsigned long status)
-{
-    int i;
-    
-    for(i = 0; descriptions[i].desc; i++){
-        if(descriptions[i].status == status)
-            return descriptions[i].desc;
-    }
-    return "";
 }
 
 /* logging to the file */

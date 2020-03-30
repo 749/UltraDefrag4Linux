@@ -61,23 +61,36 @@ int map_rows = BLOCKS_PER_VLINE;
 int map_symbols_per_line = BLOCKS_PER_HLINE;
 int use_entire_window = 0;
 int map_completed = 0;
+int v_lines = 0; /* number of extra lines produced by -v switch */
 
 /**
  * @brief Adjusts map dimensions to fill the entire screen.
  */
 void CalculateClusterMapDimensions(void)
 {
+    udefrag_progress_info pi;
+    char *results;
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     SMALL_RECT sr;
     HANDLE h;
+    int i;
+
+    memset(&pi,0,sizeof(udefrag_progress_info));
+    results = udefrag_get_default_formatted_results(&pi);
+    if(results){
+        for(i = 0, v_lines = 1; results[i]; i++){
+            if(results[i] == '\n') v_lines ++;
+        }
+        udefrag_release_default_formatted_results(results);
+    } else {
+        WgxDbgPrint("CalculateClusterMapDimensions: not enough memory");
+    }
 
     h = GetStdHandle(STD_OUTPUT_HANDLE);
     if(GetConsoleScreenBufferInfo(h,&csbi)){
         map_symbols_per_line = csbi.srWindow.Right - csbi.srWindow.Left - 2;
-        if(v_flag == 0)
-            map_rows = csbi.srWindow.Bottom - csbi.srWindow.Top - 10;
-        else
-            map_rows = csbi.srWindow.Bottom - csbi.srWindow.Top - 21;
+        map_rows = csbi.srWindow.Bottom - csbi.srWindow.Top - 10;
+        if(v_flag) map_rows -= v_lines;
         /* scroll buffer one line up */
         if(csbi.srWindow.Top > 0){
             sr.Top = sr.Bottom = -1;
@@ -195,6 +208,7 @@ void InitializeMapDisplay(char volume_letter)
 {
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     COORD cursor_pos;
+    int i;
 
     clear_line(stdout);
     printf("\r%c: %s%6.2lf%% complete, fragmented/total = %u/%u",
@@ -203,20 +217,16 @@ void InitializeMapDisplay(char volume_letter)
 
     if(use_entire_window){
         /* reserve a single line for the next command prompt */
-        if(v_flag == 0)
-            printf("\n");
-        else
-            printf("\n\n\n\n\n\n\n\n\n\n\n\n");
+        printf("\n");
+        for(i = 0; v_flag && i < v_lines; i++) printf("\n");
         /* move cursor back to the previous line */
         if(!GetConsoleScreenBufferInfo(hStdOut,&csbi)){
             display_last_error("Cannot retrieve cursor position!");
             return; /* impossible to determine the current cursor position  */
         }
         cursor_pos.X = 0;
-        if(v_flag == 0)
-            cursor_pos.Y = csbi.dwCursorPosition.Y - 1;
-        else
-            cursor_pos.Y = csbi.dwCursorPosition.Y - 12;
+        cursor_pos.Y = csbi.dwCursorPosition.Y - 1;
+        if(v_flag) cursor_pos.Y -= (SHORT)v_lines;
         if(!SetConsoleCursorPosition(hStdOut,cursor_pos))
             display_last_error("Cannot set cursor position!");
     }

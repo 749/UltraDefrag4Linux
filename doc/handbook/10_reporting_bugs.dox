@@ -71,6 +71,26 @@
  *    <b>defrag_native.log</b> file is located.
  * -# Create a @ref create_bug_report_package "bug report package" and attach it to the tracker artifact.
  *
+ * <h2>Collecting debugging information to report keyboard detection problems at boot time</h2>
+ * -# Make sure to have the boot time interface being executed at least once.
+ * -# Launch a <b>command prompt</b>, on Vista and above make sure to run as the Administrator user
+ *    by right-clicking on it and selecting <b>Run as Administrator</b>.
+ * -# For Windows 2000 and below, you need to install the <b>Windows Support Tools</b> shipping with the
+ *    Windows installation CD.
+ * -# Execute the lines below to add additional information to the <b>boot-startup-phase.log</b> file.
+ * @code
+ * reg query "HKLM\HARDWARE\DEVICEMAP\KeyboardClass" >>"%UD_INSTALL_DIR%\Logs\boot-startup-phase.log"
+ *
+ * for %k in ( Kbdclass kbdhid ) do (
+ *   for %s in ( ControlSet002 ControlSet001 CurrentControlSet ) do (
+ *     reg query "HKLM\SYSTEM\%s\Services\%k\Enum" >>"%UD_INSTALL_DIR%\Logs\boot-startup-phase.log"
+ *   )
+ * )
+ * @endcode
+ * -# Open an Explorer window and open the folder <b>\%UD_INSTALL_DIR\%\\Logs</b> where the
+ *    <b>boot-startup-phase.log</b> file is located.
+ * -# Create a @ref create_bug_report_package "bug report package" and attach it to the tracker artifact.
+ *
  * <h2>Disable debugging</h2>
  * For the GUI you just have to set <b>dbgprint_level</b> and <b>log_file_path</b> to an empty string.\n
  * For the boot time utility comment out the lines containing the definition of the

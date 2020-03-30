@@ -410,7 +410,7 @@ int IsBootTimeDefragEnabled(void)
 
     type = REG_MULTI_SZ;
     if(RegQueryValueEx(hKey,"BootExecute",NULL,&type,
-            data,&size) != ERROR_SUCCESS){
+            (LPBYTE)data,&size) != ERROR_SUCCESS){
         WgxDisplayLastError(hWindow,MB_OK | MB_ICONHAND,"Cannot query BootExecute value!");
         (void)RegCloseKey(hKey);
         free(data);

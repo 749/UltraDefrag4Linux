@@ -4,7 +4,7 @@
 ;------------------------------------------------------------------------------
 ; History --- Date ---------- Full Name
 ;------------------------------------------------------------------------------
-; Revised {Jan. 01, 2000} by {Replace by Name of Reviser}
+; Revised Nov. 19, 2012 by Dmitry Zemskov
 ;------------------------------------------------------------------------------
 
 ; Please keep the header and comments in English and use Latin letters,
@@ -18,7 +18,7 @@
 ; Main Menu
 
 ACTION                    = &Файл
-REPORT                    = &Отчет
+REPORT                    = &Отчёт
 SETTINGS                  = &Настройки
 HELP                      = &Справка
 
@@ -49,19 +49,19 @@ WHEN_DONE_SHUTDOWN        = &Выключить компьютер
 
 ; --- Report Menu
 
-SHOW_REPORT               = &Показать отчет
+SHOW_REPORT               = &Показать отчёт
 
 ; --- Settings Menu
 
 LANGUAGE                  = &Язык
 GRAPHICAL_INTERFACE       = &Графический интерфейс
 BOOT_TIME_SCAN            = &Запуск перед загрузкой Windows
-REPORTS                   = &Отчеты
+REPORTS                   = &Отчёты
 
 ; --- --- Language submenu
 
 TRANSLATIONS_CHANGE_LOG   = &Смотреть журнал изменений
-TRANSLATIONS_REPORT       = Смотреть &отчет перевода
+TRANSLATIONS_REPORT       = Смотреть &отчёт перевода
 TRANSLATIONS_FOLDER       = &Каталог переводов
 TRANSLATIONS_SUBMIT       = &Отправить текущий перевод
 
@@ -115,7 +115,7 @@ STATUS_DIRTY              = Диск нуждается в исправлени�
 
 DIRS                      = каталогов
 FILES                     = файлов
-FRAGMENTED                = фрагментированых
+FRAGMENTED                = фрагментированных
 COMPRESSED                = сжатых
 
 ; About window.
@@ -157,7 +157,7 @@ HIDE                      = Скрыть
 FRAGMENTED_FILES_ON       = Фрагментированные файлы на
 
 VISIT_HOMEPAGE            = Посетите наш вебсайт
-VIEW_REPORT_OPTIONS       = Параметры отчетов
+VIEW_REPORT_OPTIONS       = Параметры отчётов
 POWERED_BY_LUA            = Работает на Lua
 
 FRAGMENTS                 = фрагментов

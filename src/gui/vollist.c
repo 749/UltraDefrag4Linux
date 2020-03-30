@@ -203,7 +203,6 @@ static void AdjustVolListColumns(void)
 int ResizeVolList(int x, int y, int width, int height, int expand)
 {
     int border_height;
-    int border_width;
     int header_height = 0;
     int item_height = 0;
     int n_items;
@@ -213,7 +212,6 @@ int ResizeVolList(int x, int y, int width, int height, int expand)
 
     /* adjust height of the list */
     border_height = GetSystemMetrics(SM_CYEDGE);
-    border_width = GetSystemMetrics(SM_CXEDGE);
     hHeader = (HWND)(LONG_PTR)SendMessage(hList,LVM_GETHEADER,0,0);
     if(hHeader){
         if(SendMessage(hHeader,HDM_GETITEMRECT,0,(LRESULT)&rc))

@@ -32,7 +32,7 @@
 || [[Hindi.lng|Hindi]]                                                   || ||=  91 || ||=  91 || ||>   100 % ||
 || [[Hungarian.lng|Hungarian]]                                           || ||=  91 || ||=  91 || ||>   100 % ||
 || [[Icelandic.lng|Icelandic]]                                           || ||=  85 || ||=  91 || ||>    93 % ||
-|| [[Iloko.lng|Iloko]]                                                   || ||=  89 || ||=  91 || ||>    97 % ||
+|| [[Iloko.lng|Iloko]]                                                   || ||=  90 || ||=  91 || ||>    98 % ||
 || [[Indonesian (Bahasa Indonesia).lng|Indonesian (Bahasa Indonesia)]]   || ||=  90 || ||=  91 || ||>    98 % ||
 || [[Indonesian.lng|Indonesian]]                                         || ||=  90 || ||=  91 || ||>    98 % ||
 || [[Italian.lng|Italian]]                                               || ||=  87 || ||=  91 || ||>    95 % ||
@@ -101,6 +101,7 @@
 || [[Czech.lng|Czech]]                                                   || ||=  90 || ||=  91 || ||>    98 % ||
 || [[Estonian.lng|Estonian]]                                             || ||=  90 || ||=  91 || ||>    98 % ||
 || [[German.lng|German]]                                                 || ||=  90 || ||=  91 || ||>    98 % ||
+|| [[Iloko.lng|Iloko]]                                                   || ||=  90 || ||=  91 || ||>    98 % ||
 || [[Indonesian (Bahasa Indonesia).lng|Indonesian (Bahasa Indonesia)]]   || ||=  90 || ||=  91 || ||>    98 % ||
 || [[Indonesian.lng|Indonesian]]                                         || ||=  90 || ||=  91 || ||>    98 % ||
 || [[Javanese.lng|Javanese]]                                             || ||=  90 || ||=  91 || ||>    98 % ||
@@ -109,7 +110,6 @@
 || [[Catalan.lng|Catalan]]                                               || ||=  89 || ||=  91 || ||>    97 % ||
 || [[Danish.lng|Danish]]                                                 || ||=  89 || ||=  91 || ||>    97 % ||
 || [[Filipino (Tagalog).lng|Filipino (Tagalog)]]                         || ||=  89 || ||=  91 || ||>    97 % ||
-|| [[Iloko.lng|Iloko]]                                                   || ||=  89 || ||=  91 || ||>    97 % ||
 || [[Latvian.lng|Latvian]]                                               || ||=  89 || ||=  91 || ||>    97 % ||
 || [[Norwegian.lng|Norwegian]]                                           || ||=  89 || ||=  91 || ||>    97 % ||
 || [[Slovenian.lng|Slovenian]]                                           || ||=  89 || ||=  91 || ||>    97 % ||

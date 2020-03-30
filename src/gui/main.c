@@ -350,7 +350,6 @@ static RECT prev_rc = {0,0,0,0};
 void ResizeMainWindow(int force)
 {
     int vlist_height, sbar_height;
-    int spacing;
     int toolbar_height;
     RECT rc;
     int w, h;
@@ -379,7 +378,6 @@ void ResizeMainWindow(int force)
         list_height = max_list_height;
     
     vlist_height = list_height;//DPI(VLIST_HEIGHT);
-    spacing = DPI(SPACING);
     w = rc.right - rc.left;
     h = rc.bottom - rc.top;
 

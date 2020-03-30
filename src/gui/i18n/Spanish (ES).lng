@@ -10,6 +10,7 @@
 ; Revised May 06, 2012 by Javier Valdivieso
 ; Revised Jun 06, 2012 by Daniel Rodríguez
 ; Revised Oct 13, 2012 by El Fiera
+; Revised Nov 17, 2012 by NetVicious
 ;------------------------------------------------------------------------------
 
 ; Please keep the header and comments in English and use Latin letters,
@@ -60,13 +61,13 @@ SHOW_REPORT               = Mostrar Informe
 
 LANGUAGE                  = Idioma
 GRAPHICAL_INTERFACE       = Interfaz Gráfica
-BOOT_TIME_SCAN            = Escaneo al Arrancar
+BOOT_TIME_SCAN            = Escanear al Arrancar
 REPORTS                   = Informes
 
 ; --- --- Language submenu
 
 TRANSLATIONS_CHANGE_LOG   = Ver lista de cambios
-TRANSLATIONS_REPORT       = Ver informes de tranducción
+TRANSLATIONS_REPORT       = Ver informes de traducción
 TRANSLATIONS_FOLDER       = Carpeta de traducciones
 TRANSLATIONS_SUBMIT       = Enviar traducción actual
 
@@ -85,14 +86,14 @@ SCRIPT                    = Comandos
 CONTENTS                  = Contenidos
 BEST_PRACTICE             = Procedimientos Recomendados
 FAQ                       = Preguntas Frecuentes
-CM_LEGEND                 = Grupo leyenda del Mapa
+CM_LEGEND                 = &Leyenda de clusters del Mapa
 DEBUG                     = Debug
 CHECK_UPDATE              = Buscar Actualizaciones
 ABOUT                     = Acerca de...
 
 ; --- --- Debug submenu
 
-OPEN_LOG                  = Abrir logo
+OPEN_LOG                  = Abrir log
 REPORT_BUG                = Enviar Informe de Fallo
 
 ; --- Toolbar Tooltips
@@ -145,8 +146,8 @@ NO                        = No
 
 ; Upgrade dialog
 
-UPGRADE_CAPTION           = Actualizar leyenda
-UPGRADE_MESSAGE           = Actualizar mensaje
+UPGRADE_CAPTION           = Actualización ^-^ disponible
+UPGRADE_MESSAGE           = versión disponible para descargar!
 
 ; A string for the taskbar icon overlay, needed for accessibility.
 
@@ -170,7 +171,7 @@ SIZE                      = Tamaño
 FILENAME                  = Nombre de archivo
 COMMENT                   = Comentario
 
-LOCKED                    = Cerrado
+LOCKED                    = Bloqueado
 MOVE_FAILED               = Error al mover
 INVALID                   = Inválido
 

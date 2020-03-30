@@ -32,7 +32,7 @@ void winx_destroy_global_heap(void);
 int winx_dbg_init(void);
 void winx_dbg_close(void);
 void MarkWindowsBootAsSuccessful(void);
-char *winx_get_error_description(unsigned long status);
+char *winx_get_status_description(unsigned long status);
 void winx_init_case_tables(void);
 
 /**
@@ -167,7 +167,7 @@ static void print_post_scriptum(char *msg,NTSTATUS Status)
     char buffer[256];
 
     _snprintf(buffer,sizeof(buffer),"\n%s: %x: %s\n\n",
-        msg,(UINT)Status,winx_get_error_description(Status));
+        msg,(UINT)Status,winx_get_status_description(Status));
     buffer[sizeof(buffer) - 1] = 0;
     /* winx_printf cannot be used here */
     winx_print(buffer);

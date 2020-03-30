@@ -1,5 +1,18 @@
 ﻿HISTORY
 
+  Version 5.1.2  2012-12-18
+  ------------------------------------------------------------------------------
+    - USB keyboards detection problem solved for the boot time interface
+    - bug fix: boot time logs forced to use correct error messages
+    - now displaying a message when installing on a newer versions than Windows 7,
+      to make users aware of UltraDefrag being not tested on anything newer than
+      Windows 7 currently
+
+    - the following translations were updated:
+
+      Iloko, Russian, Spanish (ES), Tamil
+
+
   Version 5.1.1  2012-11-11
   ------------------------------------------------------------------------------
     - it is now supported to install over an existing portable package
