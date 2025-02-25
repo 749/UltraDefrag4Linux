@@ -22,8 +22,8 @@ LD=ld
 AR=ar
 INCL=-I$(NTFS) -I/usr/include \
      -I../include -I../dll/zenwinx
-COPT=-DLXGC=1 -O2
-GCCOPT=-DLXGC=1 -O2
+COPT=-DLXGC=1 -O2 ${CFLAGS}
+GCCOPT=-DLXGC=1 -O2 ${CFLAGS}
 NTFS=/usr/include/ntfs-3g
 
 H=../include/linux.h ../include/compiler.h ntfs-3g.h \

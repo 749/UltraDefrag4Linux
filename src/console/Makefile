@@ -22,8 +22,8 @@ LD=ld
 AR=ar
 INCL=-I$(NTFS) -I$(NTFS)/include/ntfs-3g -I/usr/include \
      -I../include -I../dll/zenwinx
-COPT=-DLXGC=1 -O2
-GCCOPT=-DLXGC=1 -O2
+COPT=-DLXGC=1 -O2 ${CFLAGS}
+GCCOPT=-DLXGC=1 -O2 ${CLAGS}
 NTFS=/usr/include/ntfs-3g
 
 H=../include/ultradfgver.h udefrag.h \
