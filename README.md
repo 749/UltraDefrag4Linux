@@ -21,4 +21,4 @@ CFLAGS='-Wno-implict-function-declaration' make
 
 ## Support
 
-At this moment I am unable to render support to this projekt, I am happy to merge any fixes or improvements though.
+At this moment I am unable to render support to this project, I am happy to merge any fixes or improvements though.
