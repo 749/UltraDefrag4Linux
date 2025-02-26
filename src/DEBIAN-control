@@ -4,4 +4,5 @@ Section: utils
 Priority: optional
 Architecture: amd64
 Maintainer: indigoparadox <indigo.repo@interfinitydynamics.info>
+Depends: ntfs-3g
 Description: The udefrag FAT and NTFS defrag utility
