@@ -1,0 +1,7 @@
+Package: udefrag
+Version: VERSION
+Section: utils
+Priority: optional
+Architecture: amd64
+Maintainer: indigoparadox <indigo.repo@interfinitydynamics.info>
+Description: The udefrag FAT and NTFS defrag utility

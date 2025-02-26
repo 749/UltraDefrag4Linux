@@ -8,6 +8,8 @@
 # this list controls the ordering of rule evaluation
 .SUFFIXES : .c .cpp .java .s .o .l .map
 
+.PHONY : clean
+
 # cancel implicit rule for building .c from .l (lex file) :
 %.c : %.l
 
@@ -25,14 +27,24 @@ INCL=-I/usr/include -Iinclude
 COPT=-DLXGC=1 -O2
 GCCOPT=-DLXGC=1 -O2
 
+VERSION=5.0.0
+
+ifneq ($(shell grep focal /etc/os-release),)
+
+# For Ubuntu 18.04
+LIB1=/usr/lib/x86_64-linux-gnu
+LIB2=/usr/lib/gcc/x86_64-linux-gnu/$(GCC_VERSION)
+NTFSLIB=$(shell pkg-config libntfs-3g --libs)
+
+else
+
 LIB1=/usr/lib64
 LIB2=/usr/lib/gcc/x86_64-pc-linux-gnu/$(GCC_VERSION)
 NTFSLIB=/lib64/libntfs-3g.so.*.0.0
 
-# For Ubuntu 18.04
-#LIB1=/usr/lib/x86_64-linux-gnu
-#LIB2=/usr/lib/gcc/x86_64-linux-gnu/$(GCC_VERSION)
-#NTFSLIB=/lib/x86_64-linux-gnu/libntfs-3g.so.*.0.0
+endif
+
+USR_FILES=share/man/man1/udefrag.1.gz sbin/udefrag share/doc/udefrag/README.linux
 
 A=console.a udefrag.a zenwinx.a wincalls.a
 
@@ -62,11 +74,38 @@ zenwinx.a :
 wincalls.a :
 	cd wincalls; make wincalls.a
 
+udefrag-$(VERSION)/usr/share/man/man1/udefrag.1.gz: \
+udefrag-$(VERSION)/usr/share/man/man1/udefrag.1
+	gzip "$<"
+
+udefrag-$(VERSION)/usr/share/man/man1/udefrag.1: man/udefrag.man
+	mkdir -p "$(dir $@)"
+	cp -v "$<" "$@"
+
+udefrag-$(VERSION)/usr/share/doc/udefrag/README.linux: README.linux
+	mkdir -p "$(dir $@)"
+	cp -v "$<" "$@"
+
+udefrag-$(VERSION)/usr/sbin/udefrag: udefrag
+	mkdir -p "$(dir $@)"
+	cp -v "$<" "$@"
+
+udefrag-$(VERSION)/DEBIAN/control: DEBIAN-control
+	mkdir -p "$(dir $@)"
+	cat "$<" | sed "s/VERSION/$(VERSION)/g" > "$@"
+
+deb: $(addprefix udefrag-$(VERSION)/usr/,$(USR_FILES)) \
+udefrag-$(VERSION)/DEBIAN/control
+	dpkg-deb --root-owner-group --build "udefrag-$(VERSION)"
+
 clean :
 	cd console; make clean
 	cd dll/udefrag; make clean
 	cd dll/zenwinx; make clean
 	cd wincalls; make clean
+	rm -f udefrag
+	rm -f udefrag-$(VERSION).deb
+	rm -rf udefrag-$(VERSION)
 
 udefrag : $(A)
 	$(LD) -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o udefrag -M \
@@ -75,3 +114,4 @@ udefrag : $(A)
 		wincalls/wincalls.a $(NTFSLIB) \
 		-lgcc -L$(LIB2) -L$(LIB1) -lc -lm -lpthread -lncurses \
 		$(LIB2)/crtend.o $(LIB1)/crtn.o > udefrag.map
+
