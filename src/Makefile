@@ -24,27 +24,25 @@ GCC_VERSION=$(shell expr `$(GCC) -dumpversion`)
 LD=ld
 AR=ar
 INCL=-I/usr/include -Iinclude
-COPT=-DLXGC=1 -O2
-GCCOPT=-DLXGC=1 -O2
+COPT=-DLXGC=1 -O2 ${CFLAGS}
+GCCOPT=-DLXGC=1 -O2 ${CFLAGS}
+OS=$(shell lsb_release -si)
+ARCH=$(shell uname -m | sed 's/x86_//;s/i[3-6]86/32/')
+VER=$(shell lsb_release -sr)
 
 VERSION=5.0.0
-
-ifneq ($(shell grep focal /etc/os-release),)
-
-# For Ubuntu 18.04
-LIB1=/usr/lib/x86_64-linux-gnu
-LIB2=/usr/lib/gcc/x86_64-linux-gnu/$(GCC_VERSION)
-NTFSLIB=$(shell pkg-config libntfs-3g --libs)
-
-else
+USR_FILES=share/man/man1/udefrag.1.gz sbin/udefrag share/doc/udefrag/README.linux
 
 LIB1=/usr/lib64
 LIB2=/usr/lib/gcc/x86_64-pc-linux-gnu/$(GCC_VERSION)
 NTFSLIB=/lib64/libntfs-3g.so.*.0.0
 
+# For Ubuntu 18.04
+ifeq ($(filter $(OS),Kali Debian Ubuntu),$(OS))
+LIB1=/usr/lib/x86_64-linux-gnu
+LIB2=/usr/lib/gcc/x86_64-linux-gnu/$(GCC_VERSION)
+NTFSLIB=/lib/x86_64-linux-gnu/libntfs-3g.so.*.0.0
 endif
-
-USR_FILES=share/man/man1/udefrag.1.gz sbin/udefrag share/doc/udefrag/README.linux
 
 A=console.a udefrag.a zenwinx.a wincalls.a
 
