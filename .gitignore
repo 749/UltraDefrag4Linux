@@ -251,3 +251,11 @@ udefrag
 /ultradefrag4linux-*.tar.*
 /.deps/
 **/.deps/
+
+# Legacy Windows/MinGW build helpers and generated files
+/ci/bin/
+Makefile.mingw
+Makefile_x64.mingw
+/src/console/getopt.c
+/src/console/getopt.h
+/src/console/getopt1.c

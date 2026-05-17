@@ -9,8 +9,8 @@ on:
   pull_request:
 
 jobs:
-  linux:
-    name: Linux build
+  ubuntu:
+    name: Ubuntu build
     runs-on: ubuntu-latest
 
     steps:
@@ -26,7 +26,51 @@ jobs:
             build-essential \
             lsb-release \
             libncurses-dev \
+            ntfs-3g \
             ntfs-3g-dev
+
+      - name: Bootstrap
+        run: ./autogen.sh
+
+      - name: Configure
+        run: ./configure
+
+      - name: Build
+        run: make
+
+      - name: Test
+        run: make check
+
+      - name: Test fragmented NTFS image
+        run: sudo ./TestSuite/Create\ Fragmented\ Volumes/ci_fragmented_volume_test.sh ./udefrag
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: udefrag-linux
+          path: udefrag
+          if-no-files-found: error
+
+  cachyos:
+    name: CachyOS build
+    runs-on: ubuntu-latest
+    container:
+      image: cachyos/cachyos:latest
+
+    steps:
+      - name: Install dependencies
+        run: |
+          pacman -Syu --noconfirm
+          pacman -S --noconfirm --needed \
+            autoconf \
+            automake \
+            base-devel \
+            grep \
+            ncurses \
+            ntfs-3g
+
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Bootstrap
         run: ./autogen.sh
@@ -43,6 +87,43 @@ jobs:
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
-          name: udefrag-linux
+          name: udefrag-cachyos
           path: udefrag
+          if-no-files-found: error
+
+  windows:
+    name: Windows native build
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            base-devel
+            make
+            mingw-w64-ucrt-x86_64-binutils
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-lua
+
+      - name: Build native Windows binary
+        shell: msys2 {0}
+        run: ./ci/build-windows-native.sh
+
+      - name: Test fragmented NTFS volume
+        shell: pwsh
+        run: |
+          $env:PATH = "C:\msys64\ucrt64\bin;$env:PATH"
+          & ".\TestSuite\Create Fragmented Volumes\ci_fragmented_volume_test.ps1"
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: udefrag-windows-x64
+          path: src/bin/amd64/*
           if-no-files-found: error

@@ -469,7 +469,7 @@ void update_progress(udefrag_progress_info *pi, void *p)
     char *op_name = "";
     char *results;
 #if defined(CURSES) | defined(LINUX)
-    char buf[120];
+    char buf[512];
 #ifdef LINUX
     char *volume;
 #else
@@ -522,17 +522,17 @@ void update_progress(udefrag_progress_info *pi, void *p)
 #endif
         if(pi->current_operation == VOLUME_OPTIMIZATION && !stop_flag && pi->completion_status == 0){
             if(pi->pass_number > 1)
-                sprintf(buf,"%s: %s%6.2lf%% complete, pass %lu, moves total = %" LL64 "u",
+                snprintf(buf,sizeof(buf),"%s: %s%6.2lf%% complete, pass %lu, moves total = %" LL64 "u",
                     volume,op_name,pi->percentage,pi->pass_number,(ULONGLONG)pi->total_moves);
             else
-                sprintf(buf,"%s: %s%6.2lf%% complete, moves total = %" LL64 "u",
+                snprintf(buf,sizeof(buf),"%s: %s%6.2lf%% complete, moves total = %" LL64 "u",
                     volume,op_name,pi->percentage,(ULONGLONG)pi->total_moves);
         } else {
             if(pi->pass_number > 1)
-                sprintf(buf,"%s: %s%6.2lf%% complete, pass %lu, fragmented/total = %lu/%lu",
+                snprintf(buf,sizeof(buf),"%s: %s%6.2lf%% complete, pass %lu, fragmented/total = %lu/%lu",
                     volume,op_name,pi->percentage,pi->pass_number,pi->fragmented,pi->files);
             else
-                sprintf(buf,"%s: %s%6.2lf%% complete, fragmented/total = %lu/%lu",
+                snprintf(buf,sizeof(buf),"%s: %s%6.2lf%% complete, fragmented/total = %lu/%lu",
                     volume,op_name,pi->percentage,pi->fragmented,pi->files);
         }
         if (m_flag)
@@ -543,10 +543,10 @@ void update_progress(udefrag_progress_info *pi, void *p)
         if (pi->completion_status != 0 && !stop_flag) {
             /* set progress indicator to 100% state */
             if(pi->pass_number > 1)
-                sprintf(buf,"%s: %s100.00%% complete, %lu passes needed, fragmented/total = %lu/%lu",
+                snprintf(buf,sizeof(buf),"%s: %s100.00%% complete, %lu passes needed, fragmented/total = %lu/%lu",
                     volume,op_name,pi->pass_number,pi->fragmented,pi->files);
             else
-                sprintf(buf,"%s: %s100.00%% complete, fragmented/total = %lu/%lu",
+                snprintf(buf,sizeof(buf),"%s: %s100.00%% complete, fragmented/total = %lu/%lu",
                     volume,op_name,pi->fragmented,pi->files);
         if (m_flag)
             set_message(ROW_PROGRESS,0,
