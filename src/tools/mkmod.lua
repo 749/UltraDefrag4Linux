@@ -130,11 +130,11 @@ function produce_ddk_makefile()
     f:write("USER_C_FLAGS=/DUSE_WINDDK\n\n")
     
     if static_lib == 1 then
-        f:write("USER_C_FLAGS=$(USER_C_FLAGS) /DSTATIC_LIB\n\n")
+        f:write("USER_C_FLAGS=\$(USER_C_FLAGS) /DSTATIC_LIB\n\n")
     end
     
     if target_type == "console" or target_type == "gui" then
-        f:write("CFLAGS=$(CFLAGS) /MT\n\n")
+        f:write("CFLAGS=\$(CFLAGS) /MT\n\n")
     end
 
     f:write("SOURCES=")
@@ -150,7 +150,7 @@ function produce_ddk_makefile()
         
         -- workaround for WDK 7
         if os.getenv("UD_DDK_VER") == "7600" then
-            f:write("MINWIN_SDK_LIB_PATH=$(SDK_LIB_PATH)\n")
+            f:write("MINWIN_SDK_LIB_PATH=\$(SDK_LIB_PATH)\n")
         end
     end
     if target_type == "dll" then
@@ -171,7 +171,7 @@ function produce_ddk_makefile()
     f:write("LINKLIBS=")
     for i, v in ipairs(libs) do
         if v ~= "msvcrt" then
-            f:write("$(DDK_LIB_PATH)\\", v, ".lib ")
+            f:write("\$(DDK_LIB_PATH)\\", v, ".lib ")
         end
     end
     for i, v in ipairs(adlibs) do f:write(v, ".lib ") end
@@ -196,7 +196,7 @@ function produce_msvc_makefile()
 
     --[[
     OUTDIR and INTDIR parameters are replaced with current directory
-    f:write("!IF \"$(OS)\" == \"Windows_NT\"\n")
+    f:write("!IF \"\$(OS)\" == \"Windows_NT\"\n")
     f:write("NULL=\n")
     f:write("!ELSE\n")
     f:write("NULL=nul\n")
@@ -227,7 +227,7 @@ function produce_msvc_makefile()
         cl_flags = cl_flags .. "/D \"_CONSOLE\" /D \"_USRDLL\" /D \"" .. upname .. "\" "
         s = "console"
     elseif target_type == "driver" then
-        cl_flags = cl_flags .. "/I \"$(ROSINCDIR)\" /I \"$(ROSINCDIR)\\ddk\" "
+        cl_flags = cl_flags .. "/I \"\$(ROSINCDIR)\" /I \"\$(ROSINCDIR)\\ddk\" "
         s = "native"
     elseif target_type == "native" then
         s = "native"
@@ -294,8 +294,8 @@ function produce_msvc_makefile()
     
     f:write("CPP=cl.exe\nRSC=rc.exe\nLINK32=link.exe\n\n")
     f:write(".c.obj::\n")
-    f:write("    $(CPP) @<<\n")
-    f:write("    $(CPP_PROJ) $<\n")
+    f:write("    \$(CPP) \@<<\n")
+    f:write("    \$(CPP_PROJ) \$<\n")
     f:write("<<\n\n")
 
     f:write("LINK32_OBJS=")
@@ -309,21 +309,21 @@ function produce_msvc_makefile()
     
     if target_type == "dll" then
         f:write("DEF_FILE=", deffile, "\n\n")
-        f:write("\"", name, ".", target_ext, "\" : $(DEF_FILE) $(LINK32_OBJS)\n")
-        f:write("    $(LINK32) @<<\n")
-        f:write("  $(LINK32_FLAGS) $(LINK32_OBJS)\n")
+        f:write("\"", name, ".", target_ext, "\" : \$(DEF_FILE) \$(LINK32_OBJS)\n")
+        f:write("    \$(LINK32) \@<<\n")
+        f:write("  \$(LINK32_FLAGS) \$(LINK32_OBJS)\n")
         f:write("<<\n\n")
     else
-        f:write("\"", name, ".", target_ext, "\" : $(LINK32_OBJS)\n")
-        f:write("    $(LINK32) @<<\n")
-        f:write("  $(LINK32_FLAGS) $(LINK32_OBJS)\n")
+        f:write("\"", name, ".", target_ext, "\" : \$(LINK32_OBJS)\n")
+        f:write("    \$(LINK32) \@<<\n")
+        f:write("  \$(LINK32_FLAGS) \$(LINK32_OBJS)\n")
         f:write("<<\n\n")
     end
 
     for i, v in ipairs(rc) do
         f:write("SOURCE=", v, "\n\n")
-        f:write(string.gsub(v,"%.rc","%.res"), " : $(SOURCE)\n")
-        f:write("    $(RSC) $(RSC_PROJ) $(SOURCE)\n\n")
+        f:write(string.gsub(v,"%.rc","%.res"), " : \$(SOURCE)\n")
+        f:write("    \$(RSC) \$(RSC_PROJ) \$(SOURCE)\n\n")
     end
 
     f:close()
@@ -375,7 +375,7 @@ function produce_mingw_makefile()
     local f = assert(io.open(".\\Makefile.mingw","w"))
 
     f:write("PROJECT = ", name, "\nCC = gcc.exe\n\n")
-    f:write("WINDRES = \"$(COMPILER_BIN)windres.exe\"\n\n")
+    f:write("WINDRES = \"\$(COMPILER_BIN)windres.exe\"\n\n")
     
     f:write("TARGET = ", target_name, "\n")
     
@@ -388,9 +388,9 @@ function produce_mingw_makefile()
     f:write("RCFLAGS = ")
     f:write("\n")
     
-    f:write("C_INCLUDE_DIRS = -I../include -I../../include\n")
+    f:write("C_INCLUDE_DIRS = \n")
     f:write("C_PREPROC = \n")
-    f:write("RC_INCLUDE_DIRS = -I../include -I../../include\n")
+    f:write("RC_INCLUDE_DIRS = \n")
     f:write("RC_PREPROC = \n")
     
     if target_type == "console" then
@@ -399,16 +399,16 @@ function produce_mingw_makefile()
         f:write("LDFLAGS = -pipe -mwindows -Wl,--strip-all\n")
     elseif target_type == "native" then
         f:write("LDFLAGS = -pipe -nostartfiles -nodefaultlibs ")
-        f:write("-Wl,--entry,_NtProcessStartup@4,--subsystem,native,--strip-all\n")
+        f:write("-Wl,--entry,_NtProcessStartup\@4,--subsystem,native,--strip-all\n")
     elseif target_type == "driver" then
         f:write("LDFLAGS = -pipe -nostartfiles -nodefaultlibs ")
-        f:write(mingw_deffile .. " -Wl,--entry,_DriverEntry@8,")
+        f:write(mingw_deffile .. " -Wl,--entry,_DriverEntry\@8,")
         f:write("--subsystem,native,--image-base,0x10000,-shared,--strip-all\n")
     elseif target_type == "dll" then
         f:write("LDFLAGS = -pipe -shared -Wl,")
         f:write("--out-implib,lib", name, ".dll.a -nostartfiles ")
         f:write("-nodefaultlibs ", mingw_deffile, " -Wl,--kill-at,")
-        f:write("--entry,_DllMain@12,--strip-all\n")
+        f:write("--entry,_DllMain\@12,--strip-all\n")
     else error("Unknown target type: " .. target_type .. "!")
     end
 
@@ -459,32 +459,32 @@ function produce_mingw_makefile()
     --end
     
     f:write(".PHONY: print_header\n\n")
-    f:write("$(TARGET): print_header $(RSRC_OBJS) $(SRC_OBJS)\n")
-    f:write("\t$(build_target)\n")
+    f:write("\$(TARGET): print_header \$(RSRC_OBJS) \$(SRC_OBJS)\n")
+    f:write("\t\$(build_target)\n")
 
     if target_type == "dll" then
-        f:write("\t$(correct_lib)\n")
+        f:write("\t\$(correct_lib)\n")
     end
     
     f:write("\nprint_header:\n")
-    f:write("\t@echo ----------Configuration: ", name, " - Release----------\n\n")
+    f:write("\t\@echo ----------Configuration: ", name, " - Release----------\n\n")
     
     if target_type == "dll" then
         f:write("define correct_lib\n")
-        f:write("\t@echo ------ correct the lib$(PROJECT).dll.a library ------\n")
-        f:write("\t@dlltool -k --output-lib lib$(PROJECT).dll.a --def ")
+        f:write("\t\@echo ------ correct the lib\$(PROJECT).dll.a library ------\n")
+        f:write("\t\@dlltool -k --output-lib lib\$(PROJECT).dll.a --def ")
         f:write(mingw_deffile, "\n")
         f:write("endef\n\n")
     end
     
     for i, v in ipairs(src) do
         f:write(string.gsub(v,"%.c","%.o"), ": ")
-        f:write(v, "\n\t$(compile_source)\n\n")
+        f:write(v, "\n\t\$(compile_source)\n\n")
     end
 
     for i, v in ipairs(rc) do
         f:write(string.gsub(v,"%.rc","%.res"), ": ")
-        f:write(v, "\n\t$(compile_resource)\n\n")
+        f:write(v, "\n\t\$(compile_resource)\n\n")
     end
 
     f:close()
@@ -499,16 +499,16 @@ function produce_mingw_x64_makefile()
     local f = assert(io.open(".\\Makefile_x64.mingw","w"))
     
     f:write("PROJECT = ", name, "\nCC = x86_64-w64-mingw32-gcc.exe\n\n")
-    f:write("WINDRES = \"$(COMPILER_BIN)x86_64-w64-mingw32-windres.exe\"\n\n")
+    f:write("WINDRES = \"\$(COMPILER_BIN)x86_64-w64-mingw32-windres.exe\"\n\n")
     
     f:write("TARGET = ", target_name, "\n")
     
     f:write("CFLAGS = -pipe  -Wall -g0 -O2 -m64\n")
     f:write("RCFLAGS = \n")
     
-    f:write("C_INCLUDE_DIRS = -I../include -I../../include\n")
+    f:write("C_INCLUDE_DIRS = \n")
     f:write("C_PREPROC = \n")
-    f:write("RC_INCLUDE_DIRS = -I../include -I../../include\n")
+    f:write("RC_INCLUDE_DIRS = \n")
     f:write("RC_PREPROC = \n")
     
     if target_type == "console" then
@@ -517,10 +517,10 @@ function produce_mingw_x64_makefile()
         f:write("LDFLAGS = -pipe -mwindows -Wl,--strip-all\n")
     elseif target_type == "native" then
         f:write("LDFLAGS = -pipe -nostartfiles -nodefaultlibs ")
-        f:write("-Wl,--entry,_NtProcessStartup@4,--subsystem,native,--strip-all\n")
+        f:write("-Wl,--entry,_NtProcessStartup\@4,--subsystem,native,--strip-all\n")
     elseif target_type == "driver" then
         f:write("LDFLAGS = -pipe -nostartfiles -nodefaultlibs ")
-        f:write(mingw_deffile .. " -Wl,--entry,_DriverEntry@8,")
+        f:write(mingw_deffile .. " -Wl,--entry,_DriverEntry\@8,")
         f:write("--subsystem,native,--image-base,0x10000,-shared,--strip-all\n")
     elseif target_type == "dll" then
         f:write("LDFLAGS = -pipe -shared -Wl,")
@@ -530,7 +530,7 @@ function produce_mingw_x64_makefile()
         else
             f:write("-nodefaultlibs ", mingw_deffile, " -Wl,--kill-at,")
         end
-        f:write("--entry,_DllMain@12,--strip-all\n")
+        f:write("--entry,_DllMain\@12,--strip-all\n")
     else error("Unknown target type: " .. target_type .. "!")
     end
 
@@ -577,32 +577,32 @@ function produce_mingw_x64_makefile()
     f:write(main_mingw_rules)
     
     f:write(".PHONY: print_header\n\n")
-    f:write("$(TARGET): print_header $(RSRC_OBJS) $(SRC_OBJS)\n")
-    f:write("\t$(build_target)\n")
+    f:write("\$(TARGET): print_header \$(RSRC_OBJS) \$(SRC_OBJS)\n")
+    f:write("\t\$(build_target)\n")
 
     if target_type == "dll" then
-        f:write("\t$(correct_lib)\n")
+        f:write("\t\$(correct_lib)\n")
     end
     
     f:write("\nprint_header:\n")
-    f:write("\t@echo ----------Configuration: ", name, " - Release----------\n\n")
+    f:write("\t\@echo ----------Configuration: ", name, " - Release----------\n\n")
     
     if target_type == "dll" then
         f:write("define correct_lib\n")
-        f:write("\t@echo ------ correct the lib$(PROJECT).dll.a library ------\n")
-        f:write("\t@x86_64-w64-mingw32-dlltool -k --output-lib lib$(PROJECT).dll.a --def ")
+        f:write("\t\@echo ------ correct the lib\$(PROJECT).dll.a library ------\n")
+        f:write("\t\@x86_64-w64-mingw32-dlltool -k --output-lib lib\$(PROJECT).dll.a --def ")
         f:write(deffile, "\n")
         f:write("endef\n\n")
     end
     
     for i, v in ipairs(src) do
         f:write(string.gsub(v,"%.c","%.o"), ": ")
-        f:write(v, "\n\t$(compile_source)\n\n")
+        f:write(v, "\n\t\$(compile_source)\n\n")
     end
 
     for i, v in ipairs(rc) do
         f:write(string.gsub(v,"%.rc","%.res"), ": ")
-        f:write(v, "\n\t$(compile_resource)\n\n")
+        f:write(v, "\n\t\$(compile_resource)\n\n")
     end
 
     f:close()
@@ -741,7 +741,7 @@ elseif os.getenv("BUILD_ENV") == "mingw_x64" then
         end
     end
 else
-    error("%BUILD_ENV% has wrong value: " .. os.getenv("BUILD_ENV") .. "!")
+    error("\%BUILD_ENV\% has wrong value: " .. os.getenv("BUILD_ENV") .. "!")
 end
 
 print(input_filename .. " " .. os.getenv("BUILD_ENV") .. " build was successful.\n")
