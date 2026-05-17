@@ -1,0 +1,44 @@
+name: Build and test
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+      - master
+  pull_request:
+
+jobs:
+  linux:
+    name: Linux build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            lsb-release \
+            libncurses-dev \
+            ntfs-3g-dev
+
+      - name: Build
+        working-directory: src
+        run: make CFLAGS=-Wno-implicit-function-declaration
+
+      - name: Test help output
+        working-directory: src
+        run: |
+          test -x ./udefrag
+          ./udefrag --help | grep -q "Usage: udefrag"
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: udefrag-linux
+          path: src/udefrag
+          if-no-files-found: error
