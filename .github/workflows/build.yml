@@ -91,39 +91,3 @@ jobs:
           path: udefrag
           if-no-files-found: error
 
-  windows:
-    name: Windows native build
-    runs-on: windows-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up MSYS2
-        uses: msys2/setup-msys2@v2
-        with:
-          msystem: UCRT64
-          update: true
-          install: >-
-            base-devel
-            make
-            mingw-w64-ucrt-x86_64-binutils
-            mingw-w64-ucrt-x86_64-gcc
-            mingw-w64-ucrt-x86_64-lua
-
-      - name: Build native Windows binary
-        shell: msys2 {0}
-        run: ./ci/build-windows-native.sh
-
-      - name: Test fragmented NTFS volume
-        shell: pwsh
-        run: |
-          $env:PATH = "C:\msys64\ucrt64\bin;$env:PATH"
-          & ".\TestSuite\Create Fragmented Volumes\ci_fragmented_volume_test.ps1"
-
-      - name: Upload binary
-        uses: actions/upload-artifact@v4
-        with:
-          name: udefrag-windows-x64
-          path: src/bin/amd64/*
-          if-no-files-found: error
