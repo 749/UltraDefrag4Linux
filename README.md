@@ -15,8 +15,10 @@ The results at the time were clear, no changes just a GUI on top.
 ## Compiling
 
 ```sh
-cd src
+./autogen.sh
+./configure
 make
+make check
 ```
 
 ## Support
