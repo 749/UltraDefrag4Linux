@@ -39,6 +39,7 @@
 #include <getopt.h>
 //#include <malloc.h>
 #include <time.h>
+#include <unistd.h>
 #include <sys/time.h>
 #include <signal.h>
 #include <errno.h>
@@ -49,6 +50,11 @@
 #include "ntfs.h"
 #include "ntfs-3g.h"
 #include "extrawin.h"
+
+#ifdef CURSES
+int curs_set(int);
+int endwin(void);
+#endif
 
 #if STSC
 #undef USETIMEOFDAY
@@ -1197,7 +1203,11 @@ fprintf(stderr,"** Heap was not allocated\n");
 NTSTATUS NTAPI NtAllocateVirtualMemory(HANDLE a, PVOID *b, SIZE_T c, SIZE_T *d, SIZE_T e, SIZE_T f)
 RUNDEF(NtAllocateVirtualMemory)
 
-UNDEF(LocalFree)
+LPVOID LocalFree(LPVOID p)
+{
+	free(p);
+	return (NULL);
+}
 
 NTSTATUS NTAPI NtFreeVirtualMemory(HANDLE a, PVOID *b, SIZE_T *c, SIZE_T d)
 RUNDEF(NtFreeVirtualMemory)
@@ -2136,7 +2146,14 @@ RUNDEF(SetConsoleWindowInfo)
 UNDEF(udefrag_fbsize)
 UNDEF(udefrag_toupper)
 
-UNDEF(_wcsupr)
+utf_t *_wcsupr(utf_t *s)
+{
+	utf_t *p;
+
+	for (p = s; p && *p; p++)
+		*p = winx_toupper(*p);
+	return (s);
+}
 
 utf16_t * WINAPI GetCommandLineW(void)
    {
@@ -2298,14 +2315,14 @@ DWORD WINAPI FormatMessageA(DWORD flg, LPCVOID src, DWORD idmess,
                  DWORD idlang, LPSTR buf, DWORD sz, va_list *args)
 //DWORD WINAPI FormatMessageA(long, char*, long, long, char*, long, va_list*)
 {
-	return (-1);  /* return an error */
+	return (0);  /* return an error */
 }
 
 DWORD WINAPI FormatMessage(DWORD flg, LPCVOID src, DWORD idmess,
                  DWORD idlang, LPSTR buf, DWORD sz, va_list *args)
 //DWORD WINAPI FormatMessage(long, char*, long, long, char*, long, va_list*)
 {
-	return (-1);  /* return an error */
+	return (0);  /* return an error */
 }
 
 NTSTATUS NTAPI xNtCreateFile(PHANDLE ph, ACCESS_MASK acc, POBJECT_ATTRIBUTES p,

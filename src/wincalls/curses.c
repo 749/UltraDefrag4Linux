@@ -36,6 +36,7 @@
 
 #define trace stdtrace /* symbol conflict with curses */
 #include <curses.h>
+#include <term.h>
 #undef trace
 
 #ifndef UNTHREADED

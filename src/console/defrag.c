@@ -30,6 +30,7 @@
 #ifdef LINUX
 #include <fcntl.h>
 #include <errno.h>
+#include <unistd.h>
 #endif
 #include "extrawin.h"
 
@@ -730,7 +731,7 @@ static int process_volumes(void)
 #if STSC
             f = open(path->path,O_RDONLY);
 #else
-            f = open64(path->path,O_RDONLY);
+            f = open(path->path,O_RDONLY);
 #endif
             if (f > 0) {
                 n = read(f,buf,512);

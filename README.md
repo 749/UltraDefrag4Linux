@@ -16,7 +16,7 @@ The results at the time were clear, no changes just a GUI on top.
 
 ```sh
 cd src
-CFLAGS='-Wno-implict-function-declaration' make
+make
 ```
 
 ## Support

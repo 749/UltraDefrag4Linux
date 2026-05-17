@@ -258,11 +258,15 @@ DWORD WINAPI GetEnvironmentVariableW(const utf_t*, utf_t*, DWORD);
 BOOLEAN WINAPI SetEnvironmentVariableA(const char*, const char*);
 BOOLEAN WINAPI SetEnvironmentVariableW(const utf_t*, const utf_t*);
 DWORD WINAPI GetLastError(void);
+DWORD WINAPI FormatMessage(DWORD, LPCVOID, DWORD, DWORD, LPSTR, DWORD, va_list*);
+DWORD WINAPI FormatMessageA(DWORD, LPCVOID, DWORD, DWORD, LPSTR, DWORD, va_list*);
+LPVOID LocalFree(LPVOID);
 VOID WINAPI RtlZeroMemory(VOID*, SIZE_T); /* not WINAPI according to msdn */
 BOOLEAN WINAPI SetConsoleCursorPosition(HANDLE, COORD);
 BOOLEAN WINAPI SetConsoleTextAttribute(HANDLE, WORD);
 BOOLEAN WINAPI GetConsoleScreenBufferInfo(HANDLE, CONSOLE_SCREEN_BUFFER_INFO*);
 BOOLEAN WINAPI SetConsoleWindowInfo(HANDLE, BOOLEAN, const SMALL_RECT*);
+BOOLEAN WINAPI SetConsoleCtrlHandler(PHANDLER_ROUTINE, BOOLEAN);
 DWORD MAKELANGID(DWORD, DWORD);
 /*
  *             Extended C library for processing utf16le strings
@@ -287,6 +291,8 @@ char *_strupr(char*);
 char *_strlwr(char*);
 
 int _vsnprintf(char*, size_t sz, const char*, va_list);
+int _snprintf(char*, int, const char*, ...);
+utf_t *_wcsupr(utf_t*);
 int _snwprintf(utf_t*, size_t, const utf_t*, ...);
 #if WNSC | STSC | SPGC
 int safe_fprintf(struct _iobuf*, const char*, ...);
@@ -296,6 +302,12 @@ int safe_fprintf(struct _IO_FILE*, const char*, ...);
 void safe_dump(struct _IO_FILE*, const char*, const char*, int);
 #endif
 const char *calledfrom(void*);
+void WgxDbgPrintLastError(const char*, ...);
+void display_error(char*);
+int ntfs_mounted_device(const char*);
+int _getch(void);
+int winx_bytes_to_hr(ULONGLONG, int, char*, int);
+void winx_unload_library(void);
 
 /*
  *		Miscellaneous
@@ -308,6 +320,7 @@ const char *calledfrom(void*);
 void stop_there(int, const char*, int);
 #define get_out(n) stop_there(n,__FILE__,__LINE__)
 void initwincalls(void);
+void endwincalls(void);
 
 /*
  *           Memory allocation through libntfs-3g
