@@ -21,24 +21,28 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
+            autoconf \
+            automake \
             build-essential \
             lsb-release \
             libncurses-dev \
             ntfs-3g-dev
 
-      - name: Build
-        working-directory: src
-        run: make CFLAGS=-Wno-implicit-function-declaration
+      - name: Bootstrap
+        run: ./autogen.sh
 
-      - name: Test help output
-        working-directory: src
-        run: |
-          test -x ./udefrag
-          ./udefrag --help | grep -q "Usage: udefrag"
+      - name: Configure
+        run: ./configure
+
+      - name: Build
+        run: make
+
+      - name: Test
+        run: make check
 
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
           name: udefrag-linux
-          path: src/udefrag
+          path: udefrag
           if-no-files-found: error
