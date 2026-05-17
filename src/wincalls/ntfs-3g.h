@@ -25,6 +25,7 @@
  */
 
 HANDLE ntfs_open(const utf_t*);
+int ntfs_mounted_device(const char*);
 int ntfs_close(HANDLE);
 int ntfs_unlink(HANDLE, const char*);
 int ntfs_sync(HANDLE);
