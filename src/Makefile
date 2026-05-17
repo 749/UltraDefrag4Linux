@@ -74,9 +74,8 @@ clean :
 	cd wincalls; make clean
 
 udefrag : $(A)
-	$(LD) -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o udefrag -M \
-		$(LIB1)/crt1.o $(LIB1)/crti.o $(LIB2)/crtbegin.o \
-		console/console.a dll/udefrag/udefrag.a dll/zenwinx/zenwinx.a \
-		wincalls/wincalls.a $(NTFSLIB) \
-		-lgcc -L$(LIB2) -L$(LIB1) -lc -lm -lpthread -lncurses \
-		$(LIB2)/crtend.o $(LIB1)/crtn.o > udefrag.map
+        $(GCC) -o udefrag \
+                console/console.a dll/udefrag/udefrag.a dll/zenwinx/zenwinx.a \
+                wincalls/wincalls.a \
+                -lntfs-3g -lpthread -lncurses -lm
+
